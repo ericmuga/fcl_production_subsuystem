@@ -16,14 +16,14 @@
             <a href="{{ route('slaughter_dashboard') }}" class="nav-link">Dashboard</a>
           </li>
           <li class="nav-item">
-            <a href="#" class="nav-link">Slaughter</a>
+            <a href="{{ route('slaughter_weigh') }}" class="nav-link">Weigh</a>
           </li>
           <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Data Management</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-              <li><a href="#" class="dropdown-item">Import Data </a></li>
+              <li><a href="{{ route('slaughter_import') }}" class="dropdown-item">Import Receipts </a></li>
               <li class="dropdown-divider"></li>
-              <li><a href="#" class="dropdown-item">Imported Receipts</a></li>
+              <li><a href="{{ route('slaughter_receipts') }}" class="dropdown-item">Imported Receipts</a></li>
 
               <li class="dropdown-divider"></li>
 
@@ -32,7 +32,7 @@
                 <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
                 <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
                   <li>
-                    <a tabindex="-1" href="#" class="dropdown-item">Slaughter Data</a>
+                    <a tabindex="-1" href="{{ route('slaughter_data_report') }}" class="dropdown-item">Slaughter Report</a>
                   </li>
                 </ul>
               </li>
@@ -42,15 +42,15 @@
           <li class="nav-item dropdown">
             <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Settings</a>
             <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-              <li><a href="#" class="dropdown-item">Scale settings </a></li>
+              <li><a href="{{ route('slaughter_scale_settings') }}" class="dropdown-item">Scale settings </a></li>
               <li class="dropdown-divider"></li>
-              <li><a href="#" class="dropdown-item">Change password</a></li>
+              <li><a href="{{ route('slaughter_change_password') }}" class="dropdown-item">Change password</a></li>
             </ul>
           </li>
         </ul>
 
         <!-- SEARCH FORM -->
-        {{-- <form class="form-inline ml-0 ml-md-3">
+        <form class="form-inline ml-0 ml-md-3">
           <div class="input-group input-group-sm">
             <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
             <div class="input-group-append">
@@ -59,7 +59,7 @@
               </button>
             </div>
           </div>
-        </form> --}}
+        </form>
       </div>
 
       <!-- Right navbar links -->
@@ -67,7 +67,7 @@
         <li class="nav-item dropdown no-arrow">
             <a class="nav-link dropdown-toggle" style="color:gray" href="#" id="userDropdown" role="button"
                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-user-circle fa-fw"></i>username
+                <i class="fas fa-user-circle"></i> EKaranja
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                 <div class="dropdown-divider"></div>
@@ -75,7 +75,7 @@
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href=""><i class="fa fa-cog"></i> settings</a>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="fa fa-sign-out"></i> Logout</a>
+                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </li>
       </ul>
