@@ -7,7 +7,7 @@
 <div class="row">
     <div class="card col-md-8" style="margin: 0 auto; float: none;">
         <div class="card-header">
-            <h3 class="card-title">Change Password</h3>
+            <h3 class="card-title"> Password | <span id="subtext-h1-title"><small> change current password</small> </span></h3>
         </div>
         <!-- /.card-header -->
         <!-- form start -->
@@ -16,7 +16,7 @@
                 <div class="form-group row">
                     <label for="inputEmail3" class="col-sm-2 col-form-label">Current Password</label>
                     <div class="col-sm-10">
-                        <input type="number" class="form-control" id="baud_rate" name="baud_rate" placeholder="">
+                        <input type="number" class="form-control" id="baud_rate" name="baud_rate" placeholder="" autofocus>
                     </div>
                 </div>
                 <div class="form-group row">

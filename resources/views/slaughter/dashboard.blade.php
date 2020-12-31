@@ -4,7 +4,8 @@
 <div class="container">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0"> {{ $title }}<small></small></h1>
+        {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
+        <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> showing today's numbers</small> </span></h1>
       </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
