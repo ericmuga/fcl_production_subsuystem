@@ -1,4 +1,4 @@
-@extends('layouts.slaughter_master')
+@extends('layouts.butchery_master')
 
 @section('content')
 
