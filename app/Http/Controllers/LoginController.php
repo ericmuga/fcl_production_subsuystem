@@ -39,9 +39,31 @@ class LoginController extends Controller
             return back();
         }
 
+        $username_exists = User::where('username', $request->username)->value('username');
+        if ($username_exists === null) {
+            # username does not exist
+            Toastr::warning('username provided does not exist.Contact Admin', 'Warning!');
+            return back();
+        }
+
         if (Auth::attempt(['username' => $request->username, 'password' =>  $request->password], $request->remember)) {
             // Authentication was successful...
             $user = User::findOrFail(Auth::id());
+
+            //Check if session exists and log out the previous session
+            $new_sessid   = \Session::getId(); //get new session_id after user sign in
+            if($user->session != '') {
+                $last_session = \Session::getHandler()->read($user->session);
+
+                if ($last_session) {
+                    if (\Session::getHandler()->destroy($user->session)) {
+
+                    }
+                }
+            }
+            $user->session = $new_sessid;
+            $user->save();
+
             if ($user->section == 'slaughter') {
                 # slaughter user
                 Toastr::success('Successful login','Success');
