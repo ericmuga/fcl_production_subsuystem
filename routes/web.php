@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SlaughterController;
 use Illuminate\Support\Facades\Route;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +17,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/test', function () {
-    return view('layouts.admin_master');
-});
+
+// Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
+Route::get('logs', [LogViewerController::class,'index']);
 
 /*-------------auth------------------ */
-Route::get('/', [LoginController::class, 'login'])->name('login');
+Route::get('/', [LoginController::class, 'getLogin'])->name('login');
 Route::post('/', [LoginController::class, 'processlogin'])->name('process_login');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
 

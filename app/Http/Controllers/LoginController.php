@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Validator;
 class LoginController extends Controller
 {
     public function __construct()
@@ -22,16 +24,36 @@ class LoginController extends Controller
 
     public function processLogin(Request $request)
     {
-        $credentials = $request->only('email', 'password');
-        dd($credentials);
-        if (Auth::attempt($credentials)) {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+        ]);
 
-            return redirect()->intended('slaughter_dashboard');
+
+        if ($validator->fails()) {
+            # failed validation
+            $messages = $validator->errors();
+            foreach ($messages->all() as $message) {
+                // Alert::warning("Error! ' . '' \n. $message.")->persistent('close');
+                Toastr::error($message, 'Error!');
+            }
+            return back();
         }
 
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ]);
+        if (Auth::attempt(['username' => $request->username, 'password' =>  $request->password], $request->remember)) {
+            // Authentication was successful...
+            $user = User::findOrFail(Auth::id());
+            if ($user->section == 'slaughter') {
+                # slaughter user
+                Toastr::success('Successful login','Success');
+                return redirect()->route('slaughter_dashboard');
+            }
+            # butchery user
+            Toastr::success('Successful login','Success');
+            return redirect()->route('butchery_dashboard');
+        }
+        // failed login
+        Toastr::warning('Wrong username or password. Please try again','Warning!');
+        return back();
 
     }
 
@@ -39,7 +61,7 @@ class LoginController extends Controller
     {
         Session::flush();
         Auth::logout();
-        dd('here');
-        return redirect()->route('login_page');
+        Toastr::success('Successful logout','Success');
+        return redirect()->route('login');
     }
 }
