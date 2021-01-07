@@ -30,6 +30,12 @@ class UserSeeder extends Seeder
                 'email' => Str::random(10).'@gmail.com',
                 'password' => Hash::make('1234'),
                 'section' => 'butchery',
+            ],
+            [
+                'username' => 'JGithui',
+                'email' => Str::random(10).'@gmail.com',
+                'password' => Hash::make('1234'),
+                'section' => 'admin',
             ]
         ];
 

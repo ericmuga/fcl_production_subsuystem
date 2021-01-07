@@ -33,7 +33,6 @@ class LoginController extends Controller
             # failed validation
             $messages = $validator->errors();
             foreach ($messages->all() as $message) {
-                // Alert::warning("Error! ' . '' \n. $message.")->persistent('close');
                 Toastr::error($message, 'Error!');
             }
             return back();
@@ -64,14 +63,31 @@ class LoginController extends Controller
             $user->session = $new_sessid;
             $user->save();
 
-            if ($user->section == 'slaughter') {
-                # slaughter user
-                Toastr::success('Successful login','Success');
-                return redirect()->route('slaughter_dashboard');
+            switch($user->section){
+                case 'slaughter':
+                    # slaughter user
+                    Toastr::success('Successful login','Success');
+                    return redirect()->route('slaughter_dashboard');
+                break;
+
+                case 'butchery':
+                    # butchery user
+                    Toastr::success('Successful login','Success');
+                    return redirect()->route('butchery_dashboard');
+                break;
+
+                case 'admin':
+                    # admin user
+                    Toastr::success('Successful login','Success');
+                    return redirect()->route('admin_dashboard');
+                break;
+
+                default:
+                # user has not been assigned a section
+                Toastr::error('user has not been assigned a section. Please contact IT','Error!');
+                return redirect()->back();
             }
-            # butchery user
-            Toastr::success('Successful login','Success');
-            return redirect()->route('butchery_dashboard');
+
         }
         // failed login
         Toastr::warning('Wrong username or password. Please try again','Warning!');

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
@@ -48,3 +49,11 @@ Route::get('/butchery/products', [ButcheryController::class, 'products'])->name(
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
 /*-------------End Butchery------------------ */
+
+
+/*-------------Admin------------------ */
+Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
+Route::get('/admin/users', [AdminController::class, 'getUsers'])->name('admin_users');
+Route::post('/admin/add/user', [AdminController::class, 'addUser'])->name('admin_add_user');
+Route::get('/admin/password', [AdminController::class, 'changePassword'])->name('admin_change_password');
+/*-------------End Admin------------------ */

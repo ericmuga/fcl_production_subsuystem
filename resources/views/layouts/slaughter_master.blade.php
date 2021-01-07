@@ -127,7 +127,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 {{-- <script src="{{asset('assets/dist/js/pages/dashboard.js')}}"></script> --}}
 
 <!-- toastr -->
-<script src="http://cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
 <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
 {!! Toastr::message() !!}
 
