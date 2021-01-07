@@ -21,11 +21,8 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Weigh</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_scale1') }}" class="dropdown-item">Scale 1
-                                Beheading </a></li>
-                        <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('butchery_scale2') }}" class="dropdown-item">Scale 2
-                                Breaking </a></li>
+                        <li><a href="{{ route('butchery_scale1_2') }}" class="dropdown-item">Scale 1-2
+                                Beheading & breaking </a></li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{{ route('butchery_scale3') }}" class="dropdown-item">Scale 3
                                 Weighing </a></li>

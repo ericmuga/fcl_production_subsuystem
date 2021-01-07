@@ -42,8 +42,7 @@ Route::get('/slaughter/password', [SlaughterController::class, 'changePassword']
 
 /*-------------Butchery------------------ */
 Route::get('/butchery/dashboard', [ButcheryController::class, 'index'])->name('butchery_dashboard');
-Route::get('/butchery/scale-1', [ButcheryController::class, 'scaleOne'])->name('butchery_scale1');
-Route::get('/butchery/scale-2', [ButcheryController::class, 'scaleTwo'])->name('butchery_scale2');
+Route::get('/butchery/scale-1-2', [ButcheryController::class, 'scaleOneAndTwo'])->name('butchery_scale1_2');
 Route::get('/butchery/scale-3', [ButcheryController::class, 'scaleThree'])->name('butchery_scale3');
 Route::get('/butchery/products', [ButcheryController::class, 'products'])->name('butchery_products');
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');

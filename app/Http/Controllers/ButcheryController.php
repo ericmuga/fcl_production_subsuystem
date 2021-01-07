@@ -18,16 +18,10 @@ class ButcheryController extends Controller
         return view('butchery.dashboard', compact('title'));
     }
 
-    public function scaleOne()
+    public function scaleOneAndTwo()
     {
-        $title = "Scale-1";
-        return view('butchery.scale1', compact('title'));
-    }
-
-    public function scaleTwo()
-    {
-        $title = "Scale-2";
-        return view('butchery.scale2', compact('title'));
+        $title = "Scale-1&2";
+        return view('butchery.scale1-2', compact('title'));
     }
 
     public function scaleThree()
