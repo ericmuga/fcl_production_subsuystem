@@ -17,56 +17,44 @@
 @section('content')
 <div class="row">
     <!-- Slaughter date show -->
-    <div class="col-md-3">
-        <form class="">
-            <div class="form-group row">
-                <!-- Date -->
-                <div class="form-group">
-                    <label>Slaughter Date(mm/dd/yyyy):</label>
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input type="text" id="datepk" class="form-control datetimepicker-input" data-target="#reservationdate" />
-                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
+    <div class="col-md-2">
+        <div class="form-group row">
+            <!-- Date -->
+            <div class="form-group">
+                <label>Slaughter Date(mm/dd/yyyy):</label>
+                <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                    <input type="text" id="datepk" class="form-control datetimepicker-input"
+                        data-target="#reservationdate" />
+                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
                 </div>
-                <!-- /.form group -->
             </div>
-        </form>
+            <!-- /.form group -->
+        </div>
     </div>
     <!-- End Slaughter date show -->
 
     <!-- slaughter data show -->
-    <div class="col-md-4">
-        <form>
-            <div class="row">
-                <!-- baconers, sows, sides -->
-                <div class=" col-md-6">
-                    <div class="form-group">
-                        <label>Baconers:</label>
-                        <input type="number" id="baconers_number" value="0" oninput="getSidesNumber()" >
-                    </div>
-                    <div class="div">
-                        <label>Sows:</label>
-                        <input type="number" id="sows_number" value="0" oninput="getSidesNumber()" >
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label>sides:</label>
-                        <input type="number" id="baconers_sides" value="0" disabled>
-                    </div>
-                    <div class="div">
-                        <label>sides:</label>
-                        <input type="number" id="sows_sides" value="0" disabled>
-                    </div>
-                </div>
-                <!-- /.form group -->
-            </div>
-        </form>
+    <div class="col-md-2 ">
+        <label>Baconers:</label>
+        <input type="number" id="baconers_number" value="0" oninput="getSidesNumber()" readonly>
     </div>
-    <!-- baconers, sows, side -->
-</div> <hr>
+    <div class="col-md-2 ">
+        <label>Baconers sides:</label>
+        <input type="number" id="baconers_sides" value="0" readonly>
+    </div>
+    <div class="col-md-2 ">
+        <label>Sows:</label>
+        <input type="number" id="sows_number" value="0" oninput="getSidesNumber()" readonly>
+    </div>
+    <div class="col-md-2 ">
+        <label>sows sides:</label>
+        <input type="number" id="sows_sides" value="0" readonly>
+    </div>
+    <!-- /.form group -->
+</div>
+
 <div class="row">
     <!-- scale 1 -->
     <div class="col-md-6">
@@ -98,7 +86,7 @@
                         </div>
                         <div class="form-group" style="padding-left: 20%">
                             <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
-                                class="btn btn-primary btn-lg">Weigh</button> <br>
+                                class="btn btn-primary btn-lg">Scale 1</button> <br>
                             <small>Reading from <input type="text" id="comport_value" value="COM4" style="border:none"
                                     disabled></small>
                         </div>
@@ -176,7 +164,7 @@
                         </div>
                         <div class="form-group" style="padding-left: 30%">
                             <button type="button" onclick="getWeight2AjaxApi()" id="weigh2" value="COM4"
-                                class="btn btn-primary btn-lg">Weigh</button> <br>
+                                class="btn btn-primary btn-lg">Scale 2</button> <br>
                             <small>Reading from <input type="text" id="comport_value" value="COM6" style="border:none"
                                     disabled></small>
                         </div>
@@ -219,6 +207,129 @@
     </div>
     <!-- End scale 2 -->
 </div>
+<hr>
+
+<div class="div">
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#butchery_output_show"><i class="fa fa-plus"></i>
+        Output
+    </button>
+</div>
+
+<div id="butchery_output_show" class="collapse">
+    <div class="row">
+        <!-- baconers, sows, sides -->
+        <div class="form-group col-md-2">
+            <label>Legs:</label>
+            <input type="number" id="baconers_number" value="0" oninput="getSidesNumber()" readonly>
+        </div>
+        <div class="form-group col-md-2">
+            <label>Middles:</label>
+            <input type="number" id="baconers_sides" value="0" readonly>
+        </div>
+        <div class="form-group col-md-2">
+            <label>Shoulders:</label>
+            <input type="number" id="baconers_sides" value="0" readonly>
+        </div>
+        <!-- /.form group -->
+    </div>
+    <!-- legs, middles, shoulders -->
+
+    <div class="row">
+        <!-- scale1 ouput data table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"> Scale 1 output data | <span id="subtext-h1-title"><small> entries ordered by
+                                latest</small> </span></h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="hidden" hidden>{{ $i = 1 }}</div>
+                    <table id="example1" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Product Type</th>
+                                <th>Barcode Id</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Product Type</th>
+                                <th>Barcode Id</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td> G1229</td>
+                                <td> Hocks (Lean Pork)</td>
+                                <td> By Product</td>
+                                <td> 2A011243</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <!-- /.col -->
+        </div>
+
+        <!-- scale2 ouput data table -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title"> Scale 2 output data | <span id="subtext-h1-title"><small> entries ordered by
+                                latest</small> </span></h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                    <div class="hidden" hidden>{{ $i = 1 }}</div>
+                    <table id="example2" class="table table-striped table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Product Type</th>
+                                <th>Barcode Id</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Product Type</th>
+                                <th>Barcode Id</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td> G1229</td>
+                                <td> Hocks (Lean Pork)</td>
+                                <td> By Product</td>
+                                <td> 2A011243</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+            <!-- /.col -->
+        </div>
+    </div>
+</div>
+<!-- butchery ouput data show -->
+
 
 @endsection
 
@@ -267,7 +378,7 @@
     });
 
     //getSidesNumber
-    function getSidesNumber(){
+    function getSidesNumber() {
         var baconers_number = $('#baconers_number').val();
         if (baconers_number > 0) {
             $('#baconers_sides').val(baconers_number * 2);
@@ -303,8 +414,8 @@
 
     function formatDate(date) {
         month = '' + (date.getMonth() + 1),
-        day = '' + date.getDate(),
-        year = date.getFullYear();
+            day = '' + date.getDate(),
+            year = date.getFullYear();
 
         if (month.length < 2)
             month = '0' + month;
