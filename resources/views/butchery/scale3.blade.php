@@ -18,15 +18,16 @@
             <div class="card-body " style="">
                 <div class="form-group">
                     <label for="exampleInputPassword1"> Product Name</label>
-                    <select class="form-control select2" name="receipt_no" id="receipt_no" required>
-                        <option value="" selected disabled>select product</option>
-                        <option>Hocks (Lean Pork)</option>
-                        <option>Pork Trotters (Butchery)</option>
-                        <option>Pork Bones</option>
-                        <option>Bone/Meat Dust from B/R-less Shoulder</option>
-                        <option>Offcuts from Tails</option>
-                    </select>
-                </div> <br> <br>
+                    <select class="form-control selectpicker" name="part" data-live-search="true" required>
+                        <option value="Select Part">Select Part</option>
+                        <option value="Part 1" data-tokens="Part 1">Part 1</option>
+                        <option value="Part 2" data-tokens="Part 2">Part 2</option>
+                        <option value="Part 3" data-tokens="Part 3">Part 3</option>
+                        <option value="Part 4" data-tokens="Part 4">Part 4</option>
+                        <option value="Part 5" data-tokens="Part 5">Part 5</option>
+                        <option value="Pravesh Pariksha" data-tokens="Pravesh Pariksha">Pravesh Pariksha</option>
+                      </select>
+                    </div> <br> <br>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
                         class="btn btn-primary btn-lg">Weigh</button> <br><br>
@@ -56,7 +57,8 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label><select class="form-control" name="receipt_no" id="receipt_no" required>
+                    <label for="exampleInputPassword1">No. of Crates</label>
+                    <select class="form-control" name="receipt_no" id="receipt_no" required>
                         <option value="" selected disabled>select no. of crates</option>
                         <option>2</option>
                         <option>3</option>
