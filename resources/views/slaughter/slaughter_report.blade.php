@@ -5,152 +5,50 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Slaughter Data Report</h3>
+                <h3 class="card-title">Slaughter Data Report| <span id="subtext-h1-title"><small> showing all entries</small> </span></h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+                <div class="hidden" hidden>{{ $i = 1 }}</div>
                 <table id="example1" class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Rendering engine</th>
-                            <th>Browser</th>
-                            <th>Platform(s)</th>
-                            <th>Engine version</th>
-                            <th>CSS grade</th>
+                            <th>#</th>
+                            <th>Receipt No.</th>
+                            <th>Slapmark </th>
+                            <th>Product Code </th>
+                            <th>Net weight (kgs)</th>
+                            <th>Meat %</th>
+                            <th>Classification</th>
+                            <th>Slaughter Date</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>Trident</td>
-                            <td>Internet
-                                Explorer 4.0
-                            </td>
-                            <td>Win 95+</td>
-                            <td> 4</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Dillo 0.8</td>
-                            <td>Embedded devices</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Links</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>Lynx</td>
-                            <td>Text only</td>
-                            <td>-</td>
-                            <td>X</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>IE Mobile</td>
-                            <td>Windows Mobile 6</td>
-                            <td>-</td>
-                            <td>C</td>
-                        </tr>
-                        <tr>
-                            <td>Misc</td>
-                            <td>PSP browser</td>
-                            <td>PSP</td>
-                            <td>-</td>
-                            <td>C</td>
-                        </tr>
-                        <tr>
-                            <td>Other browsers</td>
-                            <td>All others</td>
-                            <td>-</td>
-                            <td>-</td>
-                            <td>U</td>
-                        </tr>
-                    </tbody>
                     <tfoot>
                         <tr>
-                            <th>Rendering engine</th>
-                            <th>Browser</th>
-                            <th>Platform(s)</th>
-                            <th>Engine version</th>
-                            <th>CSS grade</th>
+                            <th>#</th>
+                            <th>Receipt No.</th>
+                            <th>Slapmark </th>
+                            <th>Product Code </th>
+                            <th>Net weight (kgs)</th>
+                            <th>Meat %</th>
+                            <th>Classification</th>
+                            <th>Slaughter Date</th>
                         </tr>
                     </tfoot>
+                    <tbody>
+                        @foreach($slaughter_data as $data)
+                        <tr>
+                            <td>{{ $i++ }}</td>
+                            <td>{{ $data->receipt_no }}</td>
+                            <td>{{ $data->slapmark }}</td>
+                            <td>{{ $data->item_code }}</td>
+                            <td>{{ number_format($data->net_weight, 2) }}</td>
+                            <td>{{ $data->meat_percent }}</td>
+                            <td>{{ $data->classification_code }}</td>
+                            <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
                 </table>
             </div>
             <!-- /.card-body -->

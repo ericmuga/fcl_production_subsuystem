@@ -3,10 +3,11 @@
 @section('content-header')
 <div class="container">
     <div class="row mb-2">
-      <div class="col-sm-6">
-        {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
-        <h1 class="card-title"> Scale configs | <span id="subtext-h1-title"><small> view and edit scale configs</small> </span></h1>
-      </div><!-- /.col -->
+        <div class="col-sm-6">
+            {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
+            <h1 class="card-title"> Scale configs | <span id="subtext-h1-title"><small> view and edit scale
+                        configs</small> </span></h1>
+        </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
 
@@ -21,6 +22,7 @@
             </div>
             <!-- /.card-header -->
             <div class="card-body">
+                <div class="hidden" hidden>{{ $i = 1 }}</div>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -31,45 +33,17 @@
                             <th style="width: 30px">Config</th>
                         </tr>
                     </thead>
+                    <tfoot>
+                        <th style="width: 10px">#</th>
+                        <th>Scale Name</th>
+                        <th>ComPort</th>
+                        <th>BaudRate</th>
+                        <th style="width: 30px">Config</th>
+                    </tfoot>
                     <tbody>
                         <tr>
-                            <td>1.</td>
-                            <td> Scale 1</td>
-                            <td> Com1</td>
-                            <td>
-                                <span class="badge bg-success">9600</span>
-                            </td>
-                            <td>
-                                <button type="button" data-id="" data-item="Scale name"
-                                class="btn btn-primary btn-sm " id="editScaleModalShow"><i class="nav-icon fas fa-edit"></i>
-                                Edit</button>
-                            </td>
+
                         </tr>
-                        <tr>
-                            <td>2.</td>
-                            <td> Scale 2</td>
-                            <td> Com2</td>
-                            <td>
-                                <span class="badge bg-success">9600</span>
-                            </td>
-                            <td>
-                                <button type="button" data-id="" data-item="Scale name"
-                                class="btn btn-primary btn-sm " id="editScaleModalShow"><i class="nav-icon fas fa-edit"></i>
-                                Edit</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>3.</td>
-                            <td> Scale 3</td>
-                            <td> Com3</td>
-                            <td>
-                                <span class="badge bg-success">9600</span>
-                            </td>
-                            <td>
-                                <button type="button" data-id="" data-item="Scale name"
-                                class="btn btn-primary btn-sm " id="editScaleModalShow"><i class="nav-icon fas fa-edit"></i>
-                                Edit</button>
-                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -79,17 +53,16 @@
     </div>
 </div>
 
- <!-- Start Edit Scale Modal -->
- <div id="editScaleModal" class="modal fade" role="dialog">
+<!-- Start Edit Scale Modal -->
+<div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
         <form id="form-edit-scale" action="" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale: <strong><input
-                                style="border:none" type="text" id="item_name" name="item_name"
-                                value="" readonly></strong></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale: <strong><input style="border:none"
+                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -106,8 +79,7 @@
                     </div>
                     <div class="form-group">
                         <label for="baud">BaudRate:</label>
-                        <input type="number" class="form-control" id="baud" name="baud"
-                            placeholder="" required>
+                        <input type="number" class="form-control" id="baud" name="baud" placeholder="" required>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
@@ -127,17 +99,17 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
-    // edit
-    $("body").on("click", "#editScaleModalShow", function (a) {
-        a.preventDefault();
-        var scale = $(this).data('item');
+        // edit
+        $("body").on("click", "#editScaleModalShow", function (a) {
+            a.preventDefault();
+            var scale = $(this).data('item');
 
-        $('#item_name').val(scale);
+            $('#item_name').val(scale);
 
 
-        $('#editScaleModal').modal('show');
+            $('#editScaleModal').modal('show');
+        });
     });
-});
 
 </script>
 @endsection

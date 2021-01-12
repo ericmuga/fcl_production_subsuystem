@@ -2,10 +2,6 @@
 
 @section('content')
 
-@php
-    $helpers = new App\Models\Helpers();
-@endphp
-
 <!-- weigh -->
 <form id="form-slaughter-weigh" action="{{route('save_weigh_data')}}" method="post">
     @csrf
@@ -38,7 +34,7 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
-                    <input type="number" class="form-control" id="net" name="net" value="" step="0.01" placeholder=""
+                    <input type="number" class="form-control" min="1" max="5" id="net" name="net" value="" step="0.01" placeholder=""
                         readonly required>
                 </div>
             </div>
@@ -196,7 +192,6 @@
 
         /* Start weigh data ajax */
         $('#slapmark').change(function () {
-
             var receiptNo = $('#receipt_no').val();
             var slapmark = $(this).val();
             // alert(slapmark);

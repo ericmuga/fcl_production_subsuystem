@@ -33,7 +33,7 @@ class SlaughterController extends Controller
         return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up'));
     }
 
-    public function weigh()
+    public function weigh(Helpers $helpers)
     {
         $title = "weigh";
         $configs = DB::table('scale_configs')
@@ -50,7 +50,7 @@ class SlaughterController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
 
-        return view('slaughter.weigh', compact('title', 'configs', 'receipts', 'slaughter_data'));
+        return view('slaughter.weigh', compact('title', 'configs', 'receipts', 'slaughter_data', 'helpers'));
     }
 
     public function loadWeighDataAjax(Request $request)
@@ -91,31 +91,34 @@ class SlaughterController extends Controller
         }
     }
 
-    public function import()
-    {
-        $title = "import";
-        return view('slaughter.import', compact('title'));
-
-    }
-
-    public function importedReceipts()
+    public function importedReceipts(Helpers $helpers)
     {
         $title = "receipts";
-        return view('slaughter.receipts', compact('title'));
+        $receipts = DB::table('receipts')
+            ->orderBy('slaughter_date', 'ASC')
+            ->get();
+        return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
 
     }
 
-    public function slaughterDataReport()
+    public function slaughterDataReport(Helpers $helpers)
     {
         $title = "receipts";
-        return view('slaughter.receipts', compact('title'));
+        $slaughter_data = DB::table('slaughter_data')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        return view('slaughter.slaughter_report', compact('title', 'helpers', 'slaughter_data'));
 
     }
 
-    public function scaleSettings()
+    public function scaleSettings(Helpers $helpers)
     {
         $title = "scale";
-        return view('slaughter.scale_settings', compact('title'));
+        $scale_settings = DB::table('scale_configs')
+            ->where('section', 'slaughter')
+            ->get();
+        return view('slaughter.scale_settings', compact('title', 'scale_settings', 'helpers'));
     }
 
     public function changePassword()
