@@ -23,8 +23,9 @@ class ReceiptsTable extends Migration
             $table->string('receipt_date')->nullable();
             $table->string('item_code');
             $table->string('description');
-            $table->string('received_qty')->nullable();
+            $table->integer('received_qty')->nullable();
             $table->bigInteger('user_id')->nullable();
+            $table->timestamp('slaughter_date');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

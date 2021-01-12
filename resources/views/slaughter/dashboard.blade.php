@@ -19,9 +19,9 @@
       <!-- small box -->
       <div class="small-box bg-info">
         <div class="inner">
-          <h3>150</h3>
+          <h3>{{ $lined_up }}</h3>
 
-          <p>Slaughtered</p>
+          <p>Lined Up</p>
         </div>
         <div class="icon">
           <i class="ion ion-bag"></i>
@@ -34,9 +34,9 @@
       <!-- small box -->
       <div class="small-box bg-success">
         <div class="inner">
-          <h3>53<sup style="font-size: 20px">%</sup></h3>
+          <h3>{{ $slaughtered }}<sup style="font-size: 20px"></sup></h3>
 
-          <p>Lined up</p>
+          <p>Slaughtered</p>
         </div>
         <div class="icon">
           <i class="ion ion-stats-bars"></i>
@@ -49,9 +49,9 @@
       <!-- small box -->
       <div class="small-box bg-warning">
         <div class="inner">
-          <h3>44</h3>
+          <h3>{{ $lined_up - $slaughtered }} </h3>
 
-          <p>Held-up</p>
+          <p>Remaining count</p>
         </div>
         <div class="icon">
           <i class="ion ion-alert"></i>
@@ -64,7 +64,7 @@
       <!-- small box -->
       <div class="small-box bg-danger">
         <div class="inner">
-          <h3>65</h3>
+          <h3>0</h3>
 
           <p>Condemned</p>
         </div>

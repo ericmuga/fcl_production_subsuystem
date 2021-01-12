@@ -16,4 +16,9 @@ class Helpers
 
     }
 
+    public function dateToHumanFormat($date)
+    {
+        return date("F jS, Y", strtotime($date));
+    }
+
 }

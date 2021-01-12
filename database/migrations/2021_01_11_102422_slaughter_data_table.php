@@ -18,6 +18,8 @@ class SlaughterDataTable extends Migration
             $table->string('receipt_no');
             $table->string('slapmark');
             $table->string('item_code');
+            $table->string('vendor_no');
+            $table->string('vendor_name');
             $table->double('net_weight', 8, 2);
             $table->double('meat_percent', 8, 2);
             $table->string('classification_code');

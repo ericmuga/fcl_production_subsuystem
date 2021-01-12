@@ -2,8 +2,13 @@
 
 @section('content')
 
+@php
+    $helpers = new App\Models\Helpers();
+@endphp
+
 <!-- weigh -->
-<form>
+<form id="form-slaughter-weigh" action="{{route('save_weigh_data')}}" method="post">
+    @csrf
     <div class="card-group">
         <div class="card">
             <div class="card-body" style="padding-top: 50%; padding-left: 20%">
@@ -19,7 +24,7 @@
                 <div class="form-group">
                     <label for="exampleInputEmail1">Reading</label>
                     <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
-                        oninput="getNet()" placeholder="" readonly>
+                        oninput="getNet()" placeholder="" readonly required>
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="manual_weight">
@@ -34,7 +39,7 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
                     <input type="number" class="form-control" id="net" name="net" value="" step="0.01" placeholder=""
-                        readonly>
+                        readonly required>
                 </div>
             </div>
         </div>
@@ -65,16 +70,16 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Carcass Type</label>
                     <input type="text" class="form-control" value="" name="carcass_type" id="carcass_type"
-                        placeholder="" readonly>
+                        placeholder="" readonly required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Vendor Number</label>
                     <input type="text" class="form-control" value="" name="vendor_no" id="vendor_no" placeholder=""
-                        readonly>
+                        readonly required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Vendor Name</label>
-                    <input type="text" class="form-control" name="vendor_name" id="vendor_name" placeholder="" readonly>
+                    <input type="text" class="form-control" name="vendor_name" id="vendor_name" placeholder="" readonly required>
                 </div>
             </div>
         </div>
@@ -83,12 +88,12 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Meat %</label>
                     <input type="number" class="form-control" id="meat_percent" value="" name="meat_percent" oninput="getClassificationCode()"
-                        placeholder="" readonly>
+                        placeholder="" readonly required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Classification Code</label>
                     <input type="text" class="form-control" id="classification_code" name="classification_code"
-                        placeholder="" readonly>
+                        placeholder="" readonly required>
                 </div>
                 <div class="form-group" style="padding-top: 20%">
                     <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
@@ -124,33 +129,40 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Username</th>
-                                <th>Email </th>
-                                <th>Section </th>
-                                <th>Date Created</th>
+                                <th>Receipt No.</th>
+                                <th>Slapmark </th>
+                                <th>Product Code </th>
+                                <th>Net weight (kgs)</th>
+                                <th>Meat %</th>
+                                <th>Classification</th>
+                                <th>Slaughter Date</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Username</th>
-                                <th>Email </th>
-                                <th>Section </th>
-                                <th>Date Created</th>
+                                <th>Receipt No.</th>
+                                <th>Slapmark </th>
+                                <th>Product Code </th>
+                                <th>Net weight (kgs)</th>
+                                <th>Meat %</th>
+                                <th>Classification</th>
+                                <th>Slaughter Date</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            {{-- @foreach($users as $user) --}}
+                            @foreach($slaughter_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-
-                                </td>
+                                <td>{{ $data->receipt_no }}</td>
+                                <td>{{ $data->slapmark }}</td>
+                                <td>{{ $data->item_code }}</td>
+                                <td>{{ number_format($data->net_weight, 2) }}</td>
+                                <td>{{ $data->meat_percent }}</td>
+                                <td>{{ $data->classification_code }}</td>
+                                <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
                             </tr>
-                            {{-- @endforeach --}}
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -233,7 +245,7 @@
     //classification code logic on input
     function getClassificationCode() {
 
-        var special_vendor_no = ["PF99901", "PF99902", "PF99903", "PF99904", "PF99905", "PF12243"];
+        var special_vendor_no = ["PF99901", "PF99902", "PF99903", "PF99904", "PF99905"];
         var meat_percent = $('#meat_percent').val();
         var vendor_number = $('#vendor_no').val();
 

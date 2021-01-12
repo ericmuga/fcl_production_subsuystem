@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -24,6 +25,8 @@ class ReceiptSeeder extends Seeder
                 'vendor_name' => 'Thomas Kamau',
                 'item_code' => 'G0101',
                 'description' => 'Pig, Livestock',
+                'received_qty' => '4',
+                'slaughter_date' => Carbon::yesterday(),
             ],
             [
                 'enrolment_no' => 'FRT-0000005308',
@@ -33,6 +36,8 @@ class ReceiptSeeder extends Seeder
                 'vendor_name' => 'Joshua Mwiri',
                 'item_code' => 'G0101',
                 'description' => 'Pig, Livestock',
+                'received_qty' => '6',
+                'slaughter_date' => Carbon::yesterday(),
             ],
 
         ];
