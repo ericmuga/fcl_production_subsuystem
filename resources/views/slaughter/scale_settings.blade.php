@@ -105,7 +105,7 @@
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" type="submit">
                         <i class="fa fa-save"></i> Save
                     </button>
                 </div>

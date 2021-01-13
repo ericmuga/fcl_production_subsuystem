@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use CarcassTypeTable;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -17,6 +18,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ReceiptSeeder::class,
             ScaleConfigSeeder::class,
+            CarcassTypeSeeder::class,
         ]);
     }
 }

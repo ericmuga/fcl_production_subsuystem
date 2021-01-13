@@ -245,7 +245,7 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example1" class="table table-striped table-bordered table-hover">
+                    <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -291,7 +291,7 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example2" class="table table-striped table-bordered table-hover">
+                    <table id="example2" class="table table-striped table-bordered table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>#</th>
