@@ -63,30 +63,9 @@ class LoginController extends Controller
             $user->session = $new_sessid;
             $user->save();
 
-            switch($user->section){
-                case 'slaughter':
-                    # slaughter user
-                    Toastr::success('Successful login','Success');
-                    return redirect()->route('slaughter_dashboard');
-                break;
-
-                case 'butchery':
-                    # butchery user
-                    Toastr::success('Successful login','Success');
-                    return redirect()->route('butchery_dashboard');
-                break;
-
-                case 'admin':
-                    # admin user
-                    Toastr::success('Successful login','Success');
-                    return redirect()->route('admin_dashboard');
-                break;
-
-                default:
-                # user has not been assigned a section
-                Toastr::error('user has not been assigned a section. Please contact IT','Error!');
-                return redirect()->back();
-            }
+            Toastr::success('Successful login','Success');
+            Toastr::info('Please select the section','Info');
+            return redirect()->route('redirect_page');
 
         }
         // failed login
@@ -95,7 +74,13 @@ class LoginController extends Controller
 
     }
 
-    public function getLogout(Request $request)
+    public function getSectionRedirect()
+    {
+        $title = "Redirecting";
+        return view('layouts.router', compact('title'));
+    }
+
+    public function getLogout()
     {
         Session::flush();
         Auth::logout();

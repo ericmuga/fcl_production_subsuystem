@@ -121,7 +121,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- overlayScrollbars -->
 <script src="{{asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
 
-{{-- <script src="{{asset('assets/dist/js/pages/dashboard.js')}}"></script> --}}
 
 <script>
     $(function () {

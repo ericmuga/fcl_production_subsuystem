@@ -8,7 +8,7 @@
     <div class="card-group">
         <div class="card">
             <div class="card-body" style="padding-top: 50%; padding-left: 20%">
-                <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg">Weigh</button> <br>
+                <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br>
                 <br>
                 <small>Reading from <input type="text" id="comport_value"
                         value="{{ $configs[0]->comport?? "" }}" style="border:none"
@@ -55,9 +55,9 @@
                             </select>
                         </div>
                         <div class="col-md-4" style="padding-top: 10%">
-                            <button class="btn btn-dark btn-sm form-control" type="button" data-toggle="modal"
+                            <button class="btn btn-outline-info btn-sm form-control" type="button" data-toggle="modal"
                                 data-target="#slapModal">
-                                missing?
+                                <strong>slapmark?</strong>
                             </button>
                         </div>
                     </div>
@@ -167,8 +167,8 @@
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#slaughter_entries"><i class="fa fa-plus"></i>
         Entries
-    </button> <br> <br>
-</div>
+    </button>
+</div><hr>
 
 <div id="slaughter_entries" class="collapse">
 
@@ -191,7 +191,7 @@
                                 <th>Receipt No.</th>
                                 <th>Slapmark </th>
                                 <th>Product Code </th>
-                                <th>Net weight (kgs)</th>
+                                <th>Net weight(kgs)</th>
                                 <th>Meat %</th>
                                 <th>Classification</th>
                                 <th>Slaughter Date</th>
