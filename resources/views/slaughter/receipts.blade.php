@@ -3,7 +3,8 @@
 @section('content')
 
 <div class="div">
-    <button class="btn btn-primary " data-toggle="collapse" data-target="#import_receipts"><i class="fas fa-file-excel"></i> Import
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#import_receipts"><i
+            class="fas fa-file-excel"></i> Import
         New Receipts</button> <br> <br>
 </div>
 
@@ -16,20 +17,27 @@
             </div>
             <!-- /.card-header -->
             <!-- form start -->
-            <form>
+            <form action="{{ route('slaughter_import_receipts') }}" method="post" id="receipts_import"
+                name="receipts_import" enctype="multipart/form-data">
+                @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="exampleInputFile">File Upload</label>
-                        <div class="input-group">
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="exampleInputFile">
-                                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-                            </div>
-                        </div>
+                        <label>Select Slaughter Date:</label>
+                          <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                              <input type="text" class="form-control datetimepicker-input" id="slaughter_date" name="slaughter_date" required data-target="#reservationdate"/>
+                              <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                                  <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                              </div>
+                          </div>
+                      </div>
+                    <div class="form-group">
+                        <label for="farmer_import">Choose file</label>
+                        <br>
+                        <input type="file" name="file" id="file" required>
                     </div>
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary float-right"><i class="fa fa-paper-plane"
-                            aria-hidden="true"></i> Upload</button>
+                                aria-hidden="true"></i> Upload</button>
                     </div>
                 </div>
                 <!-- /.card-body -->
@@ -52,7 +60,8 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title"></h3>
-                <h3 class="card-title"> Imported Receipts Entries | <span id="subtext-h1-title"><small> view, filter, print/download</small> </span></h3>
+                <h3 class="card-title"> Imported Receipts Entries | <span id="subtext-h1-title"><small> view, filter,
+                            print/download</small> </span></h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -84,16 +93,16 @@
                     </tfoot>
                     <tbody>
                         @foreach($receipts as $data)
-                        <tr>
-                            <td>{{ $i++ }}</td>
-                            <td>{{ $data->receipt_no }}</td>
-                            <td>{{ $data->vendor_tag }}</td>
-                            <td>{{ $data->vendor_name }}</td>
-                            <td>{{ $data->item_code}}</td>
-                            <td>{{ $data->description }}</td>
-                            <td>{{ $data->received_qty }}</td>
-                            <td>{{ $helpers->dateToHumanFormat($data->slaughter_date) }}</td>
-                        </tr>
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td>{{ $data->receipt_no }}</td>
+                                <td>{{ $data->vendor_tag }}</td>
+                                <td>{{ $data->vendor_name }}</td>
+                                <td>{{ $data->item_code }}</td>
+                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->received_qty }}</td>
+                                <td>{{ $helpers->dateToHumanFormat($data->slaughter_date) }}</td>
+                            </tr>
                         @endforeach
                     </tbody>
 

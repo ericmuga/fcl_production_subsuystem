@@ -453,10 +453,5 @@
         }
     }
 
-    //Date range picker
-    $('#reservationdate').datetimepicker({
-        format: 'L',
-    });
-
 </script>
 @endsection

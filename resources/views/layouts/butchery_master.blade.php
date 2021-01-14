@@ -145,6 +145,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $('.select2').select2()
     });
 
+    //Date picker
+    $('#reservationdate').datetimepicker({
+        format: 'L',
+    });
+
 </script>
 
 @yield('scripts')

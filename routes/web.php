@@ -39,6 +39,7 @@ Route::post('/slaughter/save-weigh', [SlaughterController::class, 'saveWeighData
 Route::post('/slaughter/save-missing', [SlaughterController::class, 'saveMissingSlapData'])->name('save_missing_data');
 Route::get('/slaughter/missing-slaps', [SlaughterController::class, 'missingSlapData'])->name('missing_slap_data');
 Route::get('/slaughter/receipts', [SlaughterController::class, 'importedReceipts'])->name('slaughter_receipts');
+Route::post('/slaughter/import-receipts', [SlaughterController::class, 'importReceipts'])->name('slaughter_import_receipts');
 Route::get('/slaughter/data-report', [SlaughterController::class, 'slaughterDataReport'])->name('slaughter_data_report');
 Route::get('/slaughter/scale-settings', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
 Route::get('/slaughter/password', [SlaughterController::class, 'changePassword'])->name('slaughter_change_password');

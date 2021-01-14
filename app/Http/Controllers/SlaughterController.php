@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ReceiptsImport;
 use App\Models\Helpers;
 use App\Models\MissingSlapData;
 use App\Models\SlaughterData;
@@ -11,6 +12,8 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
 
 class SlaughterController extends Controller
@@ -28,7 +31,7 @@ class SlaughterController extends Controller
             ->count();
 
         $lined_up = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::yesterday())
+            ->whereDate('slaughter_date', Carbon::today())
             ->sum('receipts.received_qty');
 
         $missing_slaps = DB::table('missing_slap_data')
@@ -143,6 +146,32 @@ class SlaughterController extends Controller
             ->get();
         return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
 
+    }
+
+    public function importReceipts(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:csv,txt',
+            'slaughter_date' => 'required',
+
+        ]);
+
+        if ($validator->fails()) {
+            # failed validation
+            $messages = $validator->errors();
+            foreach ($messages->all() as $message) {
+                Toastr::error($message, 'Error!');
+            }
+            return back();
+        }
+
+        // upload
+        $database_date = Carbon::parse($request->slaughter_date);
+        Session::put('slaughter_date', $database_date);
+        Excel::import(new ReceiptsImport, request()->file('file'));
+
+        Toastr::success('receipts uploaded successfully', 'Success');
+        return redirect()->back();
     }
 
     public function slaughterDataReport(Helpers $helpers)
