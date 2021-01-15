@@ -23,8 +23,8 @@
             <div class="form-group">
                 <label>Slaughter Date(mm/dd/yyyy):</label>
                 <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                    <input type="text" id="datepk" class="form-control datetimepicker-input"
-                        data-target="#reservationdate" />
+                    <input type="text" id="datepk" class="form-control datetimepicker-input" value=""
+                        oninput="getCounts()" data-target="#reservationdate" />
                     <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                     </div>
@@ -38,19 +38,19 @@
     <!-- slaughter data show -->
     <div class="col-md-2 ">
         <label>Baconers:</label>
-        <input type="number" id="baconers_number" value="0" oninput="getSidesNumber()" readonly>
+        <input type="number" id="baconers_number" value="" readonly>
     </div>
     <div class="col-md-2 ">
         <label>Baconers sides:</label>
-        <input type="number" id="baconers_sides" value="0" readonly>
+        <input type="number" id="baconers_sides" value="" readonly>
     </div>
     <div class="col-md-2 ">
         <label>Sows:</label>
-        <input type="number" id="sows_number" value="0" oninput="getSidesNumber()" readonly>
+        <input type="number" id="sows_number" value="" readonly>
     </div>
     <div class="col-md-2 ">
         <label>sows sides:</label>
-        <input type="number" id="sows_sides" value="0" readonly>
+        <input type="number" id="sows_sides" value="" readonly>
     </div>
     <!-- /.form group -->
 </div>
@@ -87,8 +87,8 @@
                         <div class="form-group" style="padding-left: 20%">
                             <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
                                 class="btn btn-primary btn-lg">Scale 1</button> <br>
-                            <small>Reading from <input type="text" id="comport_value" value="COM4" style="border:none"
-                                    disabled></small>
+                            <small>Reading from <input type="text" id="comport_value"
+                                    value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Tare-Weight</label>
                             <input type="number" class="form-control" id="tareweight" step="0.00" name="tareweight"
-                                value="2.4" readonly>
+                                value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
@@ -134,7 +134,7 @@
         <form>
             <div class="card-group">
                 <div class="card">
-                    <div class="card-body " style="">
+                    <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Carcass Type</label>
                             <select class="form-control select2" name="carcass_type" id="carcass_type" required>
@@ -165,8 +165,8 @@
                         <div class="form-group" style="padding-left: 30%">
                             <button type="button" onclick="getWeight2AjaxApi()" id="weigh2" value="COM4"
                                 class="btn btn-primary btn-lg">Scale 2</button> <br>
-                            <small>Reading from <input type="text" id="comport_value" value="COM6" style="border:none"
-                                    disabled></small>
+                            <small>Reading from <input type="text" id="comport_value2"
+                                    value="{{ $configs[1]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -183,8 +183,8 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Tare-Weight</label>
-                            <input type="number" class="form-control" id="tareweight2" name="tareweight2" value="2.4"
-                                readonly>
+                            <input type="number" class="form-control" id="tareweight2" name="tareweight2"
+                                value="{{ number_format($configs[1]->tareweight, 2) }}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
@@ -210,7 +210,8 @@
 <hr>
 
 <div class="div">
-    <button class="btn btn-primary " data-toggle="collapse" data-target="#butchery_output_show"><i class="fa fa-plus"></i>
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#butchery_output_show"><i
+            class="fa fa-plus"></i>
         Output
     </button>
 </div>
@@ -338,7 +339,9 @@
     $(document).ready(function () {
 
         var date = new Date();
-        $("#datepk").val(formatDate(date));
+        date.setDate(date.getDate() - 1); //date yesterday
+
+        // $("#datepk").val(formatDate(date));
 
         $('#no_of_carcass').change(function () {
             var number_of_carcass = $(this).val();
@@ -377,23 +380,53 @@
 
     });
 
-    //getSidesNumber
-    function getSidesNumber() {
-        var baconers_number = $('#baconers_number').val();
-        if (baconers_number > 0) {
-            $('#baconers_sides').val(baconers_number * 2);
+    //get slaughter data count
+    function getCounts() {
+        var date = $('#datepk').val();
+        if (date != null) {
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ url('slaughter-data-ajax') }}",
+                data: {
+                    'date': date,
 
-        } else {
-            $('#baconers_sides').val(baconers_number);
+                },
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res) {
+
+                        var str = JSON.stringify(res);
+                        var obj = JSON.parse(str);
+
+                        $("#baconers_number").val(obj.baconers);
+                        $("#sows_number").val(obj.sows);
+
+                        var baconers_sides = document.getElementById('baconers_sides');
+                        var sows_sides = document.getElementById('sows_sides');
+                        if (obj.baconers > 0) {
+
+                            baconers_sides.value = obj.baconers * 2;
+
+                        } else {
+                            baconers_sides.value = 0;
+                        }
+
+                        if (obj.sows > 0) {
+                            sows_sides.value = obj.sows * 2;
+
+                        } else {
+                            sows_sides.value = 0;
+                        }
+
+                    }
+                }
+            });
+
         }
 
-        var sows_number = $('#sows_number').val();
-        if (sows_number > 0) {
-            $('#sows_sides').val(sows_number * 2);
-
-        } else {
-            $('#sows_sides').val(sows_number);
-        }
     }
 
     // getNetWeight1

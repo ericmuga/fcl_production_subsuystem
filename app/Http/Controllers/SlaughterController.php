@@ -51,7 +51,7 @@ class SlaughterController extends Controller
             ->get()->toArray();
 
         $receipts = DB::table('receipts')
-            ->orderBy('created_at', 'DESC')
+            ->whereDate('slaughter_date', Carbon::today())
             ->get();
 
         $slaughter_data = DB::table('slaughter_data')
@@ -81,12 +81,26 @@ class SlaughterController extends Controller
 
     public function saveWeighData(Request $request)
     {
+        $carcass_type = '';
+        if ($request->carcass_type == "G0101") {
+            //pig
+            $carcass_type = "G0110";
+        }
+        elseif ($request->carcass_type == "G0102") {
+            //sow
+            $carcass_type = "G0111";
+        }
+        elseif ($request->carcass_type == "G0104") {
+            //suckling
+            $carcass_type = "G0113";
+        }
+
         try {
             // try save
             $new = new SlaughterData();
             $new->receipt_no = $request->receipt_no;
             $new->slapmark = $request->slapmark;
-            $new->item_code = $request->slapmark;
+            $new->item_code = $carcass_type;
             $new->vendor_no = $request->vendor_no;
             $new->vendor_name = $request->vendor_name;
             $new->net_weight = $request->net;
