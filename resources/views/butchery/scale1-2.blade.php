@@ -14,6 +14,10 @@
 
 @endsection
 
+@php
+    $arr_products = $products->toArray();
+@endphp
+
 @section('content')
 <div class="row">
     <!-- Slaughter date show -->
@@ -58,28 +62,29 @@
 <div class="row">
     <!-- scale 1 -->
     <div class="col-md-6">
-        <form>
+        <form id="form-butchery-scale1" action="{{ route('butchery_scale1_save') }}" method="post">
+            @csrf
             <div class="card-group">
                 <div class="card">
                     <div class="card-body " style="padding-top: ">
                         <div class="form-group">
                             <label>No. of Carcasses</label>
                             <select class="form-control" id="no_of_carcass" name="no_of_carcass" oninput="getNet()">
-                                <option value="1.0"> 1</option>
-                                <option value="2.0"> 2</option>
-                                <option value="3.0"> 3</option>
-                                <option value="4.0"> 4</option>
-                                <option value="5.0"> 5</option>
+                                <option value="1"> 1</option>
+                                <option value="2"> 2</option>
+                                <option value="3"> 3</option>
+                                <option value="4"> 4</option>
+                                <option value="5"> 5</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G1030" id="baconers"
+                                <input class="form-check-input" type="radio" value="baconers" id="baconers"
                                     name="carcass_type" checked>
                                 <label for="form-check-label">Baconers</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G1031" id="sows"
+                                <input class="form-check-input" type="radio" value="sows" id="sows"
                                     name="carcass_type">
                                 <label for="form-check-label">Sows </label>
                             </div>
@@ -107,10 +112,12 @@
                             <label for="exampleInputPassword1">Tare-Weight</label>
                             <input type="number" class="form-control" id="tareweight" step="0.00" name="tareweight"
                                 value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
+                            <input type="hidden" class="form-control " id="default_tareweight"
+                                value="{{ number_format($configs[0]->tareweight, 2) }}" >
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
-                            <input type="number" class="form-control" id="net" value="0.00" step=".01" placeholder=""
+                            <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder=""
                                 readonly>
                         </div>
                     </div>
@@ -131,34 +138,29 @@
 
     <!-- scale 2 -->
     <div class="col-md-6">
-        <form>
+        <form id="form-butchery-scale2" action="{{ route('butchery_scale2_save') }}" method="post">
+            @csrf
             <div class="card-group">
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Carcass Type</label>
-                            <select class="form-control select2" name="carcass_type" id="carcass_type" required>
-                                <option value="" selected>Baconer</option>
-                                <option value="">Sow</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
+                            <label for="exampleInputPassword1">Carcass Part</label>
                             <div class="form-check">
                                 <label class="form-check-label" for="radio1">
-                                    <input type="radio" class="form-check-input" id="radio1" name="carcass_part"
-                                        value="option1" checked>Legs
+                                    <input type="radio" class="form-check-input" id="radio1" name="item_code"
+                                        value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->product }}
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label" for="radio2">
-                                    <input type="radio" class="form-check-input" id="radio2" name="carcass_part"
-                                        value="option2">Middles
+                                    <input type="radio" class="form-check-input" id="radio2" name="item_code"
+                                        value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->product }}
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" id="radio3" name="carcass_part"
-                                        value="option2">Shoulders
+                                    <input type="radio" class="form-check-input" id="radio3" name="item_code"
+                                        value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->product }}
                                 </label>
                             </div>
                         </div>
@@ -246,33 +248,32 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
+                    <table id="example1" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Product Type</th>
-                                <th>Barcode Id</th>
+                                <th>Baconers </th>
+                                <th>Sows </th>
+                                <th>Date </th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Product Type</th>
-                                <th>Barcode Id</th>
+                                <th>Baconers </th>
+                                <th>Sows </th>
+                                <th>Date </th>
                             </tr>
                         </tfoot>
                         <tbody>
+                        @foreach($beheading_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td> G1229</td>
-                                <td> Hocks (Lean Pork)</td>
-                                <td> By Product</td>
-                                <td> 2A011243</td>
+                                <td> {{ $data->baconers }}</td>
+                                <td> {{ $data->sows }}</td>
+                                <td> {{ $data->created_at }}</td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -292,33 +293,35 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example2" class="table table-striped table-bordered table-hover table-responsive">
+                    <table id="example2" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Product Type</th>
-                                <th>Barcode Id</th>
+                                <th>Product</th>
+                                <th>Weight (kgs)</th>
+                                <th>Date </th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>#</th>
                                 <th>Product Code</th>
-                                <th>Product Name</th>
-                                <th>Product Type</th>
-                                <th>Barcode Id</th>
+                                <th>Product</th>
+                                <th>Weight (kgs)</th>
+                                <th>Date </th>
                             </tr>
                         </tfoot>
                         <tbody>
+                            @foreach($butchery_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td> G1229</td>
-                                <td> Hocks (Lean Pork)</td>
-                                <td> By Product</td>
-                                <td> 2A011243</td>
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-code="{{$data->item_code}}" data-item="{{$data->product}}"><a href="#">{{ $data->item_code }}</a> </td>
+                                <td> {{ $data->product }}</td>
+                                <td> {{ $data->net_weight }}</td>
+                                <td> {{ $data->created_at }}</td>
                             </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -331,7 +334,41 @@
 </div>
 <!-- butchery ouput data show -->
 
-
+<!-- Start Edit Scale Modal -->
+<div id="itemCodeModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <form id="form-edit-scale" action="{{ route('butchery_scale2_update') }}" method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Product Code: <strong><input style="border:none"
+                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="baud">Product</label>
+                        <select class="form-control" name="editproduct" id="editproduct" required>
+                            @foreach($products as $data)
+                                <option value="{{$data->code}}" selected="selected">{{$data->product}}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <input type="hidden" name="item_id" id="item_id" value="">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-warning">
+                        <i class="fa fa-save"></i> Update
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- End Edit Scale modal-->
 @endsection
 
 @section('scripts')
@@ -345,10 +382,10 @@
 
         $('#no_of_carcass').change(function () {
             var number_of_carcass = $(this).val();
-            var tareweight = $('#tareweight').val();
+            var default_tareweight = $('#default_tareweight').val();
 
-            var new_tareweight = (number_of_carcass) * (tareweight);
-            $("#tareweight").val(new_tareweight);
+            var new_tareweight = (number_of_carcass) * (default_tareweight);
+            $("#tareweight").val(Math.round((new_tareweight + Number.EPSILON) * 100) / 100);
 
         });
 
@@ -376,6 +413,21 @@
 
             }
 
+        });
+
+        // edit
+        $("body").on("click", "#itemCodeModalShow", function (a) {
+            a.preventDefault();
+
+            var product = $(this).data('code');
+            var item = $(this).data('item');
+            var id = $(this).data('id');
+
+            $('#editproduct').val(product);
+            $('#item_name').val(item);
+            $('#item_id').val(id);
+
+            $('#itemCodeModal').modal('show');
         });
 
     });

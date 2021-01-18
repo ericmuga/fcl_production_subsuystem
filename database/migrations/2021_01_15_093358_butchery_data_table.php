@@ -15,7 +15,11 @@ class ButcheryDataTable extends Migration
     {
         Schema::create('butchery_data', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('item_code');
+            $table->double('net_weight', 8, 2);
+            $table->bigInteger('user_id');
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

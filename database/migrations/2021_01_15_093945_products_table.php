@@ -15,7 +15,14 @@ class ProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('code')->index();
+            $table->string('product');
+            $table->string('product_type');
+            $table->string('input_type');
+            $table->boolean('often')->default(0);
+            $table->bigInteger('user_id')->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

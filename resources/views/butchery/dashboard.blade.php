@@ -22,7 +22,7 @@
             <div class="inner">
                 <h3>150</h3>
 
-                <p>Slaughtered Baconers</p>
+                <p>Deboned Baconers</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -37,7 +37,7 @@
             <div class="inner">
                 <h3>53<sup style="font-size: 20px">%</sup></h3>
 
-                <p>Slaughtered Sows</p>
+                <p>Deboned Sows</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>

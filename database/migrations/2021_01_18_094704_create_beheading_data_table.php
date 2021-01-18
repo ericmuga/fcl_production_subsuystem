@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMissingSlapTable extends Migration
+class CreateBeheadingDataTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateMissingSlapTable extends Migration
      */
     public function up()
     {
-        Schema::create('missing_slap_data', function (Blueprint $table) {
+        Schema::create('beheading_data', function (Blueprint $table) {
             $table->id();
-            $table->string('slapmark');
-            $table->string('item_code');
-            $table->double('net_weight', 8, 2);
-            $table->double('meat_percent', 8, 2);
-            $table->string('classification_code');
+            $table->integer('baconers')->default(0);
+            $table->integer('sows')->default(0);
             $table->bigInteger('user_id');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
@@ -33,6 +30,6 @@ class CreateMissingSlapTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('missing_slap_data');
+        Schema::dropIfExists('beheading_data');
     }
 }
