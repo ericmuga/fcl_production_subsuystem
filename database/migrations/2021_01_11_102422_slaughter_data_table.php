@@ -15,15 +15,15 @@ class SlaughterDataTable extends Migration
     {
         Schema::create('slaughter_data', function (Blueprint $table) {
             $table->id();
-            $table->string('receipt_no');
-            $table->string('slapmark');
-            $table->string('item_code');
-            $table->string('vendor_no');
-            $table->string('vendor_name');
+            $table->string('receipt_no', 20);
+            $table->string('slapmark', 20);
+            $table->string('item_code', 20);
+            $table->string('vendor_no', 20);
+            $table->string('vendor_name', 20);
             $table->double('net_weight', 8, 2);
             $table->double('meat_percent', 8, 2);
-            $table->string('classification_code');
-            $table->bigInteger('user_id');
+            $table->string('classification_code', 20)->nullable();
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

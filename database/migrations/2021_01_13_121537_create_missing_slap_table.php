@@ -15,12 +15,12 @@ class CreateMissingSlapTable extends Migration
     {
         Schema::create('missing_slap_data', function (Blueprint $table) {
             $table->id();
-            $table->string('slapmark');
-            $table->string('item_code');
+            $table->string('slapmark', 20);
+            $table->string('item_code', 20);
             $table->double('net_weight', 8, 2);
             $table->double('meat_percent', 8, 2);
-            $table->string('classification_code');
-            $table->bigInteger('user_id');
+            $table->string('classification_code', 20);
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

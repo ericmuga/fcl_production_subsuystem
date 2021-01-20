@@ -34,7 +34,7 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
-                    <input type="number" class="form-control" min="1" max="5" id="net" name="net" value="" step="0.01"
+                    <input type="number" class="form-control" min="1" max="5" id="net" name="net" value="0.00" step="0.01"
                         placeholder="" readonly required>
                 </div>
             </div>
@@ -69,8 +69,13 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Carcass Type</label>
-                    <input type="text" class="form-control" value="" name="carcass_type" id="carcass_type"
-                        placeholder="" readonly required>
+                    <select class="form-control select2" name="carcass_type" id="carcass_type" required>
+                        @foreach($carcass_types as $type)
+                            <option value="{{ $type->code }}" @if($type->code == "G0110") selected="selected" @endif>
+                                {{ ucwords($type->description) }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Vendor Number</label>
@@ -97,7 +102,7 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group" style="padding-top: 20%">
-                    <button type="submit" onclick="checkNetOnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
+                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
                             aria-hidden="true"></i> Save</button>
                 </div>
             </div>
@@ -219,7 +224,7 @@
                                     <td>{{ number_format($data->net_weight, 2) }}</td>
                                     <td>{{ $data->meat_percent }}</td>
                                     <td>{{ $data->classification_code }}</td>
-                                    <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                                    <td>{{ $data->created_at }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -267,13 +272,13 @@
                         <tbody>
                             @foreach($slaps as $data)
                             <tr>
-                                <td>{{ $i++ }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->slapmark }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->net_weight }}</td>
                                 <td>{{ $data->meat_percent}}</td>
                                 <td>{{ $data->classification_code }}</td>
-                                <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                                <td>{{ $data->created_at }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -303,6 +308,8 @@
             var reading = document.getElementById('reading');
             if (manual_weight.checked == true) {
                 reading.readOnly = false;
+                reading.focus();
+                $('#reading').val("");
 
             } else {
                 reading.readOnly = true;
@@ -334,7 +341,7 @@
                             var obj = JSON.parse(str);
 
                             $('#receipt_no').val(obj.receipt_no);
-                            $('#carcass_type').val(obj.item_code);
+                            // $('#carcass_type').val(obj.item_code);
                             $('#vendor_no').val(obj.vendor_no);
                             $('#vendor_name').val(obj.vendor_name);
 
@@ -343,7 +350,7 @@
 
                         } else {
                             $("#receipt_no").empty();
-                            $("#carcass_type").empty();
+                            // $("#carcass_type").empty();
                             $("#vendor_no").empty();
                             $("#vendor_name").empty();
                         }
@@ -352,7 +359,7 @@
 
             } else {
                 $("#receipt_no").empty();
-                $("#carcass_type").empty();
+                // $("#carcass_type").empty();
                 $("#vendor_no").empty();
                 $("#vendor_name").empty();
             }
@@ -364,10 +371,12 @@
 
     function checkNetOnSubmit(){
         var net = $('#net').val();
-        if (net == "") {
+        var valid = true;
+        if (net == "" || net <= 0.00 ) {
+            valid = false;
             alert("Please ensure you have valid netweight.");
-            return false;
         };
+        return valid;
     }
 
     //classification code logic on input

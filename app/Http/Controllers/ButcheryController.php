@@ -28,72 +28,49 @@ class ButcheryController extends Controller
     public function scaleOneAndTwo()
     {
         $title = "Scale-1&2";
+
         $configs = DB::table('scale_configs')
             ->where('section', 'butchery')
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
         $products = DB::table('products')
-            ->orWhere('product', 'Legs')
-            ->orWhere('product', 'Middles')
-            ->orWhere('product', 'Shoulders')
+            ->orWhere('description', 'Legs')
+            ->orWhere('description', 'Middles')
+            ->orWhere('description', 'Shoulders')
             ->orderBy('code', 'ASC')
             // ->get()->toArray();
             ->get();
 
         $beheading_data = DB::table('beheading_data')
+            ->leftJoin('carcass_types', 'beheading_data.item_code', '=', 'carcass_types.code')
+            ->select('beheading_data.*', 'carcass_types.description')
             ->get();
 
         $butchery_data = DB::table('butchery_data')
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
-            ->select('butchery_data.*', 'products.product')
+            ->select('butchery_data.*', 'products.description')
             ->get();
 
-        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data'));
+        $carcass_types = DB::table('carcass_types')
+            ->get();
+
+        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'carcass_types'));
     }
 
     public function saveScaleOneData(Request $request)
     {
         try {
-            //check if exist
-            $exist = BeheadingData::whereDate('created_at', Carbon::today())->first();
-            if ($exist != null){
-                //record exists, check what is to be updated
-                if ($request->carcass_type == "baconers") {
-                    # baconers
-                    $exist->increment('baconers', $request->no_of_carcass);
+            // insert
+            $new = BeheadingData::create([
+                'item_code' => $request->carcass_type,
+                'no_of_carcass' => $request->no_of_carcass,
+                'net_weight' => $request->net,
+                'user_id' => Auth::id(),
+            ]);
 
-                } else {
-                    //update sows
-                    $exist->increment('sows', $request->no_of_carcass);
-
-                }
-
-                Toastr::success('record updated successfully','Success');
-                return redirect()->back();
-
-            } else {
-                // insert baconers
-                if ($request->carcass_type == "baconers") {
-                    $new = BeheadingData::create([
-                        'baconers' =>  $request->no_of_carcass,
-                        'sows' => 0,
-                        'user_id' => Auth::id(),
-                    ]);
-
-                } else {
-                    // insert sows
-                    $new = BeheadingData::create([
-                        'baconers' =>  0,
-                        'sows' => $request->no_of_carcass,
-                        'user_id' => Auth::id(),
-                    ]);
-
-                }
-
-                Toastr::success('record inserted successfully','Success');
-                return redirect()->back();
-            }
+            Toastr::success('record inserted successfully','Success');
+            return redirect()->back();
 
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(),'Error!');
@@ -103,24 +80,12 @@ class ButcheryController extends Controller
 
     }
 
-    public function saveScaleTwoData(Request $request){
+    public function saveScaleTwoData(Request $request)
+    {
         try {
-            //check if exist
-            // $exist = ButcheryData::whereDate('created_at', Carbon::today())
-            //     ->where('item_code', $request->item_code)
-            //     ->first();
-
-            // if ($exist != null){
-            //     //record exists, updated
-            //     $exist->increment('net_weight', $request->net2);
-
-            //     Toastr::success('record updated successfully','Success');
-            //     return redirect()->back();
-
-            // }
-
             # insert record
             $new = ButcheryData::create([
+                'carcass_type' =>  $request->carcass_type,
                 'item_code' =>  $request->item_code,
                 'net_weight' => $request->net2,
                 'user_id' => Auth::id(),
@@ -139,12 +104,15 @@ class ButcheryController extends Controller
 
     public function updateScaleTwoData(Request $request)
     {
-        // dd($request->all());
         try {
             //update
             DB::table('butchery_data')
-                ->where('id', $request->id)
-                ->update(['item_code' => $request->editproduct]);
+                ->where('id', $request->item_id)
+                ->update([
+                    'item_code' => $request->editproduct,
+                    'updated_at' => Carbon::now(),
+                    ]);
+
 
             Toastr::success("record {$request->editproduct} updated successfully",'Success');
             return redirect()->back();
@@ -177,7 +145,12 @@ class ButcheryController extends Controller
     public function scaleThree()
     {
         $title = "Scale-3";
-        return view('butchery.scale3', compact('title'));
+
+        $products = DB::table('products')
+            ->orderBy('code', 'ASC')
+            ->get();
+
+        return view('butchery.scale3', compact('title', 'products'));
     }
 
     public function products()

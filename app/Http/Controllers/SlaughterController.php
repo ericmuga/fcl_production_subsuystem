@@ -38,7 +38,11 @@ class SlaughterController extends Controller
             ->whereDate('created_at', Carbon::today())
             ->count();
 
-        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps'));
+        $carcass_types = DB::table('carcass_types')
+            ->orderBy('code', 'asc')
+            ->get();
+
+        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'carcass_types'));
     }
 
     public function weigh(Helpers $helpers)
@@ -81,26 +85,12 @@ class SlaughterController extends Controller
 
     public function saveWeighData(Request $request)
     {
-        $carcass_type = '';
-        if ($request->carcass_type == "G0101") {
-            //pig
-            $carcass_type = "G0110";
-        }
-        elseif ($request->carcass_type == "G0102") {
-            //sow
-            $carcass_type = "G0111";
-        }
-        elseif ($request->carcass_type == "G0104") {
-            //suckling
-            $carcass_type = "G0113";
-        }
-
         try {
             // try save
             $new = new SlaughterData();
             $new->receipt_no = $request->receipt_no;
             $new->slapmark = $request->slapmark;
-            $new->item_code = $carcass_type;
+            $new->item_code = $request->carcass_type;
             $new->vendor_no = $request->vendor_no;
             $new->vendor_name = $request->vendor_name;
             $new->net_weight = $request->net;

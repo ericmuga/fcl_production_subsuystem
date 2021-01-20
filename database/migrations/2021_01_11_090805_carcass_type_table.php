@@ -15,8 +15,9 @@ class CarcassTypeTable extends Migration
     {
         Schema::create('carcass_types', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique()->index();
-            $table->string('description');
+            $table->string('code', 20)->unique()->index();
+            $table->string('description', 50);
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

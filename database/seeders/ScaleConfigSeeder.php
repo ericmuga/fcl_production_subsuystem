@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ScaleConfigSeeder extends Seeder
@@ -22,6 +23,7 @@ class ScaleConfigSeeder extends Seeder
                 'baudrate' => '9600',
                 'tareweight' => '2.4',
                 'section' => 'slaughter',
+                'user_id' => 1,
             ],
             [
                 'scale' => 'Scale 1',
@@ -29,6 +31,7 @@ class ScaleConfigSeeder extends Seeder
                 'baudrate' => '9600',
                 'tareweight' => '2.4',
                 'section' => 'butchery',
+                'user_id' => 1,
             ],
             [
                 'scale' => 'Scale 2',
@@ -36,6 +39,7 @@ class ScaleConfigSeeder extends Seeder
                 'baudrate' => '9600',
                 'tareweight' => '7.5',
                 'section' => 'butchery',
+                'user_id' => 1,
             ],
         ];
 

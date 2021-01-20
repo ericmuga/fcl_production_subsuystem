@@ -15,9 +15,10 @@ class CreateBeheadingDataTable extends Migration
     {
         Schema::create('beheading_data', function (Blueprint $table) {
             $table->id();
-            $table->integer('baconers')->default(0);
-            $table->integer('sows')->default(0);
-            $table->bigInteger('user_id');
+            $table->string('item_code', 20);
+            $table->integer('no_of_carcass');
+            $table->double('net_weight', 8, 2);
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

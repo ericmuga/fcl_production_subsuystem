@@ -18,19 +18,17 @@
             <div class="card-body " style="">
                 <div class="form-group">
                     <label for="exampleInputPassword1"> Product Name</label>
-                    <select class="form-control selectpicker" name="part" data-live-search="true" required>
-                        <option value="Select Part">Select Part</option>
-                        <option value="Part 1" data-tokens="Part 1">Part 1</option>
-                        <option value="Part 2" data-tokens="Part 2">Part 2</option>
-                        <option value="Part 3" data-tokens="Part 3">Part 3</option>
-                        <option value="Part 4" data-tokens="Part 4">Part 4</option>
-                        <option value="Part 5" data-tokens="Part 5">Part 5</option>
-                        <option value="Pravesh Pariksha" data-tokens="Pravesh Pariksha">Pravesh Pariksha</option>
-                      </select>
-                    </div> <br> <br>
+                    <select class="form-control select2" name="product" id="product" required>
+                        @foreach($products as $product)
+                            <option value="{{ $product->code }}">
+                                {{ ucwords($product->description) }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div> <br> <br>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
-                        class="btn btn-primary btn-lg">Weigh</button> <br><br>
+                        class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
                     <small>Reading from <input type="text" id="comport_value" value="COM4" style="border:none"
                             disabled></small>
                 </div>

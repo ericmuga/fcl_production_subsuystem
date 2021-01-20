@@ -78,20 +78,36 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" value="baconers" id="baconers"
-                                    name="carcass_type" checked>
-                                <label for="form-check-label">Baconers</label>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="G0110" id="baconers"
+                                            name="carcass_type" checked>
+                                        <label for="form-check-label">Baconers</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" value="G0111" id="sows"
+                                            name="carcass_type">
+                                        <label for="form-check-label">Sows </label>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="sows" id="sows"
-                                    name="carcass_type">
-                                <label for="form-check-label">Sows </label>
+                                <input class="form-check-input" type="radio" value="G0110A" id="headless_sale"
+                                    name="carcass_type" >
+                                <label for="form-check-label">Porker, Headles-sales</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" value="G0110B" id="headOn_sale"
+                                    name="carcass_type" >
+                                <label for="form-check-label">Porker, HeadOn-sales</label>
                             </div>
                         </div>
                         <div class="form-group" style="padding-left: 20%">
                             <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
-                                class="btn btn-primary btn-lg">Scale 1</button> <br>
+                                class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 1</button> <br>
                             <small>Reading from <input type="text" id="comport_value"
                                     value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                         </div>
@@ -110,7 +126,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Tare-Weight</label>
-                            <input type="number" class="form-control" id="tareweight" step="0.00" name="tareweight"
+                            <input type="number" class="form-control" id="tareweight" step="0.01" name="tareweight"
                                 value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
                             <input type="hidden" class="form-control " id="default_tareweight"
                                 value="{{ number_format($configs[0]->tareweight, 2) }}" >
@@ -126,7 +142,7 @@
                     <div class="card-body text-center">
 
                         <div class="form-group" style="padding-top: 40%">
-                            <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
+                            <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
                                     aria-hidden="true"></i> Save</button>
                         </div>
                     </div>
@@ -144,29 +160,39 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group">
+                            <label for="exampleInputPassword1">Carcass Type</label>
+                            <select class="form-control select2" name="carcass_type" id="carcass_type" required>
+                                @foreach($carcass_types as $type)
+                                    <option value="{{ $type->code }}" @if($type->code == "G0110") selected="selected" @endif>
+                                        {{ ucwords($type->description) }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="exampleInputPassword1">Carcass Part</label>
                             <div class="form-check">
                                 <label class="form-check-label" for="radio1">
                                     <input type="radio" class="form-check-input" id="radio1" name="item_code"
-                                        value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->product }}
+                                        value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->description }}
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label" for="radio2">
                                     <input type="radio" class="form-check-input" id="radio2" name="item_code"
-                                        value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->product }}
+                                        value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}
                                 </label>
                             </div>
                             <div class="form-check">
                                 <label class="form-check-label">
                                     <input type="radio" class="form-check-input" id="radio3" name="item_code"
-                                        value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->product }}
+                                        value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->description }}
                                 </label>
                             </div>
                         </div>
-                        <div class="form-group" style="padding-left: 30%">
+                        <div class="form-group" style="padding-left: 20%">
                             <button type="button" onclick="getWeight2AjaxApi()" id="weigh2" value="COM4"
-                                class="btn btn-primary btn-lg">Scale 2</button> <br>
+                                class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 2</button> <br>
                             <small>Reading from <input type="text" id="comport_value2"
                                     value="{{ $configs[1]->comport }}" style="border:none" disabled></small>
                         </div>
@@ -190,7 +216,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
-                            <input type="number" class="form-control" id="net2" name="net2" value="0.00" step=".01"
+                            <input type="number" class="form-control" id="net2" name="net2" value="0.00" step="0.01"
                                 placeholder="" readonly>
                         </div>
                     </div>
@@ -198,7 +224,7 @@
                 <div class="card ">
                     <div class="card-body text-center">
                         <div class="form-group" style="padding-top: 50%">
-                            <button type="submit" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
+                            <button type="submit" onclick="return checkNet2OnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
                                     aria-hidden="true"></i> Save
                             </button>
                         </div>
@@ -215,11 +241,11 @@
     <button class="btn btn-primary " data-toggle="collapse" data-target="#butchery_output_show"><i
             class="fa fa-plus"></i>
         Output
-    </button>
+    </button> <hr>
 </div>
 
 <div id="butchery_output_show" class="collapse">
-    <div class="row">
+    {{-- <div class="row">
         <!-- baconers, sows, sides -->
         <div class="form-group col-md-2">
             <label>Legs:</label>
@@ -234,7 +260,7 @@
             <input type="number" id="baconers_sides" value="0" readonly>
         </div>
         <!-- /.form group -->
-    </div>
+    </div> --}}
     <!-- legs, middles, shoulders -->
 
     <div class="row">
@@ -248,20 +274,24 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example1" class="table table-striped table-bordered table-hover">
+                    <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Baconers </th>
-                                <th>Sows </th>
+                                <th>Code </th>
+                                <th>Carcass </th>
+                                <th>No. of Carcass</th>
+                                <th>Weight(kgs)</th>
                                 <th>Date </th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Baconers </th>
-                                <th>Sows </th>
+                                <th>Code </th>
+                                <th>Carcass </th>
+                                <th>No. of Carcass</th>
+                                <th>Weight(kgs)</th>
                                 <th>Date </th>
                             </tr>
                         </tfoot>
@@ -269,8 +299,10 @@
                         @foreach($beheading_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td> {{ $data->baconers }}</td>
-                                <td> {{ $data->sows }}</td>
+                                <td> {{ $data->item_code }}</td>
+                                <td> {{ $data->description }}</td>
+                                <td> {{ $data->no_of_carcass }}</td>
+                                <td> {{ number_format($data->net_weight, 2) }}</td>
                                 <td> {{ $data->created_at }}</td>
                             </tr>
                             @endforeach
@@ -292,7 +324,6 @@
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <div class="hidden" hidden>{{ $i = 1 }}</div>
                     <table id="example2" class="table table-striped table-bordered table-hover">
                         <thead>
                             <tr>
@@ -315,9 +346,9 @@
                         <tbody>
                             @foreach($butchery_data as $data)
                             <tr>
-                                <td>{{ $i++ }}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-code="{{$data->item_code}}" data-item="{{$data->product}}"><a href="#">{{ $data->item_code }}</a> </td>
-                                <td> {{ $data->product }}</td>
+                                <td>{{ $loop->iteration}}</td>
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-code="{{$data->item_code}}" data-item="{{$data->description}}"><a href="#">{{ $data->item_code }}</a> </td>
+                                <td> {{ $data->description }}</td>
                                 <td> {{ $data->net_weight }}</td>
                                 <td> {{ $data->created_at }}</td>
                             </tr>
@@ -353,7 +384,7 @@
                         <label for="baud">Product</label>
                         <select class="form-control" name="editproduct" id="editproduct" required>
                             @foreach($products as $data)
-                                <option value="{{$data->code}}" selected="selected">{{$data->product}}</option>
+                                <option value="{{$data->code}}" selected="selected">{{$data->description}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -394,6 +425,8 @@
             var reading = document.getElementById('reading');
             if (manual_weight.checked == true) {
                 reading.readOnly = false;
+                reading.focus();
+                $('#reading').val("");
 
             } else {
                 reading.readOnly = true;
@@ -407,6 +440,8 @@
             var reading2 = document.getElementById('reading2');
             if (manual_weight2.checked == true) {
                 reading2.readOnly = false;
+                reading2.focus();
+                $('#reading2').val("");
 
             } else {
                 reading2.readOnly = true;
@@ -486,7 +521,8 @@
         var reading = $('#reading').val();
         var tareweight = $('#tareweight').val();
         var net = document.getElementById('net');
-        net.value = parseFloat(reading) - parseFloat(tareweight);
+        new_net_value = parseFloat(reading) - parseFloat(tareweight);
+        net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
     }
 
     // getNetWeight2
@@ -494,7 +530,8 @@
         var reading2 = document.getElementById('reading2').value;
         var tareweight2 = document.getElementById('tareweight2').value;
         var net2 = document.getElementById('net2');
-        net2.value = parseFloat(reading2) - parseFloat(tareweight2);
+        new_net_value = parseFloat(reading2) - parseFloat(tareweight2);
+        net2.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
     }
 
     function formatDate(date) {
@@ -536,6 +573,27 @@
             // $("#reading").value = 0.00;
             alert('comport ' + ComPortID + 'is not available');
         }
+    }
+
+    function checkNetOnSubmit(){
+        var net = $('#net').val();
+        $valid = true;
+        if (net == "" || net <= 0.00 ) {
+            $valid = false;
+            alert("Please ensure you have valid netweight.");
+        };
+        return $valid;
+    }
+
+    function checkNet2OnSubmit(){
+        var net2 = $('#net2').val();
+        $valid = true;
+        if (net2 == "" || net2 <= 0.00 ) {
+            $valid = false;
+            alert("Please ensure you have valid netweight."+ net2);
+
+        };
+        return $valid;
     }
 
 </script>
