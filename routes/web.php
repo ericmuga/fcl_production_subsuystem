@@ -55,6 +55,7 @@ Route::post('/butchery/scale-2-update', [ButcheryController::class, 'updateScale
 Route::get('/slaughter-data-ajax', [ButcheryController::class, 'loadSlaughterDataAjax'])->name('load_slaughter_data');
 Route::get('/butchery/scale-3', [ButcheryController::class, 'scaleThree'])->name('butchery_scale3');
 Route::get('/butchery/products', [ButcheryController::class, 'products'])->name('butchery_products');
+Route::post('/butchery/product-add', [ButcheryController::class, 'addProduct'])->name('butchery_add_product');
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
 /*-------------End Butchery------------------ */

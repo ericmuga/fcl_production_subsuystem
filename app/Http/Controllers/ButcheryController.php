@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
+use App\Models\Product;
 use App\Models\Sale;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -11,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class ButcheryController extends Controller
 {
@@ -169,7 +171,45 @@ class ButcheryController extends Controller
     public function products()
     {
         $title = "products";
-        return view('butchery.products', compact('title'));
+
+        $products = DB::table('products')
+            // ->orderBy('code', 'ASC')
+            ->get();
+
+        return view('butchery.products', compact('title', 'products'));
+    }
+
+    public function addProduct(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'code' => 'required|unique:products,code',
+        ]);
+
+        if ($validator->fails()) {
+            # failed validation
+            $messages = $validator->errors();
+            foreach ($messages->all() as $message) {
+                Toastr::error($message, 'Error!');
+            }
+            return back()
+                ->withInput()
+                ->with('input_errors', 'add_product')
+                ->withErrors($validator);
+        }
+
+        // dd($request->all());
+        $product = Product::create([
+            'code' => $request->code,
+            'description' => $request->product,
+            'product_type' => $request->product_type,
+            'input_type' => $request->input_type,
+            'often' => $request->often,
+            'user_id' => Auth::id(),
+
+        ]);
+
+        Toastr::success("product {$request->product} inserted successfully",'Success');
+        return redirect()->back();
     }
 
     public function scaleSettings()
