@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
+use App\Models\Sale;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -61,7 +62,19 @@ class ButcheryController extends Controller
     public function saveScaleOneData(Request $request)
     {
         try {
-            // insert
+            // insert sales substr($string, 0, -1);
+            if ($request->carcass_type == "G0110A" || $request->carcass_type == "G0110B") {
+                $new = Sale::create([
+                    'item_code' => "G0110",
+                    'no_of_carcass' => $request->no_of_carcass,
+                    'net_weight' => $request->net,
+                    'user_id' => Auth::id(),
+                ]);
+
+                Toastr::success('sale recorded successfully','Success');
+                return redirect()->back();
+            }
+            // insert beaheding data
             $new = BeheadingData::create([
                 'item_code' => $request->carcass_type,
                 'no_of_carcass' => $request->no_of_carcass,
