@@ -25,7 +25,7 @@
                                 Beheading & breaking </a></li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{{ route('butchery_scale3') }}" class="dropdown-item">Scale 3
-                                Weighing </a></li>
+                                Slicing </a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">

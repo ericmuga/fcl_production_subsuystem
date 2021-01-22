@@ -418,6 +418,7 @@
             var new_tareweight = (number_of_carcass) * (default_tareweight);
             $("#tareweight").val(Math.round((new_tareweight + Number.EPSILON) * 100) / 100);
 
+            getNet();
         });
 
         $('#manual_weight').change(function () {

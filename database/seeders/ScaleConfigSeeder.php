@@ -41,6 +41,14 @@ class ScaleConfigSeeder extends Seeder
                 'section' => 'butchery',
                 'user_id' => 1,
             ],
+            [
+                'scale' => 'Scale 3',
+                'comport' => 'com7',
+                'baudrate' => '9600',
+                'tareweight' => '1.8',
+                'section' => 'butchery',
+                'user_id' => 1,
+            ],
         ];
 
         DB::table('scale_configs')->insert($configs);

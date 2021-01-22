@@ -8,7 +8,8 @@
     <div class="card-group">
         <div class="card">
             <div class="card-body" style="padding-top: 50%; padding-left: 20%">
-                <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br>
+                <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i
+                        class="fas fa-balance-scale"></i> Weigh</button> <br>
                 <br>
                 <small>Reading from <input type="text" id="comport_value"
                         value="{{ $configs[0]->comport?? "" }}" style="border:none"
@@ -34,8 +35,8 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
-                    <input type="number" class="form-control" min="1" max="5" id="net" name="net" value="0.00" step="0.01"
-                        placeholder="" readonly required>
+                    <input type="number" class="form-control" min="1" max="5" id="net" name="net" value="0.00"
+                        step="0.01" placeholder="" readonly required>
                 </div>
             </div>
         </div>
@@ -92,6 +93,16 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
+                    <label for="exampleInputPassword1">Total Received from vendor </label>
+                    <input type="text" class="form-control" value="" name="total_by_vendor" id="total_by_vendor"
+                        placeholder="" readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Total weighed per slap </label>
+                    <input type="text" class="form-control" value="" name="total_per_slap" id="total_per_slap"
+                        placeholder="" readonly required>
+                </div>
+                <div class="form-group">
                     <label for="exampleInputPassword1">Meat %</label>
                     <input type="number" class="form-control" id="meat_percent" value="" name="meat_percent"
                         oninput="getClassificationCode()" placeholder="" readonly required>
@@ -101,9 +112,9 @@
                     <input type="text" class="form-control" id="classification_code" name="classification_code"
                         placeholder="" readonly required>
                 </div>
-                <div class="form-group" style="padding-top: 20%">
-                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
-                            aria-hidden="true"></i> Save</button>
+                <div class="form-group" style="padding-top: 10%">
+                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
+                            class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -173,7 +184,8 @@
     <button class="btn btn-primary " data-toggle="collapse" data-target="#slaughter_entries"><i class="fa fa-plus"></i>
         Entries
     </button>
-</div><hr>
+</div>
+<hr>
 
 <div id="slaughter_entries" class="collapse">
 
@@ -240,7 +252,8 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="card-title"></h3>
-                    <h3 class="card-title"> Missing Slapmarks Entries | <span id="subtext-h1-title"><small> view weighed ordered
+                    <h3 class="card-title"> Missing Slapmarks Entries | <span id="subtext-h1-title"><small> view weighed
+                                ordered
                                 by latest</small> </span></h3>
                 </div>
                 <!-- /.card-header -->
@@ -271,15 +284,15 @@
                         </tfoot>
                         <tbody>
                             @foreach($slaps as $data)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->slapmark }}</td>
-                                <td>{{ $data->item_code }}</td>
-                                <td>{{ $data->net_weight }}</td>
-                                <td>{{ $data->meat_percent}}</td>
-                                <td>{{ $data->classification_code }}</td>
-                                <td>{{ $data->created_at }}</td>
-                            </tr>
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $data->slapmark }}</td>
+                                    <td>{{ $data->item_code }}</td>
+                                    <td>{{ $data->net_weight }}</td>
+                                    <td>{{ $data->meat_percent }}</td>
+                                    <td>{{ $data->classification_code }}</td>
+                                    <td>{{ $data->created_at }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -336,43 +349,64 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
-                            // console.log(str);
+                            // console.log(res);
                             var str = JSON.stringify(res);
                             var obj = JSON.parse(str);
 
                             $('#receipt_no').val(obj.receipt_no);
-                            // $('#carcass_type').val(obj.item_code);
                             $('#vendor_no').val(obj.vendor_no);
                             $('#vendor_name').val(obj.vendor_name);
 
                             var meat_percent = document.getElementById('meat_percent');
                             meat_percent.readOnly = false;
 
-                        } else {
-                            $("#receipt_no").empty();
-                            // $("#carcass_type").empty();
-                            $("#vendor_no").empty();
-                            $("#vendor_name").empty();
+                            // loadMoreDetailsAjax();
+                            $.ajax({
+                                type: "GET",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                url: "{{ url('scale-ajax-2') }}",
+                                data: {
+                                    'slapmark': slapmark,
+
+                                },
+                                dataType: 'JSON',
+                                success: function (data) {
+                                    var str2 = JSON.stringify(data);
+                                    var obj2 = JSON.parse(str2);
+                                    $('#total_by_vendor').val(obj2.total_per_vendor);
+                                    $('#total_per_slap').val(obj2.total_weighed);
+
+                                },
+                                error: function(data) {
+                                    var errors = data.responseJSON;
+                                    console.log(errors);
+                                }
+                            });
+
+                            //end ajax 2
                         }
                     }
                 });
 
             } else {
                 $("#receipt_no").empty();
-                // $("#carcass_type").empty();
+                $("#total_by_vendor").empty();
+                $("#total_per_slap").empty();
                 $("#vendor_no").empty();
                 $("#vendor_name").empty();
             }
         });
         /* End weigh data ajax */
 
-
     });
 
-    function checkNetOnSubmit(){
+
+    function checkNetOnSubmit() {
         var net = $('#net').val();
         var valid = true;
-        if (net == "" || net <= 0.00 ) {
+        if (net == "" || net <= 0.00) {
             valid = false;
             alert("Please ensure you have valid netweight.");
         };
@@ -550,8 +584,6 @@
             }
 
         }
-
-
     }
 
     function getMissingSlapClassification() {

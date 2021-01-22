@@ -21,4 +21,9 @@ class Helpers
         return date("F jS, Y", strtotime($date));
     }
 
+    public function getProductName($code)
+    {
+        return Product::where('code', $code)->value('description');
+    }
+
 }

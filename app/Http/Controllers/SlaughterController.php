@@ -83,6 +83,24 @@ class SlaughterController extends Controller
         return response()->json($data);
     }
 
+    public function loadWeighMoreDataAjax(Request $request)
+    {
+        $total_per_vendor = DB::table('receipts')
+            ->whereDate('slaughter_date', Carbon::today())
+            ->where('vendor_tag', '1B4A')
+            ->sum('receipts.received_qty');
+
+        $total_weighed = DB::table('slaughter_data')
+            ->whereDate('created_at', Carbon::today())
+            ->where('slapmark', '1B4A')
+            ->count();
+
+        $dataArray = array('total_per_vendor' => $total_per_vendor, 'total_weighed' => $total_weighed);
+
+        return response()->json($dataArray);
+
+    }
+
     public function saveWeighData(Request $request)
     {
         try {

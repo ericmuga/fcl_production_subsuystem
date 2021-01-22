@@ -18,7 +18,7 @@
     <div class="col-md-8" style="margin: 0 auto; float: none;">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Bordered Table</h3>
+                <h3 class="card-title">Showing all Entries</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -30,21 +30,40 @@
                             <th>Scale Name</th>
                             <th>ComPort</th>
                             <th>BaudRate</th>
+                            <th>Tareweight</th>
+                            <Th>Date Created</Th>
                             <th style="width: 30px">Config</th>
                         </tr>
                     </thead>
                     <tfoot>
-                        <th style="width: 10px">#</th>
-                        <th>Scale Name</th>
-                        <th>ComPort</th>
-                        <th>BaudRate</th>
-                        <th style="width: 30px">Config</th>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Scale Name</th>
+                            <th>ComPort</th>
+                            <th>BaudRate</th>
+                            <th>Tareweight</th>
+                            <Th>Date Created</Th>
+                            <th style="width: 30px">Config</th>
+                        </tr>
                     </tfoot>
                     <tbody>
+                        @foreach($scale_settings as $data)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $data->scale }}</td>
+                            <td>{{ $data->comport }}</td>
+                            <td>{{ $data->baudrate }}</td>
+                            <td>{{ number_format($data->tareweight, 2) }}</td>
+                            <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                            <td>
+                                <button type="button" data-id="{{ $data->id  }}" data-item="{{ $data->scale }}" data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}" data-tareweight="{{ number_format($data->tareweight, 2) }}"
+                                    class="btn btn-primary btn-sm " id="editScaleModalShow"><i
+                                        class="nav-icon fas fa-edit"></i>
+                                    Edit</button>
+                            </td>
 
                         </tr>
-                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -61,8 +80,8 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale: <strong><input style="border:none"
-                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale: <code><strong><input style="border:none"
+                                type="text" id="item_name" name="item_name" value="" readonly></strong></code></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -70,21 +89,27 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="baud">ComPort:</label>
-                        <select name="toggle_action" id="toggle_action" class="form-control" required>
-                            <option value="" selected disabled>Select action</option>
-                            <option value="1">ComPort1</option>
-                            <option value="2">ComPort2</option>
-                            <option value="3">ComPort3</option>
+                        <select class="form-control" name="edit_comport" id="edit_comport">
+                            {{-- @if ($comport)
+                                @foreach($comport as $com)
+                                    <option value="{{$com->id}}" selected="selected">{{$com->role_name}}</option>
+                                @endforeach
+                            @endif --}}
+
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="baud">BaudRate:</label>
-                        <input type="number" class="form-control" id="baud" name="baud" placeholder="" required>
+                        <input type="number" class="form-control" id="edit_baud" name="edit_baud" value="" placeholder="" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="baud">Tareweight:</label>
+                        <input type="number" class="form-control" id="edit_tareweight" step="0.01" value="" name="edit_tareweight" placeholder="" required>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" type="submit">
                         <i class="fa fa-save"></i> Save
                     </button>
                 </div>
@@ -96,19 +121,33 @@
 
 @endsection
 
+
 @section('scripts')
 <script>
     $(document).ready(function () {
         // edit
         $("body").on("click", "#editScaleModalShow", function (a) {
             a.preventDefault();
+
             var scale = $(this).data('item');
+            var comport = $(this).data('comport');
+            var tareweight = $(this).data('tareweight');
+            var baud = $(this).data('baudrate');
+            var id = $(this).data('id');
 
             $('#item_name').val(scale);
+            $('#edit_comport').val(comport);
+            $('#edit_baud').val(baud);
+            $('#edit_tareweight').val(tareweight);
+            $('#item_id').val(id);
 
 
             $('#editScaleModal').modal('show');
         });
+
+        /* Start comport data ajax */
+
+        /* End comport data ajax */
     });
 
 </script>

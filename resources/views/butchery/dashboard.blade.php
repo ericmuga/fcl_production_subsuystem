@@ -20,7 +20,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>150</h3>
+                <h3>{{ $baconers }}</h3>
 
                 <p>Deboned Baconers</p>
             </div>
@@ -35,7 +35,7 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>53<sup style="font-size: 20px">%</sup></h3>
+                <h3>{{ $sows }}</h3>
 
                 <p>Deboned Sows</p>
             </div>
@@ -50,7 +50,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>44</h3>
+                <h3>{{ number_format($baconers_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
                 <p>Baconers Total Weight Output</p>
             </div>
@@ -65,7 +65,7 @@
         <!-- small box -->
         <div class="small-box bg-primary">
             <div class="inner">
-                <h3>65</h3>
+                <h3>{{ number_format($sows_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
                 <p>Sows Total weight Output</p>
             </div>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
+use App\Models\Helpers;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\SlicingData;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -25,7 +27,23 @@ class ButcheryController extends Controller
     {
         $title = "dashboard";
 
-        return view('butchery.dashboard', compact('title'));
+        $baconers = BeheadingData::whereDate('created_at', Carbon::today())
+            ->where('item_code', "G0110")
+            ->sum('no_of_carcass');
+
+        $sows = BeheadingData::whereDate('created_at', Carbon::today())
+            ->where('item_code', "G0111")
+            ->sum('no_of_carcass');
+
+        $baconers_weight = BeheadingData::whereDate('created_at', Carbon::today())
+            ->where('item_code', "G0110")
+            ->sum('net_weight');
+
+        $sows_weight = BeheadingData::whereDate('created_at', Carbon::today())
+            ->where('item_code', "G0111")
+            ->sum('net_weight');
+
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight'));
     }
 
     public function scaleOneAndTwo()
@@ -157,15 +175,44 @@ class ButcheryController extends Controller
 
     }
 
-    public function scaleThree()
+    public function scaleThree(Helpers $helpers)
     {
         $title = "Scale-3";
 
+        $configs = DB::table('scale_configs')
+            ->where('section', 'butchery')
+            ->where('scale', 'scale 3')
+            ->select('scale', 'tareweight', 'comport')
+            ->get()->toArray();
+
         $products = DB::table('products')
-            ->orderBy('code', 'ASC')
             ->get();
 
-        return view('butchery.scale3', compact('title', 'products'));
+        $slicing_data = DB::table('slicing_data')
+            ->get();
+
+        return view('butchery.scale3', compact('title', 'products', 'configs', 'slicing_data', 'helpers'));
+    }
+
+    public function saveScaleThreeData(Request $request)
+    {
+        try {
+            # insert record
+            $new = SlicingData::create([
+                'item_code' =>  $request->product,
+                'net_weight' => $request->net,
+                'user_id' => Auth::id(),
+            ]);
+
+            Toastr::success("record {$request->product} inserted successfully",'Success');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(),'Error!');
+            return back()
+                ->withInput();
+        }
+
     }
 
     public function products()
@@ -173,7 +220,6 @@ class ButcheryController extends Controller
         $title = "products";
 
         $products = DB::table('products')
-            // ->orderBy('code', 'ASC')
             ->get();
 
         return view('butchery.products', compact('title', 'products'));
@@ -197,7 +243,6 @@ class ButcheryController extends Controller
                 ->withErrors($validator);
         }
 
-        // dd($request->all());
         $product = Product::create([
             'code' => $request->code,
             'description' => $request->product,
@@ -212,10 +257,15 @@ class ButcheryController extends Controller
         return redirect()->back();
     }
 
-    public function scaleSettings()
+    public function scaleSettings(Helpers $helpers)
     {
         $title = "Scale";
-        return view('butchery.scale_settings', compact('title'));
+
+        $scale_settings = DB::table('scale_configs')
+            ->where('section', 'butchery')
+            ->get();
+
+        return view('butchery.scale_settings', compact('title', 'scale_settings', 'helpers'));
     }
 
     public function changePassword()
