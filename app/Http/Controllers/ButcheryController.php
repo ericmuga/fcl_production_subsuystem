@@ -220,6 +220,7 @@ class ButcheryController extends Controller
         $title = "products";
 
         $products = DB::table('products')
+            ->where('code', '!=', '')
             ->get();
 
         return view('butchery.products', compact('title', 'products'));

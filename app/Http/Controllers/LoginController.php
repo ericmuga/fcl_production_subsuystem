@@ -65,8 +65,7 @@ class LoginController extends Controller
             $user->save();
 
             Toastr::success('Successful login','Success');
-            Toastr::info('Please select the section','Info');
-            return redirect()->route('redirect_page');
+            return redirect()->intended('redirect_page');
 
         }
         // failed login
