@@ -87,12 +87,12 @@ class SlaughterController extends Controller
     {
         $total_per_vendor = DB::table('receipts')
             ->whereDate('slaughter_date', Carbon::today())
-            ->where('vendor_tag', '1B4A')
+            ->where('vendor_tag', $request->slapmark)
             ->sum('receipts.received_qty');
 
         $total_weighed = DB::table('slaughter_data')
             ->whereDate('created_at', Carbon::today())
-            ->where('slapmark', '1B4A')
+            ->where('slapmark', $request->slapmark)
             ->count();
 
         $dataArray = array('total_per_vendor' => $total_per_vendor, 'total_weighed' => $total_weighed);

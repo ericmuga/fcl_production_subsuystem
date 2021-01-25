@@ -108,8 +108,8 @@
                         <div class="form-group" style="padding-left: 20%">
                             <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
                                 class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 1</button> <br>
-                            <small>Reading from <input type="text" id="comport_value"
-                                    value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
+                            <small><input type="text" id="comport_value"
+                                    value="Reading from COM: {{ $configs[0]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -193,8 +193,8 @@
                         <div class="form-group" style="padding-left: 20%">
                             <button type="button" onclick="getWeight2AjaxApi()" id="weigh2" value="COM4"
                                 class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 2</button> <br>
-                            <small>Reading from <input type="text" id="comport_value2"
-                                    value="{{ $configs[1]->comport }}" style="border:none" disabled></small>
+                            <small><input type="text" id="comport_value2"
+                                    value="Reading from COM: {{ $configs[1]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>

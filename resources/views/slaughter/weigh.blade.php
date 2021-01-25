@@ -6,18 +6,21 @@
 <form id="form-slaughter-weigh" action="{{ route('save_weigh_data') }}" method="post">
     @csrf
     <div class="card-group">
-        <div class="card">
-            <div class="card-body" style="padding-top: 50%; padding-left: 20%">
-                <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i
-                        class="fas fa-balance-scale"></i> Weigh</button> <br>
-                <br>
-                <small>Reading from <input type="text" id="comport_value"
-                        value="{{ $configs[0]->comport?? "" }}" style="border:none"
-                        disabled></small>
-            </div>
-        </div>
         <div class="card ">
             <div class="card-body text-center">
+                <div class="card-body" style="">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i
+                                    class="fas fa-balance-scale"></i> Weigh</button>
+                        </div>
+                        <div class="col-md-6">
+                            <code><input type="text" id="comport_value"
+                                    value="Reading from COM: {{ $configs[0]->comport?? "" }}" style="border:none"
+                                    disabled></code>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="exampleInputEmail1">Reading</label>
                     <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
@@ -55,7 +58,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4" style="padding-top: 10%">
+                        <div class="col-md-4" style="padding-top: 8%">
                             <button class="btn btn-outline-info btn-sm form-control" type="button" data-toggle="modal"
                                 data-target="#slapModal">
                                 <strong>slapmark?</strong>
@@ -98,7 +101,7 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Total weighed per slap </label>
+                    <label for="exampleInputPassword1">Total weighed </label>
                     <input type="text" class="form-control" value="" name="total_per_slap" id="total_per_slap"
                         placeholder="" readonly required>
                 </div>
@@ -113,7 +116,7 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
-                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
+                    <button type="submit" onclick="return validateOnSubmit()" class="btn btn-primary btn-lg"><i
                             class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
@@ -403,13 +406,20 @@
     });
 
 
-    function checkNetOnSubmit() {
+    function validateOnSubmit() {
         var net = $('#net').val();
+        var total_by_vendor = 5;
+        var total_per_slap = 5;
         var valid = true;
         if (net == "" || net <= 0.00) {
             valid = false;
             alert("Please ensure you have valid netweight.");
-        };
+        }
+        else if (total_by_vendor == total_per_slap){
+            valid = false;
+            alert("You have exhausted vendor received Qty.");
+        }
+
         return valid;
     }
 
