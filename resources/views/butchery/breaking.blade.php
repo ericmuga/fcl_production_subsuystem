@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="">
-            <h1 class="m-0"> Reports |<small> Pork Beheading Report</small></h1>
+            <h1 class="m-0"> Reports |<small> Pork Breaking Report</small></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
@@ -14,41 +14,37 @@
 @section('content')
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"> showing all Entries | <span id="subtext-h1-title"><small> filter, view, export</small>
-            </span></h3>
+        <h3 class="card-title"> Scale 2 output data | <span id="subtext-h1-title"><small> entries ordered by
+                    latest</small> </span></h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-        <div class="hidden" hidden>{{ $i = 1 }}</div>
-        <table id="example1" class="table table-striped table-bordered table-hover">
+        <table id="example2" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
                     <th>#</th>
-                    <th>Code </th>
-                    <th>Carcass </th>
-                    <th>No. of Carcass</th>
-                    <th>Weight(kgs)</th>
+                    <th>Product Code</th>
+                    <th>Product</th>
+                    <th>Weight (kgs)</th>
                     <th>Date </th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
                     <th>#</th>
-                    <th>Code </th>
-                    <th>Carcass </th>
-                    <th>No. of Carcass</th>
-                    <th>Weight(kgs)</th>
+                    <th>Product Code</th>
+                    <th>Product</th>
+                    <th>Weight (kgs)</th>
                     <th>Date </th>
                 </tr>
             </tfoot>
             <tbody>
-                @foreach($beheading_data as $data)
+                @foreach($butchery_data as $data)
                     <tr>
-                        <td>{{ $i++ }}</td>
-                        <td> {{ $data->item_code }}</td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td> {{ $data->item_code }} </td>
                         <td> {{ $data->description }}</td>
-                        <td> {{ $data->no_of_carcass }}</td>
-                        <td> {{ number_format($data->net_weight, 2) }}</td>
+                        <td> {{ $data->net_weight }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>
                 @endforeach

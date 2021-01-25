@@ -35,11 +35,11 @@
                         <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
                             </a></li>
                         <li class="dropdown-divider"></li>
-                        <li>
+                        {{-- <li>
                             <a href="#" class="dropdown-item">Export Data to Navision
                             </a>
                         </li>
-                        <li class="dropdown-divider"></li>
+                        <li class="dropdown-divider"></li> --}}
 
                         <!-- Level two dropdown-->
                         <li class="dropdown-submenu dropdown-hover">
@@ -47,15 +47,15 @@
                                 aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
                             <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
                                 <li>
-                                    <a tabindex="-1" href="#" class="dropdown-item">Pork Breaking Report</a>
+                                    <a tabindex="-1" href="{{ route('butchery_beheading_report') }}" class="dropdown-item"> Beheading Report</a>
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>
-                                    <a tabindex="-1" href="#" class="dropdown-item">Deboning Detailed Report</a>
+                                    <a tabindex="-1" href="{{ route('butchery_breaking_report') }}" class="dropdown-item"> Breaking Report</a>
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>
-                                    <a tabindex="-1" href="#" class="dropdown-item">Slicing Report</a>
+                                    <a tabindex="-1" href="{{ route('butchery_slicing_report') }}" class="dropdown-item"> Slicing Report</a>
                                 </li>
                             </ul>
                         </li>

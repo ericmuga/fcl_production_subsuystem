@@ -273,4 +273,38 @@ class ButcheryController extends Controller
         $title = "password";
         return view('butchery.change_password', compact('title'));
     }
+
+    public function getBeheadingReport(Helpers $helpers)
+    {
+        $title = "Beheading-Report";
+        $beheading_data = DB::table('beheading_data')
+            ->leftJoin('carcass_types', 'beheading_data.item_code', '=', 'carcass_types.code')
+            ->select('beheading_data.*', 'carcass_types.description')
+            ->get();
+
+        return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
+
+    }
+
+    public function getBrakingReport(Helpers $helpers)
+    {
+        $title = "Braking-Report";
+        $butchery_data = DB::table('butchery_data')
+            ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
+            ->select('butchery_data.*', 'products.description')
+            ->get();
+
+        return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));
+
+    }
+
+    public function getSlicingReport(Helpers $helpers)
+    {
+        $title = "Slicing-Report";
+        $slicing_data = DB::table('slicing_data')
+            ->get();
+
+        return view('butchery.slicing', compact('title', 'slicing_data', 'helpers'));
+
+    }
 }
