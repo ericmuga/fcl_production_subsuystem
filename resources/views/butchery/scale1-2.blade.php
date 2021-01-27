@@ -151,7 +151,7 @@
 
     <!-- scale 2 -->
     <div class="col-md-6">
-        <form id="form-butchery-scale2" action="{{ route('butchery_scale2_save') }}" method="post">
+        <form id="scale2" action="{{ route('butchery_scale2_save') }}" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -174,19 +174,19 @@
                                 <label for="exampleInputPassword1">Product Part</label>
                                 <div class="form-check">
                                     <label class="form-check-label" for="radio1">
-                                        <input type="radio" class="form-check-input" id="radio1" name="item_code"
+                                        <input type="radio" class="form-check-input messageCheckbox"  id="radio1" name="item_code"
                                             value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->description }}
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <label class="form-check-label" for="radio2">
-                                        <input type="radio" class="form-check-input" id="radio2" name="item_code"
+                                        <input type="radio" class="form-check-input messageCheckbox" id="radio2" name="item_code"
                                             value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <label class="form-check-label">
-                                        <input type="radio" class="form-check-input" id="radio3" name="item_code"
+                                        <input type="radio" class="form-check-input messageCheckbox" id="radio3" name="item_code"
                                             value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->description }}
                                     </label>
                                 </div>
@@ -205,11 +205,6 @@
                 <div class="card ">
                     <div class="card-body text-center">
                         <div class="form-group">
-                            <label for="exampleInputPassword1">No. of pieces </label>
-                            <input type="number" class="form-control" id="no_of_items" value="" name="no_of_items"
-                                placeholder="" required>
-                        </div>
-                        <div class="form-group">
                             <label for="exampleInputEmail1">Reading</label>
                             <input type="number" step="0.01" class="form-control" id="reading2" name="reading2"
                                 value="0.00" oninput="getNet2()" placeholder="" readonly>
@@ -223,14 +218,26 @@
                             <input type="number" class="form-control" id="tareweight2" name="tareweight2"
                                 value="{{ number_format($configs[1]->tareweight, 2) }}" readonly>
                         </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Net</label>
+                            <input type="number" class="form-control" id="net2" name="net2" value="0.00" step="0.01"
+                                placeholder="" readonly>
+                        </div>
                     </div>
                 </div>
                 <div class="card ">
                     <div class="card-body text-center">
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Net</label>
-                            <input type="number" class="form-control" id="net2" name="net2" value="0.00" step="0.01"
-                                placeholder="" readonly>
+                            <label for="exampleInputPassword1">Product Type</label>
+                            <select class="form-control select2" name="product_type" id="product_type" required>
+                                <option value="1" selected="selected">Main Product</option>
+                                <option value="2">By Product</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">No. of pieces </label>
+                            <input type="number" class="form-control" id="no_of_items" value="" name="no_of_items"
+                                placeholder="" required>
                         </div>
                     </div>
                     <div class="card-body text-center">
@@ -465,6 +472,11 @@
 
         }
 
+        $('.messageCheckbox').change(function () {
+            var checkedValue = document.querySelector('.messageCheckbox:checked').value;
+            // alert(checkedValue);
+        });
+
 
         $('#no_of_carcass').change(function () {
             var number_of_carcass = $(this).val();
@@ -522,56 +534,6 @@
         });
 
     });
-
-    //get slaughter data count
-    // function getCounts() {
-    //     var date = $('#datepk').val();
-    //     alert('on load');
-    //     if (date != null) {
-    //         $.ajax({
-    //             type: "GET",
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             },
-    //             url: "{{ url('slaughter-data-ajax') }}",
-    //             data: {
-    //                 'date': date,
-
-    //             },
-    //             dataType: 'JSON',
-    //             success: function (res) {
-    //                 if (res) {
-
-    //                     var str = JSON.stringify(res);
-    //                     var obj = JSON.parse(str);
-
-    //                     $("#baconers_number").val(obj.baconers);
-    //                     $("#sows_number").val(obj.sows);
-
-    //                     var baconers_sides = document.getElementById('baconers_sides');
-    //                     var sows_sides = document.getElementById('sows_sides');
-    //                     if (obj.baconers > 0) {
-
-    //                         baconers_sides.value = obj.baconers * 2;
-
-    //                     } else {
-    //                         baconers_sides.value = 0;
-    //                     }
-
-    //                     if (obj.sows > 0) {
-    //                         sows_sides.value = obj.sows * 2;
-
-    //                     } else {
-    //                         sows_sides.value = 0;
-    //                     }
-
-    //                 }
-    //             }
-    //         });
-
-    //     }
-
-    // }
 
     // getNetWeight1
     function getNet() {

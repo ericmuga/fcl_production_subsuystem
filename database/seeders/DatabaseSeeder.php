@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CarcassTypeSeeder::class,
             ProductSeeder::class,
             ProcessesSeeder::class,
+            ProductTypeSeeder::class,
         ]);
     }
 }

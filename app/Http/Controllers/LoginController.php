@@ -13,7 +13,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth')->except(['getLogin', 'processLogin']);
+        // $this->middleware('auth', ['except' => ['getLogin', 'processLogin']]);
     }
 
     public function getLogin()
@@ -48,6 +48,7 @@ class LoginController extends Controller
 
         if (Auth::attempt(['username' => $request->username, 'password' =>  $request->password], $request->remember)) {
             // Authentication was successful...
+
             $user = User::findOrFail(Auth::id());
 
             //Check if session exists and log out the previous session
@@ -65,7 +66,7 @@ class LoginController extends Controller
             $user->save();
 
             Toastr::success('Successful login','Success');
-            return redirect()->intended('redirect_page');
+            return redirect()->route('redirect_page');
 
         }
         // failed login

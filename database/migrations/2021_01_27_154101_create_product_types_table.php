@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ButcheryDataTable extends Migration
+class CreateProductTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class ButcheryDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('butchery_data', function (Blueprint $table) {
+        Schema::create('product_types', function (Blueprint $table) {
             $table->id();
-            $table->string('carcass_type', 20);
-            $table->string('item_code', 20);
-            $table->double('net_weight', 8, 2);
-            $table->integer('process_code');
-            $table->tinyInteger('product_type');
-            $table->integer('no_of_items')->nullable();
-            $table->foreignId('user_id')->constrained('users');
+            $table->tinyInteger('code');
+            $table->string('description', 50)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -34,6 +29,6 @@ class ButcheryDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('butchery_data');
+        Schema::dropIfExists('product_types');
     }
 }

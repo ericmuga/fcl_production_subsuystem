@@ -107,8 +107,11 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
             ->select('butchery_data.*', 'products.description')
             ->get();
+        
+        $product_types = DB::table('product_types')
+            ->get();
 
-        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers'));
+        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers', 'product_types'));
     }
 
     public function saveScaleOneData(Request $request)
@@ -167,6 +170,7 @@ class ButcheryController extends Controller
                 'net_weight' => $request->net2,
                 'no_of_items' => $request->no_of_items,
                 'process_code' => $process_code,
+                'product_type' => $request->product_type,
                 'user_id' => Auth::id(),
             ]);
 
