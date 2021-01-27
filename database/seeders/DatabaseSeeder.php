@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ScaleConfigSeeder::class,
             CarcassTypeSeeder::class,
             ProductSeeder::class,
+            ProcessesSeeder::class,
         ]);
     }
 }

@@ -20,8 +20,7 @@
       <div class="small-box bg-info">
         <div class="inner">
           <h3>{{ $lined_up }}</h3>
-
-          <p>Lined Up</p>
+          <p>No. of Animals from lairage</p>
         </div>
         <div class="icon">
           <i class="ion ion-bag"></i>
@@ -35,7 +34,6 @@
       <div class="small-box bg-success">
         <div class="inner">
           <h3>{{ $slaughtered }}<sup style="font-size: 20px"></sup></h3>
-
           <p>Slaughtered</p>
         </div>
         <div class="icon">
@@ -50,7 +48,6 @@
       <div class="small-box bg-warning">
         <div class="inner">
           <h3>{{ $lined_up - $slaughtered }} </h3>
-
           <p>Remaining count</p>
         </div>
         <div class="icon">
@@ -65,7 +62,6 @@
       <div class="small-box bg-danger">
         <div class="inner">
           <h3>{{ $missing_slaps }}</h3>
-
           <p>Missing Slapmarks</p>
         </div>
         <div class="icon">

@@ -15,7 +15,10 @@ class CreateProcessTable extends Migration
     {
         Schema::create('processes', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->integer('process_code');
+            $table->string('process', 100);
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrent();
         });
     }
 

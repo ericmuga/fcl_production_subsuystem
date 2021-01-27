@@ -17,6 +17,7 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
+                            <th>Process</th>
                             <th>No. of Carcasses</th>
                             <th>Net weight(kgs) </th>
                             <th>Date</th>
@@ -27,6 +28,7 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
+                            <th>Process</th>
                             <th>No. of Carcasses</th>
                             <th>Net weight(kgs) </th>
                             <th>Date</th>
@@ -38,6 +40,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
+                                <td>{{ $data->process }}</td>
                                 <td>{{ $data->no_of_carcass }}</td>
                                 <td>{{ number_format($data->net_weight, 2) }}</td>
                                 <td>{{ $data->created_at }}</td>

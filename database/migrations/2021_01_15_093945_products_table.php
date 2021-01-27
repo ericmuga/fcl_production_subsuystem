@@ -17,11 +17,8 @@ class ProductsTable extends Migration
             $table->id();
             $table->string('code', 20)->index();
             $table->string('description', 50);
-            // $table->string('product_type', 20);
-            // $table->string('input_type', 20);
             $table->string('unit_of_measure', 10)->nullable();
-            $table->string('often')->default("NO");
-            $table->integer('user_id')->nullable()->unsigned();
+            $table->string('product_type', 20)->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

@@ -29,19 +29,19 @@ class ButcheryController extends Controller
         $title = "dashboard";
 
         $baconers = BeheadingData::whereDate('created_at', Carbon::today())
-            ->where('item_code', "G0110")
+            ->where('item_code', "G1030")
             ->sum('no_of_carcass');
 
         $sows = BeheadingData::whereDate('created_at', Carbon::today())
-            ->where('item_code', "G0111")
+            ->where('item_code', "G1031")
             ->sum('no_of_carcass');
 
         $baconers_weight = BeheadingData::whereDate('created_at', Carbon::today())
-            ->where('item_code', "G0110")
+            ->where('item_code', "G1030")
             ->sum('net_weight');
 
         $sows_weight = BeheadingData::whereDate('created_at', Carbon::today())
-            ->where('item_code', "G0111")
+            ->where('item_code', "G1031")
             ->sum('net_weight');
 
         $butchery_date = $helpers->getButcheryDate();
@@ -54,25 +54,25 @@ class ButcheryController extends Controller
             ->whereDate('created_at', $butchery_date)
             ->count();
 
-        $three_parts_baconers = ButcheryData::where('carcass_type', 'G0110')
+        $three_parts_baconers = ButcheryData::where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
             ->sum('net_weight');
 
-        $three_parts_sows = ButcheryData::where('carcass_type', 'G0111')
+        $three_parts_sows = ButcheryData::where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
             ->sum('net_weight');
 
-        $b_legs = ButcheryData::where('carcass_type', 'G0110')
+        $b_legs = ButcheryData::where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1100')
             ->sum('net_weight');
 
-        $b_shoulders = ButcheryData::where('carcass_type', 'G0110')
+        $b_shoulders = ButcheryData::where('carcass_type', 'G1030')
         ->whereDate('created_at', Carbon::today())
         ->where('item_code', 'G1101')
         ->sum('net_weight');
 
-        $b_middles = ButcheryData::where('carcass_type', 'G0110')
+        $b_middles = ButcheryData::where('carcass_type', 'G1030')
         ->whereDate('created_at', Carbon::today())
         ->where('item_code', 'G1102')
         ->sum('net_weight');
@@ -90,16 +90,16 @@ class ButcheryController extends Controller
             ->get()->toArray();
 
         $products = DB::table('products')
-            ->orWhere('description', 'Legs')
-            ->orWhere('description', 'Middles')
-            ->orWhere('description', 'Shoulders')
+            ->orWhere('code', 'G1100')
+            ->orWhere('code', 'G1101')
+            ->orWhere('code', 'G1102')
             ->orderBy('code', 'ASC')
             ->get();
 
         $beheading_data = DB::table('beheading_data')
             ->whereDate('beheading_data.created_at', Carbon::today())
-            ->leftJoin('carcass_types', 'beheading_data.item_code', '=', 'carcass_types.code')
-            ->select('beheading_data.*', 'carcass_types.description')
+            ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
+            ->select('beheading_data.*', 'products.description')
             ->get();
 
         $butchery_data = DB::table('butchery_data')
@@ -108,34 +108,36 @@ class ButcheryController extends Controller
             ->select('butchery_data.*', 'products.description')
             ->get();
 
-        $carcass_types = DB::table('carcass_types')
-            ->orWhere('code', 'G0110')
-            ->orWhere('code', 'G0111')
-            ->get();
-
-        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'carcass_types', 'helpers'));
+        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers'));
     }
 
     public function saveScaleOneData(Request $request)
     {
         try {
             // insert sales substr($string, 0, -1);
-            if ($request->carcass_type == "G0110A" || $request->carcass_type == "G0110B") {
+            if ($request->carcass_type == "G1032" || $request->carcass_type == "G1033") {
                 $new = Sale::create([
-                    'item_code' => "G0110",
+                    'item_code' => $request->carcass_type,
                     'no_of_carcass' => $request->no_of_carcass,
                     'net_weight' => $request->net,
+                    'process_code' => 0, //process behead pig by default
                     'user_id' => Auth::id(),
                 ]);
 
                 Toastr::success('sale recorded successfully','Success');
                 return redirect()->back();
             }
-            // insert beaheding data
+            // insert beheading data
+            $process_code = 0; //Behead Pig
+            if ($request->carcass_type == 'G1031') {
+                $process_code = 1; //Behead sow
+            }
+
             $new = BeheadingData::create([
                 'item_code' => $request->carcass_type,
                 'no_of_carcass' => $request->no_of_carcass,
                 'net_weight' => $request->net,
+                'process_code' => $process_code,
                 'user_id' => Auth::id(),
             ]);
 
@@ -154,10 +156,17 @@ class ButcheryController extends Controller
     {
         try {
             # insert record
+            $process_code = 2; //Breaking Pig, (Leg, Mdl, Shld)
+            if ($request->carcass_type == 'G1031') {
+                $process_code = 3; //Breaking Sow into Leg,Mid,&Shd
+
+            }
             $new = ButcheryData::create([
                 'carcass_type' =>  $request->carcass_type,
                 'item_code' =>  $request->item_code,
                 'net_weight' => $request->net2,
+                'no_of_items' => $request->no_of_items,
+                'process_code' => $process_code,
                 'user_id' => Auth::id(),
             ]);
 
@@ -316,8 +325,8 @@ class ButcheryController extends Controller
     {
         $title = "Beheading-Report";
         $beheading_data = DB::table('beheading_data')
-            ->leftJoin('carcass_types', 'beheading_data.item_code', '=', 'carcass_types.code')
-            ->select('beheading_data.*', 'carcass_types.description')
+            ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
+            ->select('beheading_data.*', 'products.description')
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
@@ -351,7 +360,8 @@ class ButcheryController extends Controller
         $title = "Sales-Report";
         $sales_data = DB::table('sales')
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
-            ->select('sales.*', 'products.description')
+            ->leftJoin('processes', 'sales.process_code', '=', 'processes.process_code')
+            ->select('sales.*', 'products.description', 'processes.process')
             ->orderBy('created_at', 'DESC')
             ->get();
 

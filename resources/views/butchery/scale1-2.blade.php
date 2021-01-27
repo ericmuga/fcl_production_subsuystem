@@ -78,31 +78,31 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="G0110" id="baconers"
+                                        <input class="form-check-input" type="radio" value="G1030" id="baconers"
                                             name="carcass_type" checked>
                                         <label for="form-check-label">Baconers</label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="G0111" id="sows"
+                                        <input class="form-check-input" type="radio" value="G1031" id="sows"
                                             name="carcass_type">
                                         <label for="form-check-label">Sows </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G0110A" id="headless_sale"
+                                <input class="form-check-input" type="radio" value="G1032" id="headless_sale"
                                     name="carcass_type" >
                                 <label for="form-check-label">Porker, Headles-sales</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G0110B" id="headOn_sale"
+                                <input class="form-check-input" type="radio" value="G1033" id="headOn_sale"
                                     name="carcass_type" >
                                 <label for="form-check-label">Porker, HeadOn-sales</label>
                             </div>
                         </div>
-                        <div class="form-group" style="padding-left: 20%">
+                        <div class="form-group" style="padding-left: 10%">
                             <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
                                 class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 1</button> <br>
                             <small><input type="text" id="comport_value"
@@ -159,35 +159,42 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Carcass Type</label>
                             <select class="form-control select2" name="carcass_type" id="carcass_type" required>
-                                @foreach($carcass_types as $type)
+                                {{-- @foreach($carcass_types as $type)
                                     <option value="{{ $type->code }}" @if($type->code == "G0110") selected="selected" @endif>
                                         {{ ucwords($type->description) }}
                                     </option>
-                                @endforeach
+                                @endforeach --}}
+                                <option value="G1030" selected="selected"> Pig, Carcass</option>
+                                <option value="G1031"> Sow, Carcass</option>
+
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Carcass Part</label>
-                            <div class="form-check">
-                                <label class="form-check-label" for="radio1">
-                                    <input type="radio" class="form-check-input" id="radio1" name="item_code"
-                                        value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->description }}
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label" for="radio2">
-                                    <input type="radio" class="form-check-input" id="radio2" name="item_code"
-                                        value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                    <input type="radio" class="form-check-input" id="radio3" name="item_code"
-                                        value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->description }}
-                                </label>
-                            </div>
+                            @if ($arr_products)
+                                <label for="exampleInputPassword1">Product Part</label>
+                                <div class="form-check">
+                                    <label class="form-check-label" for="radio1">
+                                        <input type="radio" class="form-check-input" id="radio1" name="item_code"
+                                            value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->description }}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label" for="radio2">
+                                        <input type="radio" class="form-check-input" id="radio2" name="item_code"
+                                            value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <label class="form-check-label">
+                                        <input type="radio" class="form-check-input" id="radio3" name="item_code"
+                                            value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->description }}
+                                    </label>
+                                </div>
+                            @else
+                                <p><code>You must have products part set in db</code></p>
+                            @endif
                         </div>
-                        <div class="form-group" style="padding-left: 20%">
+                        <div class="form-group" style="padding-left: 10%">
                             <button type="button" onclick="getWeight2AjaxApi()" id="weigh2" value="COM4"
                                 class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 2</button> <br>
                             <small><input type="text" id="comport_value2"
@@ -197,6 +204,11 @@
                 </div>
                 <div class="card ">
                     <div class="card-body text-center">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">No. of pieces </label>
+                            <input type="number" class="form-control" id="no_of_items" value="" name="no_of_items"
+                                placeholder="" required>
+                        </div>
                         <div class="form-group">
                             <label for="exampleInputEmail1">Reading</label>
                             <input type="number" step="0.01" class="form-control" id="reading2" name="reading2"
@@ -211,16 +223,18 @@
                             <input type="number" class="form-control" id="tareweight2" name="tareweight2"
                                 value="{{ number_format($configs[1]->tareweight, 2) }}" readonly>
                         </div>
+                    </div>
+                </div>
+                <div class="card ">
+                    <div class="card-body text-center">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
                             <input type="number" class="form-control" id="net2" name="net2" value="0.00" step="0.01"
                                 placeholder="" readonly>
                         </div>
                     </div>
-                </div>
-                <div class="card ">
                     <div class="card-body text-center">
-                        <div class="form-group" style="padding-top: 50%">
+                        <div class="form-group">
                             <button type="submit" onclick="return checkNet2OnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
                                     aria-hidden="true"></i> Save
                             </button>
