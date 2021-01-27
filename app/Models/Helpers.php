@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
 class Helpers
@@ -24,6 +26,26 @@ class Helpers
     public function getProductName($code)
     {
         return Product::where('code', $code)->value('description');
+    }
+
+    public function getButcheryDate(){
+        $proposed_butchery_date = Carbon::yesterday();
+        if ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday())->exists() ) {
+            // yesterday is valid
+            return $proposed_butchery_date = Carbon::yesterday();
+
+        }
+        elseif ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(1))->exists() ) {
+            # yesterday minus 1 day is valid
+            return $proposed_butchery_date = Carbon::yesterday()->subDays(1);
+
+        }
+        elseif ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(2))->exists() ) {
+            # yesterday minus 2 day is valid
+            return $proposed_butchery_date = Carbon::yesterday()->subDays(2);
+
+        }
+        return $proposed_butchery_date;
     }
 
 }

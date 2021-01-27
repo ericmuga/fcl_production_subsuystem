@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\ReceiptsImport;
 use App\Models\Helpers;
 use App\Models\MissingSlapData;
+use App\Models\Receipt;
 use App\Models\SlaughterData;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
@@ -23,7 +24,7 @@ class SlaughterController extends Controller
         $this->middleware('auth');
     }
 
-    public function index()
+    public function index(Helpers $helpers)
     {
         $title = "dashboard";
         $slaughtered = DB::table('slaughter_data')
@@ -42,7 +43,9 @@ class SlaughterController extends Controller
             ->orderBy('code', 'asc')
             ->get();
 
-        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'carcass_types'));
+        $date = Carbon::today();
+
+        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'carcass_types', 'date', 'helpers'));
     }
 
     public function weigh(Helpers $helpers)
@@ -67,6 +70,7 @@ class SlaughterController extends Controller
             ->get();
 
         $slaps = DB::table('missing_slap_data')
+            ->whereDate('created_at', Carbon::today())
             ->orderBy('created_at', 'DESC')
             ->get();
 
@@ -155,6 +159,7 @@ class SlaughterController extends Controller
     {
         $title = "SlapData";
         $slaps = DB::table('missing_slap_data')
+            ->orderBy('created_at', 'DESC')
             ->get();
         return view('slaughter.missing_slapmarks', compact('title', 'slaps', 'helpers'));
 
@@ -164,7 +169,7 @@ class SlaughterController extends Controller
     {
         $title = "receipts";
         $receipts = DB::table('receipts')
-            ->orderBy('slaughter_date', 'ASC')
+            ->orderBy('slaughter_date', 'DESC')
             ->get();
         return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
 
@@ -189,6 +194,10 @@ class SlaughterController extends Controller
 
         // upload
         $database_date = Carbon::parse($request->slaughter_date);
+
+        //delete existing records of same slaughter date
+        DB::table('receipts')->where('slaughter_date', $database_date)->delete();
+
         Session::put('slaughter_date', $database_date);
         Excel::import(new ReceiptsImport, request()->file('file'));
 

@@ -5,6 +5,7 @@ namespace App\Imports;
 use App\Models\Receipt;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\ToModel;
 
@@ -18,6 +19,7 @@ class ReceiptsImport implements ToModel
     public function model(array $row)
     {
         $slaughter_date = Session::get('slaughter_date');
+
         return new Receipt([
             'enrolment_no' => $row[0],
             'vendor_tag' => $row[1],

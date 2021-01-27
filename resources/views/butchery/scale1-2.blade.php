@@ -25,13 +25,10 @@
         <div class="form-group row">
             <!-- Date -->
             <div class="form-group">
-                <label>Slaughter Date(mm/dd/yyyy):</label>
-                <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                    <input type="text" id="datepk" class="form-control datetimepicker-input" value=""
-                        oninput="getCounts()" data-target="#reservationdate" />
-                    <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                    </div>
+                <label>Slaughter Date(yyyy-mm-dd):</label>
+                <div class="input-group">
+                    <input type="text" id="datepk" name="datepk" class="form-control" value="">
+                    <input type="hidden" id="date_hidden" value=" {{ $helpers->getButcheryDate() }}">
                 </div>
             </div>
             <!-- /.form group -->
@@ -406,10 +403,54 @@
 <script>
     $(document).ready(function () {
 
-        var date = new Date();
-        date.setDate(date.getDate() - 1); //date yesterday
+        var hidden_date = $('#date_hidden').val();
 
-        // $("#datepk").val(formatDate(date));
+        //get slaughter data values
+        $("#datepk").val(hidden_date);
+        if (hidden_date != null) {
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: "{{ url('slaughter-data-ajax') }}",
+                data: {
+                    'date': hidden_date,
+
+                },
+                dataType: 'JSON',
+                success: function (res) {
+                    if (res) {
+
+                        var str = JSON.stringify(res);
+                        var obj = JSON.parse(str);
+
+                        $("#baconers_number").val(obj.baconers);
+                        $("#sows_number").val(obj.sows);
+
+                        var baconers_sides = document.getElementById('baconers_sides');
+                        var sows_sides = document.getElementById('sows_sides');
+                        if (obj.baconers > 0) {
+
+                            baconers_sides.value = obj.baconers * 2;
+
+                        } else {
+                            baconers_sides.value = 0;
+                        }
+
+                        if (obj.sows > 0) {
+                            sows_sides.value = obj.sows * 2;
+
+                        } else {
+                            sows_sides.value = 0;
+                        }
+
+                    }
+                }
+            });
+
+        }
+
 
         $('#no_of_carcass').change(function () {
             var number_of_carcass = $(this).val();
@@ -469,53 +510,54 @@
     });
 
     //get slaughter data count
-    function getCounts() {
-        var date = $('#datepk').val();
-        if (date != null) {
-            $.ajax({
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{ url('slaughter-data-ajax') }}",
-                data: {
-                    'date': date,
+    // function getCounts() {
+    //     var date = $('#datepk').val();
+    //     alert('on load');
+    //     if (date != null) {
+    //         $.ajax({
+    //             type: "GET",
+    //             headers: {
+    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //             },
+    //             url: "{{ url('slaughter-data-ajax') }}",
+    //             data: {
+    //                 'date': date,
 
-                },
-                dataType: 'JSON',
-                success: function (res) {
-                    if (res) {
+    //             },
+    //             dataType: 'JSON',
+    //             success: function (res) {
+    //                 if (res) {
 
-                        var str = JSON.stringify(res);
-                        var obj = JSON.parse(str);
+    //                     var str = JSON.stringify(res);
+    //                     var obj = JSON.parse(str);
 
-                        $("#baconers_number").val(obj.baconers);
-                        $("#sows_number").val(obj.sows);
+    //                     $("#baconers_number").val(obj.baconers);
+    //                     $("#sows_number").val(obj.sows);
 
-                        var baconers_sides = document.getElementById('baconers_sides');
-                        var sows_sides = document.getElementById('sows_sides');
-                        if (obj.baconers > 0) {
+    //                     var baconers_sides = document.getElementById('baconers_sides');
+    //                     var sows_sides = document.getElementById('sows_sides');
+    //                     if (obj.baconers > 0) {
 
-                            baconers_sides.value = obj.baconers * 2;
+    //                         baconers_sides.value = obj.baconers * 2;
 
-                        } else {
-                            baconers_sides.value = 0;
-                        }
+    //                     } else {
+    //                         baconers_sides.value = 0;
+    //                     }
 
-                        if (obj.sows > 0) {
-                            sows_sides.value = obj.sows * 2;
+    //                     if (obj.sows > 0) {
+    //                         sows_sides.value = obj.sows * 2;
 
-                        } else {
-                            sows_sides.value = 0;
-                        }
+    //                     } else {
+    //                         sows_sides.value = 0;
+    //                     }
 
-                    }
-                }
-            });
+    //                 }
+    //             }
+    //         });
 
-        }
+    //     }
 
-    }
+    // }
 
     // getNetWeight1
     function getNet() {

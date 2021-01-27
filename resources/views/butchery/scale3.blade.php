@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1 class="m-0"> {{ $title }} |<small> Slicing Data</small></h1>
+            <h1 class="m-0"> {{ $title }} |<small> Deboned Data</small></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
@@ -22,7 +22,7 @@
                     <select class="form-control select2" name="product" id="product" required>
                         @foreach($products as $product)
                             <option value="{{ $product->code }}">
-                                {{ ucwords($product->description) }}
+                                {{ ucwords($product->description) }} - {{ $product->code }}
                             </option>
                         @endforeach
                     </select>
@@ -94,7 +94,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Scale 3 slicing output data | <span id="subtext-h1-title"><small> entries ordered by
+                    <h3 class="card-title"> Scale 3 Deboned output data | <span id="subtext-h1-title"><small> entries ordered by
                                 latest</small> </span></h3>
                 </div>
                 <!-- /.card-header -->
@@ -120,7 +120,7 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                        @foreach($slicing_data as $data)
+                        @foreach($deboning_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
                                 <td> {{ $data->item_code }}</td>

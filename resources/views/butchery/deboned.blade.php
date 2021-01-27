@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="">
-            <h1 class="m-0"> Reports |<small> Pork Slicing Report</small></h1>
+            <h1 class="m-0"> Reports |<small> Pork Deboning Report</small></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
@@ -40,7 +40,7 @@
                 </tr>
             </tfoot>
             <tbody>
-                @foreach($slicing_data as $data)
+                @foreach($deboning_data as $data)
                     <tr>
                         <td>{{ $i++ }}</td>
                         <td> {{ $data->item_code }}</td>

@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SlicingData extends Model
+class DebonedData extends Model
 {
     use HasFactory;
-    protected $table = 'slicing_data';
+    protected $table = 'deboned_data';
     protected $guarded =[];
 }

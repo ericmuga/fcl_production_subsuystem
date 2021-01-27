@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSlicingDataTable extends Migration
+class CreateDebonedDataTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSlicingDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('slicing_data', function (Blueprint $table) {
+        Schema::create('deboned_data', function (Blueprint $table) {
             $table->id();
             $table->string('item_code', 20);
             $table->double('net_weight', 8, 2);
@@ -30,6 +30,6 @@ class CreateSlicingDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('slicing_data');
+        Schema::dropIfExists('deboned_data');
     }
 }

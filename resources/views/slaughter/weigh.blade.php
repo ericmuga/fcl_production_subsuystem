@@ -116,7 +116,7 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
-                    <button type="submit" onclick="return validateOnSubmit()" class="btn btn-primary btn-lg"><i
+                    <button type="submit" onclick="return validateOnSubmit() && checkQtyCount()" class="btn btn-primary btn-lg"><i
                             class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
@@ -408,19 +408,25 @@
 
     function validateOnSubmit() {
         var net = $('#net').val();
-        var total_by_vendor = 5;
-        var total_per_slap = 5;
-        var valid = true;
-        if (net == "" || net <= 0.00) {
-            valid = false;
-            alert("Please ensure you have valid netweight.");
-        }
-        else if (total_by_vendor == total_per_slap){
-            valid = false;
-            alert("You have exhausted vendor received Qty.");
-        }
+        var slapmark = $('#slapmark').val();
+        var total_by_vendor = $('#total_by_vendor').val();
+        var total_per_slap = $('#total_per_slap').val();
 
-        return valid;
+        if (net == "" || net <= 0.00) {
+            alert("Please ensure you have valid netweight.");
+            return false;
+        }
+    }
+
+    function checkQtyCount(){
+        if (slapmark == "") {
+            alert("please select slapmark.");
+            return false;
+        }
+        else if (slapmark != "" && total_by_vendor == total_per_slap){
+            alert("You have exhausted vendor received Qty.");
+            return false;
+        }
     }
 
     //classification code logic on input
@@ -452,7 +458,6 @@
                 if (special_vendor_no.includes(vendor_number)) {
 
                     if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && net_weight < 40) {
-                        // classification_code.value = "RMPK-SUB40";
                         $('#classification_code').val("RMPK-SUB40");
                     }
 
@@ -504,7 +509,7 @@
                     if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight > 120) {
                         classification_code.value = "RM-CLS08";
                     }
-                    //
+
                     if (carcass_type == "G0111") {
                         classification_code.value = "SOW-RM";
                     }
@@ -536,7 +541,7 @@
                         classification_code.value = "PK-SUB40";
                     }
                     if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 40 &&
-                        net_weight <= 49) {
+                        net_weight <= 49.99) {
                         classification_code.value = "CLS05";
                     }
                     if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 50 &&
@@ -584,7 +589,6 @@
                     if (carcass_type == "G0113" && net_weight >= 9 && net_weight < 20) {
                         classification_code.value = "3P-SK5";
                     }
-
 
                 }
 

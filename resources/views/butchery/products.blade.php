@@ -2,10 +2,10 @@
 
 @section('content')
 
-<div class="div">
+{{-- <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#add_product"><i class="fa fa-plus"></i> Add
         New Product</button> <br> <br>
-</div>
+</div> --}}
 
 <!-- create product-->
 <div id="add_product" class="collapse">
@@ -90,8 +90,6 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
-                            <th>Product Type</th>
-                            <th>Input Type</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -99,8 +97,6 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
-                            <th>Product Type</th>
-                            <th>Input Type</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -109,8 +105,6 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->code }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td>{{ $data->product_type }}</td>
-                                <td>{{ $data->input_type }}</td>
                             </tr>
                         @endforeach
                     </tbody>

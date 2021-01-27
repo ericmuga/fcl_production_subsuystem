@@ -13,7 +13,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('auth')->except(['getLogin', 'processLogin']);
+        $this->middleware('auth')->except(['getLogin', 'processLogin']);
     }
 
     public function getLogin()

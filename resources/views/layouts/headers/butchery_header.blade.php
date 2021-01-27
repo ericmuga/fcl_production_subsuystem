@@ -25,7 +25,7 @@
                                 Beheading & breaking </a></li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{{ route('butchery_scale3') }}" class="dropdown-item">Scale 3
-                                Slicing </a></li>
+                                Deboning </a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -55,7 +55,11 @@
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>
-                                    <a tabindex="-1" href="{{ route('butchery_slicing_report') }}" class="dropdown-item"> Slicing Report</a>
+                                    <a tabindex="-1" href="{{ route('butchery_slicing_report') }}" class="dropdown-item"> Deboning Report</a>
+                                </li>
+                                <li class="dropdown-divider"></li>
+                                <li>
+                                    <a tabindex="-1" href="{{ route('butchery_sales_report') }}" class="dropdown-item"> Sales Report</a>
                                 </li>
                             </ul>
                         </li>
