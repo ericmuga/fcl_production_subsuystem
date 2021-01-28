@@ -51,7 +51,7 @@ class LoginController extends Controller
 
             $user = User::findOrFail(Auth::id());
 
-            //Check if session exists and log out the previous session
+            // Check if session exists and log out the previous session
             $new_sessid   = \Session::getId(); //get new session_id after user sign in
             if($user->session != '') {
                 $last_session = \Session::getHandler()->read($user->session);

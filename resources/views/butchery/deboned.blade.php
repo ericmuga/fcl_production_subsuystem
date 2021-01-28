@@ -26,6 +26,8 @@
                     <th>#</th>
                     <th>Code </th>
                     <th>product </th>
+                    <th>Product Type</th>
+                    <th>Production Process</th>
                     <th>Weight(kgs)</th>
                     <th>Date </th>
                 </tr>
@@ -35,6 +37,8 @@
                     <th>#</th>
                     <th>Code </th>
                     <th>product </th>
+                    <th>Product Type</th>
+                    <th>Production Process</th>
                     <th>Weight(kgs)</th>
                     <th>Date </th>
                 </tr>
@@ -45,6 +49,8 @@
                         <td>{{ $i++ }}</td>
                         <td> {{ $data->item_code }}</td>
                         <td>{{ $helpers->getProductName($data->item_code) }}</td>
+                        <td> {{ $data->product_type }}</td>
+                        <td> {{ $data->process }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>

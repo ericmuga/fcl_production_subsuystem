@@ -9,7 +9,7 @@
       </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
-
+<hr>
 @endsection
 
 @section('content')

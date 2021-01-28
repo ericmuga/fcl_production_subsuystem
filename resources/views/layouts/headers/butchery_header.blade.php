@@ -55,7 +55,7 @@
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>
-                                    <a tabindex="-1" href="{{ route('butchery_slicing_report') }}" class="dropdown-item"> Deboning Report</a>
+                                    <a tabindex="-1" href="{{ route('butchery_deboning_report') }}" class="dropdown-item"> Deboning Report</a>
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>

@@ -68,16 +68,33 @@ class ButcheryController extends Controller
             ->sum('net_weight');
 
         $b_shoulders = ButcheryData::where('carcass_type', 'G1030')
-        ->whereDate('created_at', Carbon::today())
-        ->where('item_code', 'G1101')
-        ->sum('net_weight');
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1102')
+            ->sum('net_weight');
 
         $b_middles = ButcheryData::where('carcass_type', 'G1030')
-        ->whereDate('created_at', Carbon::today())
-        ->where('item_code', 'G1102')
-        ->sum('net_weight');
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1101')
+            ->sum('net_weight');
 
-        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'butchery_date', 'helpers', 'b_legs', 'b_shoulders', 'b_middles'));
+        $s_legs = ButcheryData::where('carcass_type', 'G1031')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1100')
+            ->sum('net_weight');
+
+        $s_shoulders = ButcheryData::where('carcass_type', 'G1031')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1102')
+            ->sum('net_weight');
+
+        $s_middles = ButcheryData::where('carcass_type', 'G1031')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1101')
+            ->sum('net_weight');
+
+
+
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'butchery_date', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)
@@ -236,6 +253,10 @@ class ButcheryController extends Controller
             ->get();
 
         $deboning_data = DB::table('deboned_data')
+            ->whereDate('deboned_data.created_at', Carbon::today())
+            ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
+            ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
+            ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
             ->get();
 
         $product_types = DB::table('product_types')
@@ -365,10 +386,13 @@ class ButcheryController extends Controller
 
     }
 
-    public function getSlicingReport(Helpers $helpers)
+    public function getDeboningReport(Helpers $helpers)
     {
         $title = "Deboning-Report";
         $deboning_data = DB::table('deboned_data')
+            ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
+            ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
+            ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
             ->get();
 
         return view('butchery.deboned', compact('title', 'deboning_data', 'helpers'));

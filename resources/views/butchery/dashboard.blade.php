@@ -10,7 +10,7 @@
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
-
+<hr>
 @endsection
 
 @section('content')
@@ -47,13 +47,13 @@
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Scale 1 output</strong>
+            <strong>Scale 2 output</strong>
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
@@ -64,7 +64,7 @@
             <div class="icon">
                 <i class="ion ion-alert"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('butchery_breaking_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
@@ -75,7 +75,7 @@
             }
         @endphp
         <p class="text-center">
-            <strong>Scale 3 Output</strong>
+            <strong>Scale 2 Output</strong>
         </p>
         <div class="progress-group">
             legs
@@ -109,56 +109,119 @@
                     style="width: {{ $three_parts_baconers/$baconers_weight*100 }}%"></div>
             </div>
         </div>
+        <div class="footer">
+            <a href="{{ route('butchery_breaking_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
         <!-- /.progress-group -->
     </div>
     <!-- ./col -->
 </div>
 <!-- /.row -->
+<hr>
 
-{{-- <div class="card-body">
-    <div class="row">
-        <!-- /.col -->
-        <div class="col-md-4">
+<!-- ********************************************************************************************************* -->
 
-            <div class="progress-group">
-                legs
-                <span class="float-right"><b>160</b>/200</span>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-primary" style="width: 80%"></div>
-                </div>
+<div class="row">
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <p class="text-center">
+            <strong>From Slaughter</strong>
+        </p>
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ $lined_sows?? "0" }}</h3>
+                <p>No. of Sows</p>
             </div>
-            <!-- /.progress-group -->
-
-            <div class="progress-group">
-                Shoulders
-                <span class="float-right"><b>310</b>/400</span>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-danger" style="width: 75%"></div>
-                </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
             </div>
-
-            <!-- /.progress-group -->
-            <div class="progress-group">
-                <span class="progress-text">Middles</span>
-                <span class="float-right"><b>480</b>/800</span>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-success" style="width: 60%"></div>
-                </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <p class="text-center">
+            <strong>Scale 1</strong>
+        </p>
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ $sows?? "0" }}</h3>
+                <p>Beheaded Sows</p>
             </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <p class="text-center">
+            <strong>Scale 2 output</strong>
+        </p>
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ number_format($sows_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
-            <!-- /.progress-group -->
-            <div class="progress-group">
-                Total Output
-                <span class="float-right"><b>250</b>/500</span>
-                <div class="progress progress-sm">
-                    <div class="progress-bar bg-warning" style="width: {{ 50/100*100 }}%"></div>
-</div>
-</div>
-<!-- /.progress-group -->
-</div>
-<!-- /.col -->
+                <p>Sows Total Weight Output</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-alert"></i>
+            </div>
+            <a href="{{ route('butchery_breaking_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        @php
+            if($sows_weight == 0.00){
+                $sows_weight = 1.00;
+            }
+        @endphp
+        <p class="text-center">
+            <strong>Scale 2 Output</strong>
+        </p>
+        <div class="progress-group">
+            legs
+            <span class="float-right"><b>{{ number_format($s_legs, 2) }}</b>kgs</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-primary" style="width: {{ $s_legs/$sows_weight*100 }}%"></div>
+            </div>
+        </div>
+        <!-- /.progress-group -->
+        <div class="progress-group">
+            Shoulders
+            <span class="float-right"><b>{{ number_format($b_shoulders, 2) }}</b>kgs</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-danger" style="width: {{ $s_shoulders/$sows_weight*100 }}%"></div>
+            </div>
+        </div>
+        <!-- /.progress-group -->
+        <div class="progress-group">
+            <span class="progress-text">Middles</span>
+            <span class="float-right"><b>{{ number_format($s_middles, 2) }}</b>kgs</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-success" style="width: {{ $s_middles/$sows_weight*100 }}%"></div>
+            </div>
+        </div>
+        <!-- /.progress-group -->
+        <div class="progress-group">
+            Total Output
+            <span class="float-right"><b>{{ number_format($three_parts_sows, 2) }}</b>(kgs)</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-warning"
+                    style="width: {{ $three_parts_sows/$sows_weight*100 }}%"></div>
+            </div>
+        </div>
+        <div class="footer">
+            <a href="{{ route('butchery_breaking_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        <!-- /.progress-group -->
+    </div>
+    <!-- ./col -->
 </div>
 <!-- /.row -->
-</div> --}}
 
 @endsection

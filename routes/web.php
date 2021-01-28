@@ -61,7 +61,7 @@ Route::get('/butchery/products', [ButcheryController::class, 'products'])->name(
 Route::post('/butchery/product-add', [ButcheryController::class, 'addProduct'])->name('butchery_add_product');
 Route::get('/butchery/beheading-report', [ButcheryController::class, 'getBeheadingReport'])->name('butchery_beheading_report');
 Route::get('/butchery/braking-report', [ButcheryController::class, 'getBrakingReport'])->name('butchery_breaking_report');
-Route::get('/butchery/slicing-report', [ButcheryController::class, 'getSlicingReport'])->name('butchery_slicing_report');
+Route::get('/butchery/deboning-report', [ButcheryController::class, 'getDeboningReport'])->name('butchery_deboning_report');
 Route::get('/butchery/sales-report', [ButcheryController::class, 'getSalesReport'])->name('butchery_sales_report');
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
