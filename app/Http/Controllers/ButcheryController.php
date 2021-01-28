@@ -107,11 +107,8 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
             ->select('butchery_data.*', 'products.description')
             ->get();
-        
-        $product_types = DB::table('product_types')
-            ->get();
 
-        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers', 'product_types'));
+        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers'));
     }
 
     public function saveScaleOneData(Request $request)
@@ -241,16 +238,28 @@ class ButcheryController extends Controller
         $deboning_data = DB::table('deboned_data')
             ->get();
 
-        return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers'));
+        $product_types = DB::table('product_types')
+            ->get();
+
+        $processes = DB::table('processes')
+            ->get();
+
+        return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers', 'product_types', 'processes'));
     }
 
     public function saveScaleThreeData(Request $request)
     {
         try {
+            $product = 1;
+            if ($request->product_type == "By Product") {
+                $product = 2;
+            }
             # insert record
             $new = DebonedData::create([
                 'item_code' =>  $request->product,
                 'net_weight' => $request->net,
+                'process_code' => $request->process_type,
+                'product_type' => $product,
                 'user_id' => Auth::id(),
             ]);
 
@@ -262,6 +271,13 @@ class ButcheryController extends Controller
             return back()
                 ->withInput();
         }
+
+    }
+
+    public function getProductTypeAjax(Request $request)
+    {
+        $data = DB::table('products')->where('code', $request->product_code)->first();
+        return response()->json($data);
 
     }
 

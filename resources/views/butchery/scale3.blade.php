@@ -20,13 +20,37 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1"> Product Name</label>
                     <select class="form-control select2" name="product" id="product" required>
+                        <option value="">Select product</option>
                         @foreach($products as $product)
                             <option value="{{ $product->code }}">
                                 {{ ucwords($product->description) }} - {{ $product->code }}
                             </option>
                         @endforeach
                     </select>
-                </div> <br> <br>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="form-group" id="product_type_select">
+                            <label for="exampleInputPassword1">Product Type</label>
+                            <input type="text" class="form-control" id="product_type" value="" name="product_type">
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-top: 7.5%">
+                        <button class="btn btn-outline-info btn-sm form-control" id="btn_product_type" type="button" data-toggle="modal"
+                            disabled>
+                            <strong>Edit?</strong>
+                        </button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Production Process</label>
+                    <select class="form-control select2" name="process_type" id="process_type" required>
+                        <option value="" selected disabled>Select type</option>
+                        @foreach($processes as $type)
+                            <option value="{{$type->process_code}}">{{$type->process}}</option>
+                        @endforeach
+                    </select>
+                </div>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
@@ -80,6 +104,41 @@
     </div>
 </form>
 
+<!-- product type modal -->
+<div class="modal fade" id="productTypesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-edit-scale" action="#" method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Product Type</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class=" form-group">
+                        <select name="edit_product_type" id="edit_product_type" class="form-control select2" required
+                            autofocus>
+                            @foreach($product_types as $type)
+                                <option value="{{$type->code}}" selected="selected">
+                                    {{ ucwords($type->description) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" onclick="setProductCode()">
+                        <i class="fa fa-save"></i> Edit
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- end product code modal -->
 <hr>
 
 <div class="div">
@@ -147,6 +206,53 @@
 <script>
     $(document).ready(function () {
 
+        $("body").on("click", "#btn_product_type", function (a) {
+            a.preventDefault();
+
+            var product = $('#product_type').val();
+            var code = 1;
+            if (product == "By Product") {
+                code = 2;
+            }
+            $('#edit_product_type').val(code);
+
+            $('#productTypesModal').modal('show');
+        });
+
+        $('#product').change(function(){
+            var product_code = $('#product').val();
+            var product_type = document.getElementById('product_type');
+            if (product_code != '') {
+                $.ajax({
+                    type: "GET",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    url: "{{ url('product_type_ajax') }}",
+                    data: {
+                        'product_code': product_code,
+
+                    },
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (res) {
+                            // console.log(res.product_type);
+                            $('#btn_product_type').prop('disabled',false);
+
+                            if(res.product_type == 1){
+                                $('#product_type').val("Main Product");
+                            } else if(res.product_type == 2){
+                                $('#product_type').val("By Product");
+                            }
+
+                        }
+                    }
+                });
+
+            }
+
+        });
+
         $('#no_of_crates').change(function () {
             var number_of_crates = $(this).val();
             var default_tareweight = $('#default_tareweight').val();
@@ -173,6 +279,23 @@
 
         });
     });
+
+    function setProductCode(){
+        var edit_product_type = $('#edit_product_type').val();
+        if (edit_product_type == null) {
+            alert('please select item')
+            return 1;
+        }
+        else if (edit_product_type == 1) {
+            $('#product_type').val("Main Product");
+        }
+        else if (edit_product_type == 2) {
+            $('#product_type').val("By Product");
+        }
+        $('#productTypesModal').modal('hide');
+        return 1;
+
+    }
 
     function getNet() {
         var reading = document.getElementById('reading').value;

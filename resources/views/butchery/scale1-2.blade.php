@@ -597,7 +597,7 @@
     function checkNetOnSubmit(){
         var net = $('#net').val();
         $valid = true;
-        if (net == "" || net <= 0.00 ) {
+        if (net == null || net <= 0.00 ) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
         };
@@ -607,7 +607,7 @@
     function checkNet2OnSubmit(){
         var net2 = $('#net2').val();
         $valid = true;
-        if (net2 == "" || net2 <= 0.00 ) {
+        if (net2 == null || net2 <= 0.00 ) {
             $valid = false;
             alert("Please ensure you have valid netweight."+ net2);
 

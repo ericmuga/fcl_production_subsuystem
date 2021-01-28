@@ -419,11 +419,11 @@
     }
 
     function checkQtyCount(){
-        if (slapmark == "") {
+        if (slapmark == null) {
             alert("please select slapmark.");
             return false;
         }
-        else if (slapmark != "" && total_by_vendor == total_per_slap){
+        else if (slapmark != null && total_by_vendor == total_per_slap){
             alert("You have exhausted vendor received Qty.");
             return false;
         }
