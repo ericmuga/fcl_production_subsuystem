@@ -8,7 +8,7 @@
     <div class="card-group">
         <div class="card ">
             <div class="card-body text-center">
-                <div class="card-body" style="">
+                <div class="card-body">
                     <div class="row">
                         <div class="col-md-6">
                             <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i
@@ -36,10 +36,21 @@
                         value="{{ number_format($configs[0]->tareweight, 2)?? "" }}"
                         readonly>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Net</label>
-                    <input type="number" class="form-control" min="1" max="5" id="net" name="net" value="0.00"
-                        step="0.01" placeholder="" readonly required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Net</label>
+                            <input type="number" class="form-control" id="net" name="net" value="0.00"
+                                step="0.01" placeholder="" readonly required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Settlement Weight</label>
+                            <input type="number" class="form-control" id="settlement_weight" name="settlement_weight" value="0.00"
+                                step="0.01" placeholder="" readonly required>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,7 +126,7 @@
                     <input type="text" class="form-control" id="classification_code" name="classification_code"
                         placeholder="" readonly required>
                 </div>
-                <div class="form-group" style="padding-top: 10%">
+                <div class="form-group">
                     <button type="submit" onclick="return validateOnSubmit() && checkQtyCount()" class="btn btn-primary btn-lg"><i
                             class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                 </div>

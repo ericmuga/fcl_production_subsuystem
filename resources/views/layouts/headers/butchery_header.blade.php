@@ -104,8 +104,7 @@
                 </a>
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                     <li>
-                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i
-                                class="fas fa-sync"></i> Switch
+                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i> Switch
                             Interphase
                         </a>
                     </li>
