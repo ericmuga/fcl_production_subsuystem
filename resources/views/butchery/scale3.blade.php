@@ -28,7 +28,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="row">
+                <div class="row form-group">
                     <div class="col-md-8">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Product Type</label>
@@ -42,14 +42,19 @@
                         </button>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Production Process</label>
-                    <select class="form-control select2" name="process_type" id="process_type" required>
-                        <option value="" selected disabled>Select type</option>
-                        @foreach($processes as $type)
-                            <option value="{{$type->process_code}}">{{$type->process}}</option>
-                        @endforeach
-                    </select>
+                <div class="row form-group">
+                    <div class="col-md-8">
+                        <div class="form-group" id="product_type_select">
+                            <label for="exampleInputPassword1">Production Process</label>
+                            <input type="text" class="form-control" id="process_type" value="" name="process_type">
+                        </div>
+                    </div>
+                    <div class="col-md-4" style="padding-top: 7.5%">
+                        <button class="btn btn-outline-info btn-sm form-control" id="btn_process_type" type="button" data-toggle="modal"
+                            disabled>
+                            <strong>Edit?</strong>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
@@ -108,7 +113,7 @@
 <div class="modal fade" id="productTypesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-edit-scale" action="#" method="post">
+        <form id="form-product-type" action="#" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -139,6 +144,42 @@
     </div>
 </div>
 <!-- end product code modal -->
+
+<!-- production process modal -->
+<div class="modal fade" id="productionProcessModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-production-process" action="#" method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Production Process</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class=" form-group">
+                        <select name="edit_production_process" id="edit_production_process" class="form-control select2" required
+                            autofocus>
+                            @foreach($processes as $type)
+                                <option value="{{$type->process_code}}" selected="selected">
+                                    {{ ucwords($type->process) }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" type="button" onclick="setProductionProcess()">
+                        <i class="fa fa-save"></i> Edit
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- end production process modal -->
 <hr>
 
 <div class="div">
@@ -225,6 +266,12 @@
             $('#productTypesModal').modal('show');
         });
 
+        $("body").on("click", "#btn_process_type", function (a) {
+            a.preventDefault();
+
+            $('#productionProcessModal').modal('show');
+        });
+
         $('#product').change(function(){
             var product_code = $('#product').val();
             var product_type = document.getElementById('product_type');
@@ -242,13 +289,50 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
-                            // console.log(res.product_type);
+                            // console.log(res);
                             $('#btn_product_type').prop('disabled',false);
+                            $('#btn_process_type').prop('disabled',false);
 
+                            //product type
                             if(res.product_type == 1){
                                 $('#product_type').val("Main Product");
-                            } else if(res.product_type == 2){
+                            } else {
                                 $('#product_type').val("By Product");
+                            }
+
+                            //process type
+                            if (res.process_type == 4) {
+                                $('#process_type').val("Debone Pork Leg");
+                            }
+                            else if (res.process_type == 5) {
+                                $('#process_type').val("Debone Pork Middle");
+                            }
+                            else if (res.process_type == 6) {
+                                $('#process_type').val("Debone Pork Shoulder");
+                            }
+                            else if (res.process_type == 7) {
+                                $('#process_type').val("Debone Sow");
+                            }
+                            else if (res.process_type == 8) {
+                                $('#process_type').val("Slicing parts for slices, portions");
+                            }
+                            else if (res.process_type == 9) {
+                                $('#process_type').val("Trim & Roll");
+                            }
+                            else if (res.process_type == 10) {
+                                $('#process_type').val("Fat Stripping Rinds");
+                            }
+                            else if (res.process_type == 11) {
+                                $('#process_type').val("Rolling Pork Legs");
+                            }
+                            else if (res.process_type == 12) {
+                                $('#process_type').val("Rolling Pork Shoulders");
+                            }
+                            else if (res.process_type == 13) {
+                                $('#process_type').val("Bones");
+                            }
+                            else{
+                                $('#process_type').val("Undefined");
                             }
 
                         }
@@ -290,7 +374,6 @@
         var edit_product_type = $('#edit_product_type').val();
         if (edit_product_type == null) {
             alert('please select item')
-            return 1;
         }
         else if (edit_product_type == 1) {
             $('#product_type').val("Main Product");
@@ -299,7 +382,45 @@
             $('#product_type').val("By Product");
         }
         $('#productTypesModal').modal('hide');
-        return 1;
+
+    }
+
+    function setProductionProcess(){
+        var edit_production_process = $('#edit_production_process').val();
+        if (edit_production_process == null) {
+            alert('please select item')
+        }
+        else if (edit_production_process == 4) {
+            $('#process_type').val("Debone Pork Leg");
+        }
+        else if (edit_production_process == 5) {
+            $('#process_type').val("Debone Pork Middle");
+        }
+        else if (edit_production_process == 6) {
+            $('#process_type').val("Debone Pork Shoulder");
+        }
+        else if (edit_production_process == 7) {
+            $('#process_type').val("Debone Sow");
+        }
+        else if (edit_production_process == 8) {
+            $('#process_type').val("Slicing parts for slices, portions");
+        }
+        else if (edit_production_process == 9) {
+            $('#process_type').val("Trim & Roll");
+        }
+        else if (edit_production_process == 10) {
+            $('#process_type').val("Fat Stripping Rinds");
+        }
+        else if (edit_production_process == 11) {
+            $('#process_type').val("Rolling Pork Legs");
+        }
+        else if (edit_production_process == 12) {
+            $('#process_type').val("Rolling Pork Shoulders");
+        }
+        else if (edit_production_process == 13) {
+            $('#process_type').val("Bones");
+        }
+        $('#productionProcessModal').modal('hide');
 
     }
 

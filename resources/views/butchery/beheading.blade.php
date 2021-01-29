@@ -25,8 +25,9 @@
                 <tr>
                     <th>#</th>
                     <th>Code </th>
-                    <th>Carcass </th>
                     <th>No. of Carcass</th>
+                    <th>Carcass </th>
+                    <th>Production Process</th>
                     <th>Weight(kgs)</th>
                     <th>Date </th>
                 </tr>
@@ -35,8 +36,9 @@
                 <tr>
                     <th>#</th>
                     <th>Code </th>
-                    <th>Carcass </th>
                     <th>No. of Carcass</th>
+                    <th>Carcass </th>
+                    <th>Production Process</th>
                     <th>Weight(kgs)</th>
                     <th>Date </th>
                 </tr>
@@ -46,8 +48,9 @@
                     <tr>
                         <td>{{ $i++ }}</td>
                         <td> {{ $data->item_code }}</td>
-                        <td> {{ $data->description }}</td>
                         <td> {{ $data->no_of_carcass }}</td>
+                        <td> {{ $data->product_type }}</td>
+                        <td> {{ $data->process }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>

@@ -125,7 +125,10 @@ class ButcheryController extends Controller
             ->select('butchery_data.*', 'products.description')
             ->get();
 
-        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers'));
+        $inputData = $helpers->getInputData();
+        $outputData = $helpers->getOutputData();
+
+        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers', 'inputData', 'outputData'));
     }
 
     public function saveScaleOneData(Request $request)
@@ -263,23 +266,25 @@ class ButcheryController extends Controller
             ->get();
 
         $processes = DB::table('processes')
+            ->where('process_code', '>=', 4)
             ->get();
 
         return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers', 'product_types', 'processes'));
     }
 
-    public function saveScaleThreeData(Request $request)
+    public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
             $product = 1;
             if ($request->product_type == "By Product") {
                 $product = 2;
             }
+            $process_code = $helpers->getProcessCode($request->process_type);
             # insert record
             $new = DebonedData::create([
                 'item_code' =>  $request->product,
                 'net_weight' => $request->net,
-                'process_code' => $request->process_type,
+                'process_code' => (int)$process_code,
                 'product_type' => $product,
                 'user_id' => Auth::id(),
             ]);
@@ -367,7 +372,8 @@ class ButcheryController extends Controller
         $title = "Beheading-Report";
         $beheading_data = DB::table('beheading_data')
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
-            ->select('beheading_data.*', 'products.description')
+            ->leftJoin('processes', 'beheading_data.process_code', '=', 'processes.process_code')
+            ->select('beheading_data.*', 'products.description AS product_type', 'processes.process')
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
@@ -379,7 +385,8 @@ class ButcheryController extends Controller
         $title = "Braking-Report";
         $butchery_data = DB::table('butchery_data')
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
-            ->select('butchery_data.*', 'products.description')
+            ->leftJoin('processes', 'butchery_data.process_code', '=', 'processes.process_code')
+            ->select('butchery_data.*', 'products.description AS product_type', 'processes.process')
             ->get();
 
         return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));

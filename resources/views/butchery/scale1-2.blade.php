@@ -159,14 +159,8 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Carcass Type</label>
                             <select class="form-control select2" name="carcass_type" id="carcass_type" required>
-                                {{-- @foreach($carcass_types as $type)
-                                    <option value="{{ $type->code }}" @if($type->code == "G0110") selected="selected" @endif>
-                                        {{ ucwords($type->description) }}
-                                    </option>
-                                @endforeach --}}
                                 <option value="G1030" selected="selected"> Pig, Carcass</option>
                                 <option value="G1031"> Sow, Carcass</option>
-
                             </select>
                         </div>
                         <div class="form-group">
@@ -263,22 +257,35 @@
 </div>
 
 <div id="butchery_output_show" class="collapse">
-    {{-- <div class="row">
+    <div class="row">
         <!-- baconers, sows, sides -->
         <div class="form-group col-md-2">
-            <label>Legs:</label>
-            <input type="number" id="baconers_number" value="0" oninput="getSidesNumber()" readonly>
+            <label>Input Legs:</label>
+            <input type="number" id="baconers_number" value="{{ $inputData*2 }}" oninput="getSidesNumber()" readonly>
         </div>
         <div class="form-group col-md-2">
-            <label>Middles:</label>
-            <input type="number" id="baconers_sides" value="0" readonly>
+            <label>Input Middles:</label>
+            <input type="number" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
         </div>
         <div class="form-group col-md-2">
-            <label>Shoulders:</label>
-            <input type="number" id="baconers_sides" value="0" readonly>
+            <label>Input Shoulders:</label>
+            <input type="number" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
+        </div>
+
+        <div class="form-group col-md-2">
+            <label>Output Legs:</label>
+            <input type="number" id="baconers_number" value="{{ $outputData['output_legs'] }}" oninput="getSidesNumber()" readonly>
+        </div>
+        <div class="form-group col-md-2">
+            <label>Output Middles:</label>
+            <input type="number" id="baconers_sides" value="{{ $outputData['output_middles'] }}" readonly>
+        </div>
+        <div class="form-group col-md-2">
+            <label>Output Shoulders:</label>
+            <input type="number" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}" readonly>
         </div>
         <!-- /.form group -->
-    </div> --}}
+    </div> <hr>
     <!-- legs, middles, shoulders -->
 
     <div class="row">

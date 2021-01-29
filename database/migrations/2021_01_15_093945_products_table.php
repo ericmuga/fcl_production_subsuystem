@@ -18,7 +18,8 @@ class ProductsTable extends Migration
             $table->string('code', 20)->index();
             $table->string('description', 50);
             $table->string('unit_of_measure', 10)->nullable();
-            $table->string('product_type', 20)->nullable();
+            $table->tinyInteger('product_type')->nullable();
+            $table->tinyInteger('process_type')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
