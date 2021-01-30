@@ -22,6 +22,7 @@ class SlaughterDataTable extends Migration
             $table->string('vendor_name', 20);
             $table->double('net_weight', 8, 2);
             $table->double('meat_percent', 8, 2);
+            $table->double('settlement_weight', 8, 2);
             $table->string('classification_code', 20)->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();

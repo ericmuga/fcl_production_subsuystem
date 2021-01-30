@@ -18,6 +18,7 @@ class CreateMissingSlapTable extends Migration
             $table->string('slapmark', 20);
             $table->string('item_code', 20);
             $table->double('net_weight', 8, 2);
+            $table->double('settlement_weight', 8, 2);
             $table->double('meat_percent', 8, 2);
             $table->string('classification_code', 20);
             $table->foreignId('user_id')->constrained('users');

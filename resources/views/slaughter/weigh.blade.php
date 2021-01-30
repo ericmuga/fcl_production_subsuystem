@@ -16,8 +16,8 @@
                         </div>
                         <div class="col-md-6">
                             <code><input type="text" id="comport_value"
-                                    value="Reading from COM: {{ $configs[0]->comport?? "" }}" style="border:none"
-                                    disabled></code>
+                                    value="Reading from COM: {{ $configs[0]->comport?? "" }}"
+                                    style="border:none" disabled></code>
                         </div>
                     </div>
                 </div>
@@ -40,15 +40,15 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
-                            <input type="number" class="form-control" id="net" name="net" value="0.00"
-                                step="0.01" placeholder="" readonly required>
+                            <input type="number" class="form-control" id="net" name="net" value="0.00" step="0.01"
+                                placeholder="" readonly required>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Settlement Weight</label>
-                            <input type="number" class="form-control" id="settlement_weight" name="settlement_weight" value="0.00"
-                                step="0.01" placeholder="" readonly required>
+                            <input type="number" class="form-control" id="settlement_weight" name="settlement_weight"
+                                value="0.00" step="0.01" placeholder="" readonly required>
                         </div>
                     </div>
                 </div>
@@ -127,8 +127,9 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group">
-                    <button type="submit" onclick="return validateOnSubmit() && checkQtyCount()" class="btn btn-primary btn-lg"><i
-                            class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
+                    <button type="submit" onclick="return validateOnSubmit() && checkQtyCount()"
+                        class="btn btn-primary btn-lg"><i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        Save</button>
                 </div>
             </div>
         </div>
@@ -150,10 +151,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Net</label>
-                        <input type="number" class="form-control readonly" id="ms_net" name="ms_net" value=""
-                            step="0.01" placeholder="" required />
+                    <div class=" row form-group">
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">Net</label>
+                            <input type="number" class="form-control readonly" id="ms_net" name="ms_net" value=""
+                                step="0.01" placeholder="" required />
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="exampleInputPassword1">Settlement Weight</label>
+                                <input type="number" class="form-control" id="ms_settlement_weight"
+                                    name="ms_settlement_weight" value="0.00" step="0.01" placeholder="" readonly required>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="baud">Slapmark:</label>
@@ -378,7 +388,8 @@
                             $.ajax({
                                 type: "GET",
                                 headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                        .attr('content')
                                 },
                                 url: "{{ url('scale-ajax-2') }}",
                                 data: {
@@ -389,11 +400,13 @@
                                 success: function (data) {
                                     var str2 = JSON.stringify(data);
                                     var obj2 = JSON.parse(str2);
-                                    $('#total_by_vendor').val(obj2.total_per_vendor);
-                                    $('#total_per_slap').val(obj2.total_weighed);
+                                    $('#total_by_vendor').val(obj2
+                                        .total_per_vendor);
+                                    $('#total_per_slap').val(obj2
+                                    .total_weighed);
 
                                 },
-                                error: function(data) {
+                                error: function (data) {
                                     var errors = data.responseJSON;
                                     console.log(errors);
                                 }
@@ -429,12 +442,11 @@
         }
     }
 
-    function checkQtyCount(){
+    function checkQtyCount() {
         if (slapmark == null) {
             alert("please select slapmark.");
             return false;
-        }
-        else if (slapmark != null && total_by_vendor == total_per_slap){
+        } else if (slapmark != null && total_by_vendor == total_per_slap) {
             alert("You have exhausted vendor received Qty.");
             return false;
         }
@@ -459,7 +471,7 @@
             carcass_type = "G0113";
         }
 
-        var net_weight = $('#net').val();
+        var s_weight = $('#settlement_weight').val();
         var classification_code = document.getElementById('classification_code');
 
         if (meat_percent != null) {
@@ -468,56 +480,56 @@
                 // check if vendor number exists in special vendor list
                 if (special_vendor_no.includes(vendor_number)) {
 
-                    if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && net_weight < 40) {
+                    if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && s_weight < 40) {
                         $('#classification_code').val("RMPK-SUB40");
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 40 &&
-                        net_weight <= 49) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 40 &&
+                        s_weight <= 49) {
                         classification_code.value = "RM-CLS05";
                     }
 
-                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 56 &&
-                        net_weight <= 59) {
+                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && s_weight >= 56 &&
+                        s_weight <= 59) {
                         classification_code.value = "RM-CLS02";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 7 && carcass_type == "G0110" && net_weight >= 56 &&
-                        net_weight <= 75) {
+                    if (meat_percent >= 0 && meat_percent <= 7 && carcass_type == "G0110" && s_weight >= 56 &&
+                        s_weight <= 75) {
                         classification_code.value = "RM-CLS02";
                     }
 
-                    if (meat_percent >= 11 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 56 &&
-                        net_weight <= 75) {
+                    if (meat_percent >= 11 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 56 &&
+                        s_weight <= 75) {
                         classification_code.value = "RM-CLS02";
                     }
 
-                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 60 &&
-                        net_weight <= 75) {
+                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && s_weight >= 60 &&
+                        s_weight <= 75) {
                         classification_code.value = "RM-CLS01";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 76 &&
-                        net_weight <= 85) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 76 &&
+                        s_weight <= 85) {
                         classification_code.value = "RM-CLS03";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 50 &&
-                        net_weight <= 55) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 50 &&
+                        s_weight <= 55) {
                         classification_code.value = "RM-CLS04";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 86 &&
-                        net_weight <= 100) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 86 &&
+                        s_weight <= 100) {
                         classification_code.value = "RM-CLS06";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 101 &&
-                        net_weight <= 120) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 101 &&
+                        s_weight <= 120) {
                         classification_code.value = "RM-CLS07";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight > 120) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight > 120) {
                         classification_code.value = "RM-CLS08";
                     }
 
@@ -525,79 +537,79 @@
                         classification_code.value = "SOW-RM";
                     }
 
-                    if (carcass_type == "G0113" && net_weight >= 5 && net_weight <= 7) {
+                    if (carcass_type == "G0113" && s_weight >= 5 && s_weight <= 7) {
                         classification_code.value = "RM-SK1";
                     }
 
-                    if (carcass_type == "G0113" && net_weight >= 7 && net_weight < 9) {
+                    if (carcass_type == "G0113" && s_weight >= 7 && s_weight < 9) {
                         classification_code.value = "RM-SK2";
                     }
 
-                    if (carcass_type == "G0113" && net_weight >= 9 && net_weight < 16) {
+                    if (carcass_type == "G0113" && s_weight >= 9 && s_weight < 16) {
                         classification_code.value = "RM-SK3";
                     }
 
-                    if (carcass_type == "G0113" && net_weight >= 17 && net_weight < 20) {
+                    if (carcass_type == "G0113" && s_weight >= 17 && s_weight < 20) {
                         classification_code.value = "RM-SK4";
                     }
 
-                    if (carcass_type == "G0113" && net_weight >= 9 && net_weight < 20) {
+                    if (carcass_type == "G0113" && s_weight >= 9 && s_weight < 20) {
                         classification_code.value = "RM-SK5";
                     }
 
                 } else
                 // vendor number not in special vendor list
                 {
-                    if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && net_weight < 40) {
+                    if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && s_weight < 40) {
                         classification_code.value = "PK-SUB40";
                     }
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 40 &&
-                        net_weight <= 49.99) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 40 &&
+                        s_weight <= 49.99) {
                         classification_code.value = "CLS05";
                     }
-                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 50 &&
-                        net_weight <= 59) {
+                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && s_weight >= 50 &&
+                        s_weight <= 59) {
                         classification_code.value = "CLS02";
                     }
-                    if (meat_percent >= 0 && meat_percent <= 7 && carcass_type == "G0110" && net_weight >= 56 &&
-                        net_weight <= 75) {
+                    if (meat_percent >= 0 && meat_percent <= 7 && carcass_type == "G0110" && s_weight >= 56 &&
+                        s_weight <= 75) {
                         classification_code.value = "CLS02";
                     }
-                    if (meat_percent >= 11 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 56 &&
-                        net_weight <= 75) {
+                    if (meat_percent >= 11 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 56 &&
+                        s_weight <= 75) {
                         classification_code.value = "CLS02";
                     }
-                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 60 &&
-                        net_weight <= 75) {
+                    if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && s_weight >= 60 &&
+                        s_weight <= 75) {
                         classification_code.value = "CLS01";
                     }
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 76 &&
-                        net_weight <= 85) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 76 &&
+                        s_weight <= 85) {
                         classification_code.value = "CLS03";
                     }
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 50 &&
-                        net_weight <= 55) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 50 &&
+                        s_weight <= 55) {
                         classification_code.value = "CLS04";
                     }
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 86 &&
-                        net_weight <= 100) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 86 &&
+                        s_weight <= 100) {
                         classification_code.value = "CLS06";
                     }
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 101 &&
-                        net_weight <= 120) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 101 &&
+                        s_weight <= 120) {
                         classification_code.value = "CLS07";
                     }
 
-                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight > 120) {
+                    if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight > 120) {
                         classification_code.value = "CLS08";
                     }
                     if (carcass_type == "G0111") {
                         classification_code.value = "SOW-3P";
                     }
-                    if (carcass_type == "G0113" && net_weight >= 5 && net_weight < 8) {
+                    if (carcass_type == "G0113" && s_weight >= 5 && s_weight < 8) {
                         classification_code.value = "3P-SK4";
                     }
-                    if (carcass_type == "G0113" && net_weight >= 9 && net_weight < 20) {
+                    if (carcass_type == "G0113" && s_weight >= 9 && s_weight < 20) {
                         classification_code.value = "3P-SK5";
                     }
 
@@ -614,59 +626,59 @@
     function getMissingSlapClassification() {
         var meat_percent = $('#ms_meat_pc').val();
         var carcass_type = $('#ms_carcass_type').val();
-        var net_weight = $('#ms_net').val();
+        var s_weight = $('#settlement_weight').val();
         var classification_code = document.getElementById('ms_classification');
 
-        if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && net_weight < 40) {
+        if (meat_percent >= 0 && meat_percent <= 20 && carcass_type == "G0110" && s_weight < 40) {
             classification_code.value = "PK-SUB40";
         }
-        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 40 &&
-            net_weight <= 49) {
+        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 40 &&
+            s_weight <= 49) {
             classification_code.value = "CLS05";
         }
-        if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 50 &&
-            net_weight <= 59) {
+        if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && s_weight >= 50 &&
+            s_weight <= 59) {
             classification_code.value = "CLS02";
         }
-        if (meat_percent >= 0 && meat_percent <= 7 && carcass_type == "G0110" && net_weight >= 56 &&
-            net_weight <= 75) {
+        if (meat_percent >= 0 && meat_percent <= 7 && carcass_type == "G0110" && s_weight >= 56 &&
+            s_weight <= 75) {
             classification_code.value = "CLS02";
         }
-        if (meat_percent >= 11 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 56 &&
-            net_weight <= 75) {
+        if (meat_percent >= 11 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 56 &&
+            s_weight <= 75) {
             classification_code.value = "CLS02";
         }
-        if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && net_weight >= 60 &&
-            net_weight <= 75) {
+        if (meat_percent >= 8 && meat_percent <= 10 && carcass_type == "G0110" && s_weight >= 60 &&
+            s_weight <= 75) {
             classification_code.value = "CLS01";
         }
-        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 76 &&
-            net_weight <= 85) {
+        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 76 &&
+            s_weight <= 85) {
             classification_code.value = "CLS03";
         }
-        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 50 &&
-            net_weight <= 55) {
+        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 50 &&
+            s_weight <= 55) {
             classification_code.value = "CLS04";
         }
-        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 86 &&
-            net_weight <= 100) {
+        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 86 &&
+            s_weight <= 100) {
             classification_code.value = "CLS06";
         }
-        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight >= 101 &&
-            net_weight <= 120) {
+        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight >= 101 &&
+            s_weight <= 120) {
             classification_code.value = "CLS07";
         }
 
-        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && net_weight > 120) {
+        if (meat_percent >= 0 && meat_percent <= 100 && carcass_type == "G0110" && s_weight > 120) {
             classification_code.value = "CLS08";
         }
         if (carcass_type == "G0111") {
             classification_code.value = "SOW-3P";
         }
-        if (carcass_type == "G0113" && net_weight >= 5 && net_weight < 8) {
+        if (carcass_type == "G0113" && s_weight >= 5 && s_weight < 8) {
             classification_code.value = "3P-SK4";
         }
-        if (carcass_type == "G0113" && net_weight >= 9 && net_weight < 20) {
+        if (carcass_type == "G0113" && s_weight >= 9 && s_weight < 20) {
             classification_code.value = "3P-SK5";
         }
 
@@ -677,10 +689,33 @@
         var reading = document.getElementById('reading').value;
         var tareweight = document.getElementById('tareweight').value;
         var net = document.getElementById('net');
-        var ms_net = document.getElementById('ms_net');
+        var missing_slap_net = document.getElementById('ms_net');
         var new_net_value = parseFloat(reading) - parseFloat(tareweight);
+
         net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
-        ms_net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
+        missing_slap_net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
+
+        getSettlementWeight(net.value);
+    }
+
+    function getSettlementWeight(net) {
+        var settlement_weight = document.getElementById('settlement_weight');
+        var missing_slap_settlement = document.getElementById('ms_settlement_weight');
+
+        var settlement_int = Math.floor(0.975*net);
+        var settlement_float = (0.975*net) % 1;
+
+        if (settlement_float > 0.54) {
+            settlement_weight.value = settlement_int + 1;
+            missing_slap_settlement.value = settlement_int + 1;
+
+        } else {
+            settlement_weight.value = settlement_int;
+            missing_slap_settlement.value = settlement_int;
+
+        }
+        // alert(settlement_float);
+
     }
 
     function getScaleReading() {
