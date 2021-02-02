@@ -253,10 +253,10 @@
     <button class="btn btn-primary " data-toggle="collapse" data-target="#butchery_output_show"><i
             class="fa fa-plus"></i>
         Output
-    </button> <hr>
+    </button>
 </div>
 
-<div id="butchery_output_show" class="collapse">
+<div id="butchery_output_show" class="collapse"><hr>
     <div class="row">
         <!-- baconers, sows, sides -->
         <div class="form-group col-md-2">

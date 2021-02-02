@@ -160,10 +160,11 @@
                 </div>
                 <div class="modal-body">
                     <div class=" form-group">
-                        <select name="edit_production_process" id="edit_production_process" class="form-control select2" required
+                        <select name="edit_production_process" id="edit_production_process" value="{{ old('edit_production_process') }}" class="form-control select2" required
                             autofocus>
+                            <option value="" selected disabled>Select process</option>
                             @foreach($processes as $type)
-                                <option value="{{$type->process_code}}" selected="selected">
+                                <option value="{{$type->process_code}}" >
                                     {{ ucwords($type->process) }}
                                 </option>
                             @endforeach
@@ -189,7 +190,7 @@
     </button>
 </div>
 
-<div id="slicing_output_show" class="collapse"><br><br>
+<div id="slicing_output_show" class="collapse"><hr>
     <div class="row">
         <div class="col-md-12">
             <div class="card">

@@ -209,10 +209,8 @@
         Entries
     </button>
 </div>
-<hr>
 
-<div id="slaughter_entries" class="collapse">
-
+<div id="slaughter_entries" class="collapse"><hr>
     <div class="row">
         <!-- slaughter data Table-->
         <div class="col-md-6">

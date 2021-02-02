@@ -5,11 +5,11 @@
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#import_receipts"><i
             class="fas fa-file-excel"></i> Import
-        New Receipts</button> <br> <br>
+        New Receipts</button>
 </div>
 
 <!--End create product-->
-<div id="import_receipts" class="row collapse">
+<div id="import_receipts" class="row collapse"><hr>
     <div class="col-md-10" style="padding-left: 20%">
         <div class="card">
             <div class="card-header">

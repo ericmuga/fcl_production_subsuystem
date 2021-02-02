@@ -35,11 +35,11 @@
                         <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
                             </a></li>
                         <li class="dropdown-divider"></li>
-                        {{-- <li>
-                            <a href="#" class="dropdown-item">Export Data to Navision
+                        <li>
+                            <a href="{{ route('butchery_split_weights') }}" class="dropdown-item">Weight Splitting
                             </a>
                         </li>
-                        <li class="dropdown-divider"></li> --}}
+                        <li class="dropdown-divider"></li>
 
                         <!-- Level two dropdown-->
                         <li class="dropdown-submenu dropdown-hover">

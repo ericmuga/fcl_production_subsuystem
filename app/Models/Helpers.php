@@ -83,10 +83,20 @@ class Helpers
     public function getProcessCode($process_name)
     {
         $process_code = ProductionProcess::where('process', $process_name)
-            ->orWhere('process', 'like', '%' . $process_name . '%')
+            // ->orWhere('process', 'like', '%' . $process_name . '%')
             ->value('process_code');
 
         return $process_code;
+
+    }
+
+    public function getProductCode($product_name)
+    {
+        $product_code = Product::where('description', $product_name)
+            // ->orWhere('description', 'like', '%' . $product_name . '%')
+            ->value('code');
+
+        return $product_code;
 
     }
 

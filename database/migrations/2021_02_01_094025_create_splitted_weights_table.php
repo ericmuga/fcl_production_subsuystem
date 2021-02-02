@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDebonedDataTable extends Migration
+class CreateSplittedWeightsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateDebonedDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('deboned_data', function (Blueprint $table) {
+        Schema::create('splitted_weights', function (Blueprint $table) {
             $table->id();
-            $table->string('item_code', 20);
+            $table->string('parent_item', 20);
+            $table->string('new_item', 20);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
-            $table->tinyInteger('product_type');
-            $table->tinyInteger('splitted')->default(0);
-            $table->foreignId('user_id')->constrained('users');
+            $table->integer('percentage');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -33,6 +32,6 @@ class CreateDebonedDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('deboned_data');
+        Schema::dropIfExists('splitted_weights');
     }
 }

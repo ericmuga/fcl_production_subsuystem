@@ -58,7 +58,10 @@ Route::get('/butchery/scale-3', [ButcheryController::class, 'scaleThree'])->name
 Route::post('/butchery/scale-3-save', [ButcheryController::class, 'saveScaleThreeData'])->name('butchery_scale3_save');
 Route::get('/product_type_ajax', [ButcheryController::class, 'getProductTypeAjax'])->name('product_type_ajax');
 Route::get('/butchery/products', [ButcheryController::class, 'products'])->name('butchery_products');
+Route::get('/butchery/weight-split', [ButcheryController::class, 'weighSplitting'])->name('butchery_split_weights');
+Route::post('/butchery/weight-split', [ButcheryController::class, 'saveWeighSplitting'])->name('butchery_split_save');
 Route::post('/butchery/product-add', [ButcheryController::class, 'addProduct'])->name('butchery_add_product');
+Route::post('/load_split_data', [ButcheryController::class, 'loadSplitData'])->name('load_split_data');
 Route::get('/butchery/beheading-report', [ButcheryController::class, 'getBeheadingReport'])->name('butchery_beheading_report');
 Route::get('/butchery/braking-report', [ButcheryController::class, 'getBrakingReport'])->name('butchery_breaking_report');
 Route::get('/butchery/deboning-report', [ButcheryController::class, 'getDeboningReport'])->name('butchery_deboning_report');

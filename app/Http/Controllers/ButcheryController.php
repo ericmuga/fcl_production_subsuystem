@@ -11,11 +11,13 @@ use App\Models\DebonedData;
 use App\Models\SlaughterData;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Stmt\TryCatch;
 
 class ButcheryController extends Controller
 {
@@ -316,6 +318,98 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.products', compact('title', 'products'));
+    }
+
+    public function weighSplitting(Helpers $helpers)
+    {
+        $title = "Splitting-weights";
+
+        $splitted_data = DB::table('splitted_weights')
+            ->orderBy('created_at', 'DESC')
+            ->get();
+
+        $products = DB::table('products')
+            ->get();
+
+        $processes = DB::table('processes')
+            ->where('process_code', '>=', 4)
+            ->get();
+
+        return view('butchery.split_weights', compact('title', 'splitted_data', 'helpers', 'products', 'processes'));
+    }
+
+    public function loadSplitData(Request $request){
+        $date = Carbon::parse($request->dateinput);
+        $to_split = DB::table('deboned_data')
+            ->where('splitted', 0)
+            ->whereDate('created_at', $date)
+            ->select('deboned_data.item_code', DB::raw('SUM(deboned_data.net_weight) as total_weight'))
+            ->groupBy('deboned_data.item_code')
+            ->get();
+
+        Session::put('data', $to_split);
+        Session::put('display_date', $request->dateinput);
+        Session::put('splitting_table', 'show');
+        return back();
+    }
+
+    public function saveWeighSplitting(Request $request, Helpers $helpers)
+    {
+        try {
+            //inserts
+            DB::transaction(function () use($request, $helpers) {
+                //insert 1st row
+                DB::table('splitted_weights')->insert([
+                    'parent_item' => $helpers->getProductCode($request->item_name),
+                    'new_item' => $request->new_item1,
+                    'net_weight' => $request->new_weight1,
+                    'process_code' => $request->new_process1,
+                    'percentage' => $request->percent1,
+                ]);
+
+                if ($request->new_item2) {
+                    # insert row 2
+                    DB::table('splitted_weights')->insert([
+                        'parent_item' => $helpers->getProductCode($request->item_name),
+                        'new_item' => $request->new_item2,
+                        'net_weight' => $request->new_weight2,
+                        'process_code' => $request->new_process2,
+                        'percentage' => $request->percent2,
+                    ]);
+                }
+
+                if ($request->new_item3) {
+                    # insert row 3
+                    DB::table('splitted_weights')->insert([
+                        'parent_item' => $helpers->getProductCode($request->item_name),
+                        'new_item' => $request->new_item3,
+                        'net_weight' => $request->new_weight3,
+                        'process_code' => $request->new_process3,
+                        'percentage' => $request->percent3,
+                    ]);
+                }
+
+                //update splitted
+                DB::table('deboned_data')
+                    ->where('splitted', 0)
+                    // ->whereDate('created_at', Carbon::today())
+                    ->where('item_code', $helpers->getProductCode($request->item_name))
+                    ->update(['splitted' => 1]);
+            });
+
+            Session::forget('data');
+            Session::forget('display_date');
+            Session::forget('splitting_table');
+
+            Toastr::success("record {$request->item_name} splitted successfully",'Success');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(),'Error!');
+            return back()
+                ->withInput();
+        }
+
     }
 
     public function addProduct(Request $request)
