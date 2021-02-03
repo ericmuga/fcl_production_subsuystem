@@ -36,6 +36,7 @@ Route::get('/slaughter/dashboard', [SlaughterController::class, 'index'])->name(
 Route::get('/slaughter/weigh', [SlaughterController::class, 'weigh'])->name('slaughter_weigh');
 Route::get('/scale-ajax', [SlaughterController::class, 'loadWeighDataAjax'])->name('load_weigh_data');
 Route::get('/scale-ajax-2', [SlaughterController::class, 'loadWeighMoreDataAjax'])->name('load_weigh_more_data');
+Route::get('/read-scale-api-service', [SlaughterController::class, 'readScaleApiService']);
 Route::post('/slaughter/save-weigh', [SlaughterController::class, 'saveWeighData'])->name('save_weigh_data');
 Route::post('/slaughter/save-missing', [SlaughterController::class, 'saveMissingSlapData'])->name('save_missing_data');
 Route::get('/slaughter/missing-slaps', [SlaughterController::class, 'missingSlapData'])->name('missing_slap_data');

@@ -13,11 +13,12 @@
                         <div class="col-md-6">
                             <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i
                                     class="fas fa-balance-scale"></i> Weigh</button>
+                            <input type="hidden" id="scale_url" value="{{ $helpers->getReadScaleApiServiceUrl() }}">
                         </div>
                         <div class="col-md-6">
-                            <code><input type="text" id="comport_value"
-                                    value="Reading from COM: {{ $configs[0]->comport?? "" }}"
-                                    style="border:none" disabled></code>
+                            <small>Reading from COM:<input type="text" id="comport_value"
+                                    value="{{ $configs[0]->comport?? "" }}"
+                                    style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -161,7 +162,8 @@
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Settlement Weight</label>
                                 <input type="number" class="form-control" id="ms_settlement_weight"
-                                    name="ms_settlement_weight" value="0.00" step="0.01" placeholder="" readonly required>
+                                    name="ms_settlement_weight" value="0.00" step="0.01" placeholder="" readonly
+                                    required>
                             </div>
                         </div>
                     </div>
@@ -210,7 +212,8 @@
     </button>
 </div>
 
-<div id="slaughter_entries" class="collapse"><hr>
+<div id="slaughter_entries" class="collapse">
+    <hr>
     <div class="row">
         <!-- slaughter data Table-->
         <div class="col-md-6">
@@ -401,7 +404,7 @@
                                     $('#total_by_vendor').val(obj2
                                         .total_per_vendor);
                                     $('#total_per_slap').val(obj2
-                                    .total_weighed);
+                                        .total_weighed);
 
                                 },
                                 error: function (data) {
@@ -700,8 +703,8 @@
         var settlement_weight = document.getElementById('settlement_weight');
         var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-        var settlement_int = Math.floor(0.975*net);
-        var settlement_float = (0.975*net) % 1;
+        var settlement_int = Math.floor(0.975 * net);
+        var settlement_float = (0.975 * net) % 1;
 
         if (settlement_float > 0.54) {
             settlement_weight.value = settlement_int + 1;
@@ -717,7 +720,48 @@
     }
 
     function getScaleReading() {
-        alert('get scale');
+        var url = $('#scale_url').val();
+        var comport = $('#comport_value').val();
+        var full_url = url + "/" + comport;
+        // alert(full_url);
+        $.ajax({
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                    .attr('content')
+            },
+            url: "{{ url('read-scale-api-service') }}",
+
+            data: {
+                'full_url': full_url,
+
+            },
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+
+                var obj = JSON.parse(data);
+                console.log(obj.success);
+
+                if (obj.success == true) {
+                    var reading = document.getElementById('reading');
+                    reading.value = obj.response;
+
+                } else if(obj.success == false) {
+                    alert('error occured in response: '+ obj.response);
+
+                } else {
+                    alert('No response from service');
+
+                }
+
+            },
+            error: function (data) {
+                var errors = data.responseJSON;
+                console.log(errors);
+                alert('error occured when sending request');
+            }
+        });
     }
 
 </script>

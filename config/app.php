@@ -14,6 +14,8 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'read_scale_api_url' => env('READ_SCALE_API_SERVICE', ''),
+    'list_comport_api_url' => env('GET_COMPORT_LIST_API_SERVICE', ''),
 
     /*
     |--------------------------------------------------------------------------
