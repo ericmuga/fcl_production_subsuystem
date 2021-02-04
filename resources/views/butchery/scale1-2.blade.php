@@ -27,8 +27,8 @@
             <div class="form-group">
                 <label>Slaughter Date(yyyy-mm-dd):</label>
                 <div class="input-group">
-                    <input type="text" id="datepk" name="datepk" class="form-control" value="">
-                    <input type="hidden" id="date_hidden" value=" {{ $helpers->getButcheryDate() }}">
+                    <input type="text" id="datepk" name="datepk" class="form-control" value="{{ $helpers->getButcheryDate() }}" readonly>
+                    <input type="hidden" id="date_hidden" value="{{ $helpers->getButcheryDate() }}">
                 </div>
             </div>
             <!-- /.form group -->
@@ -39,19 +39,19 @@
     <!-- slaughter data show -->
     <div class="col-md-2 ">
         <label>Baconers:</label>
-        <input type="number" id="baconers_number" value="" readonly>
+        <input type="number" class="form-control" id="baconers_number" value="" readonly>
     </div>
     <div class="col-md-2 ">
         <label>Baconers sides:</label>
-        <input type="number" id="baconers_sides" value="" readonly>
+        <input type="number" class="form-control" id="baconers_sides" value="" readonly>
     </div>
     <div class="col-md-2 ">
         <label>Sows:</label>
-        <input type="number" id="sows_number" value="" readonly>
+        <input type="number" class="form-control" id="sows_number" value="" readonly>
     </div>
     <div class="col-md-2 ">
         <label>sows sides:</label>
-        <input type="number" id="sows_sides" value="" readonly>
+        <input type="number" class="form-control" id="sows_sides" value="" readonly>
     </div>
     <!-- /.form group -->
 </div>
@@ -231,7 +231,7 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">No. of pieces </label>
                             <input type="number" class="form-control" id="no_of_items" value="" name="no_of_items"
-                                placeholder="" required>
+                                placeholder="" >
                         </div>
                     </div>
                     <div class="card-body text-center">
@@ -261,28 +261,28 @@
         <!-- baconers, sows, sides -->
         <div class="form-group col-md-2">
             <label>Input Legs:</label>
-            <input type="number" id="baconers_number" value="{{ $inputData*2 }}" oninput="getSidesNumber()" readonly>
+            <input type="number" class="form-control" id="baconers_number" value="{{ $inputData*2 }}" oninput="getSidesNumber()" readonly>
         </div>
         <div class="form-group col-md-2">
             <label>Input Middles:</label>
-            <input type="number" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
+            <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
         </div>
         <div class="form-group col-md-2">
             <label>Input Shoulders:</label>
-            <input type="number" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
+            <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
         </div>
 
         <div class="form-group col-md-2">
             <label>Output Legs:</label>
-            <input type="number" id="baconers_number" value="{{ $outputData['output_legs'] }}" oninput="getSidesNumber()" readonly>
+            <input type="number" class="form-control" id="baconers_number" value="{{ $outputData['output_legs'] }}" oninput="getSidesNumber()" readonly>
         </div>
         <div class="form-group col-md-2">
             <label>Output Middles:</label>
-            <input type="number" id="baconers_sides" value="{{ $outputData['output_middles'] }}" readonly>
+            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_middles'] }}" readonly>
         </div>
         <div class="form-group col-md-2">
             <label>Output Shoulders:</label>
-            <input type="number" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}" readonly>
+            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}" readonly>
         </div>
         <!-- /.form group -->
     </div> <hr>

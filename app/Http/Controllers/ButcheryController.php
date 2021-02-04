@@ -71,12 +71,12 @@ class ButcheryController extends Controller
 
         $b_shoulders = ButcheryData::where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
-            ->where('item_code', 'G1102')
+            ->where('item_code', 'G1101')
             ->sum('net_weight');
 
         $b_middles = ButcheryData::where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
-            ->where('item_code', 'G1101')
+            ->where('item_code', 'G1102')
             ->sum('net_weight');
 
         $s_legs = ButcheryData::where('carcass_type', 'G1031')
@@ -86,12 +86,12 @@ class ButcheryController extends Controller
 
         $s_shoulders = ButcheryData::where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
-            ->where('item_code', 'G1102')
+            ->where('item_code', 'G1101')
             ->sum('net_weight');
 
         $s_middles = ButcheryData::where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
-            ->where('item_code', 'G1101')
+            ->where('item_code', 'G1102')
             ->sum('net_weight');
 
 

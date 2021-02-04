@@ -12,10 +12,10 @@
             class="fa fa-plus"></i>
         Split weights
     </button>
-</div><hr>
+</div>
 
 <!-- create product-->
-<div id="split_date" class="collapse">
+<div id="split_date" class="collapse"><hr>
     <div class="form-inputs">
         <div class="row">
             <div class="col-lg-8" style="margin: 0 auto; float: none;">
@@ -108,10 +108,8 @@
     </div>
     <!-- /.card-body -->
 </div>
-<hr>
 
-<div id="splitted_output_show" class="">
-    <hr>
+<div id="splitted_output_show" class=""> <hr>
     <div class="row">
         <div class="col-12">
             <div class="card">
