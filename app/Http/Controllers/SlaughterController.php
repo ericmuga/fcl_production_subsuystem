@@ -51,6 +51,7 @@ class SlaughterController extends Controller
     public function weigh(Helpers $helpers)
     {
         $title = "weigh";
+
         $configs = DB::table('scale_configs')
             ->where('scale', 'Scale 1')
             ->where('section', 'slaughter')
@@ -62,16 +63,21 @@ class SlaughterController extends Controller
             ->get();
 
         $slaughter_data = DB::table('slaughter_data')
-            ->whereDate('created_at', Carbon::today())
-            ->orderBy('created_at', 'DESC')
+            ->whereDate('slaughter_data.created_at', Carbon::today())
+            ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
+            ->select('slaughter_data.*', 'carcass_types.description')
+            ->orderBy('slaughter_data.created_at', 'DESC')
             ->get();
 
         $carcass_types = DB::table('carcass_types')
+            ->select('code', 'description')
             ->get();
 
         $slaps = DB::table('missing_slap_data')
-            ->whereDate('created_at', Carbon::today())
-            ->orderBy('created_at', 'DESC')
+            ->whereDate('missing_slap_data.created_at', Carbon::today())
+            ->leftJoin('carcass_types', 'missing_slap_data.item_code', '=', 'carcass_types.code')
+            ->select('missing_slap_data.*', 'carcass_types.description')
+            ->orderBy('missing_slap_data.created_at', 'DESC')
             ->get();
 
         return view('slaughter.weigh', compact('title', 'configs', 'receipts', 'slaughter_data', 'helpers', 'carcass_types', 'slaps'));
@@ -166,9 +172,13 @@ class SlaughterController extends Controller
     public function missingSlapData(Request $request, Helpers $helpers)
     {
         $title = "SlapData";
+
         $slaps = DB::table('missing_slap_data')
-            ->orderBy('created_at', 'DESC')
+            ->leftJoin('carcass_types', 'missing_slap_data.item_code', '=', 'carcass_types.code')
+            ->select('missing_slap_data.*', 'carcass_types.description')
+            ->orderBy('missing_slap_data.created_at', 'DESC')
             ->get();
+
         return view('slaughter.missing_slapmarks', compact('title', 'slaps', 'helpers'));
 
     }
@@ -176,8 +186,9 @@ class SlaughterController extends Controller
     public function importedReceipts(Helpers $helpers)
     {
         $title = "receipts";
+
         $receipts = DB::table('receipts')
-            ->orderBy('slaughter_date', 'DESC')
+            ->orderBy('created_at', 'DESC')
             ->get();
         return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
 
@@ -216,8 +227,11 @@ class SlaughterController extends Controller
     public function slaughterDataReport(Helpers $helpers)
     {
         $title = "receipts";
+
         $slaughter_data = DB::table('slaughter_data')
-            ->orderBy('created_at', 'DESC')
+            ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
+            ->select('slaughter_data.*', 'carcass_types.description')
+            ->orderBy('slaughter_data.created_at', 'DESC')
             ->get();
 
         return view('slaughter.slaughter_report', compact('title', 'helpers', 'slaughter_data'));
@@ -227,15 +241,18 @@ class SlaughterController extends Controller
     public function scaleSettings(Helpers $helpers)
     {
         $title = "scale";
+
         $scale_settings = DB::table('scale_configs')
             ->where('section', 'slaughter')
             ->get();
+
         return view('slaughter.scale_settings', compact('title', 'scale_settings', 'helpers'));
     }
 
     public function changePassword()
     {
         $title = "password";
+
         return view('slaughter.change_password', compact('title'));
     }
 }

@@ -6,11 +6,11 @@
     <button class="btn btn-primary " data-toggle="collapse" data-target="#import_receipts"><i
             class="fas fa-file-excel"></i> Import
         New Receipts</button>
-</div>
+</div><hr>
 
 <!--End create product-->
 <div id="import_receipts" class="row collapse"><hr>
-    <div class="col-md-10" style="padding-left: 20%">
+    <div class="col-md-10" style="margin: 0 auto; float: none;">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Import receipts</h3>
@@ -77,6 +77,7 @@
                             <th>Description </th>
                             <th>Qty Received</th>
                             <th>Slaughter Date</th>
+                            <th>Importing Date</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -89,6 +90,7 @@
                             <th>Description </th>
                             <th>Qty Received</th>
                             <th>Slaughter Date</th>
+                            <th>Importing Date</th>
                         </tr>
                     </tfoot>
                     <tbody>
@@ -102,6 +104,7 @@
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->received_qty }}</td>
                                 <td>{{ $helpers->dateToHumanFormat($data->slaughter_date) }}</td>
+                                <td>{{ $data->created_at }}</td>
                             </tr>
                         @endforeach
                     </tbody>

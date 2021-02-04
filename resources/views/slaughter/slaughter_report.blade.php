@@ -16,7 +16,8 @@
                             <th>#</th>
                             <th>Receipt No.</th>
                             <th>Slapmark </th>
-                            <th>Product Code </th>
+                            <th>Carcass Code </th>
+                            <th>Carcass Type</th>
                             <th>Net weight (kgs)</th>
                             <th>Meat %</th>
                             <th>Classification</th>
@@ -28,7 +29,8 @@
                             <th>#</th>
                             <th>Receipt No.</th>
                             <th>Slapmark </th>
-                            <th>Product Code </th>
+                            <th>Carcass Code </th>
+                            <th>Carcass Type</th>
                             <th>Net weight (kgs)</th>
                             <th>Meat %</th>
                             <th>Classification</th>
@@ -42,10 +44,11 @@
                             <td>{{ $data->receipt_no }}</td>
                             <td>{{ $data->slapmark }}</td>
                             <td>{{ $data->item_code }}</td>
+                            <td>{{ $data->description }}</td>
                             <td>{{ number_format($data->net_weight, 2) }}</td>
                             <td>{{ $data->meat_percent }}</td>
                             <td>{{ $data->classification_code }}</td>
-                            <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                            <td>{{ $data->created_at }}</td>
                         </tr>
                         @endforeach
                     </tbody>
