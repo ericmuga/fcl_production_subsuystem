@@ -840,14 +840,15 @@
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    // console.log(data);
+                    console.log(data);
 
                     var obj = JSON.parse(data);
-                    // console.log(obj.success);
+                    console.log(obj.success);
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
                         reading.value = obj.response;
+                        getNet();
 
                     } else if (obj.success == false) {
                         alert('error occured in response: ' + obj.response);
