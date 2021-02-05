@@ -133,6 +133,12 @@ class ButcheryController extends Controller
         return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers', 'inputData', 'outputData'));
     }
 
+    public function readScaleApiService(Request $request, Helpers $helpers)
+    {
+        $result = $helpers->get_curl($request->comport);
+        return response()->json($result);
+    }
+
     public function saveScaleOneData(Request $request)
     {
         try {

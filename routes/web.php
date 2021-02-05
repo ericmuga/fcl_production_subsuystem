@@ -51,6 +51,7 @@ Route::get('/slaughter/password', [SlaughterController::class, 'changePassword']
 /*-------------Butchery------------------ */
 Route::get('/butchery/dashboard', [ButcheryController::class, 'index'])->name('butchery_dashboard');
 Route::get('/butchery/scale-1-2', [ButcheryController::class, 'scaleOneAndTwo'])->name('butchery_scale1_2');
+Route::get('/read-scale-api-service', [ButcheryController::class, 'readScaleApiService']);
 Route::post('/butchery/scale-1-save', [ButcheryController::class, 'saveScaleOneData'])->name('butchery_scale1_save');
 Route::post('/butchery/scale-2-save', [ButcheryController::class, 'saveScaleTwoData'])->name('butchery_scale2_save');
 Route::post('/butchery/scale-2-update', [ButcheryController::class, 'updateScaleTwoData'])->name('butchery_scale2_update');

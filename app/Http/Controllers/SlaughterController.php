@@ -113,7 +113,7 @@ class SlaughterController extends Controller
 
     public function readScaleApiService(Request $request, Helpers $helpers)
     {
-        $result = $helpers->get_curl($request->full_url);
+        $result = $helpers->get_curl($request->comport);
         return response()->json($result);
     }
 

@@ -13,7 +13,6 @@
                         <div class="col-md-6">
                             <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg"><i
                                     class="fas fa-balance-scale"></i> Weigh</button>
-                            <input type="hidden" id="scale_url" value="{{ $helpers->getReadScaleApiServiceUrl() }}">
                         </div>
                         <div class="col-md-6">
                             <small><label>Reading from ComPort:</label><strong><input type="text"
@@ -824,47 +823,51 @@
 
 
     function getScaleReading() {
-        var url = $('#scale_url').val();
         var comport = $('#comport_value').val();
-        var full_url = url + "/" + comport;
-        $.ajax({
-            type: "GET",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                    .attr('content')
-            },
-            url: "{{ url('read-scale-api-service') }}",
 
-            data: {
-                'full_url': full_url,
+        if (comport != null) {
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                        .attr('content')
+                },
+                url: "{{ url('read-scale-api-service') }}",
 
-            },
-            dataType: 'JSON',
-            success: function (data) {
-                console.log(data);
+                data: {
+                    'comport': comport,
 
-                var obj = JSON.parse(data);
-                console.log(obj.success);
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);
 
-                if (obj.success == true) {
-                    var reading = document.getElementById('reading');
-                    reading.value = obj.response;
+                    var obj = JSON.parse(data);
+                    // console.log(obj.success);
 
-                } else if (obj.success == false) {
-                    alert('error occured in response: ' + obj.response);
+                    if (obj.success == true) {
+                        var reading = document.getElementById('reading');
+                        reading.value = obj.response;
 
-                } else {
-                    alert('No response from service');
+                    } else if (obj.success == false) {
+                        alert('error occured in response: ' + obj.response);
 
+                    } else {
+                        alert('No response from service');
+
+                    }
+
+                },
+                error: function (data) {
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                    alert('error occured when sending request');
                 }
+            });
 
-            },
-            error: function (data) {
-                var errors = data.responseJSON;
-                console.log(errors);
-                alert('error occured when sending request');
-            }
-        });
+        } else {
+            alert("Please set comport value first");
+        }
     }
 
 </script>

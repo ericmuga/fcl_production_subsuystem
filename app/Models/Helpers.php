@@ -112,11 +112,14 @@ class Helpers
 
     }
 
-    public function get_curl($url)
+    public function get_curl($comport)
     {
         $curl = curl_init();
+        $url = $this->getReadScaleApiServiceUrl();
+        $full_url = $url.'/'.$comport;
+
         curl_setopt_array($curl, array(
-            CURLOPT_URL => $url,
+            CURLOPT_URL => $full_url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_TIMEOUT => 30000,
@@ -127,6 +130,7 @@ class Helpers
                 'Content-Type: application/json',
             ),
         ));
+
         $response = curl_exec($curl);
         curl_close($curl);
         return $response;

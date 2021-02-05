@@ -28,7 +28,6 @@
                 <label>Slaughter Date(yyyy-mm-dd):</label>
                 <div class="input-group">
                     <input type="text" id="datepk" name="datepk" class="form-control" value="{{ $helpers->getButcheryDate() }}" readonly>
-                    <input type="hidden" id="date_hidden" value="{{ $helpers->getButcheryDate() }}">
                 </div>
             </div>
             <!-- /.form group -->
@@ -103,10 +102,9 @@
                             </div>
                         </div>
                         <div class="form-group" style="padding-left: 10%">
-                            <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
-                                class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 1</button> <br>
-                            <small><input type="text" id="comport_value"
-                                    value="Reading from COM: {{ $configs[0]->comport }}" style="border:none" disabled></small>
+                            <button type="button" onclick="getScale1Reading()" class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 1</button> <br>
+                            <small>Reading from COM: <input type="text" id="comport_value"
+                                    value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -189,10 +187,9 @@
                             @endif
                         </div>
                         <div class="form-group" style="padding-left: 10%">
-                            <button type="button" onclick="getWeight2AjaxApi()" id="weigh2" value="COM4"
-                                class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 2</button> <br>
-                            <small><input type="text" id="comport_value2"
-                                    value="Reading from COM: {{ $configs[1]->comport }}" style="border:none" disabled></small>
+                            <button type="button" onclick="getScale2Reading()" class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 2</button> <br>
+                            <small>Reading from COM: <input type="text" id="comport_value2"
+                                    value="{{ $configs[1]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -430,12 +427,9 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        var date = $('#datepk').val();
 
-        var hidden_date = $('#date_hidden').val();
-
-        //get slaughter data values
-        $("#datepk").val(hidden_date);
-        if (hidden_date != null) {
+        if (date != null) {
             $.ajax({
                 type: "GET",
                 headers: {
@@ -443,7 +437,7 @@
                 },
                 url: "{{ url('slaughter-data-ajax') }}",
                 data: {
-                    'date': hidden_date,
+                    'date': date,
 
                 },
                 dataType: 'JSON',
@@ -573,34 +567,6 @@
         return [month, day, year].join('/');
     }
 
-    function getWeightAjaxApi() {
-        var ComPortID = document.getElementById('weigh').value;
-        if (ComPortID) {
-            alert('comport ' + ComPortID + 'is available');
-            $.ajax({
-                type: "GET",
-                url: "{{ url('api/get-centres') }}?route_id=" + routeID,
-                success: function (res) {
-                    if (res) {
-                        $("#centre").empty();
-                        // $("#centre").append('<option>Select</option>');
-                        $.each(res, function (key, value) {
-                            $("#centre").append($("<option></option>").attr("value", value.id)
-                                .text(value.centre_name));
-                        });
-
-                    } else {
-                        $("#reading").empty();
-                    }
-                }
-            });
-
-        } else {
-            // $("#reading").value = 0.00;
-            alert('comport ' + ComPortID + 'is not available');
-        }
-    }
-
     function checkNetOnSubmit(){
         var net = $('#net').val();
         $valid = true;
@@ -620,6 +586,102 @@
 
         };
         return $valid;
+    }
+
+    //read scale 1
+    function getScale1Reading() {
+        var comport = $('#comport_value').val();
+
+        if (comport != null) {
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                        .attr('content')
+                },
+                url: "{{ url('read-scale-api-service') }}",
+
+                data: {
+                    'full_url': full_url,
+
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);
+
+                    var obj = JSON.parse(data);
+                    // console.log(obj.success);
+
+                    if (obj.success == true) {
+                        var reading = document.getElementById('reading');
+                        reading.value = obj.response;
+
+                    } else if (obj.success == false) {
+                        alert('error occured in response: ' + obj.response);
+
+                    } else {
+                        alert('No response from service');
+
+                    }
+
+                },
+                error: function (data) {
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                    alert('error occured when sending request');
+                }
+            });
+        } else {
+            alert("Please set comport value first");
+        }
+    }
+
+    //read scale 2
+    function getScale2Reading() {
+        var comport = $('#comport_value2').val();
+
+        if (comport != null) {
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                        .attr('content')
+                },
+                url: "{{ url('read-scale-api-service') }}",
+
+                data: {
+                    'full_url': full_url,
+
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);
+
+                    var obj = JSON.parse(data);
+                    // console.log(obj.success);
+
+                    if (obj.success == true) {
+                        var reading = document.getElementById('reading');
+                        reading2.value = obj.response;
+
+                    } else if (obj.success == false) {
+                        alert('error occured in response: ' + obj.response);
+
+                    } else {
+                        alert('No response from service');
+
+                    }
+
+                },
+                error: function (data) {
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                    alert('error occured when sending request');
+                }
+            });
+        } else {
+            alert("Please set comport value first");
+        }
     }
 
 </script>

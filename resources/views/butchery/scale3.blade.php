@@ -36,8 +36,8 @@
                         </div>
                     </div>
                     <div class="col-md-4" style="padding-top: 7.5%">
-                        <button class="btn btn-outline-info btn-sm form-control" id="btn_product_type" type="button" data-toggle="modal"
-                            disabled>
+                        <button class="btn btn-outline-info btn-sm form-control" id="btn_product_type" type="button"
+                            data-toggle="modal" disabled>
                             <strong>Edit?</strong>
                         </button>
                     </div>
@@ -50,18 +50,19 @@
                         </div>
                     </div>
                     <div class="col-md-4" style="padding-top: 7.5%">
-                        <button class="btn btn-outline-info btn-sm form-control" id="btn_process_type" type="button" data-toggle="modal"
-                            disabled>
+                        <button class="btn btn-outline-info btn-sm form-control" id="btn_process_type" type="button"
+                            data-toggle="modal" disabled>
                             <strong>Edit?</strong>
                         </button>
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
-                    <button type="button" onclick="getWeightAjaxApi()" id="weigh" value="COM4"
+                    <button type="button" onclick="getWeightAjaxApi()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
-                    <small>Reading from <input type="text" id="comport_value" value="COM4" style="border:none"
-                            disabled></small>
+                    <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport }}"
+                            style="border:none" disabled></small>
                 </div>
+
             </div>
         </div>
         <div class="card ">
@@ -92,17 +93,19 @@
             <div class="card-body text-center">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Scale Tare-Weight</label>
-                    <input type="number" class="form-control" id="tareweight" name="tareweight" value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
+                    <input type="number" class="form-control" id="tareweight" name="tareweight"
+                        value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
                     <input type="hidden" class="form-control " id="default_tareweight"
-                                value="{{ number_format($configs[0]->tareweight, 2) }}" >
+                        value="{{ number_format($configs[0]->tareweight, 2) }}">
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
-                    <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder="" readonly>
+                    <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder=""
+                        readonly>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
-                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
-                            aria-hidden="true"></i> Save</button>
+                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
+                            class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -127,7 +130,7 @@
                         <select name="edit_product_type" id="edit_product_type" class="form-control select2" required
                             autofocus>
                             @foreach($product_types as $type)
-                                <option value="{{$type->code}}" selected="selected">
+                                <option value="{{ $type->code }}" selected="selected">
                                     {{ ucwords($type->description) }}
                                 </option>
                             @endforeach
@@ -160,11 +163,12 @@
                 </div>
                 <div class="modal-body">
                     <div class=" form-group">
-                        <select name="edit_production_process" id="edit_production_process" value="{{ old('edit_production_process') }}" class="form-control select2" required
-                            autofocus>
+                        <select name="edit_production_process" id="edit_production_process"
+                            value="{{ old('edit_production_process') }}" class="form-control select2"
+                            required autofocus>
                             <option value="" selected disabled>Select process</option>
                             @foreach($processes as $type)
-                                <option value="{{$type->process_code}}" >
+                                <option value="{{ $type->process_code }}">
                                     {{ ucwords($type->process) }}
                                 </option>
                             @endforeach
@@ -190,12 +194,14 @@
     </button>
 </div>
 
-<div id="slicing_output_show" class="collapse"><hr>
+<div id="slicing_output_show" class="collapse">
+    <hr>
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Scale 3 Deboned output data | <span id="subtext-h1-title"><small> entries ordered by
+                    <h3 class="card-title"> Scale 3 Deboned output data | <span id="subtext-h1-title"><small> entries
+                                ordered by
                                 latest</small> </span></h3>
                 </div>
                 <!-- /.card-header -->
@@ -225,16 +231,16 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                        @foreach($deboning_data as $data)
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td> {{ $data->item_code }}</td>
-                                <td>{{ $helpers->getProductName($data->item_code) }}</td>
-                                <td> {{ $data->product_type }}</td>
-                                <td> {{ $data->process }}</td>
-                                <td> {{ number_format($data->net_weight, 2) }}</td>
-                                <td> {{ $data->created_at }}</td>
-                            </tr>
+                            @foreach($deboning_data as $data)
+                                <tr>
+                                    <td>{{ $i++ }}</td>
+                                    <td> {{ $data->item_code }}</td>
+                                    <td>{{ $helpers->getProductName($data->item_code) }}</td>
+                                    <td> {{ $data->product_type }}</td>
+                                    <td> {{ $data->process }}</td>
+                                    <td> {{ number_format($data->net_weight, 2) }}</td>
+                                    <td> {{ $data->created_at }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -273,7 +279,7 @@
             $('#productionProcessModal').modal('show');
         });
 
-        $('#product').change(function(){
+        $('#product').change(function () {
             var product_code = $('#product').val();
             var product_type = document.getElementById('product_type');
             if (product_code != '') {
@@ -291,11 +297,11 @@
                     success: function (res) {
                         if (res) {
                             // console.log(res);
-                            $('#btn_product_type').prop('disabled',false);
-                            $('#btn_process_type').prop('disabled',false);
+                            $('#btn_product_type').prop('disabled', false);
+                            $('#btn_process_type').prop('disabled', false);
 
                             //product type
-                            if(res.product_type == 1){
+                            if (res.product_type == 1) {
                                 $('#product_type').val("Main Product");
                             } else {
                                 $('#product_type').val("By Product");
@@ -304,35 +310,26 @@
                             //process type
                             if (res.process_type == 4) {
                                 $('#process_type').val("Debone Pork Leg");
-                            }
-                            else if (res.process_type == 5) {
+                            } else if (res.process_type == 5) {
                                 $('#process_type').val("Debone Pork Middle");
-                            }
-                            else if (res.process_type == 6) {
+                            } else if (res.process_type == 6) {
                                 $('#process_type').val("Debone Pork Shoulder");
-                            }
-                            else if (res.process_type == 7) {
+                            } else if (res.process_type == 7) {
                                 $('#process_type').val("Debone Sow");
-                            }
-                            else if (res.process_type == 8) {
-                                $('#process_type').val("Slicing parts for slices, portions");
-                            }
-                            else if (res.process_type == 9) {
+                            } else if (res.process_type == 8) {
+                                $('#process_type').val(
+                                    "Slicing parts for slices, portions");
+                            } else if (res.process_type == 9) {
                                 $('#process_type').val("Trim & Roll");
-                            }
-                            else if (res.process_type == 10) {
+                            } else if (res.process_type == 10) {
                                 $('#process_type').val("Fat Stripping Rinds");
-                            }
-                            else if (res.process_type == 11) {
+                            } else if (res.process_type == 11) {
                                 $('#process_type').val("Rolling Pork Legs");
-                            }
-                            else if (res.process_type == 12) {
+                            } else if (res.process_type == 12) {
                                 $('#process_type').val("Rolling Pork Shoulders");
-                            }
-                            else if (res.process_type == 13) {
+                            } else if (res.process_type == 13) {
                                 $('#process_type').val("Bones");
-                            }
-                            else{
+                            } else {
                                 $('#process_type').val("");
                             }
 
@@ -371,54 +368,42 @@
         });
     });
 
-    function setProductCode(){
+    function setProductCode() {
         var edit_product_type = $('#edit_product_type').val();
         if (edit_product_type == null) {
             alert('please select item')
-        }
-        else if (edit_product_type == 1) {
+        } else if (edit_product_type == 1) {
             $('#product_type').val("Main Product");
-        }
-        else if (edit_product_type == 2) {
+        } else if (edit_product_type == 2) {
             $('#product_type').val("By Product");
         }
         $('#productTypesModal').modal('hide');
 
     }
 
-    function setProductionProcess(){
+    function setProductionProcess() {
         var edit_production_process = $('#edit_production_process').val();
         if (edit_production_process == null) {
             alert('please select item')
-        }
-        else if (edit_production_process == 4) {
+        } else if (edit_production_process == 4) {
             $('#process_type').val("Debone Pork Leg");
-        }
-        else if (edit_production_process == 5) {
+        } else if (edit_production_process == 5) {
             $('#process_type').val("Debone Pork Middle");
-        }
-        else if (edit_production_process == 6) {
+        } else if (edit_production_process == 6) {
             $('#process_type').val("Debone Pork Shoulder");
-        }
-        else if (edit_production_process == 7) {
+        } else if (edit_production_process == 7) {
             $('#process_type').val("Debone Sow");
-        }
-        else if (edit_production_process == 8) {
+        } else if (edit_production_process == 8) {
             $('#process_type').val("Slicing parts for slices, portions");
-        }
-        else if (edit_production_process == 9) {
+        } else if (edit_production_process == 9) {
             $('#process_type').val("Trim & Roll");
-        }
-        else if (edit_production_process == 10) {
+        } else if (edit_production_process == 10) {
             $('#process_type').val("Fat Stripping Rinds");
-        }
-        else if (edit_production_process == 11) {
+        } else if (edit_production_process == 11) {
             $('#process_type').val("Rolling Pork Legs");
-        }
-        else if (edit_production_process == 12) {
+        } else if (edit_production_process == 12) {
             $('#process_type').val("Rolling Pork Shoulders");
-        }
-        else if (edit_production_process == 13) {
+        } else if (edit_production_process == 13) {
             $('#process_type').val("Bones");
         }
         $('#productionProcessModal').modal('hide');
@@ -432,41 +417,61 @@
         net.value = parseFloat(reading) - parseFloat(tareweight);
     }
 
-    function checkNetOnSubmit(){
+    function checkNetOnSubmit() {
         var net = $('#net').val();
         $valid = true;
-        if (net == "" || net <= 0.00 ) {
+        if (net == "" || net <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
         };
         return $valid;
     }
 
-    function getWeightAjaxApi() {
-        var ComPortID = document.getElementById('weigh').value;
-        if (ComPortID) {
-            alert('comport ' + ComPortID + 'is available');
+    //read scale
+    function getScaleReading() {
+        var comport = $('#comport_value').val();
+
+        if (comport != null) {
             $.ajax({
                 type: "GET",
-                url: "{{ url('api/get-centres') }}?route_id=" + routeID,
-                success: function (res) {
-                    if (res) {
-                        $("#centre").empty();
-                        // $("#centre").append('<option>Select</option>');
-                        $.each(res, function (key, value) {
-                            $("#centre").append($("<option></option>").attr("value", value.id)
-                                .text(value.centre_name));
-                        });
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                        .attr('content')
+                },
+                url: "{{ url('read-scale-api-service') }}",
+
+                data: {
+                    'full_url': full_url,
+
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    console.log(data);
+
+                    var obj = JSON.parse(data);
+                    console.log(obj.success);
+
+                    if (obj.success == true) {
+                        var reading = document.getElementById('reading');
+                        reading.value = obj.response;
+
+                    } else if (obj.success == false) {
+                        alert('error occured in response: ' + obj.response);
 
                     } else {
-                        $("#reading").empty();
+                        alert('No response from service');
+
                     }
+
+                },
+                error: function (data) {
+                    var errors = data.responseJSON;
+                    console.log(errors);
+                    alert('error occured when sending request');
                 }
             });
-
         } else {
-            // $("#reading").value = 0.00;
-            alert('comport ' + ComPortID + 'is not available');
+            alert("Please set comport value first");
         }
     }
 
