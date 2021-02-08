@@ -10,7 +10,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="shortcut icon" style="height: 50%; width: 100%;"
         href="{{ asset('assets/img/fcl1.png') }}">
-    <title>Calibra | Login</title>
+    <title>WMS | Login</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -30,7 +30,7 @@
 <body class="hold-transition login-page">
     <div class="login-box">
         <div class="login-logo">
-            <a href="../../index2.html"><b>Calibra</b> Login</a>
+            <a href="../../index2.html"><b><small>Weight Management System</small></b> Login</a>
         </div>
         <!-- /.login-logo -->
         <div class="card">

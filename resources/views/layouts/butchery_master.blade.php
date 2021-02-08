@@ -13,7 +13,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <link rel="shortcut icon" style="" href="{{ asset('assets/img/fcl1.png') }}">
-    <title>Calibra | {{ $title }}</title>
+    <title>WMS | {{ $title }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
