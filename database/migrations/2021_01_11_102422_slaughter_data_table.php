@@ -20,6 +20,7 @@ class SlaughterDataTable extends Migration
             $table->string('item_code', 20);
             $table->string('vendor_no', 20);
             $table->string('vendor_name', 20);
+            $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->double('meat_percent', 8, 2);
             $table->double('settlement_weight', 8, 2);

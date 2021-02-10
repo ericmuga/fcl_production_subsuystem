@@ -26,13 +26,25 @@ class UserSeeder extends Seeder
                 'section' => 'slaughter',
             ],
             [
-                'username' => 'EMuga',
+                'username' => 'User1',
                 'email' => Str::random(10).'@gmail.com',
                 'password' => Hash::make('1234'),
                 'section' => 'butchery',
             ],
             [
-                'username' => 'JGithui',
+                'username' => 'User2',
+                'email' => Str::random(10).'@gmail.com',
+                'password' => Hash::make('1234'),
+                'section' => 'admin',
+            ],
+            [
+                'username' => 'User3',
+                'email' => Str::random(10).'@gmail.com',
+                'password' => Hash::make('1234'),
+                'section' => 'admin',
+            ],
+            [
+                'username' => 'User4',
                 'email' => Str::random(10).'@gmail.com',
                 'password' => Hash::make('1234'),
                 'section' => 'admin',

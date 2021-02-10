@@ -127,6 +127,7 @@ class SlaughterController extends Controller
             $new->item_code = $request->carcass_type;
             $new->vendor_no = $request->vendor_no;
             $new->vendor_name = $request->vendor_name;
+            $new->actual_weight = $request->reading;
             $new->net_weight = $request->net;
             $new->settlement_weight = $request->settlement_weight;
             $new->vendor_name = $request->vendor_name;
@@ -154,6 +155,7 @@ class SlaughterController extends Controller
             $new = new MissingSlapData();
             $new->slapmark = $request->ms_slap;
             $new->item_code = $request->ms_carcass_type;
+            $new->actual_weight = $request->ms_reading;
             $new->net_weight = $request->ms_net;
             $new->settlement_weight = $request->ms_settlement_weight;
             $new->meat_percent = $request->ms_meat_pc;

@@ -62,11 +62,7 @@
                         <div class="col-md-8">
                             <label for="exampleInputPassword1">Slapmark</label>
                             <select class="form-control select2" name="slapmark" id="slapmark" required>
-                                {{-- <option value="" selected disabled>select</option> --}}
                                 @foreach($receipts as $receipt)
-                                    {{-- <option value="{{ $receipt->vendor_tag }}">
-                                        {{ ucwords($receipt->vendor_tag) }}
-                                    </option> --}}
                                     @if (old('slapmark') == $receipt->vendor_tag)
                                         <option value="{{ $receipt->vendor_tag }}" selected>{{ ucwords($receipt->vendor_tag) }}</option>
                                     @else
@@ -165,12 +161,17 @@
                 </div>
                 <div class="modal-body">
                     <div class=" row form-group">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label for="exampleInputPassword1">Reading</label>
+                            <input type="number" class="form-control readonly" id="ms_reading" name="ms_reading" value=""
+                                step="0.01" placeholder="" required readonly />
+                        </div>
+                        <div class="col-md-4">
                             <label for="exampleInputPassword1">Net</label>
                             <input type="number" class="form-control readonly" id="ms_net" name="ms_net" value=""
                                 step="0.01" placeholder="" required readonly />
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Settlement Weight</label>
                                 <input type="number" class="form-control" id="ms_settlement_weight"
@@ -245,7 +246,7 @@
                                 <th>Slapmark </th>
                                 <th> Code</th>
                                 <th> Type</th>
-                                <th>Net weight(kgs)</th>
+                                <th> weight(kgs)</th>
                                 <th>Meat %</th>
                                 <th>Classification</th>
                                 <th>Slaughter Date</th>
@@ -258,7 +259,7 @@
                                 <th>Slapmark </th>
                                 <th> Code</th>
                                 <th> Type</th>
-                                <th>Net weight (kgs)</th>
+                                <th> weight (kgs)</th>
                                 <th>Meat %</th>
                                 <th>Classification</th>
                                 <th>Slaughter Date</th>
@@ -272,7 +273,7 @@
                                     <td>{{ $data->slapmark }}</td>
                                     <td>{{ $data->item_code }}</td>
                                     <td>{{ $data->description }}</td>
-                                    <td>{{ number_format($data->net_weight, 2) }}</td>
+                                    <td>{{ number_format($data->actual_weight, 2) }}</td>
                                     <td>{{ $data->meat_percent }}</td>
                                     <td>{{ $data->classification_code }}</td>
                                     <td>{{ $data->created_at }}</td>
@@ -305,7 +306,7 @@
                                 <th>Slapmark</th>
                                 <th> Code</th>
                                 <th> Type</th>
-                                <th>Net Weight(kgs)</th>
+                                <th> Weight(kgs)</th>
                                 <th>Meat % </th>
                                 <th>Classification </th>
                                 <th>Date</th>
@@ -317,7 +318,7 @@
                                 <th>Slapmark</th>
                                 <th> Code</th>
                                 <th> Type</th>
-                                <th>Net Weight(kgs)</th>
+                                <th> Weight(kgs)</th>
                                 <th>Meat % </th>
                                 <th>Classification </th>
                                 <th>Date</th>
@@ -330,7 +331,7 @@
                                     <td>{{ $data->slapmark }}</td>
                                     <td>{{ $data->item_code }}</td>
                                     <td>{{ $data->description }}</td>
-                                    <td>{{ number_format($data->net_weight, 2) }}</td>
+                                    <td>{{ number_format($data->actual_weight, 2) }}</td>
                                     <td>{{ $data->meat_percent }}</td>
                                     <td>{{ $data->classification_code }}</td>
                                     <td>{{ $data->created_at }}</td>
@@ -352,6 +353,7 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        loadWeighData();
 
         $(".readonly").keydown(function (e) {
             e.preventDefault();
@@ -387,8 +389,15 @@
 
         /* Start weigh data ajax */
         $('#slapmark').change(function () {
-            var slapmark = $(this).val();
-            // alert(slapmark);
+            loadWeighData();
+        });
+        /* End weigh data ajax */
+
+    });
+
+    function loadWeighData(){
+        /* Start weigh data ajax */
+            var slapmark = $('#slapmark').val();
             if (slapmark != null) {
                 $.ajax({
                     type: "GET",
@@ -460,10 +469,8 @@
                 $("#vendor_no").empty();
                 $("#vendor_name").empty();
             }
-        });
         /* End weigh data ajax */
-
-    });
+    }
 
 
     function validateOnSubmit() {
@@ -731,11 +738,13 @@
 
     function getNet() {
         var reading = document.getElementById('reading').value;
+        var ms_reading = document.getElementById('ms_reading');
         var tareweight = document.getElementById('tareweight').value;
         var net = document.getElementById('net');
         var missing_slap_net = document.getElementById('ms_net');
         var new_net_value = parseFloat(reading) - parseFloat(tareweight);
 
+        ms_reading.value = reading;
         net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
         missing_slap_net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
 

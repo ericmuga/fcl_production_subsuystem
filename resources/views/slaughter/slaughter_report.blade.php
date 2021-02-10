@@ -18,7 +18,8 @@
                             <th>Slapmark </th>
                             <th>Carcass Code </th>
                             <th>Carcass Type</th>
-                            <th>Net weight (kgs)</th>
+                            <th>Weight(kgs)</th>
+                            <th>Net weight(kgs)</th>
                             <th>Meat %</th>
                             <th>Classification</th>
                             <th>Slaughter Date</th>
@@ -31,7 +32,8 @@
                             <th>Slapmark </th>
                             <th>Carcass Code </th>
                             <th>Carcass Type</th>
-                            <th>Net weight (kgs)</th>
+                            <th>Weight(kgs)</th>
+                            <th>Net weight(kgs)</th>
                             <th>Meat %</th>
                             <th>Classification</th>
                             <th>Slaughter Date</th>
@@ -45,6 +47,7 @@
                             <td>{{ $data->slapmark }}</td>
                             <td>{{ $data->item_code }}</td>
                             <td>{{ $data->description }}</td>
+                            <td>{{ number_format($data->actual_weight, 2) }}</td>
                             <td>{{ number_format($data->net_weight, 2) }}</td>
                             <td>{{ $data->meat_percent }}</td>
                             <td>{{ $data->classification_code }}</td>

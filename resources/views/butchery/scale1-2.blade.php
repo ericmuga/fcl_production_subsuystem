@@ -324,7 +324,7 @@
                                 <td> {{ $data->item_code }}</td>
                                 <td> {{ $data->description }}</td>
                                 <td> {{ $data->no_of_carcass }}</td>
-                                <td> {{ number_format($data->net_weight, 2) }}</td>
+                                <td> {{ number_format($data->actual_weight, 2) }}</td>
                                 <td> {{ $data->created_at }}</td>
                             </tr>
                             @endforeach
@@ -371,7 +371,7 @@
                                 <td>{{ $loop->iteration}}</td>
                                 <td id="itemCodeModalShow" data-id="{{$data->id}}" data-code="{{$data->item_code}}" data-item="{{$data->description}}"><a href="#">{{ $data->item_code }}</a> </td>
                                 <td> {{ $data->description }}</td>
-                                <td> {{ $data->net_weight }}</td>
+                                <td> {{ number_format($data->actual_weight, 2) }}</td>
                                 <td> {{ $data->created_at }}</td>
                             </tr>
                             @endforeach
