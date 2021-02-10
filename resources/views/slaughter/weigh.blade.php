@@ -62,11 +62,16 @@
                         <div class="col-md-8">
                             <label for="exampleInputPassword1">Slapmark</label>
                             <select class="form-control select2" name="slapmark" id="slapmark" required>
-                                <option value="" selected disabled>select</option>
+                                {{-- <option value="" selected disabled>select</option> --}}
                                 @foreach($receipts as $receipt)
-                                    <option value="{{ $receipt->vendor_tag }}">
+                                    {{-- <option value="{{ $receipt->vendor_tag }}">
                                         {{ ucwords($receipt->vendor_tag) }}
-                                    </option>
+                                    </option> --}}
+                                    @if (old('slapmark') == $receipt->vendor_tag)
+                                        <option value="{{ $receipt->vendor_tag }}" selected>{{ ucwords($receipt->vendor_tag) }}</option>
+                                    @else
+                                        <option value="{{ $receipt->vendor_tag }}">{{ ucwords($receipt->vendor_tag) }}</option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>

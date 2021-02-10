@@ -136,7 +136,9 @@ class SlaughterController extends Controller
             $new->save();
 
             Toastr::success('record added successfully','Success');
-            return redirect()->back();
+            return redirect()
+                ->back()
+                ->withInput();
 
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(),'Error!');
