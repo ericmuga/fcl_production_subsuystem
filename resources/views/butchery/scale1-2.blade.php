@@ -170,7 +170,7 @@
                                             value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->description }}
                                     </label>
                                 </div>
-                                <div class="form-check">
+                                <div class="form-check" style="margin-left: 15%">
                                     <label class="form-check-label" for="radio2">
                                         <input type="radio" class="form-check-input messageCheckbox" id="radio2" name="item_code"
                                             value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}

@@ -238,7 +238,7 @@
                                     <td>{{ $helpers->getProductName($data->item_code) }}</td>
                                     <td> {{ $data->product_type }}</td>
                                     <td> {{ $data->process }}</td>
-                                    <td> {{ number_format($data->net_weight, 2) }}</td>
+                                    <td> {{ number_format($data->actual_weight, 2) }}</td>
                                     <td> {{ $data->created_at }}</td>
                                 </tr>
                             @endforeach
@@ -414,7 +414,8 @@
         var reading = document.getElementById('reading').value;
         var tareweight = document.getElementById('tareweight').value;
         var net = document.getElementById('net');
-        net.value = parseFloat(reading) - parseFloat(tareweight);
+        new_net_value = parseFloat(reading) - parseFloat(tareweight);
+        net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
     }
 
     function checkNetOnSubmit() {

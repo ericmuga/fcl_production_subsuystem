@@ -26,6 +26,7 @@
                     <th>Product Code</th>
                     <th>Product</th>
                     <th>Weight (kgs)</th>
+                    <th>Net Weight(kgs)</th>
                     <th>Production Process</th>
                     <th>Date </th>
                 </tr>
@@ -36,6 +37,7 @@
                     <th>Product Code</th>
                     <th>Product</th>
                     <th>Weight (kgs)</th>
+                    <th>Net Weight(kgs)</th>
                     <th>Production Process</th>
                     <th>Date </th>
                 </tr>
@@ -46,7 +48,8 @@
                         <td>{{ $loop->iteration }}</td>
                         <td> {{ $data->item_code }} </td>
                         <td> {{ $data->product_type }}</td>
-                        <td> {{ $data->net_weight }}</td>
+                        <td> {{ number_format($data->actual_weight, 2) }}</td>
+                        <td> {{ number_format($data->net_weight, 2) }}</td>
                         <td> {{ $data->process }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>

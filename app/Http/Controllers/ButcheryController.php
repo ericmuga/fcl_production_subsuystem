@@ -94,8 +94,6 @@ class ButcheryController extends Controller
             ->where('item_code', 'G1102')
             ->sum('net_weight');
 
-
-
         return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'butchery_date', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
     }
 
@@ -147,6 +145,7 @@ class ButcheryController extends Controller
                 $new = Sale::create([
                     'item_code' => $request->carcass_type,
                     'no_of_carcass' => $request->no_of_carcass,
+                    'actual_weight' => $request->reading,
                     'net_weight' => $request->net,
                     'process_code' => 0, //process behead pig by default
                     'user_id' => Auth::id(),
@@ -164,6 +163,7 @@ class ButcheryController extends Controller
             $new = BeheadingData::create([
                 'item_code' => $request->carcass_type,
                 'no_of_carcass' => $request->no_of_carcass,
+                'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
                 'process_code' => $process_code,
                 'user_id' => Auth::id(),
@@ -192,6 +192,7 @@ class ButcheryController extends Controller
             $new = ButcheryData::create([
                 'carcass_type' =>  $request->carcass_type,
                 'item_code' =>  $request->item_code,
+                'actual_weight' => $request->reading2,
                 'net_weight' => $request->net2,
                 'no_of_items' => $request->no_of_items,
                 'process_code' => $process_code,
@@ -291,6 +292,7 @@ class ButcheryController extends Controller
             # insert record
             $new = DebonedData::create([
                 'item_code' =>  $request->product,
+                'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
                 'process_code' => (int)$process_code,
                 'product_type' => $product,

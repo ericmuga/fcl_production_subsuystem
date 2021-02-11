@@ -16,6 +16,7 @@ class CreateDebonedDataTable extends Migration
         Schema::create('deboned_data', function (Blueprint $table) {
             $table->id();
             $table->string('item_code', 20);
+            $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
             $table->tinyInteger('product_type');

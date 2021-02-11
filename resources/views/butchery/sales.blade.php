@@ -19,7 +19,8 @@
                             <th>Product Name</th>
                             <th>Process</th>
                             <th>No. of Carcasses</th>
-                            <th>Net weight(kgs) </th>
+                            <th> weight(kgs) </th>
+                            <th>Net Weight(kgs)</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -30,7 +31,8 @@
                             <th>Product Name</th>
                             <th>Process</th>
                             <th>No. of Carcasses</th>
-                            <th>Net weight(kgs) </th>
+                            <th> weight(kgs) </th>
+                            <th>Net Weight(kgs)</th>
                             <th>Date</th>
                         </tr>
                     </tfoot>
@@ -42,6 +44,7 @@
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->process }}</td>
                                 <td>{{ $data->no_of_carcass }}</td>
+                                <td>{{ number_format($data->actual_weight, 2) }}</td>
                                 <td>{{ number_format($data->net_weight, 2) }}</td>
                                 <td>{{ $data->created_at }}</td>
                             </tr>

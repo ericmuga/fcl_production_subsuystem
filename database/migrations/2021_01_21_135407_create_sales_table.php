@@ -17,6 +17,7 @@ class CreateSalesTable extends Migration
             $table->id();
             $table->string('item_code', 20);
             $table->integer('no_of_carcass');
+            $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
             $table->foreignId('user_id')->constrained('users');

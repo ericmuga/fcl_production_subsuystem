@@ -22,7 +22,7 @@
                 @csrf
                 <div class="card-body">
                     <div class="form-group">
-                        <label>Select Slaughter Date:</label>
+                        <label>Select Slaughter Date(mm/dd/yyyy):</label>
                           <div class="input-group date" id="reservationdate" data-target-input="nearest">
                               <input type="text" class="form-control datetimepicker-input" id="slaughter_date" name="slaughter_date" required data-target="#reservationdate"/>
                               <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">

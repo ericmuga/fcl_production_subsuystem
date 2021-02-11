@@ -17,6 +17,7 @@ class ButcheryDataTable extends Migration
             $table->id();
             $table->string('carcass_type', 20);
             $table->string('item_code', 20);
+            $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
             $table->tinyInteger('product_type');
