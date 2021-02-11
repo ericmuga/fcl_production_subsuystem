@@ -137,6 +137,14 @@ class ButcheryController extends Controller
         return response()->json($result);
     }
 
+    public function comportlistApiService(Helpers $helpers)
+    {
+        $result = $helpers->get_comport_list();
+
+        return response()->json($result);
+
+    }
+
     public function saveScaleOneData(Request $request)
     {
         try {
@@ -461,6 +469,31 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.scale_settings', compact('title', 'scale_settings', 'helpers'));
+    }
+
+    public function UpdateScalesettings(Request $request)
+    {
+        try {
+            //update
+            DB::table('scale_configs')
+                ->where('id', $request->item_id)
+                ->update([
+                    'comport' => $request->edit_comport,
+                    'baudrate' => $request->edit_baud,
+                    'tareweight' => $request->edit_tareweight,
+                    'updated_at' => Carbon::now(),
+                ]);
+
+
+            Toastr::success("record {$request->item_name} updated successfully",'Success');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(),'Error!');
+            return back()
+                ->withInput();
+        }
+
     }
 
     public function changePassword()

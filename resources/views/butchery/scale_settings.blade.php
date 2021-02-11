@@ -48,21 +48,23 @@
                     </tfoot>
                     <tbody>
                         @foreach($scale_settings as $data)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $data->scale }}</td>
-                            <td>{{ $data->comport }}</td>
-                            <td>{{ $data->baudrate }}</td>
-                            <td>{{ number_format($data->tareweight, 2) }}</td>
-                            <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
-                            <td>
-                                <button type="button" data-id="{{ $data->id  }}" data-item="{{ $data->scale }}" data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}" data-tareweight="{{ number_format($data->tareweight, 2) }}"
-                                    class="btn btn-primary btn-sm " id="editScaleModalShow"><i
-                                        class="nav-icon fas fa-edit"></i>
-                                    Edit</button>
-                            </td>
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $data->scale }}</td>
+                                <td>{{ $data->comport }}</td>
+                                <td>{{ $data->baudrate }}</td>
+                                <td>{{ number_format($data->tareweight, 2) }}</td>
+                                <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                                <td>
+                                    <button type="button" data-id="{{ $data->id }}" data-item="{{ $data->scale }}"
+                                        data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}"
+                                        data-tareweight="{{ number_format($data->tareweight, 2) }}"
+                                        class="btn btn-primary btn-sm " id="editScaleModalShow"><i
+                                            class="nav-icon fas fa-edit"></i>
+                                        Edit</button>
+                                </td>
 
-                        </tr>
+                            </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -76,35 +78,48 @@
 <div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" action="" method="post">
+        <form id="form-edit-scale" action="{{ route('butchery_update_scale_settings') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Scale: <code><strong><input style="border:none"
-                                type="text" id="item_name" name="item_name" value="" readonly></strong></code></h5>
+                                    type="text" id="item_name" name="item_name" value="" readonly></strong></code></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="baud">ComPort:</label>
-                        <select class="form-control" name="edit_comport" id="edit_comport">
-                            {{-- @if ($comport)
-                                @foreach($comport as $com)
-                                    <option value="{{$com->id}}" selected="selected">{{$com->role_name}}</option>
-                                @endforeach
-                            @endif --}}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="baud">ComPort:</label>
+                                <select class="form-control" name="edit_comport" id="edit_comport" required>
 
-                        </select>
+                                </select>
+                            </div>
+                            <div class="col-md-4" style="padding-top: 6.5%">
+                                <button class="btn btn-outline-info btn-sm form-control" type="button"
+                                    onclick="getComportList()">
+                                    <strong>Refresh Comports</strong>
+                                </button>
+                            </div>
+                            <div class="col-md-2" style="padding-top: 7%">
+                                @if(Session::has('comports_success'))
+                                    <p class="alert alert-success">
+                                        {{ Session::get('comports_success') }}</p>
+                                @endif
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="baud">BaudRate:</label>
-                        <input type="number" class="form-control" id="edit_baud" name="edit_baud" value="" placeholder="" required>
+                        <input type="number" class="form-control" id="edit_baud" name="edit_baud" value=""
+                            placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label for="baud">Tareweight:</label>
-                        <input type="number" class="form-control" id="edit_tareweight" step="0.01" value="" name="edit_tareweight" placeholder="" required>
+                        <input type="number" class="form-control" id="edit_tareweight" step="0.01" value=""
+                            name="edit_tareweight" placeholder="" required>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
@@ -145,10 +160,45 @@
             $('#editScaleModal').modal('show');
         });
 
-        /* Start comport data ajax */
-
-        /* End comport data ajax */
     });
+
+    function getComportList() {
+        $.ajax({
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                    .attr('content')
+            },
+            url: "{{ url('butchery/comport-list-api-service') }}",
+            dataType: 'JSON',
+            success: function (data) {
+                console.log(data);
+
+                var obj = JSON.parse(data);
+                console.log(obj.success);
+
+                if (obj.success == true) {
+
+                    var formOptions = "";
+                    $.each(obj.response, function (v) {
+                        var val = obj.response[v];
+                        formOptions += "<option value='" + val + "'>" + val +
+                            "</option>";
+                    });
+                    $('#edit_comport').html(formOptions);
+
+                } else {
+                    alert('No response from Api service');
+                }
+
+            },
+            error: function (data) {
+                var errors = data.responseJSON;
+                console.log(errors);
+                alert('error occured when sending request');
+            }
+        });
+    }
 
 </script>
 @endsection

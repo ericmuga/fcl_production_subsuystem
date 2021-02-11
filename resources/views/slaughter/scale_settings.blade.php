@@ -74,7 +74,8 @@
 <div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" action="" method="post">
+        <form id="form-edit-scale" action="{{ route('slaughter_update_scale_settings') }}"
+            method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -104,9 +105,6 @@
                                     {{ Session::get('comports_success') }}</p>
                             @endif
                         </div>
-                    </div>
-                    <div class="form-group">
-
                     </div>
                     <div class="form-group">
                         <label for="baud">BaudRate:</label>
@@ -175,7 +173,7 @@
                 if (obj.success == true) {
 
                     var formOptions = "";
-                    $.each(obj.response, function(v) {
+                    $.each(obj.response, function (v) {
                         var val = obj.response[v];
                         formOptions += "<option value='" + val + "'>" + val + "</option>";
                     });
