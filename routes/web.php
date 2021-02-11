@@ -36,7 +36,8 @@ Route::get('/slaughter/dashboard', [SlaughterController::class, 'index'])->name(
 Route::get('/slaughter/weigh', [SlaughterController::class, 'weigh'])->name('slaughter_weigh');
 Route::get('/scale-ajax', [SlaughterController::class, 'loadWeighDataAjax'])->name('load_weigh_data');
 Route::get('/scale-ajax-2', [SlaughterController::class, 'loadWeighMoreDataAjax'])->name('load_weigh_more_data');
-Route::get('/read-scale-api-service', [SlaughterController::class, 'readScaleApiService']);
+Route::get('slaughter/read-scale-api-service', [SlaughterController::class, 'readScaleApiService']);
+Route::get('slaughter/comport-list-api-service', [SlaughterController::class, 'comportlistApiService']);
 Route::post('/slaughter/save-weigh', [SlaughterController::class, 'saveWeighData'])->name('save_weigh_data');
 Route::post('/slaughter/save-missing', [SlaughterController::class, 'saveMissingSlapData'])->name('save_missing_data');
 Route::get('/slaughter/missing-slaps', [SlaughterController::class, 'missingSlapData'])->name('missing_slap_data');
@@ -51,7 +52,8 @@ Route::get('/slaughter/password', [SlaughterController::class, 'changePassword']
 /*-------------Butchery------------------ */
 Route::get('/butchery/dashboard', [ButcheryController::class, 'index'])->name('butchery_dashboard');
 Route::get('/butchery/scale-1-2', [ButcheryController::class, 'scaleOneAndTwo'])->name('butchery_scale1_2');
-Route::get('/read-scale-api-service', [ButcheryController::class, 'readScaleApiService']);
+Route::get('butchery/read-scale-api-service', [ButcheryController::class, 'readScaleApiService']);
+Route::get('butchery/comport-list-api-service', [ButcheryController::class, 'comportlistApiService']);
 Route::post('/butchery/scale-1-save', [ButcheryController::class, 'saveScaleOneData'])->name('butchery_scale1_save');
 Route::post('/butchery/scale-2-save', [ButcheryController::class, 'saveScaleTwoData'])->name('butchery_scale2_save');
 Route::post('/butchery/scale-2-update', [ButcheryController::class, 'updateScaleTwoData'])->name('butchery_scale2_update');

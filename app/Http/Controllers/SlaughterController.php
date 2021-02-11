@@ -113,8 +113,21 @@ class SlaughterController extends Controller
 
     public function readScaleApiService(Request $request, Helpers $helpers)
     {
-        $result = $helpers->get_curl($request->comport);
+        $result = $helpers->get_scale_read($request->comport);
         return response()->json($result);
+    }
+
+    public function comportlistApiService(Request $request, Helpers $helpers)
+    {
+        $result = $helpers->get_comport_list();
+        // $array = json_decode($result, true);
+        // $res = $array['response'];
+
+        // if ($res == true) {
+        //     Session::put('comports_success', 'success');
+        // }
+        return response()->json($result);
+
     }
 
     public function saveWeighData(Request $request)

@@ -133,7 +133,7 @@ class ButcheryController extends Controller
 
     public function readScaleApiService(Request $request, Helpers $helpers)
     {
-        $result = $helpers->get_curl($request->comport);
+        $result = $helpers->get_scale_read($request->comport);
         return response()->json($result);
     }
 

@@ -112,7 +112,7 @@ class Helpers
 
     }
 
-    public function get_curl($comport)
+    public function get_scale_read($comport)
     {
         $curl = curl_init();
         $url = $this->getReadScaleApiServiceUrl();
@@ -120,6 +120,29 @@ class Helpers
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => $full_url,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => "",
+            CURLOPT_TIMEOUT => 30000,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => "GET",
+            CURLOPT_HTTPHEADER => array(
+                // Set Here Your Requesred Headers
+                'Content-Type: application/json',
+            ),
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+
+    public function get_comport_list()
+    {
+        $curl = curl_init();
+        $url = $this->getComportListServiceUrl();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
             CURLOPT_TIMEOUT => 30000,

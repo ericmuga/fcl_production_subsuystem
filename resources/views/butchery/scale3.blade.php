@@ -442,7 +442,7 @@
                 url: "{{ url('read-scale-api-service') }}",
 
                 data: {
-                    'full_url': full_url,
+                    'comport': comport,
 
                 },
                 dataType: 'JSON',

@@ -846,7 +846,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
                         .attr('content')
                 },
-                url: "{{ url('read-scale-api-service') }}",
+                url: "{{ url('slaughter/read-scale-api-service') }}",
 
                 data: {
                     'comport': comport,
