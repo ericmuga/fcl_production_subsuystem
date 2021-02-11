@@ -99,11 +99,9 @@
                                 <strong>Refresh Comports</strong>
                             </button>
                         </div>
-                        <div class="col-md-2" style="padding-top: 7%">
-                            @if(Session::has('comports_success'))
-                                <p class="alert alert-success">
-                                    {{ Session::get('comports_success') }}</p>
-                            @endif
+                        <div class="col-md-2" style="padding-top: 6.5%">
+                            <button class="btn btn-outline-success btn-sm form-control" id="comports_success">success</button>
+                            <button class="btn btn-outline-danger btn-sm form-control" id="comports_error">error!</button>
                         </div>
                     </div>
                     <div class="form-group">
@@ -134,6 +132,9 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        $('#comports_success').hide();
+        $('#comports_error').hide();
+
         // edit
         $("body").on("click", "#editScaleModalShow", function (a) {
             a.preventDefault();
@@ -178,8 +179,12 @@
                         formOptions += "<option value='" + val + "'>" + val + "</option>";
                     });
                     $('#edit_comport').html(formOptions);
+                    $('#comports_success').show();
+                    $('#comports_error').hide();
 
                 } else {
+                    $('#comports_success').hide();
+                    $('#comports_error').show();
                     alert('No response from Api service');
                 }
 
@@ -187,6 +192,8 @@
             error: function (data) {
                 var errors = data.responseJSON;
                 console.log(errors);
+                $('#comports_success').hide();
+                $('#comports_error').show();
                 alert('error occured when sending request');
             }
         });

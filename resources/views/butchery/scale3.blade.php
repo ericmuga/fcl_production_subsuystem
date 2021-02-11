@@ -439,7 +439,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
                         .attr('content')
                 },
-                url: "{{ url('read-scale-api-service') }}",
+                url: "{{ url('butchery/read-scale-api-service') }}",
 
                 data: {
                     'comport': comport,
