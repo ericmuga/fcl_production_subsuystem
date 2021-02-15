@@ -377,6 +377,7 @@
 
         $('#carcass_type').change(function () {
             var net = $('#net').val();
+            loadWeighData();
             getSettlementWeight(net);
 
         });
@@ -398,6 +399,19 @@
     function loadWeighData(){
         /* Start weigh data ajax */
             var slapmark = $('#slapmark').val();
+            var carcass_type = $('#carcass_type').val();
+
+            //transcoding from carcass code to livestock code to look up in the receipt ledger
+            if (carcass_type == "G0110") {
+                carcass_type = "G0101"; // pig livestock
+            }
+            if (carcass_type == "G0111") {
+                carcass_type = "G0102"; // sow livestock
+            }
+            if (carcass_type == "G0113") {
+                carcass_type = "G0104"; // suckling livestock
+            }
+
             if (slapmark != null) {
                 $.ajax({
                     type: "GET",
@@ -407,12 +421,13 @@
                     url: "{{ url('scale-ajax') }}",
                     data: {
                         'slapmark': slapmark,
+                        'carcass_type': carcass_type,
 
                     },
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
-                            // console.log(res);
+                            console.log(res);
                             var str = JSON.stringify(res);
                             var obj = JSON.parse(str);
 
@@ -433,6 +448,7 @@
                                 url: "{{ url('scale-ajax-2') }}",
                                 data: {
                                     'slapmark': slapmark,
+                                    'carcass_type': carcass_type,
 
                                 },
                                 dataType: 'JSON',
