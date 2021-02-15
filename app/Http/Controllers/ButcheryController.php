@@ -117,12 +117,14 @@ class ButcheryController extends Controller
             ->whereDate('beheading_data.created_at', Carbon::today())
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
             ->select('beheading_data.*', 'products.description')
+            ->orderBy('beheading_data.created_at', 'DESC')
             ->get();
 
         $butchery_data = DB::table('butchery_data')
             ->whereDate('butchery_data.created_at', Carbon::today())
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
             ->select('butchery_data.*', 'products.description')
+            ->orderBy('butchery_data.created_at', 'DESC')
             ->get();
 
         $inputData = $helpers->getInputData();
@@ -278,6 +280,7 @@ class ButcheryController extends Controller
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
+            ->orderBy('deboned_data.created_at', 'DESC')
             ->get();
 
         $product_types = DB::table('product_types')
