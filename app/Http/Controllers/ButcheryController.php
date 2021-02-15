@@ -270,6 +270,7 @@ class ButcheryController extends Controller
             ->get()->toArray();
 
         $products = DB::table('products')
+            ->where('id', '>', 7)
             ->get();
 
         $deboning_data = DB::table('deboned_data')

@@ -46,7 +46,7 @@ class Helpers
 
         }
         elseif ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(3))->exists() ) {
-            # yesterday minus 2 day is valid
+            # yesterday minus 3 day is valid
             return $proposed_butchery_date = Carbon::yesterday()->subDays(3);
 
         }
