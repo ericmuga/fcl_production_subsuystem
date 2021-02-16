@@ -102,10 +102,24 @@ class SlaughterController extends Controller
             ->where('item_code', $request->carcass_type)
             ->sum('receipts.received_qty');
 
+        //transcoding from livestock code carcass code to look up in the slaughter data
+        if ($request->carcass_type == "G0101") {
+             // pig livestock
+            $c_type = "G0110";
+        }
+        if ($request->carcass_type == "G0102") {
+             // sow livestock
+            $c_type = "G0111";
+        }
+        if ($request->carcass_type == "G0104") {
+             // suckling livestock
+            $c_type = "G0113";
+        }
+
         $total_weighed = DB::table('slaughter_data')
             ->whereDate('created_at', Carbon::today())
             ->where('slapmark', $request->slapmark)
-            ->where('item_code', $request->carcass_type)
+            ->where('item_code', $c_type)
             ->count();
 
         $dataArray = array('total_per_vendor' => $total_per_vendor, 'total_weighed' => $total_weighed);

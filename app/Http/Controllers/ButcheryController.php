@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -106,12 +107,14 @@ class ButcheryController extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $products = DB::table('products')
-            ->orWhere('code', 'G1100')
-            ->orWhere('code', 'G1101')
-            ->orWhere('code', 'G1102')
-            ->orderBy('code', 'ASC')
-            ->get();
+        $products = Cache::remember('products', 60*60, function () {
+            return DB::table('products')
+                    ->orWhere('code', 'G1100')
+                    ->orWhere('code', 'G1101')
+                    ->orWhere('code', 'G1102')
+                    ->orderBy('code', 'ASC')
+                    ->get();
+        });
 
         $beheading_data = DB::table('beheading_data')
             ->whereDate('beheading_data.created_at', Carbon::today())
@@ -333,9 +336,11 @@ class ButcheryController extends Controller
     {
         $title = "products";
 
-        $products = DB::table('products')
-            ->where('code', '!=', '')
-            ->get();
+        $products = Cache::rememberForever('all_products', function () {
+            return DB::table('products')
+                        ->where('code', '!=', '')
+                        ->get();
+        });
 
         return view('butchery.products', compact('title', 'products'));
     }

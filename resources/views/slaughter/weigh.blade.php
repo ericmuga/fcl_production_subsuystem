@@ -401,7 +401,7 @@
             var slapmark = $('#slapmark').val();
             var carcass_type = $('#carcass_type').val();
 
-            //transcoding from carcass code to livestock code to look up in the receipt ledger
+            // transcoding from carcass code to livestock code to look up in the receipt ledger
             if (carcass_type == "G0110") {
                 carcass_type = "G0101"; // pig livestock
             }
@@ -453,6 +453,7 @@
                                 },
                                 dataType: 'JSON',
                                 success: function (data) {
+                                    console.log(data);
                                     var str2 = JSON.stringify(data);
                                     var obj2 = JSON.parse(str2);
                                     $('#total_by_vendor').val(obj2
