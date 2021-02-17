@@ -491,6 +491,8 @@
 
 
     function validateOnSubmit() {
+        var valid = true;
+
         var net = $('#net').val();
         var slapmark = $('#slapmark').val();
         var total_by_vendor = $('#total_by_vendor').val();
@@ -498,19 +500,26 @@
 
         if (net == "" || net <= 0.00) {
             alert("Please ensure you have valid netweight.");
-            return false;
+            valid = false;
         }
+        return valid;
     }
 
     function checkQtyCount() {
+        var valid = true;
+
         if (slapmark == null) {
             alert("please select slapmark.");
-            return false;
-            
-        } else if (slapmark != null && total_by_vendor == total_per_slap) {
-            alert("You have exhausted vendor received Qty.");
-            return false;
+            valid = false;
+
         }
+        
+        if (slapmark != null && total_per_slap >= total_by_vendor) {
+            alert("You have exhausted vendor received Qty.");
+            valid = false;
+        }
+        
+        return valid;
     }
 
     //classification code logic on input
