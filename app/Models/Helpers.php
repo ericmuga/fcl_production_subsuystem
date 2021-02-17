@@ -1,9 +1,11 @@
 <?php
+
 namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class Helpers
 {
@@ -11,7 +13,7 @@ class Helpers
     {
         if (Hash::check("param1", "param2")) {
             //add logic here
-           }
+        }
 
         //    param1 - user password that has been entered on the form
         //    param2 - old password hash stored in database
@@ -28,27 +30,21 @@ class Helpers
         return Product::where('code', $code)->value('description');
     }
 
-    public function getButcheryDate(){
+    public function getButcheryDate()
+    {
         $proposed_butchery_date = Carbon::yesterday();
-        if ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday())->exists() ) {
+        if (SlaughterData::whereDate('created_at', '=', Carbon::yesterday())->exists()) {
             // yesterday is valid
             return $proposed_butchery_date = Carbon::yesterday();
-
-        }
-        elseif ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(1))->exists() ) {
+        } elseif (SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(1))->exists()) {
             # yesterday minus 1 day is valid
             return $proposed_butchery_date = Carbon::yesterday()->subDays(1);
-
-        }
-        elseif ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(2))->exists() ) {
+        } elseif (SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(2))->exists()) {
             # yesterday minus 2 day is valid
             return $proposed_butchery_date = Carbon::yesterday()->subDays(2);
-
-        }
-        elseif ( SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(3))->exists() ) {
+        } elseif (SlaughterData::whereDate('created_at', '=', Carbon::yesterday()->subDays(3))->exists()) {
             # yesterday minus 3 day is valid
             return $proposed_butchery_date = Carbon::yesterday()->subDays(3);
-
         }
         return $proposed_butchery_date;
     }
@@ -58,7 +54,6 @@ class Helpers
         $input_count = BeheadingData::whereDate('created_at', Carbon::today())
             ->sum('no_of_carcass');
         return $input_count;
-
     }
 
     public function getOutputData()
@@ -77,7 +72,6 @@ class Helpers
 
         $output_count = ['output_legs' => $output_legs, 'output_middles' => $output_middles, 'output_shoulders' => $output_shoulders];
         return $output_count;
-
     }
 
     public function getProcessCode($process_name)
@@ -87,7 +81,6 @@ class Helpers
             ->value('process_code');
 
         return $process_code;
-
     }
 
     public function getProductCode($product_name)
@@ -97,26 +90,37 @@ class Helpers
             ->value('code');
 
         return $product_code;
-
     }
 
-    Public function getReadScaleApiServiceUrl()
+    public function getReadScaleApiServiceUrl()
     {
-        return $url = config('app.read_scale_api_url');
+        $ip = \Request::getClientIp(true);
 
+        if ($ip == '::1') {
+            $ip = '127.0.0.1';
+        }
+        return $url = 'http://' . $ip . ':3000/api/get-scale-reading';
+
+        // return $url = config('app.read_scale_api_url');
     }
 
-    Public function getComportListServiceUrl()
+    public function getComportListServiceUrl()
     {
-        return $url = config('app.list_comport_api_url');
+        $ip = \Request::getClientIp(true);
 
+        if ($ip == '::1') {
+            $ip = '127.0.0.1';
+        }
+        return $url = 'http://' . $ip . ':3000/api/get-comport-list';
+
+        // return $url = config('app.list_comport_api_url');
     }
 
     public function get_scale_read($comport)
     {
         $curl = curl_init();
         $url = $this->getReadScaleApiServiceUrl();
-        $full_url = $url.'/'.$comport;
+        $full_url = $url . '/' . $comport;
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => $full_url,
@@ -139,6 +143,7 @@ class Helpers
     public function get_comport_list()
     {
         $curl = curl_init();
+
         $url = $this->getComportListServiceUrl();
 
         curl_setopt_array($curl, array(
@@ -158,5 +163,4 @@ class Helpers
         curl_close($curl);
         return $response;
     }
-
 }
