@@ -20,9 +20,7 @@ class LoginController extends Controller
 
     public function getLogin()
     {
-        $computer_name = gethostname();
-
-        return view('auth.login', compact('computer_name'));
+        return view('auth.login');
     }
 
     public function processLogin(Request $request)
