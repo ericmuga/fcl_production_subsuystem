@@ -136,7 +136,7 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group">
-                    <button type="submit" onclick="return validateOnSubmit() && checkQtyCount()"
+                    <button type="submit" onclick="return validateOnSubmit()"
                         class="btn btn-primary btn-lg"><i class="fa fa-paper-plane" aria-hidden="true"></i>
                         Save</button>
                 </div>
@@ -491,8 +491,6 @@
 
 
     function validateOnSubmit() {
-        var valid = true;
-
         var net = $('#net').val();
         var slapmark = $('#slapmark').val();
         var total_by_vendor = $('#total_by_vendor').val();
@@ -500,26 +498,13 @@
 
         if (net == "" || net <= 0.00) {
             alert("Please ensure you have valid netweight.");
-            valid = false;
+            return false;
         }
-        return valid;
-    }
 
-    function checkQtyCount() {
-        var valid = true;
-
-        if (slapmark == null) {
-            alert("please select slapmark.");
-            valid = false;
-
-        }
-        
-        if (slapmark != null && total_per_slap >= total_by_vendor) {
+        if (slapmark != null && total_by_vendor == total_per_slap) {
             alert("You have exhausted vendor received Qty.");
-            valid = false;
+            return false;
         }
-        
-        return valid;
     }
 
     //classification code logic on input
