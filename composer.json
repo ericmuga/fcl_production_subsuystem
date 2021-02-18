@@ -17,7 +17,8 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.1",
         "maatwebsite/excel": "^3.1",
-        "rap2hpoutre/laravel-log-viewer": "^1.7"
+        "rap2hpoutre/laravel-log-viewer": "^1.7",
+        "renatomarinho/laravel-page-speed": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
