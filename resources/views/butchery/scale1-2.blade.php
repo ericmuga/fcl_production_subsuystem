@@ -65,13 +65,15 @@
                     <div class="card-body " style="padding-top: ">
                         <div class="form-group">
                             <label>No. of Carcasses</label>
-                            <select class="form-control" id="no_of_carcass" name="no_of_carcass" oninput="getNet()">
+                            <input type="number" onClick="this.select();" oninput="adjustTareweight()" class="form-control" id="no_of_carcass" value="1" name="no_of_carcass"
+                                placeholder="" >
+                            {{-- <select class="form-control" id="no_of_carcass" name="no_of_carcass" oninput="adjustTareweight()">
                                 <option value="1"> 1</option>
                                 <option value="2"> 2</option>
                                 <option value="3"> 3</option>
                                 <option value="4"> 4</option>
                                 <option value="5"> 5</option>
-                            </select>
+                            </select> --}}
                         </div>
                         <div class="form-group">
                             <div class="row">
@@ -480,13 +482,7 @@
 
 
         $('#no_of_carcass').change(function () {
-            var number_of_carcass = $(this).val();
-            var default_tareweight = $('#default_tareweight').val();
-
-            var new_tareweight = (number_of_carcass) * (default_tareweight);
-            $("#tareweight").val(Math.round((new_tareweight + Number.EPSILON) * 100) / 100);
-
-            getNet();
+            adjustTareweight();
         });
 
         $('#manual_weight').change(function () {
@@ -535,6 +531,17 @@
         });
 
     });
+
+    // adjust tareweight
+    function adjustTareweight(){
+        var number_of_carcass = $('#no_of_carcass').val();
+        var default_tareweight = $('#default_tareweight').val();
+
+        var new_tareweight = (number_of_carcass) * (default_tareweight);
+        $("#tareweight").val(Math.round((new_tareweight + Number.EPSILON) * 100) / 100);
+
+        getNet();
+    }
 
     // getNetWeight1
     function getNet() {
