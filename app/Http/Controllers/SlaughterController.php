@@ -104,15 +104,15 @@ class SlaughterController extends Controller
 
         //transcoding from livestock code carcass code to look up in the slaughter data
         if ($request->carcass_type == "G0101") {
-             // pig livestock
+            // pig livestock
             $c_type = "G0110";
         }
         if ($request->carcass_type == "G0102") {
-             // sow livestock
+            // sow livestock
             $c_type = "G0111";
         }
         if ($request->carcass_type == "G0104") {
-             // suckling livestock
+            // suckling livestock
             $c_type = "G0113";
         }
 
@@ -125,7 +125,6 @@ class SlaughterController extends Controller
         $dataArray = array('total_per_vendor' => $total_per_vendor, 'total_weighed' => $total_weighed);
 
         return response()->json($dataArray);
-
     }
 
     public function readScaleApiService(Request $request, Helpers $helpers)
@@ -144,35 +143,33 @@ class SlaughterController extends Controller
         //     Session::put('comports_success', 'success');
         // }
         return response()->json($result);
-
     }
 
     public function saveWeighData(Request $request)
     {
         try {
             // try save
-            $new = new SlaughterData();
-            $new->receipt_no = $request->receipt_no;
-            $new->slapmark = $request->slapmark;
-            $new->item_code = $request->carcass_type;
-            $new->vendor_no = $request->vendor_no;
-            $new->vendor_name = $request->vendor_name;
-            $new->actual_weight = $request->reading;
-            $new->net_weight = $request->net;
-            $new->settlement_weight = $request->settlement_weight;
-            $new->vendor_name = $request->vendor_name;
-            $new->meat_percent = $request->meat_percent;
-            $new->classification_code = $request->classification_code;
-            $new->user_id = Auth::id();
-            $new->save();
+            DB::table('slaughter_data')->insert([
+                'receipt_no' => $request->receipt_no,
+                'slapmark' => $request->slapmark,
+                'item_code' => $request->carcass_type,
+                'vendor_no' => $request->vendor_no,
+                'vendor_name' => $request->vendor_name,
+                'actual_weight' => $request->reading,
+                'net_weight' => $request->net,
+                'settlement_weight' => $request->settlement_weight,
+                'vendor_name' => $request->vendor_name,
+                'meat_percent' => $request->meat_percent,
+                'classification_code' => $request->classification_code,
+                'user_id' => Auth::id(),
+            ]);
 
-            Toastr::success('record added successfully','Success');
+            Toastr::success('record added successfully', 'Success');
             return redirect()
                 ->back()
                 ->withInput();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
@@ -193,11 +190,10 @@ class SlaughterController extends Controller
             $new->user_id = Auth::id();
             $new->save();
 
-            Toastr::success('record added successfully','Success');
+            Toastr::success('record added successfully', 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
@@ -214,7 +210,6 @@ class SlaughterController extends Controller
             ->get();
 
         return view('slaughter.missing_slapmarks', compact('title', 'slaps', 'helpers'));
-
     }
 
     public function importedReceipts(Helpers $helpers)
@@ -225,7 +220,6 @@ class SlaughterController extends Controller
             ->orderBy('created_at', 'DESC')
             ->get();
         return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
-
     }
 
     public function importReceipts(Request $request)
@@ -269,7 +263,6 @@ class SlaughterController extends Controller
             ->get();
 
         return view('slaughter.slaughter_report', compact('title', 'helpers', 'slaughter_data'));
-
     }
 
     public function scaleSettings(Helpers $helpers)
@@ -297,15 +290,13 @@ class SlaughterController extends Controller
                 ]);
 
 
-            Toastr::success("record {$request->item_name} updated successfully",'Success');
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
-
     }
 
     public function changePassword()

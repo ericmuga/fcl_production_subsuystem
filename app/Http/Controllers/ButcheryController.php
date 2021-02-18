@@ -152,7 +152,8 @@ class ButcheryController extends Controller
         try {
             // insert sales substr($string, 0, -1);
             if ($request->carcass_type == "G1032" || $request->carcass_type == "G1033") {
-                $new = Sale::create([
+
+                DB::table('sales')->insert([
                     'item_code' => $request->carcass_type,
                     'no_of_carcass' => $request->no_of_carcass,
                     'actual_weight' => $request->reading,
@@ -170,7 +171,7 @@ class ButcheryController extends Controller
                 $process_code = 1; //Behead sow
             }
 
-            $new = BeheadingData::create([
+            DB::table('beheading_data')->insert([
                 'item_code' => $request->carcass_type,
                 'no_of_carcass' => $request->no_of_carcass,
                 'actual_weight' => $request->reading,
@@ -197,7 +198,8 @@ class ButcheryController extends Controller
                 $process_code = 3; //Breaking Sow into Leg,Mid,&Shd
 
             }
-            $new = ButcheryData::create([
+
+            DB::table('butchery_data')->insert([
                 'carcass_type' =>  $request->carcass_type,
                 'item_code' =>  $request->item_code,
                 'actual_weight' => $request->reading2,
@@ -321,8 +323,9 @@ class ButcheryController extends Controller
                 $product = 2;
             }
             $process_code = $helpers->getProcessCode($request->process_type);
+
             # insert record
-            $new = DebonedData::create([
+            DB::table('deboned_data')->insert([
                 'item_code' =>  $request->product,
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
