@@ -20,7 +20,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>From Slaughter</strong>
+            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($butchery_date) }})</strong>
         </p>
         <div class="small-box bg-success">
             <div class="inner">
@@ -42,7 +42,7 @@
         <div class="small-box bg-info">
             <div class="inner">
                 <h3>{{ $baconers?? "0" }}</h3>
-                <p>Beheaded Baconers</p>
+                <p>No. of Beheaded Baconers</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -53,7 +53,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Scale 2 output</strong>
+            <strong>Scale 1 output</strong>
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
@@ -126,7 +126,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>From Slaughter</strong>
+            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($butchery_date) }})</strong>
         </p>
         <div class="small-box bg-success">
             <div class="inner">
@@ -148,7 +148,7 @@
         <div class="small-box bg-info">
             <div class="inner">
                 <h3>{{ $sows?? "0" }}</h3>
-                <p>Beheaded Sows</p>
+                <p>No. of Beheaded Sows</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -159,7 +159,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Scale 2 output</strong>
+            <strong>Scale 1 output</strong>
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
