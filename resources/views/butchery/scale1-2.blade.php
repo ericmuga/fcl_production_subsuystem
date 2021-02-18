@@ -158,9 +158,14 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Carcass Type</label>
-                            <select class="form-control select2" name="carcass_type" id="carcass_type" required>
-                                <option value="G1030" selected="selected"> Pig, Carcass</option>
-                                <option value="G1031"> Sow, Carcass</option>
+                            <select class="form-control select2" name="carcass_type" id="carcass_type" required>                               
+                                @if (old('carcass_type') == "G1031")
+                                    <option value="G1030"> Pig, Carcass</option>
+                                    <option value="G1031" selected> Sow, Carcass</option>
+                                @else
+                                    <option value="G1030" selected="selected"> Pig, Carcass</option>
+                                    <option value="G1031"> Sow, Carcass</option>
+                                @endif
                             </select>
                         </div>
                         <div class="form-group">

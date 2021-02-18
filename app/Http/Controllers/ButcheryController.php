@@ -209,7 +209,9 @@ class ButcheryController extends Controller
             ]);
 
             Toastr::success('record inserted successfully', 'Success');
-            return redirect()->back();
+            return redirect()
+                ->back()
+                ->withInput();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back()
