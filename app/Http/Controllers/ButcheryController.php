@@ -107,14 +107,12 @@ class ButcheryController extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $products = Cache::remember('products', 60*60, function () {
-            return DB::table('products')
-                    ->orWhere('code', 'G1100')
-                    ->orWhere('code', 'G1101')
-                    ->orWhere('code', 'G1102')
-                    ->orderBy('code', 'ASC')
-                    ->get();
-        });
+        $products = DB::table('products')
+            ->orWhere('code', 'G1100')
+            ->orWhere('code', 'G1101')
+            ->orWhere('code', 'G1102')
+            ->orderBy('code', 'ASC')
+            ->get();
 
         $beheading_data = DB::table('beheading_data')
             ->whereDate('beheading_data.created_at', Carbon::today())
@@ -147,7 +145,6 @@ class ButcheryController extends Controller
         $result = $helpers->get_comport_list();
 
         return response()->json($result);
-
     }
 
     public function saveScaleOneData(Request $request)
@@ -164,7 +161,7 @@ class ButcheryController extends Controller
                     'user_id' => Auth::id(),
                 ]);
 
-                Toastr::success('sale recorded successfully','Success');
+                Toastr::success('sale recorded successfully', 'Success');
                 return redirect()->back();
             }
             // insert beheading data
@@ -182,15 +179,13 @@ class ButcheryController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            Toastr::success('record inserted successfully','Success');
+            Toastr::success('record inserted successfully', 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
-
     }
 
     public function saveScaleTwoData(Request $request)
@@ -213,15 +208,13 @@ class ButcheryController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            Toastr::success('record inserted successfully','Success');
+            Toastr::success('record inserted successfully', 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
-
     }
 
     public function updateScaleTwoData(Request $request)
@@ -233,14 +226,13 @@ class ButcheryController extends Controller
                 ->update([
                     'item_code' => $request->editproduct,
                     'updated_at' => Carbon::now(),
-                    ]);
+                ]);
 
 
-            Toastr::success("record {$request->editproduct} updated successfully",'Success');
+            Toastr::success("record {$request->editproduct} updated successfully", 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
@@ -258,10 +250,9 @@ class ButcheryController extends Controller
             ->where('item_code', 'G0111')
             ->count();
 
-        $data = array('baconers'=>$baconers, 'sows'=>$sows);
+        $data = array('baconers' => $baconers, 'sows' => $sows);
 
         return response()->json($data);
-
     }
 
     public function scaleThree(Helpers $helpers)
@@ -314,33 +305,28 @@ class ButcheryController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            Toastr::success("record {$request->product} inserted successfully",'Success');
+            Toastr::success("record {$request->product} inserted successfully", 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
-
     }
 
     public function getProductTypeAjax(Request $request)
     {
         $data = DB::table('products')->where('code', $request->product_code)->first();
         return response()->json($data);
-
     }
 
     public function products()
     {
         $title = "products";
 
-        $products = Cache::rememberForever('all_products', function () {
-            return DB::table('products')
-                        ->where('code', '!=', '')
-                        ->get();
-        });
+        $products =  DB::table('products')
+            ->where('code', '!=', '')
+            ->get();
 
         return view('butchery.products', compact('title', 'products'));
     }
@@ -363,7 +349,8 @@ class ButcheryController extends Controller
         return view('butchery.split_weights', compact('title', 'splitted_data', 'helpers', 'products', 'processes'));
     }
 
-    public function loadSplitData(Request $request){
+    public function loadSplitData(Request $request)
+    {
         $date = Carbon::parse($request->dateinput);
         $to_split = DB::table('deboned_data')
             ->where('splitted', 0)
@@ -382,7 +369,7 @@ class ButcheryController extends Controller
     {
         try {
             //inserts
-            DB::transaction(function () use($request, $helpers) {
+            DB::transaction(function () use ($request, $helpers) {
                 //insert 1st row
                 DB::table('splitted_weights')->insert([
                     'parent_item' => $helpers->getProductCode($request->item_name),
@@ -426,15 +413,13 @@ class ButcheryController extends Controller
             Session::forget('display_date');
             Session::forget('splitting_table');
 
-            Toastr::success("record {$request->item_name} splitted successfully",'Success');
+            Toastr::success("record {$request->item_name} splitted successfully", 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
-
     }
 
     public function addProduct(Request $request)
@@ -465,7 +450,7 @@ class ButcheryController extends Controller
 
         ]);
 
-        Toastr::success("product {$request->product} inserted successfully",'Success');
+        Toastr::success("product {$request->product} inserted successfully", 'Success');
         return redirect()->back();
     }
 
@@ -494,15 +479,13 @@ class ButcheryController extends Controller
                 ]);
 
 
-            Toastr::success("record {$request->item_name} updated successfully",'Success');
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
-
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(),'Error!');
+            Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
-
     }
 
     public function changePassword()
@@ -521,7 +504,6 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
-
     }
 
     public function getBrakingReport(Helpers $helpers)
@@ -534,7 +516,6 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));
-
     }
 
     public function getDeboningReport(Helpers $helpers)
@@ -547,7 +528,6 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.deboned', compact('title', 'deboning_data', 'helpers'));
-
     }
 
     public function getSalesReport(Helpers $helpers)
@@ -561,6 +541,5 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.sales', compact('title', 'sales_data', 'helpers'));
-
     }
 }
