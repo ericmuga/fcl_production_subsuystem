@@ -263,29 +263,33 @@
 <div id="butchery_output_show" class="collapse"><hr>
     <div class="row">
         <!-- baconers, sows, sides -->
-        <div class="form-group col-md-2">
-            <label>Input Legs:</label>
-            <input type="number" class="form-control" id="baconers_number" value="{{ $inputData*2 }}" oninput="getSidesNumber()" readonly>
+        <div class="form-group col-sm-1">
+            <label>Beheaded :</label>
+            <input type="number" class="form-control" id="total_beheaded" value="{{ $inputData }}" oninput="getSidesNumber()" readonly>
         </div>
-        <div class="form-group col-md-2">
-            <label>Input Middles:</label>
+        <div class="form-group col-sm-1">
+            <label> Legs:</label>
+            <input type="number" class="form-control" id="baconers_number" value="{{ $inputData*2 }}" readonly>
+        </div>
+        <div class="form-group col-sm-1">
+            <label> Middles:</label>
             <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
         </div>
-        <div class="form-group col-md-2">
-            <label>Input Shoulders:</label>
+        <div class="form-group col-sm-1">
+            <label> Shoulders:</label>
             <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
-        </div>
+        </div> 
 
-        <div class="form-group col-md-2">
-            <label>Output Legs:</label>
+        <div class="form-group col-sm-2" style="margin-left: 10%">
+            <label>Weighed Legs:</label>
             <input type="number" class="form-control" id="baconers_number" value="{{ $outputData['output_legs'] }}" oninput="getSidesNumber()" readonly>
         </div>
-        <div class="form-group col-md-2">
-            <label>Output Middles:</label>
+        <div class="form-group col-sm-2">
+            <label>Weighed Middles:</label>
             <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_middles'] }}" readonly>
         </div>
-        <div class="form-group col-md-2">
-            <label>Output Shoulders:</label>
+        <div class="form-group col-sm-2">
+            <label>Weighed Shoulders:</label>
             <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}" readonly>
         </div>
         <!-- /.form group -->
@@ -328,7 +332,7 @@
                         @foreach($beheading_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td> {{ $data->item_code }}</td>
+                                <td id="edit1ModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}" data-item="{{$data->description}}" data-no_carcass="{{ $data->no_of_carcass }}" data-weight="{{number_format($data->actual_weight, 2)}}"><a href="#">{{ $data->item_code }}</a> </td>
                                 <td> {{ $data->description }}</td>
                                 <td> {{ $data->no_of_carcass }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
@@ -376,7 +380,7 @@
                             @foreach($butchery_data as $data)
                             <tr>
                                 <td>{{ $loop->iteration}}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-code="{{$data->item_code}}" data-item="{{$data->description}}"><a href="#">{{ $data->item_code }}</a> </td>
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}" data-item="{{$data->description}}" data-weight="{{number_format($data->actual_weight, 2)}}"><a href="#">{{ $data->item_code }}</a> </td>
                                 <td> {{ $data->description }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
                                 <td> {{ $data->created_at }}</td>
@@ -394,7 +398,54 @@
 </div>
 <!-- butchery ouput data show -->
 
-<!-- Start Edit Scale Modal -->
+
+<!-- Edit scale1 Modal -->
+<div id="edit1Modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!--Start create user modal-->
+        <form id="form-edit-role" action="{{route('butchery_scale1_update')}}" method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale1 Item: <strong><input style="border:none"
+                                type="text" id="item_name1" name="item_name1" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="email" class="col-form-label"> Carcass </label>
+                        <select class="form-control" name="edit_carcass" id="edit_carcass">
+                            <option value="G1030">Baconers</option>
+                            <option value="G1031">Sows</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>No. of Carcasses</label>
+                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value="" name="edit_no_carcass" placeholder="" >
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
+                        <input type="number" class="form-control" name="edit_weight1" id="edit_weight1" placeholder="" step="0.01" autocomplete="off" required autofocus>
+                    </div>
+                    <input type="hidden" name="item_id1" id="item_id1" value="">
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning">
+                        <i class="fa fa-save"></i> Update
+                    </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--End Edit scale1 modal-->
+
+<!-- Start Edit Scale2 Modal -->
 <div id="itemCodeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
@@ -402,7 +453,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Product Code: <strong><input style="border:none"
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale2 Item: <strong><input style="border:none"
                                 type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
@@ -411,11 +462,16 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="baud">Product</label>
-                        <select class="form-control" name="editproduct" id="editproduct" required>
+                        <select class="form-control select2" name="editproduct" id="editproduct" required>
+                            <option value="" selected disabled>Select Product</option>
                             @foreach($products as $data)
-                                <option value="{{$data->code}}" selected="selected">{{$data->description}}</option>
+                                <option value="{{$data->code}}">{{$data->description}}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
+                        <input type="number" class="form-control" name="edit_weight" id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
@@ -520,16 +576,37 @@
 
         });
 
-        // edit
-        $("body").on("click", "#itemCodeModalShow", function (a) {
+        // edit scale 1
+        $("body").on("click", "#edit1ModalShow", function (a) {
             a.preventDefault();
 
-            var product = $(this).data('code');
+            var product = $(this).data('product_code');
             var item = $(this).data('item');
+            var no_carcass = $(this).data('no_carcass');
+            var weight = $(this).data('weight');            
+            var id = $(this).data('id');
+
+            $('#edit_no_carcass').val(product);
+            $('#item_name1').val(item);
+            $('#edit_no_carcass').val(no_carcass);
+            $('#edit_weight1').val(weight);
+            $('#item_id1').val(id);
+
+            $('#edit1Modal').modal('show');
+        });
+
+        // edit scale 2
+        $("body").on("click", "#itemCodeModalShow", function (e) {
+            e.preventDefault();
+
+            var product = $(this).data('product_code');
+            var item = $(this).data('item');
+            var weight = $(this).data('weight');            
             var id = $(this).data('id');
 
             $('#editproduct').val(product);
             $('#item_name').val(item);
+            $('#edit_weight').val(weight);
             $('#item_id').val(id);
 
             $('#itemCodeModal').modal('show');

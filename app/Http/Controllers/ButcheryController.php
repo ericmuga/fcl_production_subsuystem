@@ -219,19 +219,43 @@ class ButcheryController extends Controller
         }
     }
 
-    public function updateScaleTwoData(Request $request)
+    public function updateScaleOneData(Request $request)
     {
         try {
-            //update
-            DB::table('butchery_data')
-                ->where('id', $request->item_id)
+            // update
+            DB::table('beheading_data')
+                ->where('id', $request->item_id1)
                 ->update([
-                    'item_code' => $request->editproduct,
+                    'item_code' => $request->edit_carcass,
+                    'no_of_carcass' => $request->edit_no_carcass,
+                    'actual_weight' => $request->edit_weight1,
                     'updated_at' => Carbon::now(),
                 ]);
 
 
-            Toastr::success("record {$request->editproduct} updated successfully", 'Success');
+            Toastr::success("record {$request->item_name1} updated successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
+    public function updateScaleTwoData(Request $request)
+    {
+        try {
+            // update
+            DB::table('butchery_data')
+                ->where('id', $request->item_id)
+                ->update([
+                    'item_code' => $request->editproduct,
+                    'actual_weight' => $request->edit_weight,
+                    'updated_at' => Carbon::now(),
+                ]);
+
+
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
