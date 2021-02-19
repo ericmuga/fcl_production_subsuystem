@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BeheadedCombinedExport;
+use App\Exports\BreakingCombinedExport;
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
 use App\Models\Helpers;
@@ -561,6 +562,20 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));
+    }
+
+    public function combinedBreakingReport(Request $request)
+    {
+        $butchery_combined = DB::table('butchery_data')
+            ->whereDate('butchery_data.created_at', Carbon::parse($request->date))
+            ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
+            ->select('butchery_data.item_code', 'products.description AS product_type', DB::raw('SUM(butchery_data.net_weight)'))
+            ->groupBy('butchery_data.item_code', 'products.description')
+            ->get();
+
+        $exports = Session::put('session_export_data', $butchery_combined);
+
+        return Excel::download(new BreakingCombinedExport, 'BreakingReport-' . $request->date . '.xlsx');
     }
 
     public function getDeboningReport(Helpers $helpers)
