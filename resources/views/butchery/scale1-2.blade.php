@@ -380,7 +380,7 @@
                             @foreach($butchery_data as $data)
                             <tr>
                                 <td>{{ $loop->iteration}}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}" data-item="{{$data->description}}" data-weight="{{number_format($data->actual_weight, 2)}}"><a href="#">{{ $data->item_code }}</a> </td>
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}" data-weight="{{number_format($data->actual_weight, 2)}}"><a href="#">{{ $data->item_code }}</a> </td>
                                 <td> {{ $data->description }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
                                 <td> {{ $data->created_at }}</td>
@@ -461,11 +461,10 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="baud">Product</label>
-                        <select class="form-control select2" name="editproduct" id="editproduct" required>
-                            <option value="" selected disabled>Select Product</option>
+                        <label for="baud" class="col-form-label">Product</label>
+                        <select class="form-control" name="edit_product" id="edit_product">
                             @foreach($products as $data)
-                                <option value="{{$data->code}}">{{$data->description}}</option>
+                                <option value="{{trim($data->code)}}">{{$data->description}}</option>
                             @endforeach
                         </select>
                     </div>
@@ -603,12 +602,12 @@
         $("body").on("click", "#itemCodeModalShow", function (e) {
             e.preventDefault();
 
-            var product = $(this).data('product_code');
+            var product = $(this).data('item_code');
             var item = $(this).data('item');
             var weight = $(this).data('weight');            
             var id = $(this).data('id');
 
-            $('#editproduct').val(product);
+            $('#edit_product').val(product);
             $('#item_name').val(item);
             $('#edit_weight').val(weight);
             $('#item_id').val(id);

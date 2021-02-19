@@ -199,7 +199,6 @@ class ButcheryController extends Controller
             $process_code = 2; //Breaking Pig, (Leg, Mdl, Shld)
             if ($request->carcass_type == 'G1031') {
                 $process_code = 3; //Breaking Sow into Leg,Mid,&Shd
-
             }
 
             DB::table('butchery_data')->insert([
@@ -254,7 +253,7 @@ class ButcheryController extends Controller
             DB::table('butchery_data')
                 ->where('id', $request->item_id)
                 ->update([
-                    'item_code' => $request->editproduct,
+                    'item_code' => $request->edit_product,
                     'actual_weight' => $request->edit_weight,
                     'updated_at' => Carbon::now(),
                 ]);
