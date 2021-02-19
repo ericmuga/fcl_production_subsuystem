@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SlaughterCombinedExport;
 use App\Imports\ReceiptsImport;
 use App\Models\Helpers;
 use App\Models\MissingSlapData;
@@ -263,6 +264,21 @@ class SlaughterController extends Controller
             ->get();
 
         return view('slaughter.slaughter_report', compact('title', 'helpers', 'slaughter_data'));
+    }
+
+    public function combinedSlaughterReport(Request $request)
+    {
+        /* to do */
+
+        $slaughter_combined = DB::table('slaughter_data')
+            ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
+            ->select('slaughter_data.*', 'carcass_types.description')
+            ->orderBy('slaughter_data.created_at', 'DESC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $slaughter_combined);
+
+        return Excel::download(new SlaughterCombinedExport, 'SlaughterReport-' . $request->date . '.xlsx');
     }
 
     public function scaleSettings(Helpers $helpers)

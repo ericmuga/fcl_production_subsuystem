@@ -44,6 +44,7 @@ Route::get('/slaughter/missing-slaps', [SlaughterController::class, 'missingSlap
 Route::get('/slaughter/receipts', [SlaughterController::class, 'importedReceipts'])->name('slaughter_receipts');
 Route::post('/slaughter/import-receipts', [SlaughterController::class, 'importReceipts'])->name('slaughter_import_receipts');
 Route::get('/slaughter/data-report', [SlaughterController::class, 'slaughterDataReport'])->name('slaughter_data_report');
+Route::post('export-slaughter-combined-report', [SlaughterController::class, 'combinedSlaughterReport']);
 Route::get('/slaughter/scale-settings', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
 Route::post('/slaughter/update/scale-settings', [SlaughterController::class, 'UpdateScalesettings'])->name('slaughter_update_scale_settings');
 Route::get('/slaughter/password', [SlaughterController::class, 'changePassword'])->name('slaughter_change_password');
