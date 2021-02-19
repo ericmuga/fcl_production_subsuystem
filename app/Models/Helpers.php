@@ -51,22 +51,26 @@ class Helpers
 
     public function getInputData()
     {
-        $input_count = BeheadingData::whereDate('created_at', Carbon::today())
+        $input_count = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
             ->sum('no_of_carcass');
         return $input_count;
     }
 
     public function getOutputData()
     {
-        $output_legs = ButcheryData::whereDate('created_at', Carbon::today())
+        $output_legs = DB::table('butchery_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1100')
             ->sum('no_of_items');
 
-        $output_middles = ButcheryData::whereDate('created_at', Carbon::today())
+        $output_middles = DB::table('butchery_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1101')
             ->sum('no_of_items');
 
-        $output_shoulders = ButcheryData::whereDate('created_at', Carbon::today())
+        $output_shoulders = DB::table('butchery_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1102')
             ->sum('no_of_items');
 
