@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\BeheadedCombinedExport;
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
 use App\Models\Helpers;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpParser\Node\Stmt\TryCatch;
 
 class ButcheryController extends Controller
@@ -533,6 +535,20 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
+    }
+
+    public function combinedBeheadingReport(Request $request)
+    {
+        $beheading_combined = DB::table('beheading_data')
+            ->whereDate('beheading_data.created_at', Carbon::parse($request->date))
+            ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
+            ->select('beheading_data.item_code', 'products.description AS Carcass', DB::raw('SUM(beheading_data.no_of_carcass) as total_carcasses'), DB::raw('SUM(beheading_data.net_weight) as total_net'))
+            ->groupBy('beheading_data.item_code', 'products.description')
+            ->get();
+
+        $exports = Session::put('session_export_data', $beheading_combined);
+
+        return Excel::download(new BeheadedCombinedExport, 'BeheadingReport-' . $request->date . '.xlsx');
     }
 
     public function getBrakingReport(Helpers $helpers)

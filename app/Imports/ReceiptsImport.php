@@ -12,15 +12,15 @@ use Maatwebsite\Excel\Concerns\ToModel;
 class ReceiptsImport implements ToModel
 {
     /**
-    * @param array $row
-    *
-    * @return \Illuminate\Database\Eloquent\Model|null
-    */
+     * @param array $row
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
     public function model(array $row)
     {
         $slaughter_date = Session::get('slaughter_date');
 
-        return new Receipt([
+        DB::table('receipts')->insert([
             'enrolment_no' => $row[0],
             'vendor_tag' => $row[1],
             'receipt_no' => $row[2],
