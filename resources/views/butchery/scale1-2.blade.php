@@ -476,9 +476,12 @@
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-warning">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning">
                         <i class="fa fa-save"></i> Update
                     </button>
+                    </div>
                 </div>
             </div>
         </form>
@@ -586,7 +589,8 @@
             var weight = $(this).data('weight');            
             var id = $(this).data('id');
 
-            $('#edit_no_carcass').val(product);
+            
+            $('#edit_carcass').val(product);
             $('#item_name1').val(item);
             $('#edit_no_carcass').val(no_carcass);
             $('#edit_weight1').val(weight);
