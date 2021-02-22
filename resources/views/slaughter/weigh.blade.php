@@ -427,7 +427,7 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
-                            console.log(res);
+                            //console.log(res);
                             var str = JSON.stringify(res);
                             var obj = JSON.parse(str);
 
@@ -453,7 +453,7 @@
                                 },
                                 dataType: 'JSON',
                                 success: function (data) {
-                                    console.log(data);
+                                    //console.log(data);
                                     var str2 = JSON.stringify(data);
                                     var obj2 = JSON.parse(str2);
                                     $('#total_by_vendor').val(obj2
@@ -866,10 +866,10 @@
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    console.log(data);
+                    //console.log(data);
 
                     var obj = JSON.parse(data);
-                    console.log(obj.success);
+                    //console.log(obj.success);
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
