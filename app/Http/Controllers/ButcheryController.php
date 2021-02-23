@@ -552,7 +552,7 @@ class ButcheryController extends Controller
 
         $exports = Session::put('session_export_data', $beheading_combined);
 
-        return Excel::download(new BeheadedCombinedExport, 'BeheadingReport-' . $request->date . '.xlsx');
+        return Excel::download(new BeheadedCombinedExport, 'BeheadingPigSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function getBrakingReport(Helpers $helpers)
@@ -578,7 +578,7 @@ class ButcheryController extends Controller
 
         $exports = Session::put('session_export_data', $butchery_combined);
 
-        return Excel::download(new BreakingCombinedExport, 'BreakingReport-' . $request->date . '.xlsx');
+        return Excel::download(new BreakingCombinedExport, 'BreakingPigSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function getDeboningReport(Helpers $helpers)

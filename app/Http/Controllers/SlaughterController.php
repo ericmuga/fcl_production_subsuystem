@@ -278,7 +278,7 @@ class SlaughterController extends Controller
 
         $exports = Session::put('session_export_data', $slaughter_combined);
 
-        return Excel::download(new SlaughterCombinedExport, 'SlaughterReport-' . $request->date . '.xlsx');
+        return Excel::download(new SlaughterCombinedExport, 'SlaughterSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function scaleSettings(Helpers $helpers)
