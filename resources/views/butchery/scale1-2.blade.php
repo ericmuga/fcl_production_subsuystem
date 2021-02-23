@@ -699,10 +699,10 @@
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
 
                     var obj = JSON.parse(data);
-                    console.log(obj.success);
+                    // console.log(obj.success);
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
@@ -748,10 +748,10 @@
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
 
                     var obj = JSON.parse(data);
-                    console.log(obj.success);
+                    // console.log(obj.success);
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
