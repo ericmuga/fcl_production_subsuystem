@@ -22,9 +22,9 @@
                     <select class="form-control select2" name="product" id="product" required>
                         <option value="">Select product</option>
                         @foreach($products as $product)
-                            <option value="{{ $product->code }}">
-                                {{ ucwords($product->description) }} - {{ $product->code }}
-                            </option>
+                        <option value="{{ $product->code }}">
+                            {{ ucwords($product->description) }} - {{ $product->code }}
+                        </option>
                         @endforeach
                     </select>
                 </div>
@@ -42,18 +42,12 @@
                         </button>
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-8">
-                        <div class="form-group" id="product_type_select">
-                            <label for="exampleInputPassword1">Production Process</label>
-                            <input type="text" class="form-control" id="process_type" value="" name="process_type">
-                        </div>
-                    </div>
-                    <div class="col-md-4" style="padding-top: 7.5%">
-                        <button class="btn btn-outline-info btn-sm form-control" id="btn_process_type" type="button"
-                            data-toggle="modal" disabled>
-                            <strong>Edit?</strong>
-                        </button>
+                <div class="form-group">
+                    <div class="form-group" id="product_type_select">
+                        <label for="exampleInputPassword1">Production Process</label>
+                        <select class="form-control" name="production_process" id="production_process">
+
+                        </select>
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
@@ -126,13 +120,13 @@
                 </div>
                 <div class="modal-body">
                     <div class=" form-group">
-                        <select name="edit_product_type" id="edit_product_type" class="form-control select2" required
-                            autofocus>
-                            @foreach($product_types as $type)
-                                <option value="{{ $type->code }}" selected="selected">
-                                    {{ ucwords($type->description) }}
-                                </option>
-                            @endforeach
+                        <select name="edit_product_type" id="edit_product_type" class="form-control" required>
+                            <option value="1">
+                                Main Product
+                            </option>
+                            <option value="2">
+                                By Product
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -145,46 +139,8 @@
         </form>
     </div>
 </div>
-<!-- end product code modal -->
-
-<!-- production process modal -->
-<div class="modal fade" id="productionProcessModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form id="form-production-process" action="#" method="post">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Production Process</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class=" form-group">
-                        <select name="edit_production_process" id="edit_production_process"
-                            value="{{ old('edit_production_process') }}" class="form-control select2"
-                            required autofocus>
-                            <option value="" selected disabled>Select process</option>
-                            @foreach($processes as $type)
-                                <option value="{{ $type->process_code }}">
-                                    {{ ucwords($type->process) }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary" type="button" onclick="setProductionProcess()">
-                        <i class="fa fa-save"></i> Edit
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<!-- end production process modal -->
 <hr>
+<!-- end product code modal -->
 
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#slicing_output_show"><i
@@ -231,15 +187,15 @@
                         </tfoot>
                         <tbody>
                             @foreach($deboning_data as $data)
-                                <tr>
-                                    <td>{{ $i++ }}</td>
-                                    <td> {{ $data->item_code }}</td>
-                                    <td>{{ $helpers->getProductName($data->item_code) }}</td>
-                                    <td> {{ $data->product_type }}</td>
-                                    <td> {{ $data->process }}</td>
-                                    <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                    <td> {{ $data->created_at }}</td>
-                                </tr>
+                            <tr>
+                                <td>{{ $i++ }}</td>
+                                <td> {{ $data->item_code }}</td>
+                                <td>{{ $helpers->getProductName($data->item_code) }}</td>
+                                <td> {{ $data->product_type }}</td>
+                                <td> {{ $data->process }}</td>
+                                <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                <td> {{ $data->created_at }}</td>
+                            </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -295,44 +251,63 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
-                            // console.log(res);
+                            // console.log(res.product_type);
                             $('#btn_product_type').prop('disabled', false);
-                            $('#btn_process_type').prop('disabled', false);
 
-                            //product type
+                            // product type
                             if (res.product_type == 1) {
                                 $('#product_type').val("Main Product");
                             } else {
                                 $('#product_type').val("By Product");
                             }
 
-                            //process type
-                            if (res.process_type == 4) {
-                                $('#process_type').val("Debone Pork Leg");
-                            } else if (res.process_type == 5) {
-                                $('#process_type').val("Debone Pork Middle");
-                            } else if (res.process_type == 6) {
-                                $('#process_type').val("Debone Pork Shoulder");
-                            } else if (res.process_type == 7) {
-                                $('#process_type').val("Debone Sow");
-                            } else if (res.process_type == 8) {
-                                $('#process_type').val(
-                                    "Slicing parts for slices, portions");
-                            } else if (res.process_type == 9) {
-                                $('#process_type').val("Trim & Roll");
-                            } else if (res.process_type == 10) {
-                                $('#process_type').val("Fat Stripping Rinds");
-                            } else if (res.process_type == 11) {
-                                $('#process_type').val("Rolling Pork Legs");
-                            } else if (res.process_type == 12) {
-                                $('#process_type').val("Rolling Pork Shoulders");
-                            } else if (res.process_type == 13) {
-                                $('#process_type').val("Bones");
-                            } else {
-                                $('#process_type').val("");
-                            }
+                            //get process types
+                            $.ajax({
+                                type: "GET",
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                                        .attr('content')
+                                },
+                                url: "{{ url('product_process_ajax') }}",
+                                data: {
+                                    'product_code': product_code,
+
+                                },
+                                dataType: 'JSON',
+                                success: function (data) {
+                                    console.log(data);
+                                    var formOptions = "";
+                                    for (var key in data) {
+                                        // console.log(data[key].process_code)
+                                        var process_code = data[key]
+                                            .process_code;
+
+                                        var process_name =
+                                            getProductionProcessName(
+                                                process_code);
+
+                                        formOptions += "<option value='" +
+                                            process_code + "'>" + process_name +
+                                            "</option>";
+                                    }
+
+                                    $('#production_process').html(formOptions);
+                                },
+                                error: function (data) {
+                                    var errors = data.responseJSON;
+                                    console.log(errors);
+                                    alert(
+                                        'error occured when pulling production processes');
+                                }
+
+                            });
 
                         }
+                    },
+                    error: function (data) {
+                        var errors = data.responseJSON;
+                        console.log(errors);
+                        alert('error occured when pulling production types');
                     }
                 });
 
@@ -380,33 +355,67 @@
 
     }
 
-    function setProductionProcess() {
-        var edit_production_process = $('#edit_production_process').val();
-        if (edit_production_process == null) {
-            alert('please select item')
-        } else if (edit_production_process == 4) {
-            $('#process_type').val("Debone Pork Leg");
-        } else if (edit_production_process == 5) {
-            $('#process_type').val("Debone Pork Middle");
-        } else if (edit_production_process == 6) {
-            $('#process_type').val("Debone Pork Shoulder");
-        } else if (edit_production_process == 7) {
-            $('#process_type').val("Debone Sow");
-        } else if (edit_production_process == 8) {
-            $('#process_type').val("Slicing parts for slices, portions");
-        } else if (edit_production_process == 9) {
-            $('#process_type').val("Trim & Roll");
-        } else if (edit_production_process == 10) {
-            $('#process_type').val("Fat Stripping Rinds");
-        } else if (edit_production_process == 11) {
-            $('#process_type').val("Rolling Pork Legs");
-        } else if (edit_production_process == 12) {
-            $('#process_type').val("Rolling Pork Shoulders");
-        } else if (edit_production_process == 13) {
-            $('#process_type').val("Bones");
-        }
-        $('#productionProcessModal').modal('hide');
+    function getProductionProcessName(process_code) {
+        if (process_code == 0) {
+            return "Behead Pig";
 
+        }
+        if (process_code == 1) {
+            return "Behead Sow";
+
+        }
+        if (process_code == 2) {
+            return "Breaking Pig, (Leg, Mdl, Shld)";
+
+        }
+        if (process_code == 3) {
+            return "Breaking Sow into Leg,Mid,&Shd";
+
+        }
+        if (process_code == 4) {
+            return "Debone Pork Leg";
+
+        }
+        if (process_code == 5) {
+            return "Debone Pork Middle";
+
+        }
+        if (process_code == 6) {
+            return "Debone Pork Shoulder";
+
+        }
+        if (process_code == 0) {
+            return "Debone Pork Leg";
+
+        }
+        if (process_code == 7) {
+            return "Debone Sow";
+
+        }
+        if (process_code == 8) {
+            return "Slicing parts for slices, portions";
+
+        }
+        if (process_code == 9) {
+            return "Trim & Roll";
+
+        }
+        if (process_code == 10) {
+            return "Fat Stripping Rinds";
+
+        }
+        if (process_code == 11) {
+            return "Rolling Pork Legs";
+
+        }
+        if (process_code == 12) {
+            return "Rolling Pork Shoulders";
+
+        }
+        if (process_code == 13) {
+            return "Bones";
+
+        }
     }
 
     function getNet() {

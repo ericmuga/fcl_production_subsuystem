@@ -306,14 +306,7 @@ class ButcheryController extends Controller
             ->orderBy('deboned_data.created_at', 'DESC')
             ->get();
 
-        $product_types = DB::table('product_types')
-            ->get();
-
-        $processes = DB::table('processes')
-            ->where('process_code', '>=', 4)
-            ->get();
-
-        return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers', 'product_types', 'processes'));
+        return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers'));
     }
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
@@ -323,14 +316,13 @@ class ButcheryController extends Controller
             if ($request->product_type == "By Product") {
                 $product = 2;
             }
-            $process_code = $helpers->getProcessCode($request->process_type);
 
             # insert record
             DB::table('deboned_data')->insert([
                 'item_code' =>  $request->product,
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
-                'process_code' => (int)$process_code,
+                'process_code' => (int)$request->production_process,
                 'product_type' => $product,
                 'user_id' => Auth::id(),
             ]);
@@ -346,8 +338,21 @@ class ButcheryController extends Controller
 
     public function getProductTypeAjax(Request $request)
     {
-        $data = DB::table('products')->where('code', $request->product_code)->first();
+        $data = DB::table('products')
+            ->where('code', $request->product_code)
+            ->select('product_type')
+            ->first();
         return response()->json($data);
+    }
+
+    public function getProductProcessesAjax(Request $request)
+    {
+        $product_id = DB::table('products')->where('code', $request->product_code)->value('id');
+        $processes = DB::table('product_processes')
+            ->where('product_id', $product_id)
+            ->select('process_code')
+            ->get();
+        return response()->json($processes);
     }
 
     public function products()

@@ -12,11 +12,21 @@ class ProductSeeder extends Seeder
      *
      * @return void
      */
+    // public function run()
+    // {
+    //     $path = 'app/developer_docs/countries.sql';
+    //     $path = 'C:/Apache24/htdocs/calibra/products_script.sql';
+    //     DB::unprepared(file_get_contents($path));
+    //     $this->command->info('Products table seeded!');
+    // }
     public function run()
     {
-        //// $path = 'app/developer_docs/countries.sql';
-        // $path = 'C:/Apache24/htdocs/calibra/products_script.sql';
-        // DB::unprepared(file_get_contents($path));
-        // $this->command->info('Products table seeded!');
+        /* not tested hence commented out in seeder run */
+
+        // Eloquent::unguard();
+
+        $path = public_path('sql/products_script.sql');
+        DB::unprepared(file_get_contents($path));
+        $this->command->info('Products table seeded!');
     }
 }
