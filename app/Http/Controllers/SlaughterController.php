@@ -187,7 +187,7 @@ class SlaughterController extends Controller
             $new->net_weight = $request->ms_net;
             $new->settlement_weight = $request->ms_settlement_weight;
             $new->meat_percent = $request->ms_meat_pc;
-            $new->classification_code = $request->ms_classification;
+            $new->classification_code = isset($request->ms_classification) ? $request->ms_classification : null;
             $new->user_id = Auth::id();
             $new->save();
 
