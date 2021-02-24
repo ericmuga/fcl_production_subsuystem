@@ -268,12 +268,11 @@ class SlaughterController extends Controller
 
     public function combinedSlaughterReport(Request $request)
     {
-        /* to do */
-
         $slaughter_combined = DB::table('slaughter_data')
+            ->whereDate('slaughter_data.created_at', Carbon::parse($request->date))
             ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
-            ->select('slaughter_data.*', 'carcass_types.description')
-            ->orderBy('slaughter_data.created_at', 'DESC')
+            ->select('slaughter_data.item_code', 'carcass_types.description AS carcass', DB::raw('SUM(slaughter_data.net_weight)'))
+            ->groupBy('slaughter_data.item_code', 'carcass_types.description')
             ->get();
 
         $exports = Session::put('session_export_data', $slaughter_combined);

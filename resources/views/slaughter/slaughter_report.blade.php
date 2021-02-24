@@ -1,7 +1,7 @@
 @extends('layouts.slaughter_master')
 
 @section('content')
-{{-- <div class="col-md-12 text-left" style="margin-bottom: 1%">
+<div class="col-md-12 text-left" style="margin-bottom: 1%">
     <button class="btn btn-success btn-lg" data-toggle="collapse" data-target="#export_data"><i class="fas fa-file-excel"></i> Generate Combined Report</button>
         <div id="export_data" class="collapse"><br>
             <div class="form-inputs">
@@ -43,7 +43,7 @@
             </div>
         </div>
     </div>
-</div> --}}
+</div>
 
 <div class="row">
     <div class="col-12">
