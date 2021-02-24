@@ -20,6 +20,7 @@ class CreateDebonedDataTable extends Migration
             $table->double('net_weight', 8, 2);
             $table->integer('process_code')->nullable();
             $table->tinyInteger('product_type');
+            $table->integer('no_of_pieces');
             $table->tinyInteger('splitted')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();

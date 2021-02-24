@@ -62,15 +62,6 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label>
-                    <select class="form-control" name="no_of_crates" id="no_of_crates" required>
-                        {{-- <option value="" selected disabled>select no. of crates</option> --}}
-                        <option>2</option>
-                        <option>3</option>
-                        <option selected>4</option>
-                    </select>
-                </div>
-                <div class="form-group">
                     <label for="exampleInputEmail1">Reading</label>
                     <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
                         oninput="getNet()" placeholder="" readonly>
@@ -78,7 +69,20 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
+                </div> <br>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">No. of Crates</label>
+                    <select class="form-control" name="no_of_crates" id="no_of_crates" required>
+                        <option>2</option>
+                        <option>3</option>
+                        <option selected>4</option>
+                    </select>
                 </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">No. of pieces </label>
+                    <input type="number" class="form-control" id="no_of_pieces" value="" name="no_of_pieces"
+                        placeholder="" required>
+                </div>                
             </div>
         </div>
 

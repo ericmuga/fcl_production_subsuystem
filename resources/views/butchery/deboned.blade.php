@@ -30,6 +30,7 @@
                     <th>Production Process</th>
                     <th>Weight(kgs)</th>
                     <th>Net Weight(kgs)</th>
+                    <th>No. of pieces</th>
                     <th>Date </th>
                 </tr>
             </thead>
@@ -42,6 +43,7 @@
                     <th>Production Process</th>
                     <th>Weight(kgs)</th>
                     <th>Net Weight(kgs)</th>
+                    <th>No. of pieces</th>
                     <th>Date </th>
                 </tr>
             </tfoot>
@@ -55,6 +57,7 @@
                         <td> {{ $data->process }}</td>
                         <td> {{ number_format($data->actual_weight, 2) }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
+                        <td> {{ $data->no_of_pieces }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>
                 @endforeach

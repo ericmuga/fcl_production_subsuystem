@@ -312,9 +312,9 @@ class ButcheryController extends Controller
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
-            $product = 1;
+            $product_type = 1;
             if ($request->product_type == "By Product") {
-                $product = 2;
+                $product_type = 2;
             }
 
             # insert record
@@ -323,7 +323,8 @@ class ButcheryController extends Controller
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
                 'process_code' => (int)$request->production_process,
-                'product_type' => $product,
+                'product_type' => $product_type,
+                'no_of_pieces' => $request->no_of_pieces,
                 'user_id' => Auth::id(),
             ]);
 
