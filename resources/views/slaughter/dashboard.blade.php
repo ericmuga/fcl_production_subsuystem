@@ -77,5 +77,58 @@
     <!-- ./col -->
 </div>
 <!-- /.row -->
+<hr>
+
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>{{ number_format($total_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
+
+                <p> Total Weight Output</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-alert"></i>
+            </div>
+            <a href="{{ route('slaughter_data_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+   <div class="col-lg-3 col-6">
+        @php
+            if($total_weight == 0.00){
+                $total_weight = 1.00;
+            }
+        @endphp
+        <div class="progress-group">
+            Baconers
+            <span class="float-right"><b>{{ number_format($slaughtered_baconers, 2) }}</b>kgs</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-primary" style="width: {{ $slaughtered_baconers/$total_weight*100 }}%"></div>
+            </div>
+        </div>
+        <!-- /.progress-group -->
+        <div class="progress-group">
+            Sows
+            <span class="float-right"><b>{{ number_format($slaughtered_sows, 2) }}</b>kgs</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-danger" style="width: {{ $slaughtered_sows/$total_weight*100 }}%"></div>
+            </div>
+        </div>
+        <!-- /.progress-group -->
+        <div class="progress-group">
+            <span class="progress-text">Suckling</span>
+            <span class="float-right"><b>{{ number_format($slaughtered_suckling, 2) }}</b>kgs</span>
+            <div class="progress progress-sm">
+                <div class="progress-bar bg-success" style="width: {{ $slaughtered_suckling/$total_weight*100 }}%"></div>
+            </div>
+        </div>
+        <!-- /.progress-group -->
+        <div class="footer">
+            <a href="{{ route('slaughter_data_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+        <!-- /.progress-group -->
+    </div>
+</div>
 
 @endsection

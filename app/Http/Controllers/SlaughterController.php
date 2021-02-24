@@ -28,6 +28,7 @@ class SlaughterController extends Controller
     public function index(Helpers $helpers)
     {
         $title = "dashboard";
+
         $slaughtered = DB::table('slaughter_data')
             ->whereDate('created_at', Carbon::today())
             ->count();
@@ -44,9 +45,28 @@ class SlaughterController extends Controller
             ->orderBy('code', 'asc')
             ->get();
 
+        $total_weight = DB::table('slaughter_data')
+            ->whereDate('created_at', Carbon::today())
+            ->sum('slaughter_data.net_weight');
+
+        $slaughtered_baconers = DB::table('slaughter_data')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G0110')
+            ->sum('slaughter_data.net_weight');
+
+        $slaughtered_sows = DB::table('slaughter_data')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G0111')
+            ->sum('slaughter_data.net_weight');
+
+        $slaughtered_suckling = DB::table('slaughter_data')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G0113')
+            ->sum('slaughter_data.net_weight');
+
         $date = Carbon::today();
 
-        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'carcass_types', 'date', 'helpers'));
+        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'carcass_types', 'date', 'helpers', 'total_weight', 'slaughtered_baconers', 'slaughtered_sows', 'slaughtered_suckling'));
     }
 
     public function weigh(Helpers $helpers)
