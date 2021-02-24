@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\BeheadedCombinedExport;
 use App\Exports\BreakingCombinedExport;
+use App\Exports\DebonedCombinedExport;
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
 use App\Models\Helpers;
@@ -592,6 +593,20 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.deboned', compact('title', 'deboning_data', 'helpers'));
+    }
+
+    public function combinedDeboningReport(Request $request)
+    {
+        $deboned_combined = DB::table('deboned_data')
+            ->whereDate('deboned_data.created_at', Carbon::parse($request->date))
+            ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
+            ->select('deboned_data.item_code', 'products.description AS product', DB::raw('SUM(deboned_data.net_weight)'))
+            ->groupBy('deboned_data.item_code', 'products.description')
+            ->get();
+
+        $exports = Session::put('session_export_data', $deboned_combined);
+
+        return Excel::download(new DebonedCombinedExport, 'DebonedPigSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function getSalesReport(Helpers $helpers)

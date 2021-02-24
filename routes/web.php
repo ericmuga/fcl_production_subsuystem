@@ -75,6 +75,7 @@ Route::post('export-beheading-combined-report', [ButcheryController::class, 'com
 Route::get('/butchery/braking-report', [ButcheryController::class, 'getBrakingReport'])->name('butchery_breaking_report');
 Route::post('export-breaking-combined-report', [ButcheryController::class, 'combinedBreakingReport']);
 Route::get('/butchery/deboning-report', [ButcheryController::class, 'getDeboningReport'])->name('butchery_deboning_report');
+Route::post('export-deboned-combined-report', [ButcheryController::class, 'combinedDeboningReport']);
 Route::get('/butchery/sales-report', [ButcheryController::class, 'getSalesReport'])->name('butchery_sales_report');
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
