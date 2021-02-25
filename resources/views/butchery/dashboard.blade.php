@@ -57,9 +57,9 @@
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ number_format($baconers_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
+                <h3>{{ number_format($baconers_weight + $sales_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
-                <p>Baconers Total Weight Output</p>
+                <p>Baconers Total Weight(Inclusive sales)</p>
             </div>
             <div class="icon">
                 <i class="ion ion-alert"></i>

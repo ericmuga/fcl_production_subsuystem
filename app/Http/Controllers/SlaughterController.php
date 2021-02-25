@@ -41,10 +41,6 @@ class SlaughterController extends Controller
             ->whereDate('created_at', Carbon::today())
             ->count();
 
-        $carcass_types = DB::table('carcass_types')
-            ->orderBy('code', 'asc')
-            ->get();
-
         $total_weight = DB::table('slaughter_data')
             ->whereDate('created_at', Carbon::today())
             ->sum('slaughter_data.net_weight');
@@ -66,7 +62,7 @@ class SlaughterController extends Controller
 
         $date = Carbon::today();
 
-        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'carcass_types', 'date', 'helpers', 'total_weight', 'slaughtered_baconers', 'slaughtered_sows', 'slaughtered_suckling'));
+        return view('slaughter.dashboard', compact('title', 'slaughtered', 'lined_up', 'missing_slaps', 'date', 'helpers', 'total_weight', 'slaughtered_baconers', 'slaughtered_sows', 'slaughtered_suckling'));
     }
 
     public function weigh(Helpers $helpers)
