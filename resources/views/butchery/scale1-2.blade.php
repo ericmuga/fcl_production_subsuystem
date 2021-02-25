@@ -15,7 +15,7 @@
 @endsection
 
 @php
-    $arr_products = $products->toArray();
+$arr_products = $products->toArray();
 @endphp
 
 @section('content')
@@ -27,7 +27,8 @@
             <div class="form-group">
                 <label>Slaughter Date(yyyy-mm-dd):</label>
                 <div class="input-group">
-                    <input type="text" id="datepk" name="datepk" class="form-control" value="{{ $helpers->getButcheryDate() }}" readonly>
+                    <input type="text" id="datepk" name="datepk" class="form-control"
+                        value="{{ $helpers->getButcheryDate() }}" readonly>
                 </div>
             </div>
             <!-- /.form group -->
@@ -65,17 +66,11 @@
                     <div class="card-body " style="padding-top: ">
                         <div class="form-group">
                             <label>No. of Carcasses</label>
-                            <input type="number" onClick="this.select();" oninput="adjustTareweight()" class="form-control" id="no_of_carcass" value="1" name="no_of_carcass"
-                                placeholder="" >
-                            {{-- <select class="form-control" id="no_of_carcass" name="no_of_carcass" oninput="adjustTareweight()">
-                                <option value="1"> 1</option>
-                                <option value="2"> 2</option>
-                                <option value="3"> 3</option>
-                                <option value="4"> 4</option>
-                                <option value="5"> 5</option>
-                            </select> --}}
+                            <input type="number" onClick="this.select();" oninput="adjustTareweight()"
+                                class="form-control" id="no_of_carcass" value="1" name="no_of_carcass" placeholder="">
                         </div>
                         <div class="form-group">
+                            <label>Carcass Type</label>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-check">
@@ -94,19 +89,14 @@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" value="G1032" id="headless_sale"
-                                    name="carcass_type" >
+                                    name="carcass_type">
                                 <label for="form-check-label">Porker, Headles-sales</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" value="G1033" id="headOn_sale"
-                                    name="carcass_type" >
+                                    name="carcass_type">
                                 <label for="form-check-label">Porker, HeadOn-sales</label>
                             </div>
-                        </div>
-                        <div class="form-group" style="padding-left: 10%">
-                            <button type="button" onclick="getScale1Reading()" class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 1</button> <br>
-                            <small>Reading from COM: <input type="text" id="comport_value"
-                                    value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                         </div>
                     </div>
                 </div>
@@ -126,21 +116,27 @@
                             <input type="number" class="form-control" id="tareweight" step="0.01" name="tareweight"
                                 value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
                             <input type="hidden" class="form-control " id="default_tareweight"
-                                value="{{ number_format($configs[0]->tareweight, 2) }}" >
+                                value="{{ number_format($configs[0]->tareweight, 2) }}">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
-                            <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder=""
-                                readonly>
+                            <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
+                                placeholder="" readonly>
                         </div>
                     </div>
                 </div>
-                <div class="card ">
+                <div class="card "> <br>
                     <div class="card-body text-center">
-
-                        <div class="form-group" style="padding-top: 40%">
-                            <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
-                                    aria-hidden="true"></i> Save</button>
+                        <div class="form-group" style="padding-left: %">
+                            <button type="button" onclick="getScale1Reading()" class="btn btn-primary btn-lg"><i
+                                    class="fas fa-balance-scale"></i> Weigh 1</button> <br>
+                            <small>Reading from COM: <input type="text" id="comport_value"
+                                    value="{{ $configs[0]->comport }}" style="border:none; text-align: center"
+                                    disabled></small>
+                        </div><br>
+                        <div class="form-group" style="padding-top: 20%">
+                            <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
+                                    class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                         </div>
                     </div>
                 </div>
@@ -158,45 +154,50 @@
                     <div class="card-body">
                         <div class="form-group">
                             <label for="exampleInputPassword1">Carcass Type</label>
-                            <select class="form-control select2" name="carcass_type" id="carcass_type" required>                               
+                            <select class="form-control select2" name="carcass_type" id="carcass_type" required>
                                 @if (old('carcass_type') == "G1031")
-                                    <option value="G1030"> Pig, Carcass</option>
-                                    <option value="G1031" selected> Sow, Carcass</option>
+                                <option value="G1030"> Pig, Carcass</option>
+                                <option value="G1031" selected> Sow, Carcass</option>
                                 @else
-                                    <option value="G1030" selected="selected"> Pig, Carcass</option>
-                                    <option value="G1031"> Sow, Carcass</option>
+                                <option value="G1030" selected="selected"> Pig, Carcass</option>
+                                <option value="G1031"> Sow, Carcass</option>
                                 @endif
                             </select>
                         </div>
                         <div class="form-group">
                             @if ($arr_products)
-                                <label for="exampleInputPassword1">Product Part</label>
-                                <div class="form-check">
-                                    <label class="form-check-label" for="radio1">
-                                        <input type="radio" class="form-check-input messageCheckbox"  id="radio1" name="item_code"
-                                            value="{{ $arr_products[0]->code }}" checked>{{ $arr_products[0]->description }}
-                                    </label>
-                                </div>
-                                <div class="form-check" style="margin-left: 15%">
-                                    <label class="form-check-label" for="radio2">
-                                        <input type="radio" class="form-check-input messageCheckbox" id="radio2" name="item_code"
-                                            value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <label class="form-check-label">
-                                        <input type="radio" class="form-check-input messageCheckbox" id="radio3" name="item_code"
-                                            value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->description }}
-                                    </label>
-                                </div>
+                            <label for="exampleInputPassword1">Product Part</label>
+                            <div class="form-check">
+                                <label class="form-check-label" for="radio1">
+                                    <input type="radio" class="form-check-input messageCheckbox" id="radio1"
+                                        name="item_code" value="{{ $arr_products[0]->code }}"
+                                        checked>{{ $arr_products[0]->description }}
+                                </label>
+                            </div>
+                            <div class="form-check" style="margin-left: 15%">
+                                <label class="form-check-label" for="radio2">
+                                    <input type="radio" class="form-check-input messageCheckbox" id="radio2"
+                                        name="item_code"
+                                        value="{{ $arr_products[1]->code }}">{{ $arr_products[1]->description }}
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <label class="form-check-label">
+                                    <input type="radio" class="form-check-input messageCheckbox" id="radio3"
+                                        name="item_code"
+                                        value="{{ $arr_products[2]->code }}">{{ $arr_products[2]->description }}
+                                </label>
+                            </div>
                             @else
-                                <p><code>You must have products part set in db</code></p>
+                            <p><code>You must have products part set in db</code></p>
                             @endif
                         </div>
-                        <div class="form-group" style="padding-left: 10%">
-                            <button type="button" onclick="getScale2Reading()" class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh 2</button> <br>
+                        <div class="form-group text-center" style="padding-left: 10%">
+                            <button type="button" onclick="getScale2Reading()" class="btn btn-primary btn-lg"><i
+                                    class="fas fa-balance-scale"></i> Weigh 2</button> <br>
                             <small>Reading from COM: <input type="text" id="comport_value2"
-                                    value="{{ $configs[1]->comport }}" style="border:none" disabled></small>
+                                    value="{{ $configs[1]->comport }}" style="border:none; text-align: center"
+                                    disabled></small>
                         </div>
                     </div>
                 </div>
@@ -235,13 +236,13 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">No. of pieces </label>
                             <input type="number" class="form-control" id="no_of_items" value="" name="no_of_items"
-                                placeholder="" >
+                                placeholder="">
                         </div>
                     </div>
-                    <div class="card-body text-center">
+                    <div class="card-body text-center" style="padding-bottom: 25%">
                         <div class="form-group">
-                            <button type="submit" onclick="return checkNet2OnSubmit()" class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
-                                    aria-hidden="true"></i> Save
+                            <button type="submit" onclick="return checkNet2OnSubmit()" class="btn btn-primary btn-lg"><i
+                                    class="fa fa-paper-plane" aria-hidden="true"></i> Save
                             </button>
                         </div>
                     </div>
@@ -260,12 +261,14 @@
     </button>
 </div>
 
-<div id="butchery_output_show" class="collapse"><hr>
+<div id="butchery_output_show" class="collapse">
+    <hr>
     <div class="row">
         <!-- baconers, sows, sides -->
         <div class="form-group col-sm-1">
             <label>Beheaded :</label>
-            <input type="number" class="form-control" id="total_beheaded" value="{{ $inputData }}" oninput="getSidesNumber()" readonly>
+            <input type="number" class="form-control" id="total_beheaded" value="{{ $inputData }}"
+                oninput="getSidesNumber()" readonly>
         </div>
         <div class="form-group col-sm-1">
             <label> Legs:</label>
@@ -278,22 +281,26 @@
         <div class="form-group col-sm-1">
             <label> Shoulders:</label>
             <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
-        </div> 
+        </div>
 
         <div class="form-group col-sm-2" style="margin-left: 10%">
             <label>Weighed Legs:</label>
-            <input type="number" class="form-control" id="baconers_number" value="{{ $outputData['output_legs'] }}" oninput="getSidesNumber()" readonly>
+            <input type="number" class="form-control" id="baconers_number" value="{{ $outputData['output_legs'] }}"
+                oninput="getSidesNumber()" readonly>
         </div>
         <div class="form-group col-sm-2">
             <label>Weighed Middles:</label>
-            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_middles'] }}" readonly>
+            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_middles'] }}"
+                readonly>
         </div>
         <div class="form-group col-sm-2">
             <label>Weighed Shoulders:</label>
-            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}" readonly>
+            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}"
+                readonly>
         </div>
         <!-- /.form group -->
-    </div> <hr>
+    </div>
+    <hr>
     <!-- legs, middles, shoulders -->
 
     <div class="row">
@@ -329,10 +336,13 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                        @foreach($beheading_data as $data)
+                            @foreach($beheading_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td id="edit1ModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}" data-item="{{$data->description}}" data-no_carcass="{{ $data->no_of_carcass }}" data-weight="{{number_format($data->actual_weight, 2)}}"><a href="#">{{ $data->item_code }}</a> </td>
+                                <td id="edit1ModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}"
+                                    data-item="{{$data->description}}" data-no_carcass="{{ $data->no_of_carcass }}"
+                                    data-weight="{{number_format($data->actual_weight, 2)}}"><a
+                                        href="#">{{ $data->item_code }}</a> </td>
                                 <td> {{ $data->description }}</td>
                                 <td> {{ $data->no_of_carcass }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
@@ -380,7 +390,10 @@
                             @foreach($butchery_data as $data)
                             <tr>
                                 <td>{{ $loop->iteration}}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}" data-weight="{{number_format($data->actual_weight, 2)}}"><a href="#">{{ $data->item_code }}</a> </td>
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}"
+                                    data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}"
+                                    data-weight="{{number_format($data->actual_weight, 2)}}"><a
+                                        href="#">{{ $data->item_code }}</a> </td>
                                 <td> {{ $data->description }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
                                 <td> {{ $data->created_at }}</td>
@@ -423,11 +436,13 @@
                     </div>
                     <div class="form-group">
                         <label>No. of Carcasses</label>
-                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value="" name="edit_no_carcass" placeholder="" >
+                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value=""
+                            name="edit_no_carcass" placeholder="">
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" class="form-control" name="edit_weight1" id="edit_weight1" placeholder="" step="0.01" autocomplete="off" required autofocus>
+                        <input type="number" class="form-control" name="edit_weight1" id="edit_weight1" placeholder=""
+                            step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id1" id="item_id1" value="">
                 </div>
@@ -435,8 +450,8 @@
                     <div class="form-group">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button class="btn btn-warning">
-                        <i class="fa fa-save"></i> Update
-                    </button>
+                            <i class="fa fa-save"></i> Update
+                        </button>
                     </div>
                 </div>
             </div>
@@ -464,13 +479,14 @@
                         <label for="baud" class="col-form-label">Product</label>
                         <select class="form-control" name="edit_product" id="edit_product">
                             @foreach($products as $data)
-                                <option value="{{trim($data->code)}}">{{$data->description}}</option>
+                            <option value="{{trim($data->code)}}">{{$data->description}}</option>
                             @endforeach
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" class="form-control" name="edit_weight" id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
+                        <input type="number" class="form-control" name="edit_weight" id="edit_weight" placeholder=""
+                            step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
@@ -478,8 +494,8 @@
                     <div class="form-group">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         <button class="btn btn-warning">
-                        <i class="fa fa-save"></i> Update
-                    </button>
+                            <i class="fa fa-save"></i> Update
+                        </button>
                     </div>
                 </div>
             </div>
@@ -585,10 +601,10 @@
             var product = $(this).data('product_code');
             var item = $(this).data('item');
             var no_carcass = $(this).data('no_carcass');
-            var weight = $(this).data('weight');            
+            var weight = $(this).data('weight');
             var id = $(this).data('id');
 
-            
+
             $('#edit_carcass').val(product);
             $('#item_name1').val(item);
             $('#edit_no_carcass').val(no_carcass);
@@ -604,7 +620,7 @@
 
             var product = $(this).data('item_code');
             var item = $(this).data('item');
-            var weight = $(this).data('weight');            
+            var weight = $(this).data('weight');
             var id = $(this).data('id');
 
             $('#edit_product').val(product);
@@ -618,7 +634,7 @@
     });
 
     // adjust tareweight
-    function adjustTareweight(){
+    function adjustTareweight() {
         var number_of_carcass = $('#no_of_carcass').val();
         var default_tareweight = $('#default_tareweight').val();
 
@@ -659,22 +675,22 @@
         return [month, day, year].join('/');
     }
 
-    function checkNetOnSubmit(){
+    function checkNetOnSubmit() {
         var net = $('#net').val();
         $valid = true;
-        if (net == null || net <= 0.00 ) {
+        if (net == null || net <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
         };
         return $valid;
     }
 
-    function checkNet2OnSubmit(){
+    function checkNet2OnSubmit() {
         var net2 = $('#net2').val();
         $valid = true;
-        if (net2 == null || net2 <= 0.00 ) {
+        if (net2 == null || net2 <= 0.00) {
             $valid = false;
-            alert("Please ensure you have valid netweight."+ net2);
+            alert("Please ensure you have valid netweight." + net2);
 
         };
         return $valid;
