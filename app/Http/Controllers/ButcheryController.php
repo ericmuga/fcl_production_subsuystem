@@ -34,66 +34,80 @@ class ButcheryController extends Controller
     {
         $title = "dashboard";
 
-        $baconers = BeheadingData::whereDate('created_at', Carbon::today())
+        $baconers = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', "G1030")
             ->sum('no_of_carcass');
 
-        $sows = BeheadingData::whereDate('created_at', Carbon::today())
+        $sows = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', "G1031")
             ->sum('no_of_carcass');
 
-        $baconers_weight = BeheadingData::whereDate('created_at', Carbon::today())
+        $baconers_weight = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', "G1030")
             ->sum('net_weight');
 
-        $sows_weight = BeheadingData::whereDate('created_at', Carbon::today())
+        $sows_weight = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
             ->where('item_code', "G1031")
             ->sum('net_weight');
 
         $butchery_date = $helpers->getButcheryDate();
 
-        $lined_baconers = SlaughterData::where('item_code', 'G0110')
+        $lined_baconers = DB::table('slaughter_data')
+            ->where('item_code', 'G0110')
             ->whereDate('created_at', $butchery_date)
             ->count();
 
-        $lined_sows = SlaughterData::where('item_code', 'G0111')
+        $lined_sows = DB::table('slaughter_data')
+            ->where('item_code', 'G0111')
             ->whereDate('created_at', $butchery_date)
             ->count();
 
-        $three_parts_baconers = ButcheryData::where('carcass_type', 'G1030')
+        $three_parts_baconers = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
             ->sum('net_weight');
 
-        $three_parts_sows = ButcheryData::where('carcass_type', 'G1031')
+        $three_parts_sows = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
             ->sum('net_weight');
 
-        $b_legs = ButcheryData::where('carcass_type', 'G1030')
+        $b_legs = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1100')
             ->sum('net_weight');
 
-        $b_shoulders = ButcheryData::where('carcass_type', 'G1030')
+        $b_shoulders = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1101')
             ->sum('net_weight');
 
-        $b_middles = ButcheryData::where('carcass_type', 'G1030')
+        $b_middles = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1102')
             ->sum('net_weight');
 
-        $s_legs = ButcheryData::where('carcass_type', 'G1031')
+        $s_legs = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1100')
             ->sum('net_weight');
 
-        $s_shoulders = ButcheryData::where('carcass_type', 'G1031')
+        $s_shoulders = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1101')
             ->sum('net_weight');
 
-        $s_middles = ButcheryData::where('carcass_type', 'G1031')
+        $s_middles = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', 'G1102')
             ->sum('net_weight');
