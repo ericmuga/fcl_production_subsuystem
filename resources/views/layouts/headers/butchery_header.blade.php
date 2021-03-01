@@ -74,9 +74,9 @@
                                 class="dropdown-item">Scale
                                 settings </a></li>
                         <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('butchery_change_password') }}"
+                        {{-- <li><a href="{{ route('butchery_change_password') }}"
                                 class="dropdown-item">Change
-                                password</a></li>
+                                password</a></li> --}}
                     </ul>
                 </li>
             </ul>

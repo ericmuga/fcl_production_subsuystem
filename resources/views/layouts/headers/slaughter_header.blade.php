@@ -57,8 +57,8 @@
                                 class="dropdown-item">Scale
                                 settings </a></li>
                         <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('slaughter_change_password') }}"
-                                class="dropdown-item">Change password</a></li>
+                        {{-- <li><a href="{{ route('slaughter_change_password') }}"
+                                class="dropdown-item">Change password</a></li> --}}
                     </ul>
                 </li>
             </ul>

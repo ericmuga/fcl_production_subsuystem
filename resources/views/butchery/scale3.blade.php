@@ -19,11 +19,11 @@
             <div class="card-body " style="">
                 <div class="form-group">
                     <div class="row">
-                        <div class="col-md-5">
+                        {{-- <div class="col-md-5">
                             <label for="exampleInputPassword1">Short Code</label>
                             <input type="text" class="form-control" id="short_code" value="">
-                        </div>
-                        <div class="col-md-7">
+                        </div> --}}
+                        <div class="col-md-12">
                             <label for="exampleInputPassword1"> Product Name</label>
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
