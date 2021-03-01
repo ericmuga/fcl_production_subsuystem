@@ -375,7 +375,7 @@ class ButcheryController extends Controller
         return response()->json($processes);
     }
 
-    public function products()
+    public function products(Helpers $helpers)
     {
         $title = "products";
 
@@ -383,7 +383,7 @@ class ButcheryController extends Controller
             ->where('code', '!=', '')
             ->get();
 
-        return view('butchery.products', compact('title', 'products'));
+        return view('butchery.products', compact('title', 'products', 'helpers'));
     }
 
     public function weighSplitting(Helpers $helpers)

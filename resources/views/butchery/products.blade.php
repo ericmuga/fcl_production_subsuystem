@@ -17,8 +17,7 @@
                         <i class="fa fa-users"></i>
                         Add Product</div>
                     <div class="card-body">
-                        <form action="{{ route('butchery_add_product') }}" method="post"
-                            id="add-branch-form">
+                        <form action="{{ route('butchery_add_product') }}" method="post" id="add-branch-form">
                             @csrf
                             <div class="form-group">
                                 <label for="role_name">Item Code:</label>
@@ -26,8 +25,8 @@
                                     value="{{ old('code') }}" required>
 
                                 @error('code')
-                                    <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
-                                    </div>
+                                <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                                </div>
                                 @enderror
 
                             </div>
@@ -47,8 +46,9 @@
                             </div>
                             <div class="form-group">
                                 <label for="role_name">Input Type:</label>
-                                <input autocomplete="off" type="text" class="form-control" id="input_type" name="input_type"
-                                    value="{{ old('product') }}" placeholder="eg. sow, baconer, leg " required>
+                                <input autocomplete="off" type="text" class="form-control" id="input_type"
+                                    name="input_type" value="{{ old('product') }}" placeholder="eg. sow, baconer, leg "
+                                    required>
                             </div>
                             <div class="form-group">
                                 <label for="role_name"> Often used:</label>
@@ -90,6 +90,7 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
+                            <th>Production Process(es)</th>
                         </tr>
                     </thead>
                     <tfoot>
@@ -97,15 +98,20 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
+                            <th>Production Process(es)</th>
                         </tr>
                     </tfoot>
                     <tbody>
                         @foreach($products as $data)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->code }}</td>
-                                <td>{{ $data->description }}</td>
-                            </tr>
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $data->code }}</td>
+                            <td>{{ $data->description }}</td>
+                            <td> @foreach ($helpers->getProductProcesses($data->id) as $process)
+                                <span class="badge badge-info">{{ $process }}</span>
+
+                                @endforeach </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -120,13 +126,13 @@
 
 @section('scripts')
 @if(Session::get('input_errors') == 'add_product' )
-    <script>
-        $(function () {
-            // $('#myModal').modal('show');
-            $('#add_product').toggle('collapse');
+<script>
+    $(function () {
+        // $('#myModal').modal('show');
+        $('#add_product').toggle('collapse');
 
-        });
+    });
 
-    </script>
+</script>
 @endif
 @endsection

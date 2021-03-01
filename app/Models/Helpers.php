@@ -158,4 +158,14 @@ class Helpers
         curl_close($curl);
         return $response;
     }
+
+    public function getProductProcesses($product_id)
+    {
+        $processes =  DB::table("product_processes")
+            ->leftJoin('processes', 'product_processes.process_code', '=', 'processes.process_code')
+            ->where('product_id', $product_id)
+            ->pluck('processes.process');
+
+        return $processes;
+    }
 }

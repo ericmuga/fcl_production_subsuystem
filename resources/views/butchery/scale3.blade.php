@@ -18,15 +18,23 @@
         <div class="card">
             <div class="card-body " style="">
                 <div class="form-group">
-                    <label for="exampleInputPassword1"> Product Name</label>
-                    <select class="form-control select2" name="product" id="product" required>
-                        <option value="">Select product</option>
-                        @foreach($products as $product)
-                        <option value="{{ $product->code }}">
-                            {{ ucwords($product->description) }} - {{ $product->code }}
-                        </option>
-                        @endforeach
-                    </select>
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="exampleInputPassword1">Short Code</label>
+                            <input type="text" class="form-control" id="short_code" value="">
+                        </div>
+                        <div class="col-md-7">
+                            <label for="exampleInputPassword1"> Product Name</label>
+                            <select class="form-control select2" name="product" id="product" required>
+                                <option value="">Select product</option>
+                                @foreach($products as $product)
+                                <option value="{{ $product->code }}">
+                                    {{ ucwords($product->description) }} - {{ $product->code }}
+                                </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 <div class="row form-group">
                     <div class="col-md-8">
@@ -82,7 +90,7 @@
                     <label for="exampleInputPassword1">No. of pieces </label>
                     <input type="number" class="form-control" id="no_of_pieces" value="" name="no_of_pieces"
                         placeholder="" required>
-                </div>                
+                </div>
             </div>
         </div>
 
@@ -301,7 +309,8 @@
                                     var errors = data.responseJSON;
                                     console.log(errors);
                                     alert(
-                                        'error occured when pulling production processes');
+                                        'error occured when pulling production processes'
+                                        );
                                 }
 
                             });
