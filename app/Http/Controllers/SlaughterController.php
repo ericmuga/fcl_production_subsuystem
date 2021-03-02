@@ -22,7 +22,7 @@ class SlaughterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('session_check');
     }
 
     public function index(Helpers $helpers)
@@ -153,16 +153,11 @@ class SlaughterController extends Controller
     public function comportlistApiService(Helpers $helpers)
     {
         $result = $helpers->get_comport_list();
-        // $array = json_decode($result, true);
-        // $res = $array['response'];
 
-        // if ($res == true) {
-        //     Session::put('comports_success', 'success');
-        // }
         return response()->json($result);
     }
 
-    public function saveWeighData(Request $request)
+    public function saveWeighData(Request $request, Helpers $helpers)
     {
         try {
             // try save
@@ -178,7 +173,7 @@ class SlaughterController extends Controller
                 'vendor_name' => $request->vendor_name,
                 'meat_percent' => $request->meat_percent,
                 'classification_code' => $request->classification_code,
-                'user_id' => Auth::id(),
+                'user_id' => $helpers->authenticatedUserId(),
             ]);
 
             Toastr::success('record added successfully', 'Success');
@@ -192,7 +187,7 @@ class SlaughterController extends Controller
         }
     }
 
-    public function saveMissingSlapData(Request $request)
+    public function saveMissingSlapData(Request $request, Helpers $helpers)
     {
         try {
             // try save
@@ -204,7 +199,7 @@ class SlaughterController extends Controller
             $new->settlement_weight = $request->ms_settlement_weight;
             $new->meat_percent = $request->ms_meat_pc;
             $new->classification_code = isset($request->ms_classification) ? $request->ms_classification : null;
-            $new->user_id = Auth::id();
+            $new->user_id = $helpers->authenticatedUserId();
             $new->save();
 
             Toastr::success('record added successfully', 'Success');

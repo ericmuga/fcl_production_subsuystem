@@ -28,6 +28,15 @@
 </head>
 
 <body class="hold-transition login-page">
+
+    @php
+        if(session()->has('session_message')){
+            $message = Session::get('session_message');
+            Brian2694\Toastr\Facades\Toastr::warning($message, 'Warning!');
+            Session::forget('session_message');
+        }                   
+    @endphp
+
     <div class="login-box">
         <div class="login-logo">
             <a href="../../index2.html"><b><small>Weight Management System</small></b> Login</a>

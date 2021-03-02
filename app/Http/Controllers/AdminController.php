@@ -12,7 +12,7 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
     }
 
     public function index()
@@ -25,7 +25,7 @@ class AdminController extends Controller
     {
         $title = "Users";
         $users = DB::table('users')
-            ->select('id', 'username','email', 'section', 'created_at')
+            ->select('id', 'username', 'email', 'section', 'created_at')
             ->get();
         return view('admin.users', compact('title', 'users'));
     }

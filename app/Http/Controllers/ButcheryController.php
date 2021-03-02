@@ -27,7 +27,7 @@ class ButcheryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('session_check');
     }
 
     public function index(Helpers $helpers)
@@ -168,7 +168,7 @@ class ButcheryController extends Controller
         return response()->json($result);
     }
 
-    public function saveScaleOneData(Request $request)
+    public function saveScaleOneData(Request $request, Helpers $helpers)
     {
         try {
             // insert sales substr($string, 0, -1);
@@ -180,7 +180,7 @@ class ButcheryController extends Controller
                     'actual_weight' => $request->reading,
                     'net_weight' => $request->net,
                     'process_code' => 0, //process behead pig by default
-                    'user_id' => Auth::id(),
+                    'user_id' => $helpers->authenticatedUserId(),
                 ]);
 
                 Toastr::success('sale recorded successfully', 'Success');
@@ -198,7 +198,7 @@ class ButcheryController extends Controller
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
                 'process_code' => $process_code,
-                'user_id' => Auth::id(),
+                'user_id' => $helpers->authenticatedUserId(),
             ]);
 
             Toastr::success('record inserted successfully', 'Success');
@@ -210,7 +210,7 @@ class ButcheryController extends Controller
         }
     }
 
-    public function saveScaleTwoData(Request $request)
+    public function saveScaleTwoData(Request $request, Helpers $helpers)
     {
         try {
             # insert record
@@ -227,7 +227,7 @@ class ButcheryController extends Controller
                 'no_of_items' => $request->no_of_items,
                 'process_code' => $process_code,
                 'product_type' => $request->product_type,
-                'user_id' => Auth::id(),
+                'user_id' => $helpers->authenticatedUserId(),
             ]);
 
             Toastr::success('record inserted successfully', 'Success');
@@ -344,7 +344,7 @@ class ButcheryController extends Controller
                 'process_code' => (int)$request->production_process,
                 'product_type' => $product_type,
                 'no_of_pieces' => $request->no_of_pieces,
-                'user_id' => Auth::id(),
+                'user_id' => $helpers->authenticatedUserId(),
             ]);
 
             Toastr::success("record {$request->product} inserted successfully", 'Success');
@@ -477,7 +477,7 @@ class ButcheryController extends Controller
         }
     }
 
-    public function addProduct(Request $request)
+    public function addProduct(Request $request, Helpers $helpers)
     {
         $validator = Validator::make($request->all(), [
             'code' => 'required|unique:products,code',
@@ -501,7 +501,7 @@ class ButcheryController extends Controller
             'product_type' => $request->product_type,
             'input_type' => $request->input_type,
             'often' => $request->often,
-            'user_id' => Auth::id(),
+            'user_id' => $helpers->authenticatedUserId(),
 
         ]);
 

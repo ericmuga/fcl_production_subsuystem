@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Helpers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +16,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth', ['only' => ['getSectionRedirect', 'getLogout']]);
+        $this->middleware('session_check', ['only' => ['getSectionRedirect', 'getLogout']]);
     }
 
     public function getLogin()
@@ -23,7 +24,7 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    public function processLogin(Request $request)
+    public function processLogin(Request $request, Helpers $helpers)
     {
         $validator = Validator::make($request->all(), [
             'username' => 'required',
@@ -39,37 +40,66 @@ class LoginController extends Controller
             return back();
         }
 
-        $username_exists = User::where('username', $request->username)->value('username');
-        if ($username_exists === null) {
-            # username does not exist
-            Toastr::warning('username provided does not exist.Contact Admin', 'Warning!');
+        // attempt api login
+        $domain_user = "FARMERSCHOICE\\" . $request->username;
+
+        $request_data = [
+            "username" => $domain_user,
+            "password" => $request->password,
+        ];
+
+        $post_data = json_encode($request_data);
+
+        $result = $helpers->validateLogin($post_data);
+        $res = json_decode($result, true);
+
+        if ($res == null) {
+            # no response from api service
+            Toastr::error('No response from Api service. Contact IT', 'Error!');
             return back();
         }
 
-        if (Auth::attempt(['username' => $request->username, 'password' =>  $request->password], $request->remember)) {
-            // Authentication was successful...
-
-            $user = User::findOrFail(Auth::id());
-
-            // Check if session exists and log out the previous session
-            $new_sessid   = \Session::getId(); //get new session_id after user sign in
-            if ($user->session != '') {
-                $last_session = \Session::getHandler()->read($user->session);
-
-                if ($last_session) {
-                    if (\Session::getHandler()->destroy($user->session)) {
-                    }
-                }
-            }
-            $user->session = $new_sessid;
-            $user->save();
-
-            Toastr::success('Successful login', 'Success');
-            return redirect()->route('redirect_page');
+        if ($res['success'] != true) {
+            # failed login
+            Toastr::warning('Wrong username or password. Please try again', 'Warning!');
+            return back();
         }
-        // failed login
-        Toastr::warning('Wrong username or password. Please try again', 'Warning!');
-        return back();
+
+        # login successful
+        if (!DB::table('users')->where('username', '=', $request->username)->exists()) {
+            # user not in db, add user
+            $new_user = $helpers->addUser($request->username);
+
+            if ($new_user != 1) {
+                # failed add user to db
+                Toastr::error($new_user, 'Error!');
+                return back();
+            }
+        }
+
+        $user = DB::table('users')->where('username', $request->username)->first();
+
+        # Check if session exists and log out the previous session
+        $previous_session = $user->session;
+
+        if ($previous_session) {
+            \Session::getHandler()->destroy($previous_session);
+        }
+
+        Session::put('session_userId', $user->id);
+        Session::put('session_userName', $user->username);
+        Session::put('live_session_id', sha1(microtime()));
+
+        DB::table('users')
+            ->where('id', $user->id)
+            ->update([
+                'session' => Session::get('live_session_id'),
+                'updated_at' => now(),
+            ]);
+
+        # Redirecting
+        Toastr::success('Successful login', 'Success');
+        return redirect()->route('redirect_page');
     }
 
     public function getSectionRedirect()
@@ -81,7 +111,6 @@ class LoginController extends Controller
     public function getLogout()
     {
         Session::flush();
-        Auth::logout();
         Toastr::success('Successful logout', 'Success');
         return redirect()->route('login');
     }

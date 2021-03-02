@@ -18,7 +18,7 @@
             <li class="nav-item dropdown no-arrow">
                 <a class="nav-link dropdown-toggle" style="color:gray" href="#" id="userDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-user-circle"></i> {{ Auth::user()->username }}
+                    <i class="fas fa-user-circle"></i> {{ Session::get('session_userName') }}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i
