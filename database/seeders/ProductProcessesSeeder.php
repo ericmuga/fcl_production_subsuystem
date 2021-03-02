@@ -30,16 +30,8 @@ class ProductProcessesSeeder extends Seeder
                 'process_code' => '1',
             ],
             [
-                'product_id' => $this->getProductId("G1030 "),
-                'process_code' => '0',
-            ],
-            [
-                'product_id' => $this->getProductId("G1030 "),
+                'product_id' => $this->getProductId("G1030"),
                 'process_code' => '2',
-            ],
-            [
-                'product_id' => $this->getProductId("G1031"),
-                'process_code' => '1',
             ],
             [
                 'product_id' => $this->getProductId("G1031"),
@@ -62,24 +54,12 @@ class ProductProcessesSeeder extends Seeder
                 'process_code' => '2',
             ],
             [
-                'product_id' => $this->getProductId("G1100"),
-                'process_code' => '4',
-            ],
-            [
                 'product_id' => $this->getProductId("G1101"),
                 'process_code' => '2',
             ],
             [
-                'product_id' => $this->getProductId("G1101"),
-                'process_code' => '6',
-            ],
-            [
                 'product_id' => $this->getProductId("G1102"),
                 'process_code' => '2',
-            ],
-            [
-                'product_id' => $this->getProductId("G1102"),
-                'process_code' => '5',
             ],
             # 10
             [
@@ -531,15 +511,15 @@ class ProductProcessesSeeder extends Seeder
             ],
             [
                 'product_id' => $this->getProductId("G1287"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1295"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1296"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1319"),
@@ -547,15 +527,15 @@ class ProductProcessesSeeder extends Seeder
             ],
             [
                 'product_id' => $this->getProductId("G1325"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1326"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1327"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1334"),
@@ -567,7 +547,7 @@ class ProductProcessesSeeder extends Seeder
             ],
             [
                 'product_id' => $this->getProductId("G1334"),
-                'process_code' => '6',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G1334"),
@@ -575,25 +555,25 @@ class ProductProcessesSeeder extends Seeder
             ],
             [
                 'product_id' => $this->getProductId("G1335"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
 
             # 90
             [
                 'product_id' => $this->getProductId("G1336"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G5004"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G5006"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             [
                 'product_id' => $this->getProductId("G5012"),
-                'process_code' => '10',
+                'process_code' => '8',
             ],
             # 94
 

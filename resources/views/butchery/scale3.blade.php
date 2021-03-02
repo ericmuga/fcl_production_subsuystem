@@ -79,6 +79,23 @@
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div> <br>
                 <div class="form-group">
+                    <label for="exampleInputPassword1">Scale Tare-Weight</label>
+                    <input type="number" class="form-control" id="tareweight" name="tareweight"
+                        value="{{ number_format($configs[0]->tareweight * 4, 2) }}" readonly>
+                    <input type="hidden" class="form-control " id="default_tareweight"
+                        value="{{ number_format($configs[0]->tareweight, 2) }}">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Net</label>
+                    <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder=""
+                        readonly>
+                </div>                
+            </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-body text-center">
+                <div class="form-group">
                     <label for="exampleInputPassword1">No. of Crates</label>
                     <select class="form-control" name="no_of_crates" id="no_of_crates" required>
                         <option>2</option>
@@ -90,23 +107,6 @@
                     <label for="exampleInputPassword1">No. of pieces </label>
                     <input type="number" class="form-control" id="no_of_pieces" value="" name="no_of_pieces"
                         placeholder="" required>
-                </div>
-            </div>
-        </div>
-
-        <div class="card ">
-            <div class="card-body text-center">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Scale Tare-Weight</label>
-                    <input type="number" class="form-control" id="tareweight" name="tareweight"
-                        value="{{ number_format($configs[0]->tareweight * 4, 2) }}" readonly>
-                    <input type="hidden" class="form-control " id="default_tareweight"
-                        value="{{ number_format($configs[0]->tareweight, 2) }}">
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Net</label>
-                    <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder=""
-                        readonly>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
                     <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
