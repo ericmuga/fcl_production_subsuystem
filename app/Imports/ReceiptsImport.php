@@ -2,6 +2,7 @@
 
 namespace App\Imports;
 
+use App\Models\Helpers;
 use App\Models\Receipt;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,7 @@ class ReceiptsImport implements ToModel
     public function model(array $row)
     {
         $slaughter_date = Session::get('slaughter_date');
+        $helpers = new Helpers();
 
         DB::table('receipts')->insert([
             'enrolment_no' => $row[0],
@@ -30,7 +32,7 @@ class ReceiptsImport implements ToModel
             'item_code' => $row[6],
             'description' => $row[7],
             'received_qty' => $row[8],
-            'user_id' => Auth::id(),
+            'user_id' => $helpers->authenticatedUserId(),
             'slaughter_date' => $slaughter_date,
         ]);
     }
