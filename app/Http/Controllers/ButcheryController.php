@@ -49,10 +49,6 @@ class ButcheryController extends Controller
             ->where('item_code', "G1030")
             ->sum('net_weight');
 
-        $sales_weight =  DB::table('sales')
-            ->whereDate('created_at', Carbon::today())
-            ->sum('net_weight');
-
         $sows_weight = DB::table('beheading_data')
             ->whereDate('created_at', Carbon::today())
             ->where('item_code', "G1031")
@@ -116,7 +112,7 @@ class ButcheryController extends Controller
             ->where('item_code', 'G1102')
             ->sum('net_weight');
 
-        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sales_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'butchery_date', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'butchery_date', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)
