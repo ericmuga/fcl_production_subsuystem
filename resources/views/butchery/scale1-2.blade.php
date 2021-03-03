@@ -88,12 +88,12 @@ $arr_products = $products->toArray();
                                 </div>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G1032" id="headless_sale"
+                                <input class="form-check-input" type="radio" value="G1033" id="headless_sale"
                                     name="carcass_type">
                                 <label for="form-check-label">Porker, Headles-sales</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G1033" id="headOn_sale"
+                                <input class="form-check-input" type="radio" value="G1032" id="headOn_sale"
                                     name="carcass_type">
                                 <label for="form-check-label">Porker, HeadOn-sales</label>
                             </div>
