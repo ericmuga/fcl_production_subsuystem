@@ -70,7 +70,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-md-4" style="padding-top: 8%">
+                        <div class="col-md-4" style="padding-top: 7%">
                             <button class="btn btn-outline-info btn-sm form-control" type="button" data-toggle="modal"
                                 data-target="#slapModal">
                                 <strong>slapmark?</strong>
