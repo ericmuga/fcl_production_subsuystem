@@ -24,7 +24,7 @@ class ReceiptsImport implements ToModel
 
         DB::table('receipts')->insert([
             'enrolment_no' => $row[0],
-            'vendor_tag' => $row[1],
+            'vendor_tag' => $row[1] ?: "**",
             'receipt_no' => $row[2],
             'vendor_no' => $row[3],
             'vendor_name' => $row[4],
