@@ -476,6 +476,7 @@
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
                         reading.value = obj.response;
+                        getNet();
 
                     } else if (obj.success == false) {
                         alert('error occured in response: ' + obj.response);

@@ -51,7 +51,9 @@
                 </a>
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                     <li>
-                        <a href="{{ route('admin_change_password') }}" class="dropdown-item"><i class="fas fa-lock"></i> Change password</a>
+                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i> Switch
+                            Interphase
+                        </a>
                     </li>
                     <li class="dropdown-divider"></li>
                     <li>
