@@ -247,6 +247,7 @@ class ButcheryController extends Controller
                     'item_code' => $request->edit_carcass,
                     'no_of_carcass' => $request->edit_no_carcass,
                     'actual_weight' => $request->edit_weight1,
+                    'net_weight' => $request->edit_weight1 - 2.4,
                     'updated_at' => Carbon::now(),
                 ]);
 
@@ -269,6 +270,7 @@ class ButcheryController extends Controller
                 ->update([
                     'item_code' => $request->edit_product,
                     'actual_weight' => $request->edit_weight,
+                    'net_weight' => $request->edit_weight - 7.50,
                     'updated_at' => Carbon::now(),
                 ]);
 
