@@ -321,7 +321,7 @@ $arr_products = $products->toArray();
                                 <th>Code </th>
                                 <th>Carcass </th>
                                 <th>No. of Carcass</th>
-                                <th>Weight(kgs)</th>
+                                <th>Scale Weight(kgs)</th>
                                 <th>Date </th>
                             </tr>
                         </thead>
@@ -331,7 +331,7 @@ $arr_products = $products->toArray();
                                 <th>Code </th>
                                 <th>Carcass </th>
                                 <th>No. of Carcass</th>
-                                <th>Weight(kgs)</th>
+                                <th>Scale Weight(kgs)</th>
                                 <th>Date </th>
                             </tr>
                         </tfoot>
@@ -373,7 +373,7 @@ $arr_products = $products->toArray();
                                 <th>#</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Weight (kgs)</th>
+                                <th>Scale Weight(kgs)</th>
                                 <th>Date </th>
                             </tr>
                         </thead>
@@ -382,7 +382,7 @@ $arr_products = $products->toArray();
                                 <th>#</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Weight (kgs)</th>
+                                <th>Scale Weight(kgs)</th>
                                 <th>Date </th>
                             </tr>
                         </tfoot>

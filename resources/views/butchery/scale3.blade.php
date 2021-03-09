@@ -178,7 +178,8 @@
                                 <th>product </th>
                                 <th>Product Type</th>
                                 <th>Production Process</th>
-                                <th>Weight(kgs)</th>
+                                <th>Scale Weight(kgs)</th>
+                                <th>Net Weight(kgs)</th>
                                 <th>No. of Pieces</th>
                                 <th>Date </th>
                             </tr>
@@ -190,7 +191,8 @@
                                 <th>product </th>
                                 <th>Product Type</th>
                                 <th>Production Process</th>
-                                <th>Weight(kgs)</th>
+                                <th>Scale Weight(kgs)</th>
+                                <th>Net Weight(kgs)</th>
                                 <th>No. of Pieces</th>
                                 <th>Date </th>
                             </tr>
@@ -205,6 +207,7 @@
                                 <td> {{ $data->product_type }}</td>
                                 <td> {{ $data->process }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                <td> {{ number_format($data->net_weight, 2) }}</td>
                                 <td> {{ $data->no_of_pieces }}</td>
                                 <td> {{ $data->created_at }}</td>
                             </tr>
