@@ -77,6 +77,7 @@ class SlaughterController extends Controller
 
         $receipts = DB::table('receipts')
             ->whereDate('slaughter_date', Carbon::today())
+            ->select('vendor_tag')
             ->get();
 
         $slaughter_data = DB::table('slaughter_data')
