@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -54,17 +55,21 @@ class ButcheryController extends Controller
             ->where('item_code', "G1031")
             ->sum('net_weight');
 
-        $butchery_date = $helpers->getButcheryDate();
+        $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(120), function () {
+            $helpers = new Helpers();
+            return DB::table('slaughter_data')
+                ->where('item_code', 'G0110')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->count();
+        });
 
-        $lined_baconers = DB::table('slaughter_data')
-            ->where('item_code', 'G0110')
-            ->whereDate('created_at', $butchery_date)
-            ->count();
-
-        $lined_sows = DB::table('slaughter_data')
-            ->where('item_code', 'G0111')
-            ->whereDate('created_at', $butchery_date)
-            ->count();
+        $lined_sows = Cache::remember('lined_sows', now()->addMinutes(120), function () {
+            $helpers = new Helpers();
+            return DB::table('slaughter_data')
+                ->where('item_code', 'G0111')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->count();
+        });
 
         $three_parts_baconers = DB::table('butchery_data')
             ->where('carcass_type', 'G1030')
@@ -112,7 +117,7 @@ class ButcheryController extends Controller
             ->where('item_code', 'G1102')
             ->sum('net_weight');
 
-        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'butchery_date', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)
@@ -124,12 +129,14 @@ class ButcheryController extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $products = DB::table('products')
-            ->orWhere('code', 'G1100')
-            ->orWhere('code', 'G1101')
-            ->orWhere('code', 'G1102')
-            ->orderBy('code', 'ASC')
-            ->get();
+        $products = Cache::remember('products_scale12', now()->addMinutes(120), function () {
+            return DB::table('products')
+                ->orWhere('code', 'G1100')
+                ->orWhere('code', 'G1101')
+                ->orWhere('code', 'G1102')
+                ->orderBy('code', 'ASC')
+                ->get();
+        });
 
         $beheading_data = DB::table('beheading_data')
             ->whereDate('beheading_data.created_at', Carbon::today())
@@ -308,17 +315,23 @@ class ButcheryController extends Controller
         }
     }
 
-    public function loadSlaughterDataAjax(Request $request, Helpers $helpers)
+    public function loadSlaughterDataAjax(Request $request)
     {
-        $baconers = DB::table('slaughter_data')
-            ->whereDate('created_at', $helpers->getButcheryDate())
-            ->where('item_code', 'G0110')
-            ->count();
+        $baconers = Cache::remember('baconers_load_ajax', 1, function () {
+            $helpers = new Helpers();
+            return DB::table('slaughter_data')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->where('item_code', 'G0110')
+                ->count();
+        });
 
-        $sows = DB::table('slaughter_data')
-            ->whereDate('created_at', Carbon::parse($request->date))
-            ->where('item_code', 'G0111')
-            ->count();
+        $sows = Cache::remember('sows_load_ajax', 60, function () {
+            $helpers = new Helpers();
+            return DB::table('slaughter_data')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->where('item_code', 'G0111')
+                ->count();
+        });
 
         $data = array('baconers' => $baconers, 'sows' => $sows);
 
@@ -335,9 +348,12 @@ class ButcheryController extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $products = DB::table('products')
-            ->where('id', '>', 6)
-            ->get();
+        $products = Cache::remember('products_scale3', now()->addMinutes(120), function () {
+            return DB::table('products')
+                ->where('id', '>', 6)
+                ->select('code', 'description')
+                ->get();
+        });
 
         $deboning_data = DB::table('deboned_data')
             ->whereDate('deboned_data.created_at', Carbon::today())
@@ -424,9 +440,11 @@ class ButcheryController extends Controller
     {
         $title = "products";
 
-        $products =  DB::table('products')
-            ->where('code', '!=', '')
-            ->get();
+        $products = Cache::remember('products_list', now()->addMinutes(120), function () {
+            return DB::table('products')
+                ->where('code', '!=', '')
+                ->get();
+        });
 
         return view('butchery.products', compact('title', 'products', 'helpers'));
     }
@@ -677,7 +695,6 @@ class ButcheryController extends Controller
         $title = "Sales-Report";
         $sales_data = DB::table('sales')
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
-            // ->leftJoin('processes', 'sales.process_code', '=', 'processes.process_code')
             ->select('sales.*', 'products.description')
             ->orderBy('created_at', 'DESC')
             ->get();

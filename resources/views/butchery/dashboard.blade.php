@@ -5,7 +5,7 @@
     <div class="row mb-2">
         <div class="col-sm-12">
             <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> Today's numbers | Slaughter Date:
-                        <code> {{ $helpers->dateToHumanFormat($butchery_date) }}</code></small>
+                        <code> {{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }}</code></small>
                 </span></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -20,7 +20,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($butchery_date) }})</strong>
+            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})</strong>
         </p>
         <div class="small-box bg-success">
             <div class="inner">
@@ -126,7 +126,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($butchery_date) }})</strong>
+            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})</strong>
         </p>
         <div class="small-box bg-success">
             <div class="inner">
