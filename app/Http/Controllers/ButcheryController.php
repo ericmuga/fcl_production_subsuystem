@@ -402,7 +402,7 @@ class ButcheryController extends Controller
                 ->where('id', $request->item_id)
                 ->update([
                     'actual_weight' => $request->edit_weight,
-                    'net_weight' => $request->edit_weight - 7.20,
+                    'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
                     'no_of_pieces' => $request->edit_no_pieces,
                     'updated_at' => Carbon::now(),
                 ]);

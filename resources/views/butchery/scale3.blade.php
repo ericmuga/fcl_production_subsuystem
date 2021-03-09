@@ -19,10 +19,6 @@
             <div class="card-body " style="">
                 <div class="form-group">
                     <div class="row">
-                        {{-- <div class="col-md-5">
-                            <label for="exampleInputPassword1">Short Code</label>
-                            <input type="text" class="form-control" id="short_code" value="">
-                        </div> --}}
                         <div class="col-md-12">
                             <label for="exampleInputPassword1"> Product Name</label>
                             <select class="form-control select2" name="product" id="product" required>
@@ -240,6 +236,14 @@
                     </button>
                 </div>
                 <div class="modal-body">
+                    <div class="form-group">
+                    <label for="exampleInputPassword1">No. of Crates</label>
+                    <select class="form-control" name="edit_crates" id="edit_crates" required>
+                        <option>2</option>
+                        <option>3</option>
+                        <option selected>4</option>
+                    </select>
+                </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
                         <input type="number" onClick="this.select();" class="form-control" name="edit_weight" id="edit_weight" placeholder=""
