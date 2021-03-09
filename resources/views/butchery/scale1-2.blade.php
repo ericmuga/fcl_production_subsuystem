@@ -441,7 +441,7 @@ $arr_products = $products->toArray();
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" class="form-control" name="edit_weight1" id="edit_weight1" placeholder=""
+                        <input type="number" onClick="this.select();"  class="form-control" name="edit_weight1" id="edit_weight1" placeholder=""
                             step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id1" id="item_id1" value="">
@@ -485,7 +485,7 @@ $arr_products = $products->toArray();
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" class="form-control" name="edit_weight" id="edit_weight" placeholder=""
+                        <input type="number" onClick="this.select();"  class="form-control" name="edit_weight" id="edit_weight" placeholder=""
                             step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
