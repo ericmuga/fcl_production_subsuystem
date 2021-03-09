@@ -261,6 +261,30 @@ class ButcheryController extends Controller
         }
     }
 
+    public function updateSalesData(Request $request)
+    {
+        try {
+            // update
+            DB::table('sales')
+                ->where('id', $request->item_id)
+                ->update([
+                    'item_code' => $request->edit_carcass,
+                    'no_of_carcass' => $request->edit_no_carcass,
+                    'actual_weight' => $request->edit_weight,
+                    'net_weight' => $request->edit_weight - (2.4 * $request->edit_no_carcass),
+                    'updated_at' => Carbon::now(),
+                ]);
+
+
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
     public function updateScaleTwoData(Request $request)
     {
         try {
@@ -653,8 +677,8 @@ class ButcheryController extends Controller
         $title = "Sales-Report";
         $sales_data = DB::table('sales')
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
-            ->leftJoin('processes', 'sales.process_code', '=', 'processes.process_code')
-            ->select('sales.*', 'products.description', 'processes.process')
+            // ->leftJoin('processes', 'sales.process_code', '=', 'processes.process_code')
+            ->select('sales.*', 'products.description')
             ->orderBy('created_at', 'DESC')
             ->get();
 

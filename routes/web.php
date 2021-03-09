@@ -59,6 +59,7 @@ Route::get('butchery/comport-list-api-service', [ButcheryController::class, 'com
 Route::post('/butchery/scale-1-save', [ButcheryController::class, 'saveScaleOneData'])->name('butchery_scale1_save');
 Route::post('/butchery/scale-2-save', [ButcheryController::class, 'saveScaleTwoData'])->name('butchery_scale2_save');
 Route::post('/butchery/scale-1-update', [ButcheryController::class, 'updateScaleOneData'])->name('butchery_scale1_update');
+Route::post('/butchery/sales-update', [ButcheryController::class, 'updateSalesData'])->name('butchery_sales_update');
 Route::post('/butchery/scale-2-update', [ButcheryController::class, 'updateScaleTwoData'])->name('butchery_scale2_update');
 Route::get('/slaughter-data-ajax', [ButcheryController::class, 'loadSlaughterDataAjax'])->name('load_slaughter_data');
 Route::get('/butchery/scale-3', [ButcheryController::class, 'scaleThree'])->name('butchery_scale3');
