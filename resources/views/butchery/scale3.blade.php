@@ -183,6 +183,7 @@
                                 <th>Product Type</th>
                                 <th>Production Process</th>
                                 <th>Weight(kgs)</th>
+                                <th>No. of Pieces</th>
                                 <th>Date </th>
                             </tr>
                         </thead>
@@ -194,6 +195,7 @@
                                 <th>Product Type</th>
                                 <th>Production Process</th>
                                 <th>Weight(kgs)</th>
+                                <th>No. of Pieces</th>
                                 <th>Date </th>
                             </tr>
                         </tfoot>
@@ -201,11 +203,13 @@
                             @foreach($deboning_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td> {{ $data->item_code }}</td>
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-weight="{{ number_format($data->actual_weight, 2) }}" data-no_of_pieces="{{ $data->no_of_pieces }}" data-item="{{ $helpers->getProductName($data->item_code) }}"><a
+                                        href="#">{{ $data->item_code }}</a> </td>
                                 <td>{{ $helpers->getProductName($data->item_code) }}</td>
                                 <td> {{ $data->product_type }}</td>
                                 <td> {{ $data->process }}</td>
                                 <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                <td> {{ $data->no_of_pieces }}</td>
                                 <td> {{ $data->created_at }}</td>
                             </tr>
                             @endforeach
@@ -221,11 +225,69 @@
 </div>
 <!-- slicing ouput data show -->
 
+<!-- Edit Modal -->
+<div id="itemCodeModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!--Start create user modal-->
+        <form id="form-edit-role" action="{{route('butchery_scale3_update')}}" method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale3 Item: <strong><input style="border:none"
+                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
+                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight" id="edit_weight" placeholder=""
+                            step="0.01" autocomplete="off" required autofocus>
+                    </div>
+                    <div class="form-group">
+                        <label>No. of Pieces</label>
+                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_pieces" value=""
+                            name="edit_no_pieces" placeholder="">
+                    </div>
+                    <input type="hidden" name="item_id" id="item_id" value="">
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning">
+                            <i class="fa fa-save"></i> Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--End Edit scale1 modal-->
+
 @endsection
 
 @section('scripts')
 <script>
     $(document).ready(function () {
+
+         $("body").on("click", "#itemCodeModalShow", function (e) {
+            e.preventDefault();
+
+            var item = $(this).data('item');
+            var weight = $(this).data('weight');
+            var no_of_pieces = $(this).data('no_of_pieces');
+            var id = $(this).data('id');
+
+            $('#item_name').val(item);
+            $('#edit_weight').val(weight);
+            $('#edit_no_pieces').val(no_of_pieces)
+            $('#item_id').val(id);
+
+            $('#itemCodeModal').modal('show');
+        });
+
 
         $("body").on("click", "#btn_product_type", function (a) {
             a.preventDefault();

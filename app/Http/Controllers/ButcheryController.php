@@ -354,6 +354,29 @@ class ButcheryController extends Controller
         }
     }
 
+    public function updateScaleThreeData(Request $request)
+    {
+        try {
+            // update
+            DB::table('deboned_data')
+                ->where('id', $request->item_id)
+                ->update([
+                    'actual_weight' => $request->edit_weight,
+                    'net_weight' => $request->edit_weight - 7.20,
+                    'no_of_pieces' => $request->edit_no_pieces,
+                    'updated_at' => Carbon::now(),
+                ]);
+
+
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
     public function getProductTypeAjax(Request $request)
     {
         $data = DB::table('products')
