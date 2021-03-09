@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -87,9 +88,11 @@ class SlaughterController extends Controller
             ->orderBy('slaughter_data.created_at', 'DESC')
             ->get();
 
-        $carcass_types = DB::table('carcass_types')
-            ->select('code', 'description')
-            ->get();
+        $carcass_types = Cache::remember('carcass_types_list', now()->addMinutes(480), function () {
+            return DB::table('carcass_types')
+                ->select('code', 'description')
+                ->get();
+        });
 
         $slaps = DB::table('missing_slap_data')
             ->whereDate('missing_slap_data.created_at', Carbon::today())
