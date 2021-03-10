@@ -739,8 +739,9 @@
             var settlement_weight = document.getElementById('settlement_weight');
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var settlement_int = Math.floor(0.975 * net);
-            var settlement_float = (0.975 * net) % 1;
+            var cold_weight = 0.975 * net;
+            var settlement_int = Math.floor(cold_weight);            
+            var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
                 settlement_weight.value = settlement_int + 1;
@@ -757,8 +758,9 @@
             var settlement_weight = document.getElementById('settlement_weight');
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var settlement_int = Math.floor(net);
-            var settlement_float = (net) % 1;
+            var cold_weight = 0.975 * net;
+            var settlement_int = Math.floor(cold_weight);            
+            var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
                 settlement_weight.value = settlement_int + 1;
@@ -778,36 +780,32 @@
 
         if (ms_carcass_type == 'G0113') {
             //suckling calculation
-            // var settlement_weight = document.getElementById('settlement_weight');
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var settlement_int = Math.floor(0.975 * net);
-            var settlement_float = (0.975 * net) % 1;
+            var cold_weight = 0.975 * net;
+            var settlement_int = Math.floor(cold_weight);            
+            var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
-                // settlement_weight.value = settlement_int + 1;
                 missing_slap_settlement.value = settlement_int + 1;
 
             } else {
-                // settlement_weight.value = settlement_int;
                 missing_slap_settlement.value = settlement_int;
 
             }
 
         } else {
             // baconers, sows calculations
-            // var settlement_weight = document.getElementById('settlement_weight');
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var settlement_int = Math.floor(net);
-            var settlement_float = (net) % 1;
+            var cold_weight = 0.975 * net;
+            var settlement_int = Math.floor(cold_weight);            
+            var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
-                // settlement_weight.value = settlement_int + 1;
                 missing_slap_settlement.value = settlement_int + 1;
 
             } else {
-                // settlement_weight.value = settlement_int;
                 missing_slap_settlement.value = settlement_int;
 
             }
