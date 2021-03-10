@@ -52,7 +52,7 @@
                     @csrf
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" placeholder="Username" name="username" required
-                            autocomplete="username" value="{{ $computer_name?? "" }}">
+                            value="" autofocus>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-user"></span>
@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" name="password" placeholder="Password" autofocus>
+                        <input type="password" class="form-control" name="password" placeholder="Password">
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
