@@ -152,10 +152,7 @@ class ButcheryController extends Controller
             ->orderBy('butchery_data.created_at', 'DESC')
             ->get();
 
-        $inputData = $helpers->getInputData();
-        $outputData = $helpers->getOutputData();
-
-        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers', 'inputData', 'outputData'));
+        return view('butchery.scale1-2', compact('title', 'configs', 'products', 'beheading_data', 'butchery_data', 'helpers'));
     }
 
     public function readScaleApiService(Request $request, Helpers $helpers)

@@ -35,25 +35,6 @@ $arr_products = $products->toArray();
         </div>
     </div>
     <!-- End Slaughter date show -->
-
-    <!-- slaughter data show -->
-    <div class="col-md-2 ">
-        <label>Baconers:</label>
-        <input type="number" class="form-control" id="baconers_number" value="" readonly>
-    </div>
-    <div class="col-md-2 ">
-        <label>Baconers sides:</label>
-        <input type="number" class="form-control" id="baconers_sides" value="" readonly>
-    </div>
-    <div class="col-md-2 ">
-        <label>Sows:</label>
-        <input type="number" class="form-control" id="sows_number" value="" readonly>
-    </div>
-    <div class="col-md-2 ">
-        <label>sows sides:</label>
-        <input type="number" class="form-control" id="sows_sides" value="" readonly>
-    </div>
-    <!-- /.form group -->
 </div>
 
 <div class="row">
@@ -259,50 +240,9 @@ $arr_products = $products->toArray();
             class="fa fa-plus"></i>
         Output
     </button>
-</div>
+</div><hr>
 
 <div id="butchery_output_show" class="collapse">
-    <hr>
-    <div class="row">
-        <!-- baconers, sows, sides -->
-        <div class="form-group col-sm-1">
-            <label>Beheaded :</label>
-            <input type="number" class="form-control" id="total_beheaded" value="{{ $inputData }}"
-                oninput="getSidesNumber()" readonly>
-        </div>
-        <div class="form-group col-sm-1">
-            <label> Legs:</label>
-            <input type="number" class="form-control" id="baconers_number" value="{{ $inputData*2 }}" readonly>
-        </div>
-        <div class="form-group col-sm-1">
-            <label> Middles:</label>
-            <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
-        </div>
-        <div class="form-group col-sm-1">
-            <label> Shoulders:</label>
-            <input type="number" class="form-control" id="baconers_sides" value="{{ $inputData*2 }}" readonly>
-        </div>
-
-        <div class="form-group col-sm-2" style="margin-left: 10%">
-            <label>Weighed Legs:</label>
-            <input type="number" class="form-control" id="baconers_number" value="{{ $outputData['output_legs'] }}"
-                oninput="getSidesNumber()" readonly>
-        </div>
-        <div class="form-group col-sm-2">
-            <label>Weighed Middles:</label>
-            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_middles'] }}"
-                readonly>
-        </div>
-        <div class="form-group col-sm-2">
-            <label>Weighed Shoulders:</label>
-            <input type="number" class="form-control" id="baconers_sides" value="{{ $outputData['output_shoulders'] }}"
-                readonly>
-        </div>
-        <!-- /.form group -->
-    </div>
-    <hr>
-    <!-- legs, middles, shoulders -->
-
     <div class="row">
         <!-- scale1 ouput data table -->
         <div class="col-md-6">
@@ -411,7 +351,6 @@ $arr_products = $products->toArray();
 </div>
 <!-- butchery ouput data show -->
 
-
 <!-- Edit scale1 Modal -->
 <div id="edit1Modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -508,57 +447,10 @@ $arr_products = $products->toArray();
 @section('scripts')
 <script>
     $(document).ready(function () {
-        var date = $('#datepk').val();
-
-        if (date != null) {
-            $.ajax({
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                url: "{{ url('slaughter-data-ajax') }}",
-                data: {
-                    'date': date,
-
-                },
-                dataType: 'JSON',
-                success: function (res) {
-                    if (res) {
-
-                        var str = JSON.stringify(res);
-                        var obj = JSON.parse(str);
-
-                        $("#baconers_number").val(obj.baconers);
-                        $("#sows_number").val(obj.sows);
-
-                        var baconers_sides = document.getElementById('baconers_sides');
-                        var sows_sides = document.getElementById('sows_sides');
-                        if (obj.baconers > 0) {
-
-                            baconers_sides.value = obj.baconers * 2;
-
-                        } else {
-                            baconers_sides.value = 0;
-                        }
-
-                        if (obj.sows > 0) {
-                            sows_sides.value = obj.sows * 2;
-
-                        } else {
-                            sows_sides.value = 0;
-                        }
-
-                    }
-                }
-            });
-
-        }
 
         $('.messageCheckbox').change(function () {
             var checkedValue = document.querySelector('.messageCheckbox:checked').value;
-            // alert(checkedValue);
         });
-
 
         $('#no_of_carcass').change(function () {
             adjustTareweight();
