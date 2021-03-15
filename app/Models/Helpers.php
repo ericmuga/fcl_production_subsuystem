@@ -219,4 +219,16 @@ class Helpers
             return $e->getMessage();
         }
     }
+
+    public function formatTodateOnly($db_date)
+    {
+
+        return date('d-m-Y', strtotime($db_date));
+    }
+
+    public function formatToHoursMinsOnly($db_date)
+    {
+
+        return date('H:i', strtotime($db_date));
+    }
 }

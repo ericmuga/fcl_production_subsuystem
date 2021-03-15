@@ -180,7 +180,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "lengthChange": true,
                 "lengthMenu": [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
                 // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-                "buttons": ["excel", "pdf", "colvis"]
+                "buttons": ["excel", "csv", "pdf", "colvis"]
             }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
 

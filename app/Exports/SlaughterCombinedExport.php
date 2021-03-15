@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class SlaughterCombinedExport implements FromCollection, WithHeadings
+class SlaughterCombinedExport implements FromCollection
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -21,7 +21,7 @@ class SlaughterCombinedExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code.', 'Carcass', 'Total Net Weight'
+                'Item Code', 'Carcass', 'Total Net Weight'
             ];
     }
 }
