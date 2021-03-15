@@ -107,6 +107,7 @@ class SlaughterController extends Controller
     public function loadWeighDataAjax(Request $request)
     {
         $data = DB::table('receipts')
+            ->whereDate('slaughter_date', Carbon::today())
             ->where('vendor_tag', $request->slapmark)
             ->where('item_code', $request->carcass_type)
             ->select('receipt_no', 'item_code', 'vendor_no', 'vendor_name')
