@@ -45,7 +45,7 @@
         <div class="card">
             <div class="card-body login-card-body">
                 <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
-                    class=" brand-image" style=" ">
+                    class=" brand-image" style="">
                 <p class="login-box-msg">Sign in to start your session</p>
 
                 <form action="{{ route('process_login') }}" method="post">

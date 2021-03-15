@@ -64,6 +64,7 @@
                             <th>Carcass Type</th>
                             <th>Weight(kgs)</th>
                             <th>Net weight(kgs)</th>
+                            <th>Rounded weight(kgs)</th>
                             <th>Meat %</th>
                             <th>Classification</th>
                             <th>Slaughter Date</th>
@@ -78,6 +79,7 @@
                             <th>Carcass Type</th>
                             <th>Weight(kgs)</th>
                             <th>Net weight(kgs)</th>
+                            <th>Rounded weight(kgs)</th>
                             <th>Meat %</th>
                             <th>Classification</th>
                             <th>Slaughter Date</th>
@@ -93,6 +95,7 @@
                             <td>{{ $data->description }}</td>
                             <td>{{ number_format($data->actual_weight, 2) }}</td>
                             <td>{{ number_format($data->net_weight, 2) }}</td>
+                            <td>{{ round($data->net_weight) }}</td>
                             <td>{{ $data->meat_percent }}</td>
                             <td>{{ $data->classification_code }}</td>
                             <td>{{ $data->created_at }}</td>
