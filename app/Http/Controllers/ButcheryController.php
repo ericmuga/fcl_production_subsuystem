@@ -616,6 +616,8 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
             ->leftJoin('processes', 'beheading_data.process_code', '=', 'processes.process_code')
             ->select('beheading_data.*', 'products.description AS product_type', 'processes.process')
+            ->orderBy('beheading_data.created_at', 'DESC')
+            ->take(1000)
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
@@ -642,6 +644,8 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
             ->leftJoin('processes', 'butchery_data.process_code', '=', 'processes.process_code')
             ->select('butchery_data.*', 'products.description AS product_type', 'processes.process')
+            ->orderBy('butchery_data.created_at', 'DESC')
+            ->take(1000)
             ->get();
 
         return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));
@@ -668,6 +672,8 @@ class ButcheryController extends Controller
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
+            ->orderBy('deboned_data.created_at', 'DESC')
+            ->take(1000)
             ->get();
 
         return view('butchery.deboned', compact('title', 'deboning_data', 'helpers'));
@@ -694,6 +700,7 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
             ->select('sales.*', 'products.description')
             ->orderBy('created_at', 'DESC')
+            ->take(1000)
             ->get();
 
         return view('butchery.sales', compact('title', 'sales_data', 'helpers'));

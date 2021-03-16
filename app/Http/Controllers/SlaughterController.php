@@ -225,6 +225,7 @@ class SlaughterController extends Controller
             ->leftJoin('carcass_types', 'missing_slap_data.item_code', '=', 'carcass_types.code')
             ->select('missing_slap_data.*', 'carcass_types.description')
             ->orderBy('missing_slap_data.created_at', 'DESC')
+            ->take(1000)
             ->get();
 
         return view('slaughter.missing_slapmarks', compact('title', 'slaps', 'helpers'));
@@ -236,6 +237,7 @@ class SlaughterController extends Controller
 
         $receipts = DB::table('receipts')
             ->orderBy('created_at', 'DESC')
+            ->take(1000)
             ->get();
         return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
     }
@@ -278,6 +280,7 @@ class SlaughterController extends Controller
             ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
             ->select('slaughter_data.*', 'carcass_types.description')
             ->orderBy('slaughter_data.created_at', 'DESC')
+            ->take(1000)
             ->get();
 
         return view('slaughter.slaughter_report', compact('title', 'helpers', 'slaughter_data'));
