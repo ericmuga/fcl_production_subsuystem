@@ -4,9 +4,10 @@ namespace App\Exports;
 
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Concerns\FromCollection;
-use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-class SlaughterCombinedExport implements FromCollection, WithHeadings
+class SlaughterForNavExport implements FromCollection
 {
     /**
      * @return \Illuminate\Support\Collection
@@ -15,13 +16,5 @@ class SlaughterCombinedExport implements FromCollection, WithHeadings
     {
         $export = Session::get('session_export_data');
         return $export;
-    }
-
-    public function headings(): array
-    {
-        return
-            [
-                'Item Code', 'Carcass', 'Total Net Weight'
-            ];
     }
 }

@@ -1,55 +1,92 @@
 @extends('layouts.slaughter_master')
 
 @section('content')
-<div class="col-md-12 text-left" style="margin-bottom: 1%">
-    <button class="btn btn-success btn-lg" data-toggle="collapse" data-target="#export_data"><i class="fas fa-file-excel"></i> Generate Combined Report</button>
-        <div id="export_data" class="collapse"><br>
-            <div class="form-inputs">
-                <div class="row">
-                    <div class="col-lg-6" style="margin: 0 auto; float: none;">
-                        <div class="card mb-3">
-                            <div class="card-header">
-                                <i class="fa fa-user-secret"></i>
-                                Export data</div>
-                            <div class="card-body">
-                                <form action="{{ url('/export-slaughter-combined-report') }}" method="post" id="export-logs-form">
-                                    {{ csrf_field() }}
-    
-                                    <div class="row">
-                                        *Filter by date<br>
-                                        <div class="form-group col-md-6">
-                                            <label for="stemplate_date_created_from_flagged">Date:(dd/mm/yyyy)</label>
-                                            <input type="date" class="form-control" name="date"
-                                                    id="stemplate_date_created_from_flagged" autofocus required>
-                                        </div>
-                                        <div class="form-group col-md-6">
-                                            <button type="submit" class="btn btn-primary "><i class="fa fa-paper-plane" aria-hidden="true"></i> Export now</button>
-                                        </div>
-                                    </div>
-                                </form>
-                                @if(count($errors))
-                                    <ol>
-                                        <h6><span class="label label-danger">Errors</span></h6>
-                                        @foreach($errors->all() as $error)
-                                            <li> <code>{{$error}}</code></li>
-                                        @endforeach
-                                    </ol>
-                                @endif
-                                <br>
-                            </div>
+<div class="row">
+    <div class="col-md-3" style="margin-bottom: 1%">
+        <button class="btn btn-success btn-lg" data-toggle="modal" data-target="#export_data"><i
+                class="fas fa-file-excel"></i> Generate Combined Report</button>
+    </div>
+    <div class="col-md-3" style="margin-bottom: 1%">
+        <button class="btn btn-warning btn-lg" data-toggle="modal" data-target="#export_for_nav"><i
+                class="fas fa-file-excel"></i> Generate For Nav Import</button>
+    </div>
+</div>
+
+<!-- Start Export combined Modal -->
+<div class="modal fade" id="export_data" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+    <form id="form-produce-check" action="{{ url('/export-slaughter-combined-report') }}" method="post">
+        @csrf
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Export for Nav Upload</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        *Filter by date<br>
+                        <div class="form-group col-md-6">
+                            <label for="stemplate_date_created_from_flagged">Date:(dd/mm/yyyy)</label>
+                            <input type="date" class="form-control" name="date"
+                                id="stemplate_date_created_from_flagged" autofocus required>
                         </div>
                     </div>
                 </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-flat float-left" type="button" data-dismiss="modal">Cancel</button>
+                <button type="submit"
+                    class="btn btn-success btn-lg  float-right"><i class="fa fa-send"></i> Export</button>
+                </div>
             </div>
         </div>
-    </div>
+    </form>
 </div>
+<!-- End Export combined Modal -->
+
+
+<!-- Start Export for nav Modal -->
+<div class="modal fade" id="export_for_nav" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+    <form id="form-produce-check" action="{{ url('/export-slaughter-for-nav') }}" method="post">
+        @csrf
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Export for Nav Upload</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        *Filter by date<br>
+                        <div class="form-group col-md-6">
+                            <label for="stemplate_date_created_from_flagged">Date:(dd/mm/yyyy)</label>
+                            <input type="date" class="form-control" name="date"
+                                id="stemplate_date_created_from_flagged" autofocus required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-flat float-left" type="button" data-dismiss="modal">Cancel</button>
+                <button type="submit"
+                    class="btn btn-success btn-lg  float-right"><i class="fa fa-send"></i> Export</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- End export for Nav modal-->
 
 <div class="row">
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Slaughter Data Report| <span id="subtext-h1-title"><small> showing all entries</small> </span></h3>
+                <h3 class="card-title">Slaughter Data Report| <span id="subtext-h1-title"><small> showing all
+                            entries</small> </span></h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">

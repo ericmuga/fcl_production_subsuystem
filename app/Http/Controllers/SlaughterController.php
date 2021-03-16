@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\SlaughterCombinedExport;
+use App\Exports\SlaughterForNavExport;
 use App\Imports\ReceiptsImport;
 use App\Models\Helpers;
 use App\Models\MissingSlapData;
@@ -294,6 +295,21 @@ class SlaughterController extends Controller
         $exports = Session::put('session_export_data', $slaughter_combined);
 
         return Excel::download(new SlaughterCombinedExport, 'SlaughterSummaryReport-' . $request->date . '.xlsx');
+    }
+
+    public function exportSlaughterForNav(Request $request, Helpers $helpers)
+    {
+        $title = "Nav import";
+
+        $slaughter_for_Nav = DB::table('slaughter_data')
+            ->whereDate('slaughter_data.created_at', Carbon::parse($request->date))
+            ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
+            ->select('slaughter_data.created_at As date', 'slaughter_data.item_code', 'slaughter_data.receipt_no', DB::raw('ROUND(slaughter_data.net_weight, 0) As weight'), 'slaughter_data.meat_percent', 'slaughter_data.classification_code', 'slaughter_data.slapmark')
+            ->get();
+
+        $exports = Session::put('session_export_data', $slaughter_for_Nav);
+
+        return Excel::download(new SlaughterForNavExport, 'SlaughterForNavImport-' . $request->date . '.csv');
     }
 
     public function scaleSettings(Helpers $helpers)
