@@ -274,7 +274,7 @@ class SlaughterController extends Controller
 
     public function slaughterDataReport(Helpers $helpers)
     {
-        $title = "receipts";
+        $title = "Slaughter Data";
 
         $slaughter_data = DB::table('slaughter_data')
             ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
