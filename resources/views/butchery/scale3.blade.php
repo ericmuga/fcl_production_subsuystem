@@ -94,6 +94,8 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of Crates</label>
                     <select class="form-control" name="no_of_crates" id="no_of_crates" required>
+                        <option>0</option>
+                        <option>1</option>
                         <option>2</option>
                         <option>3</option>
                         <option selected>4</option>
