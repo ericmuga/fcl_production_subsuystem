@@ -304,11 +304,16 @@ class SlaughterController extends Controller
     {
         $title = "Nav import";
 
-        $slaughter_for_Nav = DB::table('slaughter_data')
-            ->whereDate('slaughter_data.created_at', Carbon::parse($request->date))
+        $slaughter_for_Nav = SlaughterData::whereDate('slaughter_data.created_at', Carbon::parse($request->date))
             ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
-            ->select('slaughter_data.created_at As date', 'slaughter_data.item_code', 'slaughter_data.receipt_no', DB::raw('ROUND(slaughter_data.net_weight, 0) As weight'), 'slaughter_data.meat_percent', 'slaughter_data.classification_code', 'slaughter_data.slapmark')
+            ->select('slaughter_data.created_at As date', 'slaughter_data.created_at As time', 'slaughter_data.item_code', 'slaughter_data.receipt_no', DB::raw('ROUND(slaughter_data.net_weight, 0) As weight'), 'slaughter_data.meat_percent', 'slaughter_data.classification_code', 'slaughter_data.slapmark')
             ->get();
+
+        foreach ($slaughter_for_Nav as $item) {
+
+            $item['date'] = $helpers->formatTodateOnly($item['date']);
+            $item['time'] = $helpers->formatToHoursMinsOnly($item['time']);
+        }
 
         $exports = Session::put('session_export_data', $slaughter_for_Nav);
 

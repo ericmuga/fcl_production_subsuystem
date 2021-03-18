@@ -9,5 +9,5 @@ class SlaughterData extends Model
 {
     use HasFactory;
     protected $table = 'slaughter_data';
-    protected $guarded =[];
+    protected $guarded = [];
 }
