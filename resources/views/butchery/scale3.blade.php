@@ -344,7 +344,7 @@
                                 $('#product_type').val("By Product");
                             }
 
-                            //get process types
+                            // on product type success, get process types
                             $.ajax({
                                 type: "GET",
                                 headers: {
@@ -358,7 +358,7 @@
                                 },
                                 dataType: 'JSON',
                                 success: function (data) {
-                                    console.log(data);
+                                    // console.log(data);
                                     var formOptions = "";
                                     for (var key in data) {
                                         // console.log(data[key].process_code)
@@ -372,13 +372,13 @@
                                         formOptions += "<option value='" +
                                             process_code + "'>" + process_name +
                                             "</option>";
-                                    }
+                                    }                                    
 
                                     $('#production_process').html(formOptions);
                                 },
                                 error: function (data) {
                                     var errors = data.responseJSON;
-                                    console.log(errors);
+                                    // console.log(errors);
                                     alert(
                                         'error occured when pulling production processes'
                                         );
@@ -390,7 +390,7 @@
                     },
                     error: function (data) {
                         var errors = data.responseJSON;
-                        console.log(errors);
+                        // console.log(errors);
                         alert('error occured when pulling production types');
                     }
                 });
@@ -408,6 +408,13 @@
 
             getNet();
 
+        });
+
+        $('#production_process').change(function () {   
+            var production_process =  $('#production_process').val();
+            if (production_process !== "") {                
+                $('#no_of_pieces').focus();                
+            }       
         });
 
         $('#manual_weight').change(function () {
@@ -539,10 +546,10 @@
                 },
                 dataType: 'JSON',
                 success: function (data) {
-                    console.log(data);
+                    // console.log(data);
 
                     var obj = JSON.parse(data);
-                    console.log(obj.success);
+                    // console.log(obj.success);
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
@@ -560,7 +567,7 @@
                 },
                 error: function (data) {
                     var errors = data.responseJSON;
-                    console.log(errors);
+                    // console.log(errors);
                     alert('error occured when sending request');
                 }
             });
