@@ -57,18 +57,34 @@ class ButcheryController extends Controller
 
         $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(120), function () {
             $helpers = new Helpers();
-            return DB::table('slaughter_data')
+
+            $record1 = DB::table('slaughter_data')
                 ->where('item_code', 'G0110')
                 ->whereDate('created_at', $helpers->getButcheryDate())
                 ->count();
+
+            $record2 = DB::table('missing_slap_data')
+                ->where('item_code', 'G0110')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->count();
+
+            return $record1 + $record2;
         });
 
-        $lined_sows = Cache::remember('lined_sows', now()->addMinutes(120), function () {
+        $lined_sows = Cache::remember('linedup_sows', now()->addMinutes(120), function () {
             $helpers = new Helpers();
-            return DB::table('slaughter_data')
+
+            $record1 = DB::table('slaughter_data')
                 ->where('item_code', 'G0111')
                 ->whereDate('created_at', $helpers->getButcheryDate())
                 ->count();
+
+            $record2 = DB::table('missing_slap_data')
+                ->where('item_code', 'G0111')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->count();
+
+            return $record1 + $record2;
         });
 
         $three_parts_baconers = DB::table('butchery_data')
