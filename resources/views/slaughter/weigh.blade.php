@@ -522,7 +522,7 @@
                         // Rosemark classification
 
                         if (carcass_type != "G0113" && s_weight < 40) {
-                            $('#classification_code').val("RMPK-SUB40");
+                            $('#classification_code').val("RMPK SUB40");
                         }                      
 
                         if ( (meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
@@ -593,7 +593,7 @@
                             // contract vendors classification
 
                             if (carcass_type == "G0110" && s_weight < 40) {
-                                classification_code.value = "PK-SUB40";
+                                classification_code.value = "PK SUB-40";
                             }
 
                             if ( (meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
@@ -650,7 +650,7 @@
                             // non contract vendor classification(less than 2 delivered)
 
                             if (carcass_type == "G0110" && s_weight < 40) {
-                                classification_code.value = "PK-SUB40";
+                                classification_code.value = "PK SUB-40";
                             }
 
                             if ( (meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
