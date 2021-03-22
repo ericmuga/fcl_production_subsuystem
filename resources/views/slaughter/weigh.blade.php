@@ -432,6 +432,9 @@
                         var meat_percent = document.getElementById('meat_percent');
                         meat_percent.readOnly = false;
 
+                        // focus on meat percentage
+                        $('#meat_percent').focus();   
+
                         // loadMoreDetailsAjax();
                         $.ajax({
                             type: "GET",

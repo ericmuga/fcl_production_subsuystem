@@ -375,6 +375,10 @@
                                     }                                    
 
                                     $('#production_process').html(formOptions);
+
+                                    // focus on number of pieces
+                                    $('#no_of_pieces').focus();   
+
                                 },
                                 error: function (data) {
                                     var errors = data.responseJSON;
