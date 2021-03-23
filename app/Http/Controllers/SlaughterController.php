@@ -119,13 +119,18 @@ class SlaughterController extends Controller
 
     public function loadWeighMoreDataAjax(Request $request)
     {
-        $total_per_vendor = DB::table('receipts')
+        $total_per_slap = DB::table('receipts')
             ->whereDate('slaughter_date', Carbon::today())
             ->where('vendor_tag', $request->slapmark)
             ->where('item_code', $request->carcass_type)
             ->sum('receipts.received_qty');
 
-        //transcoding from livestock code carcass code to look up in the slaughter data
+        $total_per_vendor = DB::table('receipts')
+            ->whereDate('slaughter_date', Carbon::today())
+            ->where('vendor_no', $request->vendor_no)
+            ->sum('receipts.received_qty');
+
+        // transcoding from livestock code carcass code to look up in the slaughter data
         if ($request->carcass_type == "G0101") {
             // pig livestock
             $c_type = "G0110";
@@ -145,7 +150,7 @@ class SlaughterController extends Controller
             ->where('item_code', $c_type)
             ->count();
 
-        $dataArray = array('total_per_vendor' => $total_per_vendor, 'total_weighed' => $total_weighed);
+        $dataArray = array('total_per_vendor' => $total_per_vendor, 'total_per_slap' => $total_per_slap, 'total_weighed' => $total_weighed);
 
         return response()->json($dataArray);
     }

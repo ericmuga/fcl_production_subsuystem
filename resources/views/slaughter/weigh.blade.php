@@ -107,10 +107,17 @@
         </div>
         <div class="card ">
             <div class="card-body text-center">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Total Received from vendor </label>
-                    <input type="text" class="form-control" value="" name="total_by_vendor" id="total_by_vendor"
-                        placeholder="" readonly required>
+                <div class="row form-group">                    
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Total Received From Vendor </label>
+                        <input type="text" class="form-control" value="" name="delivered_per_vendor" id="delivered_per_vendor"
+                            placeholder="" readonly required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Total Received per slapmark </label>
+                        <input type="text" class="form-control" value="" name="total_by_vendor" id="total_by_vendor"
+                            placeholder="" readonly required>
+                    </div>
                 </div>
                 <div class=" row form-group">
                     <div class="col-md-6">
@@ -435,7 +442,8 @@
                         // focus on meat percentage
                         $('#meat_percent').focus();   
 
-                        // loadMoreDetailsAjax();
+                        // loadMoreDetailsAjax;
+                        var vendor_number = $('#vendor_no').val();
                         $.ajax({
                             type: "GET",
                             headers: {
@@ -444,23 +452,27 @@
                             },
                             url: "{{ url('scale-ajax-2') }}",
                             data: {
+                                'vendor_no': vendor_number,
                                 'slapmark': slapmark,
                                 'carcass_type': carcass_type,
 
                             },
                             dataType: 'JSON',
                             success: function (data) {
-                                //console.log(data);
                                 var str2 = JSON.stringify(data);
                                 var obj2 = JSON.parse(str2);
+                                
                                 $('#total_by_vendor').val(obj2
+                                    .total_per_slap);
+
+                                $('#delivered_per_vendor').val(obj2
                                     .total_per_vendor);
 
                                 $('#total_per_slap').val(obj2
                                     .total_weighed);
 
                                 $('#total_remaining').val(obj2
-                                    .total_per_vendor - obj2
+                                    .total_per_slap - obj2
                                     .total_weighed);
 
 
@@ -513,7 +525,7 @@
             var meat_percent = $('#meat_percent').val();
             var vendor_number = $('#vendor_no').val();
             var carcass_type = $('#carcass_type').val();
-            var total_received = $('#total_by_vendor').val();
+            var total_received = $('#delivered_per_vendor').val();
 
             var classification_code = document.getElementById('classification_code');
 
