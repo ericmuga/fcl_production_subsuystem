@@ -140,10 +140,12 @@ class ButcheryController extends Controller
     {
         $title = "Scale-1&2";
 
-        $configs = DB::table('scale_configs')
-            ->where('section', 'butchery')
-            ->select('scale', 'tareweight', 'comport')
-            ->get()->toArray();
+        $configs = Cache::remember('scale12_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'butchery')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
 
         $products = Cache::remember('products_scale12', now()->addMinutes(120), function () {
             return DB::table('products')
@@ -355,11 +357,13 @@ class ButcheryController extends Controller
     {
         $title = "Scale-3";
 
-        $configs = DB::table('scale_configs')
-            ->where('section', 'butchery')
-            ->where('scale', 'scale 3')
-            ->select('scale', 'tareweight', 'comport')
-            ->get()->toArray();
+        $configs = Cache::remember('scale3_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'butchery')
+                ->where('scale', 'scale 3')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
 
         $products = Cache::remember('products_scale3', now()->addMinutes(120), function () {
             return DB::table('products')
@@ -596,9 +600,13 @@ class ButcheryController extends Controller
         return view('butchery.scale_settings', compact('title', 'scale_settings', 'helpers'));
     }
 
-    public function UpdateScalesettings(Request $request)
+    public function UpdateScalesettings(Request $request, Helpers $helpers)
     {
         try {
+            // forget configs cache
+            $helpers->forgetCache('scale12_configs');
+            $helpers->forgetCache('scale3_configs');
+
             //update
             DB::table('scale_configs')
                 ->where('id', $request->item_id)

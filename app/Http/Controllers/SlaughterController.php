@@ -35,9 +35,11 @@ class SlaughterController extends Controller
             ->whereDate('created_at', Carbon::today())
             ->count();
 
-        $lined_up = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::today())
-            ->sum('receipts.received_qty');
+        $lined_up = Cache::remember('lined_up', now()->addMinutes(120), function () {
+            return DB::table('receipts')
+                ->whereDate('slaughter_date', Carbon::today())
+                ->sum('receipts.received_qty');
+        });
 
         $missing_slaps = DB::table('missing_slap_data')
             ->whereDate('created_at', Carbon::today())
@@ -71,16 +73,20 @@ class SlaughterController extends Controller
     {
         $title = "weigh";
 
-        $configs = DB::table('scale_configs')
-            ->where('scale', 'Scale 1')
-            ->where('section', 'slaughter')
-            ->select('tareweight', 'comport')
-            ->get()->toArray();
+        $configs = Cache::remember('weigh_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('scale', 'Scale 1')
+                ->where('section', 'slaughter')
+                ->select('tareweight', 'comport')
+                ->get()->toArray();
+        });
 
-        $receipts = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::today())
-            ->select('vendor_tag')
-            ->get();
+        $receipts = Cache::remember('weigh_receipts', now()->addMinutes(120), function () {
+            return DB::table('receipts')
+                ->whereDate('slaughter_date', Carbon::today())
+                ->select('vendor_tag')
+                ->get();
+        });
 
         $slaughter_data = DB::table('slaughter_data')
             ->whereDate('slaughter_data.created_at', Carbon::today())
@@ -240,14 +246,17 @@ class SlaughterController extends Controller
     {
         $title = "receipts";
 
-        $receipts = DB::table('receipts')
-            ->orderBy('created_at', 'DESC')
-            ->take(1000)
-            ->get();
+        $receipts = Cache::remember('imported_receipts', now()->addMinutes(120), function () {
+            return DB::table('receipts')
+                ->orderBy('created_at', 'DESC')
+                ->take(1000)
+                ->get();
+        });
+
         return view('slaughter.receipts', compact('title', 'receipts', 'helpers'));
     }
 
-    public function importReceipts(Request $request)
+    public function importReceipts(Request $request, Helpers $helpers)
     {
         $validator = Validator::make($request->all(), [
             'file' => 'required|mimes:csv,txt',
@@ -266,6 +275,11 @@ class SlaughterController extends Controller
 
         // upload
         $database_date = Carbon::parse($request->slaughter_date);
+
+        // forgetCache data
+        $helpers->forgetCache('lined_up');
+        $helpers->forgetCache('weigh_receipts');
+        $helpers->forgetCache('imported_receipts');
 
         //delete existing records of same slaughter date
         DB::table('receipts')->where('slaughter_date', $database_date)->delete();
@@ -336,10 +350,13 @@ class SlaughterController extends Controller
         return view('slaughter.scale_settings', compact('title', 'scale_settings', 'helpers'));
     }
 
-    public function UpdateScalesettings(Request $request)
+    public function UpdateScalesettings(Request $request, Helpers $helpers)
     {
         try {
-            //update
+            // forgetCache weigh_configs
+            $helpers->forgetCache('weigh_configs');
+
+            // update
             DB::table('scale_configs')
                 ->where('id', $request->item_id)
                 ->update([
