@@ -248,6 +248,7 @@ class SlaughterController extends Controller
 
         $receipts = Cache::remember('imported_receipts', now()->addMinutes(120), function () {
             return DB::table('receipts')
+                ->whereDate('created_at', '>=', Carbon::yesterday())
                 ->orderBy('created_at', 'DESC')
                 ->take(1000)
                 ->get();

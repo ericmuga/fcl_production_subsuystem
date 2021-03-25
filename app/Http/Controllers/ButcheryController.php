@@ -376,7 +376,7 @@ class ButcheryController extends Controller
             ->whereDate('deboned_data.created_at', Carbon::today())
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
-            ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
+            ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code')
             ->orderBy('deboned_data.created_at', 'DESC')
             ->get();
 
@@ -418,12 +418,14 @@ class ButcheryController extends Controller
             DB::table('deboned_data')
                 ->where('id', $request->item_id)
                 ->update([
+                    'item_code' => $request->edit_product,
+                    'process_code' => $request->edit_production_process,
+                    'product_type' => $request->edit_product_type2,
                     'actual_weight' => $request->edit_weight,
                     'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
                     'no_of_pieces' => $request->edit_no_pieces,
                     'updated_at' => Carbon::now(),
                 ]);
-
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();

@@ -85,7 +85,7 @@
                     <label for="exampleInputPassword1">Net</label>
                     <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01" placeholder=""
                         readonly>
-                </div>                
+                </div>
             </div>
         </div>
 
@@ -203,7 +203,11 @@
                             @foreach($deboning_data as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}" data-weight="{{ number_format($data->actual_weight, 2) }}" data-no_of_pieces="{{ $data->no_of_pieces }}" data-item="{{ $helpers->getProductName($data->item_code) }}"><a
+                                <td id="itemCodeModalShow" data-id="{{$data->id}}"
+                                    data-weight="{{ number_format($data->actual_weight, 2) }}"
+                                    data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}" data-type_id="{{ $data->type_id }}" 
+                                    data-production_process="{{ $data->process_code }}"
+                                    data-item="{{ $helpers->getProductName($data->item_code) }}"><a
                                         href="#">{{ $data->item_code }}</a> </td>
                                 <td>{{ $helpers->getProductName($data->item_code) }}</td>
                                 <td> {{ $data->product_type }}</td>
@@ -242,22 +246,53 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label>
-                    <select class="form-control" name="edit_crates" id="edit_crates" required>
-                        <option>2</option>
-                        <option>3</option>
-                        <option selected>4</option>
-                    </select>
-                </div>
+                        <label for="exampleInputPassword1">Product</label>
+                        <select class="form-control" name="edit_product" id="edit_product" required>
+                            @foreach($products as $product)
+                            <option value="{{ trim($product->code) }}" selected="selected">
+                                {{ ucwords($product->description) }} - {{ $product->code }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">No. of Crates</label>
+                            <select class="form-control" name="edit_crates" id="edit_crates" required>
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option selected>4</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">Product Type</label>
+                            <select class="form-control" name="edit_product_type2" id="edit_product_type2" selected="selected" required>
+                                <option value="1">
+                                    Main Product
+                                </option>
+                                <option value="2">
+                                    By Product
+                                </option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight" id="edit_weight" placeholder=""
-                            step="0.01" autocomplete="off" required autofocus>
+                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
+                            id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <div class="form-group">
                         <label>No. of Pieces</label>
-                        <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control" id="edit_no_pieces" value=""
-                            name="edit_no_pieces" placeholder="">
+                        <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control"
+                            id="edit_no_pieces" value="" name="edit_no_pieces" placeholder="">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Production Process</label>
+                        <select selected="selected" class="form-control" name="edit_production_process"
+                            id="edit_production_process">
+
+                        </select>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
@@ -281,22 +316,64 @@
 <script>
     $(document).ready(function () {
 
-         $("body").on("click", "#itemCodeModalShow", function (e) {
+        $("body").on("click", "#itemCodeModalShow", function (e) {
             e.preventDefault();
 
+            var code = $(this).data('code');
             var item = $(this).data('item');
             var weight = $(this).data('weight');
             var no_of_pieces = $(this).data('no_of_pieces');
             var id = $(this).data('id');
+            var process_code = $(this).data('production_process');
+            var type_id = $(this).data('type_id');
 
+            $('#edit_product').val(code);
             $('#item_name').val(item);
             $('#edit_weight').val(weight);
             $('#edit_no_pieces').val(no_of_pieces)
             $('#item_id').val(id);
+            $('#edit_production_process').val(process_code);
+            $('#edit_product_type2').val(type_id);
+
+            loadEditProductionProcesses(code);
 
             $('#itemCodeModal').modal('show');
         });
 
+        
+        $('#edit_product').change(function () {
+            var code = $('#edit_product').val();
+
+            var crates_no = $('#edit_crates').val();
+            var net_weight = $('#edit_weight').val();
+
+            var net = net_weight - (1.8 * crates_no);
+
+            getNumberOfPiecesEdit(code.trim(), net);
+            loadEditProductionProcesses(code);
+        });
+
+        $('#edit_weight').keyup(function () {
+            var code = $('#edit_product').val();
+
+            var crates_no = $('#edit_crates').val();
+            var net_weight = $('#edit_weight').val();
+
+            var net = net_weight - (1.8 * crates_no);
+
+            getNumberOfPiecesEdit(code.trim(), net);
+        });
+
+        $('#edit_crates').change(function () {
+            var code = $('#edit_product').val();
+
+            var crates_no = $('#edit_crates').val();
+            var net_weight = $('#edit_weight').val();
+
+            var net = net_weight - (1.8 * crates_no);
+
+            getNumberOfPiecesEdit(code.trim(), net);
+        });
 
         $("body").on("click", "#btn_product_type", function (a) {
             a.preventDefault();
@@ -321,7 +398,7 @@
             var code = $('#product').val();
             var product_code = code.trim();
             var product_type = document.getElementById('product_type');
-            
+
             if (product_code != '') {
                 $.ajax({
                     type: "GET",
@@ -374,7 +451,7 @@
                                         formOptions += "<option value='" +
                                             process_code + "'>" + process_name +
                                             "</option>";
-                                    }                                    
+                                    }
 
                                     $('#production_process').html(formOptions);
 
@@ -383,11 +460,11 @@
                                         var net = $('#net').val();
                                         getNumberOfPieces(product_code, net);
 
-                                    } else {                                        
+                                    } else {
                                         // focus on number of pieces                                       
-                                        $('#no_of_pieces').val(0); 
-                                        $('#no_of_pieces').select(); 
-                                    }  
+                                        $('#no_of_pieces').val(0);
+                                        $('#no_of_pieces').select();
+                                    }
 
                                 },
                                 error: function (data) {
@@ -395,7 +472,7 @@
                                     // console.log(errors);
                                     alert(
                                         'error occured when pulling production processes'
-                                        );
+                                    );
                                 }
 
                             });
@@ -424,12 +501,13 @@
 
         });
 
-        $('#production_process').change(function () {   
-            var production_process =  $('#production_process').val();
-            var val_of_pieces = $('#no_of_pieces').val(); 
-            if (production_process !== "" && val_of_pieces == 0) {                
-                $('#no_of_pieces').select();               
-            }       
+        $('#production_process').change(function () {
+            var production_process = $('#production_process').val();
+            var val_of_pieces = $('#no_of_pieces').val();
+
+            if (production_process !== "" && val_of_pieces == 0) {
+                $('#no_of_pieces').select();
+            }
         });
 
         $('#manual_weight').change(function () {
@@ -448,21 +526,101 @@
         });
     });
 
-    function getNumberOfPieces(product_code, net){
+    function loadEditProductionProcesses(code) {
+        $.ajax({
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                    .attr('content')
+            },
+            url: "{{ url('product_process_ajax') }}",
+            data: {
+                'product_code': code,
 
-        if (product_code == 'G1169' && net > 0 ) {
-            var pieces = Math.round(net)/3;
-            $('#no_of_pieces').val(Math.round(pieces));  
+            },
+            dataType: 'JSON',
+            success: function (data) {
+                // console.log(data);
+                var formOptions = "";
+                for (var key in data) {
+                    // console.log(data[key].process_code)
+                    var process_code = data[key]
+                        .process_code;
+
+                    var process_name =
+                        getProductionProcessName(
+                            process_code);
+
+                    formOptions += "<option value='" +
+                        process_code + "'>" + process_name +
+                        "</option>";
+                }
+
+                $('#edit_production_process').html(formOptions);
+
+                // get number of pieces
+                if (code == 'G1169' ||
+                    code == 'G1119' ||
+                    code == 'G1121' ||
+                    code == 'G1189') {
+                    var net = $('#net').val();
+
+                    getNumberOfPieces(code, net);
+
+                } else {
+                    // focus on number of pieces                                       
+                    $('#no_of_pieces').val(0);
+                    $('#no_of_pieces').select();
+                }
+
+            },
+            error: function (data) {
+                var errors = data.responseJSON;
+                // console.log(errors);
+                alert(
+                    'error occured when pulling production processes'
+                );
+            }
+
+        });
+    }
+
+    function getNumberOfPieces(product_code, net) {
+
+        if (product_code == 'G1169' && net > 0) {
+            var pieces = Math.round(net) / 3;
+            $('#no_of_pieces').val(Math.round(pieces));
         }
 
-        if ((product_code == 'G1119' || product_code == 'G1121') && net > 0 ) {
-            var pieces = Math.round(net)/1.8;
-            $('#no_of_pieces').val(Math.round(pieces));         
+        if ((product_code == 'G1119' || product_code == 'G1121') && net > 0) {
+            var pieces = Math.round(net) / 1.8;
+            $('#no_of_pieces').val(Math.round(pieces));
         }
 
-        if (product_code == 'G1189' && net > 0 ) {
-            var pieces = Math.round(net)/1.6;
-           $('#no_of_pieces').val(Math.round(pieces));           
+        if (product_code == 'G1189' && net > 0) {
+            var pieces = Math.round(net) / 1.6;
+            $('#no_of_pieces').val(Math.round(pieces));
+        }
+
+    }
+    function getNumberOfPiecesEdit(product_code, net) {
+
+        if (product_code == 'G1169' && net > 0) {
+            var pieces = Math.round(net) / 3;
+            $('#edit_no_pieces').val(Math.round(pieces));
+        }
+
+        else if ((product_code == 'G1119' || product_code == 'G1121') && net > 0) {
+            var pieces = Math.round(net) / 1.8;
+            $('#edit_no_pieces').val(Math.round(pieces));
+        }
+
+        else if (product_code == 'G1189' && net > 0) {
+            var pieces = Math.round(net) / 1.6;
+            $('#edit_no_pieces').val(Math.round(pieces));
+        }
+        else {
+            $('#edit_no_pieces').val(0);
         }
 
     }
@@ -556,10 +714,10 @@
         if (code != "" && net.value > 0) {
             var product_code = code.trim();
             getNumberOfPieces(product_code, net.value);
-            
+
         } else {
 
-            $('#no_of_pieces').val(0); 
+            $('#no_of_pieces').val(0);
         }
 
     }
