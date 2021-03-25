@@ -107,11 +107,11 @@
         </div>
         <div class="card ">
             <div class="card-body text-center">
-                <div class="row form-group">                    
+                <div class="row form-group">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Total Received From Vendor </label>
-                        <input type="text" class="form-control" value="" name="delivered_per_vendor" id="delivered_per_vendor"
-                            placeholder="" readonly required>
+                        <input type="text" class="form-control" value="" name="delivered_per_vendor"
+                            id="delivered_per_vendor" placeholder="" readonly required>
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Total Received per slapmark </label>
@@ -204,11 +204,17 @@
                     <div class="form-group">
                         <label for="baud">Meat %:</label>
                         <input type="number" class="form-control" id="ms_meat_pc" name="ms_meat_pc" value=""
-                            placeholder="" required>
+                            placeholder="" oninput="getClassificationCode2()" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Classification Code</label>
+                        <input type="text" class="form-control" id="ms_classification"
+                            name="ms_classification" placeholder="" readonly
+                            required>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="submit">
+                    <button class="btn btn-primary" onclick="return validateOnSubmit2()" type="submit">
                         <i class="fa fa-save"></i> Post
                     </button>
                 </div>
@@ -378,14 +384,18 @@
 
         $('#carcass_type').change(function () {
             var net = $('#net').val();
+
             loadWeighData();
             getSettlementWeight(net);
+            getClassificationCode();
 
         });
 
         $('#ms_carcass_type').change(function () {
             var net = $('#net').val();
+
             getSettlementWeight2(net);
+            getClassificationCode2();
 
         });
 
@@ -440,7 +450,7 @@
                         meat_percent.readOnly = false;
 
                         // focus on meat percentage
-                        $('#meat_percent').focus();   
+                        $('#meat_percent').focus();
 
                         // loadMoreDetailsAjax;
                         var vendor_number = $('#vendor_no').val();
@@ -461,7 +471,7 @@
                             success: function (data) {
                                 var str2 = JSON.stringify(data);
                                 var obj2 = JSON.parse(str2);
-                                
+
                                 $('#total_by_vendor').val(obj2
                                     .total_per_slap);
 
@@ -516,6 +526,15 @@
         }
     }
 
+    function validateOnSubmit2(){
+        var net = $('#net').val();
+
+        if (net == "" || net <= 0.00) {
+            alert("Please ensure you have valid netweight.");
+            return false;
+        }
+    }
+
     //classification code logic on input
     function getClassificationCode() {
         var s_weight = $('#settlement_weight').val();
@@ -538,43 +557,43 @@
 
                         if (carcass_type != "G0113" && s_weight < 40) {
                             $('#classification_code').val("RMPK SUB40");
-                        }                      
+                        }
 
-                        if ( (meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                            s_weight <= 75) ) {
+                        if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                                s_weight <= 75)) {
                             classification_code.value = "RM-CLS01";
                         }
 
-                        if ( (meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                            s_weight <= 75) ) {
+                        if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                                s_weight <= 75)) {
                             classification_code.value = "RM-CLS02";
                         }
 
                         if (carcass_type == "G0110" && (s_weight >= 56 &&
-                            s_weight <= 59) ) {
+                                s_weight <= 59)) {
                             classification_code.value = "RM-CLS02";
                         }
 
                         if (carcass_type == "G0110" && (s_weight >= 76 &&
-                            s_weight <= 85) ) {
+                                s_weight <= 85)) {
                             classification_code.value = "RM-CLS03";
                         }
 
                         if (carcass_type == "G0110" && (s_weight >= 50 &&
-                            s_weight <= 55) ) {
+                                s_weight <= 55)) {
                             classification_code.value = "RM-CLS04";
                         }
 
                         if (carcass_type == "G0110" && (s_weight >= 40 &&
-                            s_weight <= 49) ) {
+                                s_weight <= 49)) {
                             classification_code.value = "RM-CLS05";
                         }
 
-                        if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100) ) {
+                        if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100)) {
                             classification_code.value = "RM-CLS06";
                         }
 
-                        if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120) ) {
+                        if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                             classification_code.value = "RM-CLS07";
                         }
 
@@ -586,19 +605,19 @@
                             classification_code.value = "SOW-RM";
                         }
 
-                        if (carcass_type == "G0113" && (s_weight >= 5 && s_weight <= 7) ) {
+                        if (carcass_type == "G0113" && (s_weight >= 5 && s_weight <= 7)) {
                             classification_code.value = "RM-SK1";
                         }
 
-                        if (carcass_type == "G0113" && (s_weight >= 7 && s_weight < 9) ) {
+                        if (carcass_type == "G0113" && (s_weight >= 7 && s_weight < 9)) {
                             classification_code.value = "RM-SK2";
                         }
 
-                        if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 16) ) {
+                        if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 16)) {
                             classification_code.value = "RM-SK3";
                         }
 
-                        if (carcass_type == "G0113" && (s_weight >= 17 && s_weight < 20) ) {
+                        if (carcass_type == "G0113" && (s_weight >= 17 && s_weight < 20)) {
                             classification_code.value = "RM-SK4";
                         }
 
@@ -611,37 +630,38 @@
                                 classification_code.value = "PK SUB-40";
                             }
 
-                            if ( (meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                                s_weight <= 75) ) {
+                            if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+                                    60 &&
+                                    s_weight <= 75)) {
                                 classification_code.value = "CLS01";
-                            }                            
-                            
+                            }
+
                             if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                                s_weight <= 75)) {
+                                    s_weight <= 75)) {
                                 classification_code.value = "CLS02";
                             }
 
-                            if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
                                 classification_code.value = "CLS02";
                             }
-                            
-                            if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85) ) {
+
+                            if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
                                 classification_code.value = "CLS03";
                             }
-                            if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
                                 classification_code.value = "CLS04";
                             }
 
-                            if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
                                 classification_code.value = "CLS05";
                             }
 
                             if (carcass_type == "G0110" && (s_weight >= 86 &&
-                                s_weight <= 100) ) {
+                                    s_weight <= 100)) {
                                 classification_code.value = "CLS06";
                             }
 
-                            if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                                 classification_code.value = "CLS07";
                             }
 
@@ -653,11 +673,11 @@
                                 classification_code.value = "SOW-3P";
                             }
 
-                            if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8) ) {
+                            if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
                                 classification_code.value = "3P-SK4";
                             }
 
-                            if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20) ) {
+                            if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
                                 classification_code.value = "3P-SK5";
                             }
 
@@ -668,37 +688,38 @@
                                 classification_code.value = "PK SUB-40";
                             }
 
-                            if ( (meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                                s_weight <= 75) ) {
+                            if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+                                    60 &&
+                                    s_weight <= 75)) {
                                 classification_code.value = "NC-CLS01";
-                            }                            
-                            
-                            if ( (meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                                s_weight <= 75) ) {
+                            }
+
+                            if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                                    s_weight <= 75)) {
                                 classification_code.value = "NC-CLS02";
                             }
 
-                            if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
                                 classification_code.value = "NC-CLS02";
                             }
-                            
-                            if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85) ){
+
+                            if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
                                 classification_code.value = "NC-CLS03";
                             }
-                            if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
                                 classification_code.value = "NC-CLS04";
                             }
 
-                            if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
                                 classification_code.value = "NC-CLS05";
                             }
 
                             if (carcass_type == "G0110" && (s_weight >= 86 &&
-                                s_weight <= 100) ) {
+                                    s_weight <= 100)) {
                                 classification_code.value = "NC-CLS06";
                             }
 
-                            if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120) ) {
+                            if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                                 classification_code.value = "NC-CLS07";
                             }
 
@@ -710,11 +731,11 @@
                                 classification_code.value = "SOW-3P";
                             }
 
-                            if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8) ) {
+                            if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
                                 classification_code.value = "3P-SK4";
                             }
 
-                            if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20) ) {
+                            if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
                                 classification_code.value = "3P-SK5";
                             }
                         }
@@ -728,6 +749,68 @@
             }
         } else {
             alert('please take the reading first. reading is: ' + s_weight);
+        }
+    }
+
+    function getClassificationCode2() {
+        var s_weight = $('#settlement_weight').val();
+        var meat_percent = $('#ms_meat_pc').val();
+        var carcass_type = $('#ms_carcass_type').val();
+
+        if (carcass_type == "G0110" && s_weight < 40) {
+            $('#ms_classification').val("PK SUB-40");
+        }
+
+        if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                s_weight <= 75)) {
+            $('#ms_classification').val("CLS01");
+        }
+
+        if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                s_weight <= 75)) {
+            $('#ms_classification').val("CLS02");
+        }
+
+        if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
+            classification_code.value = "CLS02";
+            $('#ms_classification').val("PK SUB-40");
+        }
+
+        if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
+            $('#ms_classification').val("CLS03");
+        }
+        if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
+            classification_code.value = "CLS04";
+            $('#ms_classification').val("PK SUB-40");
+        }
+
+        if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
+            $('#ms_classification').val("CLS05");
+        }
+
+        if (carcass_type == "G0110" && (s_weight >= 86 &&
+                s_weight <= 100)) {
+            $('#ms_classification').val("CLS06");
+        }
+
+        if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+            $('#ms_classification').val("CLS07");
+        }
+
+        if (carcass_type == "G0110" && s_weight > 120) {
+            $('#ms_classification').val("CLS08");
+        }
+
+        if (carcass_type == "G0111") {
+            $('#ms_classification').val("SOW-3P");
+        }
+
+        if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
+            $('#ms_classification').val("3P-SK4");
+        }
+
+        if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
+            $('#ms_classification').val("3P-SK5");
         }
     }
 
@@ -755,7 +838,7 @@
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
             var cold_weight = 0.975 * net;
-            var settlement_int = Math.floor(cold_weight);            
+            var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
@@ -774,7 +857,7 @@
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
             var cold_weight = 0.975 * net;
-            var settlement_int = Math.floor(cold_weight);            
+            var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
@@ -798,7 +881,7 @@
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
             var cold_weight = 0.975 * net;
-            var settlement_int = Math.floor(cold_weight);            
+            var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
@@ -814,7 +897,7 @@
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
             var cold_weight = 0.975 * net;
-            var settlement_int = Math.floor(cold_weight);            
+            var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
             if (settlement_float > 0.54) {
