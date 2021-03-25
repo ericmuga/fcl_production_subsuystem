@@ -103,7 +103,7 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" id="no_of_pieces" value="" name="no_of_pieces"
+                    <input type="number" class="form-control" id="no_of_pieces" value="0" name="no_of_pieces"
                         placeholder="" required>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
@@ -256,7 +256,7 @@
                     </div>
                     <div class="form-group">
                         <label>No. of Pieces</label>
-                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_pieces" value=""
+                        <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control" id="edit_no_pieces" value=""
                             name="edit_no_pieces" placeholder="">
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
@@ -318,8 +318,10 @@
         });
 
         $('#product').change(function () {
-            var product_code = $('#product').val();
+            var code = $('#product').val();
+            var product_code = code.trim();
             var product_type = document.getElementById('product_type');
+            
             if (product_code != '') {
                 $.ajax({
                     type: "GET",
@@ -376,8 +378,15 @@
 
                                     $('#production_process').html(formOptions);
 
-                                    // focus on number of pieces
-                                    $('#no_of_pieces').focus();   
+                                    // get number of pieces
+                                    if (product_code == 'G1169' || product_code == 'G1119' || product_code == 'G1121' || product_code == 'G1189') {
+                                        getNumberOfPieces(product_code);
+
+                                    } else {                                        
+                                        // focus on number of pieces                                       
+                                        $('#no_of_pieces').val(0); 
+                                        $('#no_of_pieces').select(); 
+                                    }  
 
                                 },
                                 error: function (data) {
@@ -416,8 +425,9 @@
 
         $('#production_process').change(function () {   
             var production_process =  $('#production_process').val();
-            if (production_process !== "") {                
-                $('#no_of_pieces').focus();                
+            var val_of_pieces = $('#no_of_pieces').val(); 
+            if (production_process !== "" && val_of_pieces == 0) {                
+                $('#no_of_pieces').select();               
             }       
         });
 
@@ -436,6 +446,26 @@
 
         });
     });
+
+    function getNumberOfPieces(product_code){
+        var net = $('#net').val();
+
+        if (product_code == 'G1169' && net > 0 ) {
+            var pieces = Math.round(net)/3;
+            $('#no_of_pieces').val(Math.round(pieces));  
+        }
+
+        if ((product_code == 'G1119' || product_code == 'G1121') && net > 0 ) {
+            var pieces = Math.round(net)/1.8;
+            $('#no_of_pieces').val(Math.round(pieces));         
+        }
+
+        if (product_code == 'G1189' && net > 0 ) {
+            var pieces = Math.round(net)/1.6;
+           $('#no_of_pieces').val(Math.round(pieces));           
+        }
+
+    }
 
     function setProductCode() {
         var edit_product_type = $('#edit_product_type').val();
