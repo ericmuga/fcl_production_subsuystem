@@ -380,7 +380,8 @@
 
                                     // get number of pieces
                                     if (product_code == 'G1169' || product_code == 'G1119' || product_code == 'G1121' || product_code == 'G1189') {
-                                        getNumberOfPieces(product_code);
+                                        var net = $('#net').val();
+                                        getNumberOfPieces(product_code, net);
 
                                     } else {                                        
                                         // focus on number of pieces                                       
@@ -447,8 +448,7 @@
         });
     });
 
-    function getNumberOfPieces(product_code){
-        var net = $('#net').val();
+    function getNumberOfPieces(product_code, net){
 
         if (product_code == 'G1169' && net > 0 ) {
             var pieces = Math.round(net)/3;
@@ -549,6 +549,19 @@
         var net = document.getElementById('net');
         new_net_value = parseFloat(reading) - parseFloat(tareweight);
         net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
+
+        //get number of pieces
+        var code = $('#product').val();
+
+        if (code != "" && net.value > 0) {
+            var product_code = code.trim();
+            getNumberOfPieces(product_code, net.value);
+            
+        } else {
+
+            $('#no_of_pieces').val(0); 
+        }
+
     }
 
     function checkNetOnSubmit() {
