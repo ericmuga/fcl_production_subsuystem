@@ -318,7 +318,7 @@ class SlaughterController extends Controller
             Toastr::success('receipts uploaded successfully', 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(), 'Error while importing data. Records not saved!');
+            Toastr::error($e->getMessage(), 'Error Occurred. Wrong Data format!. Records not saved!');
             return back()
                 ->withInput();
         }
