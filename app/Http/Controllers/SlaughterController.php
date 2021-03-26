@@ -282,14 +282,46 @@ class SlaughterController extends Controller
         $helpers->forgetCache('weigh_receipts');
         $helpers->forgetCache('imported_receipts');
 
-        //delete existing records of same slaughter date
-        DB::table('receipts')->where('slaughter_date', $database_date)->delete();
+        try {
+            //code...
+            DB::transaction(function () use ($request, $helpers, $database_date) {
 
-        Session::put('slaughter_date', $database_date);
-        Excel::import(new ReceiptsImport, request()->file('file'));
+                //delete existing records of same slaughter date
+                DB::table('receipts')->where('slaughter_date', $database_date)->delete();
 
-        Toastr::success('receipts uploaded successfully', 'Success');
-        return redirect()->back();
+                $fileD = fopen($request->file, "r");
+
+                while (!feof($fileD)) {
+                    $rowData[] = fgetcsv($fileD);
+                }
+
+                foreach ($rowData as $key => $row) {
+
+                    DB::table('receipts')->insert(
+                        [
+                            'enrolment_no' => $row[0],
+                            'vendor_tag' => $row[1],
+                            'receipt_no' => $row[2],
+                            'vendor_no' => $row[3],
+                            'vendor_name' => $row[4],
+                            'receipt_date' => $row[5],
+                            'item_code' => $row[6],
+                            'description' => $row[7],
+                            'received_qty' => $row[8],
+                            'user_id' => $helpers->authenticatedUserId(),
+                            'slaughter_date' => $database_date,
+                        ]
+                    );
+                }
+            });
+
+            Toastr::success('receipts uploaded successfully', 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error while importing data. Records not saved!');
+            return back()
+                ->withInput();
+        }
     }
 
     public function slaughterDataReport(Helpers $helpers)
