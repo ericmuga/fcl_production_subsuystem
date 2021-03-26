@@ -290,6 +290,7 @@ class SlaughterController extends Controller
                 DB::table('receipts')->where('slaughter_date', $database_date)->delete();
 
                 $fileD = fopen($request->file, "r");
+                // $column = fgetcsv($fileD); // skips first row as header
 
                 while (!feof($fileD)) {
                     $rowData[] = fgetcsv($fileD);
