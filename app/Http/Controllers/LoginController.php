@@ -55,7 +55,7 @@ class LoginController extends Controller
 
         if ($res == null) {
             # no response from api service
-            Toastr::error('No response from Api service. Contact IT', 'Error!');
+            Toastr::error('No response from login Api service. Contact IT', 'Error!');
             return back();
         }
 
