@@ -141,7 +141,7 @@
                     <input type="text" class="form-control" id="classification_code" name="classification_code"
                         placeholder="" readonly required>
                 </div>
-                <div class="form-group" style="padding-top: 8%">
+                <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()" class="btn btn-primary btn-lg btn-block btn-huge"><i
                             class="fa fa-paper-plane" aria-hidden="true"></i>
                         Save</button>
