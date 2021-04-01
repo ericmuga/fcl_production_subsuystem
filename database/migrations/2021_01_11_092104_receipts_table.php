@@ -19,10 +19,10 @@ class ReceiptsTable extends Migration
             $table->string('vendor_tag', 20);
             $table->string('receipt_no', 20);
             $table->string('vendor_no', 20);
-            $table->string('vendor_name', 20);
+            $table->string('vendor_name', 50);
             $table->string('receipt_date')->nullable();
             $table->string('item_code', 20);
-            $table->string('description', 20);
+            $table->string('description');
             $table->integer('received_qty');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('slaughter_date');
