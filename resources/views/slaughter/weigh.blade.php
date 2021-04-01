@@ -367,6 +367,15 @@
             alert('please ensure you have net reading from scale');
         });
 
+        $("#reading").keyup(function (e) {
+            e.preventDefault();
+            var net = $('#net').val();
+            var meat_pc = $('#meat_percent').val();
+            if (net > 0 && meat_pc > 0) {
+                getClassificationCode();
+            }
+        });
+
         $('#manual_weight').change(function () {
             var manual_weight = document.getElementById('manual_weight');
             var reading = document.getElementById('reading');
@@ -771,63 +780,71 @@
         var meat_percent = $('#ms_meat_pc').val();
         var carcass_type = $('#ms_carcass_type').val();
 
-        if (carcass_type == "G0110" && s_weight < 40) {
-            $('#ms_classification').val("PK SUB-40");
-        }
+        if (s_weight > 0) {
 
-        else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                s_weight <= 75)) {
-            $('#ms_classification').val("CLS01");
-        }
+            if (carcass_type == "G0110" && s_weight < 40) {
+                $('#ms_classification').val("PK SUB-40");
+            }
 
-        else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                s_weight <= 75)) {
-            $('#ms_classification').val("CLS02");
-        }
+            else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+                    60 &&
+                    s_weight <= 75)) {
+                $('#ms_classification').val("CLS01");
+            }
 
-        else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
-            classification_code.value = "CLS02";
-            $('#ms_classification').val("PK SUB-40");
-        }
+            else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                    s_weight <= 75)) {
+                $('#ms_classification').val("CLS02");
+            }
 
-        else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
-            $('#ms_classification').val("CLS03");
-        }
-        else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
-            classification_code.value = "CLS04";
-            $('#ms_classification').val("PK SUB-40");
-        }
+            else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
+                $('#ms_classification').val("CLS02");
+            }
 
-        else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
-            $('#ms_classification').val("CLS05");
-        }
+            else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
+                $('#ms_classification').val("CLS03");
+            }
 
-        else if (carcass_type == "G0110" && (s_weight >= 86 &&
-                s_weight <= 100)) {
-            $('#ms_classification').val("CLS06");
-        }
+            else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
+                $('#ms_classification').val("CLS04");
+            }
 
-        else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
-            $('#ms_classification').val("CLS07");
-        }
+            else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
+                $('#ms_classification').val("CLS05");
+            }
 
-        else if (carcass_type == "G0110" && s_weight > 120) {
-            $('#ms_classification').val("CLS08");
-        }
+            else if (carcass_type == "G0110" && (s_weight >= 86 &&
+                    s_weight <= 100)) {
+                $('#ms_classification').val("CLS06");
+            }
 
-        else if (carcass_type == "G0111") {
-            $('#ms_classification').val("SOW-3P");
-        }
+            else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+                $('#ms_classification').val("CLS07");
+            }
 
-        else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
-            $('#ms_classification').val("3P-SK4");
-        }
+            else if (carcass_type == "G0110" && s_weight > 120) {
+                classification_code.value = "CLS08";
+                $('#ms_classification').val("PK SUB-40");
+            }
 
-        else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
-            $('#ms_classification').val("3P-SK5");
-        }
-        
-        else {
+            else if (carcass_type == "G0111") {
+                $('#ms_classification').val("SOW-3P");
+            }
+
+            else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
+                $('#ms_classification').val("3P-SK4");
+            }
+
+            else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
+                $('#ms_classification').val("3P-SK5");
+            }
+
+            else {
+                $('#ms_classification').val("");
+            }
+            
+        } else {
+            alert('Please get scale reading. current settlement is: '+ s_weight);
             $('#ms_classification').val("");
         }
     }
