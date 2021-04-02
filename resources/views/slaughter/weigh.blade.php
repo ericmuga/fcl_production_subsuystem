@@ -865,6 +865,7 @@
     }
 
     function getSettlementWeight(net) {
+        console.log(Math.round(net));
         var carcass_type = $('#carcass_type').val();
 
         if (carcass_type == 'G0113') {
@@ -872,7 +873,7 @@
             var settlement_weight = document.getElementById('settlement_weight');
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var cold_weight = 0.975 * net;
+            var cold_weight = 0.975 * Math.round(net);
             var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
@@ -891,7 +892,7 @@
             var settlement_weight = document.getElementById('settlement_weight');
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var cold_weight = 0.975 * net;
+            var cold_weight = 0.975 * Math.round(net);
             var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
@@ -915,7 +916,7 @@
             //suckling calculation
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var cold_weight = 0.975 * net;
+            var cold_weight = 0.975 * Math.round(net);
             var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
@@ -931,7 +932,7 @@
             // baconers, sows calculations
             var missing_slap_settlement = document.getElementById('ms_settlement_weight');
 
-            var cold_weight = 0.975 * net;
+            var cold_weight = 0.975 * Math.round(net);
             var settlement_int = Math.floor(cold_weight);
             var settlement_float = (cold_weight) % 1;
 
