@@ -865,7 +865,6 @@
     }
 
     function getSettlementWeight(net) {
-        console.log(Math.round(net));
         var carcass_type = $('#carcass_type').val();
 
         if (carcass_type == 'G0113') {
