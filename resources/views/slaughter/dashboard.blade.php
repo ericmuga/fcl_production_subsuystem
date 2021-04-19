@@ -5,7 +5,7 @@
     <div class="row mb-2">
         <div class="col-sm-12">
             {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
-            <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> showing today's numbers| Date:
+            <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> showing today's numbers | Date:
                         <code> {{ $helpers->dateToHumanFormat($date) }}</code></small>
         </div><!-- /.col -->
     </div><!-- /.row -->
