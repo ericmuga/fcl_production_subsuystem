@@ -538,9 +538,10 @@
 
     function validateOnSubmit2(){
         var net = $('#net').val();
+        var carcass_type = $('#ms_carcass_type').val();
 
-        if (net == "" || net <= 0.00) {
-            alert("Please ensure you have valid netweight.");
+        if (carcass_type != 'G0113' && !(net > 20 && net <= 200) ) {
+            alert("Please ensure you have valid netweight of range 20-200kgs .");
             return false;
         }
     }
