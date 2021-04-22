@@ -521,11 +521,12 @@
     function validateOnSubmit() {
         var net = $('#net').val();
         var slapmark = $('#slapmark').val();
+        var carcass_type = $('#carcass_type').val();
         var total_by_vendor = $('#total_by_vendor').val();
         var total_per_slap = $('#total_per_slap').val();
 
-        if (net == "" || net <= 0.00) {
-            alert("Please ensure you have valid netweight.");
+        if (carcass_type != 'G0113' && !(net > 20 && net <= 200) ) {
+            alert("Please ensure you have valid netweight of range 20-200kgs .");
             return false;
         }
 
