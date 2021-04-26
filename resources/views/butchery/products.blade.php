@@ -15,7 +15,7 @@
             <div class="col-lg-8" style="margin: 0 auto; float: none;">
                 <div class="card mb-3">
                     <div class="card-header">
-                        <i class="fa fa-users"></i>
+                        <i class="fa fa-plus"></i>
                         Add/Update Product</div>
                     <form action="{{ route('butchery_add_product') }}" method="post" id="add-branch-form">
                         @csrf
@@ -35,6 +35,12 @@
                                 <label for="role_name">Product Name:</label>
                                 <input autocomplete="off" type="text" class="form-control" id="product" name="product"
                                     value="{{ old('product') }}" required>
+
+                                @error('product')
+                                <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                                </div>
+                                @enderror
+
                             </div>
                             <div class="form-group">
                                 <label for="role_name">Product Type:</label>
@@ -49,6 +55,12 @@
                                 <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)" name="production_process[]" id="production_process">
 
                                 </select>
+
+                                @error('production_process')
+                                <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                                </div>
+                                @enderror
+
                             </div>
                         </div>
                         <div class="card-footer ">
@@ -80,6 +92,7 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
+                            <th>Product Type</th>
                             <th>Production Process(es)</th>
                         </tr>
                     </thead>
@@ -88,6 +101,7 @@
                             <th>#</th>
                             <th>Product Code</th>
                             <th>Product Name</th>
+                            <th>Product Type</th>
                             <th>Production Process(es)</th>
                         </tr>
                     </tfoot>
@@ -97,6 +111,12 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $data->code }}</td>
                             <td>{{ $data->description }}</td>
+                            @if ($data->product_type == 1)
+                                <td> Main Product</td>
+                            @else
+                                <td> By Product</td>
+                            @endif
+                            
                             <td> @foreach ($helpers->getProductProcesses($data->id) as $process)
                                 <span class="badge badge-info">{{ $process }}</span>
 
@@ -121,6 +141,9 @@
         // $('#myModal').modal('show');
         $('#add_product').toggle('collapse');
 
+        // pull production processes
+        loadProductProcesses();
+
     });
 
 </script>
@@ -129,6 +152,8 @@
 <script>
     function isCollapsed() {
         $('#add_product').toggle('collapse');
+
+        $('#code').focus();
 
         var isExpanded = $(".add_product").toggle($("#add_product").is(':visible'));
         if (isExpanded) {

@@ -569,9 +569,8 @@ class ButcheryController extends Controller
 
     public function addProduct(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'code' => 'required',
+            'production_process' => 'required',
         ]);
 
         if ($validator->fails()) {
