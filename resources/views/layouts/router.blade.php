@@ -79,7 +79,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="container-fluid">
                         <div class="card-deck-wrapper">
                             <div class="card-deck">
-                                <div class="card p-2 bg-info" style="height: 200px">
+                                <div class="card p-2 bg-info" style="height: 250px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('slaughter_dashboard') }}">
                                         <h4 class="card-title">Slaughter</h4>
@@ -87,7 +87,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                 </div>
-                                <div class="card p-2 bg-warning" style="height: 200">
+                                <div class="card p-2 bg-warning" style="height: 250px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('butchery_dashboard') }}">
                                         <h4 class="card-title">Butchery</h4>
@@ -95,7 +95,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                 </div>
-                                <div class="card p-2 bg-success" style="height: 200px">
+                                <div class="card p-2 bg-success" style="height: 250px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                                         href="{{ route('admin_dashboard') }}">
                                         <h4 class="card-title">Admin</h4>

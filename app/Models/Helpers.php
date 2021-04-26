@@ -212,7 +212,7 @@ class Helpers
             // try save
             DB::table('users')->insert([
                 'username' => $username,
-                'email' => strtolower($username) . "@farmerschoice.com",
+                'email' => strtolower($username) . "@farmerschoice.co.ke",
                 'section' => 'user',
             ]);
             return 1;
