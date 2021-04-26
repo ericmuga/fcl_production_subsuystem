@@ -365,9 +365,8 @@ class ButcheryController extends Controller
                 ->get()->toArray();
         });
 
-        $products = Cache::remember('products_scale3', now()->addMinutes(120), function () {
+        $products = Cache::remember('all_products_scale3', now()->addMinutes(120), function () {
             return DB::table('products')
-                ->where('id', '>', 6)
                 ->select('code', 'description')
                 ->get();
         });
@@ -468,6 +467,15 @@ class ButcheryController extends Controller
         return view('butchery.products', compact('title', 'products', 'helpers'));
     }
 
+    public function loadProductionProcesses(Request $request)
+    {
+        $processes = DB::table('processes')
+            ->select('process_code', 'process')
+            ->get();
+
+        return response()->json($processes);
+    }
+
     public function weighSplitting(Helpers $helpers)
     {
         $title = "Splitting-weights";
@@ -561,8 +569,9 @@ class ButcheryController extends Controller
 
     public function addProduct(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
-            'code' => 'required|unique:products,code',
+            'code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -577,17 +586,53 @@ class ButcheryController extends Controller
                 ->withErrors($validator);
         }
 
-        $product = Product::create([
-            'code' => $request->code,
-            'description' => $request->product,
-            'product_type' => $request->product_type,
-            'input_type' => $request->input_type,
-            'often' => $request->often,
-            'user_id' => $helpers->authenticatedUserId(),
+        try {
+            # insert/update record
 
-        ]);
 
-        Toastr::success("product {$request->product} inserted successfully", 'Success');
+            DB::transaction(function () use ($request) {
+
+                $product = Product::updateOrCreate(
+                    [
+
+                        'code' => strtoupper(str_replace(' ', '', $request->code)),
+                    ],
+                    [
+                        'description' => $request->product,
+                        'unit_of_measure' => 'KG',
+                        'product_type' => $request->product_type,
+                        'updated_at' => now(),
+                    ]
+                );
+
+                // delete existing processes of same product
+                DB::table('product_processes')->where('product_id', $product->id)->delete();
+
+                // insert production processes
+                foreach ($request->production_process as $key => $process_code) {
+
+                    DB::table('product_processes')->insert(
+                        [
+                            'product_id' => $product->id,
+                            'process_code' => $process_code,
+                        ]
+                    );
+                }
+            });
+
+            $helpers->forgetCache('products_list');
+
+            Toastr::success('record inserted successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput()
+                ->with('input_errors', 'add_product');
+        }
+
+        Toastr::success("product {$request->product} added/updated successfully", 'Success');
         return redirect()->back();
     }
 

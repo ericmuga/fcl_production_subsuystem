@@ -2,10 +2,11 @@
 
 @section('content')
 
-{{-- <div class="div">
-    <button class="btn btn-primary " data-toggle="collapse" data-target="#add_product"><i class="fa fa-plus"></i> Add
-        New Product</button> <br> <br>
-</div> --}}
+<div class="div">
+    <button class="btn btn-primary add_product"  onclick="isCollapsed()"
+        ><i class="fa fa-plus"></i> Add/Update
+        Product</button> <br> <br>
+</div>
 
 <!-- create product-->
 <div id="add_product" class="collapse">
@@ -15,10 +16,10 @@
                 <div class="card mb-3">
                     <div class="card-header">
                         <i class="fa fa-users"></i>
-                        Add Product</div>
-                    <div class="card-body">
-                        <form action="{{ route('butchery_add_product') }}" method="post" id="add-branch-form">
-                            @csrf
+                        Add/Update Product</div>
+                    <form action="{{ route('butchery_add_product') }}" method="post" id="add-branch-form">
+                        @csrf
+                        <div class="card-body">
                             <div class="form-group">
                                 <label for="role_name">Item Code:</label>
                                 <input autocomplete="off" type="text" class="form-control" id="code" name="code"
@@ -39,34 +40,23 @@
                                 <label for="role_name">Product Type:</label>
                                 <select name="product_type" id="product_type" class="form-control" required autofocus>
                                     <option value="" selected disabled>Choose One</option>
-                                    <option value="Main Product">Main Product</option>
-                                    <option value="By Product">By Product</option>
-                                    <option value="Intake">Intake</option>
+                                    <option value="1">Main Product</option>
+                                    <option value="2">By Product</option>
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label for="role_name">Input Type:</label>
-                                <input autocomplete="off" type="text" class="form-control" id="input_type"
-                                    name="input_type" value="{{ old('product') }}" placeholder="eg. sow, baconer, leg "
-                                    required>
-                            </div>
-                            <div class="form-group">
-                                <label for="role_name"> Often used:</label>
-                                <select name="often" id="often" class="form-control" required autofocus>
-                                    <option value="" selected disabled>Choose One</option>
-                                    <option value="Yes">Yes </option>
-                                    <option value="No">No </option>
-                                </select>
-                            </div>
-                            <br>
-                            <div>
-                                <button type="submit" class="btn btn-primary btn-lg float-right"><i
-                                        class="fa fa-paper-plane" aria-hidden="true"></i> Save
-                                </button>
-                            </div>
+                                <label for="role_name">Production Process: <code>**select all applicable</code></label>
+                                <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)" name="production_process[]" id="production_process">
 
-                        </form>
-                    </div>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="card-footer ">
+                            <button type="submit" class="btn btn-primary btn-lg float-right"><i
+                                    class="fa fa-paper-plane" aria-hidden="true"></i> Add/Update
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -135,4 +125,54 @@
 
 </script>
 @endif
+
+<script>
+    function isCollapsed() {
+        $('#add_product').toggle('collapse');
+
+        var isExpanded = $(".add_product").toggle($("#add_product").is(':visible'));
+        if (isExpanded) {
+
+            // pull production processes
+            loadProductProcesses();
+        }
+    }
+
+    function loadProductProcesses() {
+        $.ajax({
+            type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                    .attr('content')
+            },
+            url: "{{ url('products/processes_ajax') }}",
+            dataType: 'JSON',
+            success: function (data) {
+                // console.log(data);
+                var formOptions = "";
+                for (var key in data) {
+                    var process_code = data[key].process_code;
+
+                    var process_name = data[key].process;
+
+                    formOptions += "<option value='" +
+                        process_code + "'>" + process_name +
+                        "</option>";
+                }
+
+                $('#production_process').html(formOptions);
+                
+            },
+            error: function (data) {
+                var errors = data.responseJSON;
+                // console.log(errors);
+                alert(
+                    'error occured when pulling production processes'
+                );
+            }
+
+        });
+    }
+
+</script>
 @endsection
