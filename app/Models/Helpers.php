@@ -128,7 +128,7 @@ class Helpers
             CURLOPT_URL => $full_url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
-            CURLOPT_TIMEOUT => 30000,
+            CURLOPT_TIMEOUT => 5,   // time is in seconds 
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
@@ -152,7 +152,7 @@ class Helpers
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
-            CURLOPT_TIMEOUT => 30000,
+            CURLOPT_TIMEOUT => 5,   // time is in seconds 
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => array(
@@ -191,7 +191,7 @@ class Helpers
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_ENCODING => "",
-            CURLOPT_TIMEOUT => 30000,
+            CURLOPT_TIMEOUT => 5,   // time is in seconds 
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
             CURLOPT_POSTFIELDS => $post_data,
