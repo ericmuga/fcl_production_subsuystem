@@ -525,7 +525,7 @@
         var total_by_vendor = $('#total_by_vendor').val();
         var total_per_slap = $('#total_per_slap').val();
 
-        if (carcass_type != 'G0113' && !(net > 20 && net <= 200) ) {
+        if (carcass_type != 'G0113' && !(net > 20 && net <= 250) ) {
             alert("Please ensure you have valid netweight of range 20-200kgs .");
             return false;
         }
@@ -540,7 +540,7 @@
         var net = $('#net').val();
         var carcass_type = $('#ms_carcass_type').val();
 
-        if (carcass_type != 'G0113' && !(net > 20 && net <= 200) ) {
+        if (carcass_type != 'G0113' && !(net > 20 && net <= 250) ) {
             alert("Please ensure you have valid netweight of range 20-200kgs .");
             return false;
         }
