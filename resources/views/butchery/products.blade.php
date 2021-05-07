@@ -2,7 +2,7 @@
 
 @section('content')
 
-@if( Session::get('session_userName') == 'Ekaranja' ||Session::get('session_userName') == 'LNgotho' || Session::get('session_userName') == 'Mchepkemoi' )
+@if( Session::get('session_userName') == 'EKaranja' ||Session::get('session_userName') == 'LNgotho' || Session::get('session_userName') == 'Mchepkemoi' )
 <div class="div">
     <button class="btn btn-primary add_product"  onclick="isCollapsed()"
         ><i class="fa fa-plus"></i> Add/Update
