@@ -21,7 +21,7 @@ class BeheadedCombinedExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code', 'Carcass Type', 'No. of Carcasses', 'Total Net Weight', 'Date'
+                'Item Code', 'Carcass Type', 'No. of Carcasses', 'Total Net Weight'
             ];
     }
 }

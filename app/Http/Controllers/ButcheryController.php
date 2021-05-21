@@ -699,8 +699,8 @@ class ButcheryController extends Controller
         $beheading_combined = DB::table('beheading_data')
             ->whereDate('beheading_data.created_at', Carbon::parse($request->date))
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
-            ->select('beheading_data.item_code', 'products.description AS Carcass', DB::raw('SUM(beheading_data.no_of_carcass) as total_carcasses'), DB::raw('SUM(beheading_data.net_weight) as total_net'), 'beheading_data.created_at')
-            ->groupBy('beheading_data.item_code', 'products.description', 'beheading_data.created_at')
+            ->select('beheading_data.item_code', 'products.description AS Carcass', DB::raw('SUM(beheading_data.no_of_carcass) as total_carcasses'), DB::raw('SUM(beheading_data.net_weight) as total_net'))
+            ->groupBy('beheading_data.item_code', 'products.description')
             ->get();
 
         $exports = Session::put('session_export_data', $beheading_combined);
@@ -727,8 +727,8 @@ class ButcheryController extends Controller
         $butchery_combined = DB::table('butchery_data')
             ->whereDate('butchery_data.created_at', Carbon::parse($request->date))
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
-            ->select('butchery_data.item_code', 'products.description AS product_type', DB::raw('SUM(butchery_data.net_weight)'), 'butchery_data.created_at')
-            ->groupBy('butchery_data.item_code', 'products.description', 'butchery_data.created_at')
+            ->select('butchery_data.item_code', 'products.description AS product_type', DB::raw('SUM(butchery_data.net_weight)'))
+            ->groupBy('butchery_data.item_code', 'products.description')
             ->get();
 
         $exports = Session::put('session_export_data', $butchery_combined);
@@ -757,8 +757,8 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
-            ->select('deboned_data.item_code', 'products.description AS product', 'product_types.description', 'processes.process', DB::raw('SUM(deboned_data.no_of_pieces) AS no_of_pieces'), DB::raw('SUM(deboned_data.net_weight) AS net_weight'), 'deboned_data.created_at')
-            ->groupBy('deboned_data.item_code', 'products.description', 'product_types.description', 'processes.process', 'deboned_data.created_at')
+            ->select('deboned_data.item_code', 'products.description AS product', 'product_types.description', 'processes.process', DB::raw('SUM(deboned_data.no_of_pieces) AS no_of_pieces'), DB::raw('SUM(deboned_data.net_weight) AS net_weight'))
+            ->groupBy('deboned_data.item_code', 'products.description', 'product_types.description', 'processes.process')
             ->get();
 
         $exports = Session::put('session_export_data', $deboned_combined);

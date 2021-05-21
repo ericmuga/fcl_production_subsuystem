@@ -21,7 +21,7 @@ class BreakingCombinedExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code', 'Product ', 'Total Net Weight', 'Date'
+                'Item Code', 'Product ', 'Total Net Weight'
             ];
     }
 }
