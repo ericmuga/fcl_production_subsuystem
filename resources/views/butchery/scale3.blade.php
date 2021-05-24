@@ -20,12 +20,12 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="exampleInputPassword1"> Product Name</label>
+                            <label for="exampleInputPassword1"> Product ShortCode</label>
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
                                 <option value="{{ $product->code }}">
-                                    {{ ucwords($product->description) }} - {{ $product->code }}
+                                    {{ substr($product->code, strpos($product->code, "G") + 1) . $product->shortcode }}
                                 </option>
                                 @endforeach
                             </select>
@@ -44,14 +44,6 @@
                             data-toggle="modal" disabled>
                             <strong>Edit?</strong>
                         </button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="form-group" id="product_type_select">
-                        <label for="exampleInputPassword1">Production Process</label>
-                        <select class="form-control" name="production_process" id="production_process">
-
-                        </select>
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
@@ -172,54 +164,57 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example1" class="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Code </th>
-                                <th>product </th>
-                                <th>Product Type</th>
-                                <th>Production Process</th>
-                                <th>Scale Weight(kgs)</th>
-                                <th>Net Weight(kgs)</th>
-                                <th>No. of Pieces</th>
-                                <th>Date </th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Code </th>
-                                <th>product </th>
-                                <th>Product Type</th>
-                                <th>Production Process</th>
-                                <th>Scale Weight(kgs)</th>
-                                <th>Net Weight(kgs)</th>
-                                <th>No. of Pieces</th>
-                                <th>Date </th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($deboning_data as $data)
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}"
-                                    data-weight="{{ number_format($data->actual_weight, 2) }}"
-                                    data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}" data-type_id="{{ $data->type_id }}" 
-                                    data-production_process="{{ $data->process_code }}"
-                                    data-item="{{ $helpers->getProductName($data->item_code) }}"><a
-                                        href="#">{{ $data->item_code }}</a> </td>
-                                <td>{{ $helpers->getProductName($data->item_code) }}</td>
-                                <td> {{ $data->product_type }}</td>
-                                <td> {{ $data->process }}</td>
-                                <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                <td> {{ number_format($data->net_weight, 2) }}</td>
-                                <td> {{ $data->no_of_pieces }}</td>
-                                <td> {{ $data->created_at }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="example1" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Code </th>
+                                    <th>product </th>
+                                    <th>Product Type</th>
+                                    <th>Production Process</th>
+                                    <th>Scale Weight(kgs)</th>
+                                    <th>Net Weight(kgs)</th>
+                                    <th>No. of Pieces</th>
+                                    <th>Date </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Code </th>
+                                    <th>product </th>
+                                    <th>Product Type</th>
+                                    <th>Production Process</th>
+                                    <th>Scale Weight(kgs)</th>
+                                    <th>Net Weight(kgs)</th>
+                                    <th>No. of Pieces</th>
+                                    <th>Date </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($deboning_data as $data)
+                                <tr>
+                                    <td>{{ $i++ }}</td>
+                                    <td id="itemCodeModalShow" data-id="{{$data->id}}"
+                                        data-weight="{{ number_format($data->actual_weight, 2) }}"
+                                        data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}"
+                                        data-type_id="{{ $data->type_id }}"
+                                        data-production_process="{{ $data->process_code }}"
+                                        data-item="{{ $helpers->getProductName($data->item_code) }}"><a
+                                            href="#">{{ $data->item_code }}</a> </td>
+                                    <td>{{ $helpers->getProductName($data->item_code) }}</td>
+                                    <td> {{ $data->product_type }}</td>
+                                    <td> {{ $data->process }}</td>
+                                    <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                    <td> {{ number_format($data->net_weight, 2) }}</td>
+                                    <td> {{ $data->no_of_pieces }}</td>
+                                    <td> {{ $data->created_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -267,7 +262,8 @@
                         </div>
                         <div class="col-md-6">
                             <label for="exampleInputPassword1">Product Type</label>
-                            <select class="form-control" name="edit_product_type2" id="edit_product_type2" selected="selected" required>
+                            <select class="form-control" name="edit_product_type2" id="edit_product_type2"
+                                selected="selected" required>
                                 <option value="1">
                                     Main Product
                                 </option>
@@ -340,7 +336,7 @@
             $('#itemCodeModal').modal('show');
         });
 
-        
+
         $('#edit_product').change(function () {
             var code = $('#edit_product').val();
 
@@ -423,59 +419,17 @@
                                 $('#product_type').val("By Product");
                             }
 
-                            // on product type success, get process types
-                            $.ajax({
-                                type: "GET",
-                                headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                                        .attr('content')
-                                },
-                                url: "{{ url('product_process_ajax') }}",
-                                data: {
-                                    'product_code': product_code,
+                            // get number of pieces
+                            if (product_code == 'G1169' || product_code == 'G1119' ||
+                                product_code == 'G1121' || product_code == 'G1189') {
+                                var net = $('#net').val();
+                                getNumberOfPieces(product_code, net);
 
-                                },
-                                dataType: 'JSON',
-                                success: function (data) {
-                                    // console.log(data);
-                                    var formOptions = "";
-                                    for (var key in data) {
-                                        // console.log(data[key].process_code)
-                                        var process_code = data[key]
-                                            .process_code;
-
-                                        var process_name =
-                                            getProductionProcessName(
-                                                process_code);
-
-                                        formOptions += "<option value='" +
-                                            process_code + "'>" + process_name +
-                                            "</option>";
-                                    }
-
-                                    $('#production_process').html(formOptions);
-
-                                    // get number of pieces
-                                    if (product_code == 'G1169' || product_code == 'G1119' || product_code == 'G1121' || product_code == 'G1189') {
-                                        var net = $('#net').val();
-                                        getNumberOfPieces(product_code, net);
-
-                                    } else {
-                                        // focus on number of pieces                                       
-                                        $('#no_of_pieces').val(0);
-                                        $('#no_of_pieces').select();
-                                    }
-
-                                },
-                                error: function (data) {
-                                    var errors = data.responseJSON;
-                                    // console.log(errors);
-                                    alert(
-                                        'error occured when pulling production processes'
-                                    );
-                                }
-
-                            });
+                            } else {
+                                // focus on number of pieces                                       
+                                $('#no_of_pieces').val(0);
+                                $('#no_of_pieces').select();
+                            }
 
                         }
                     },
@@ -603,23 +557,19 @@
         }
 
     }
+
     function getNumberOfPiecesEdit(product_code, net) {
 
         if (product_code == 'G1169' && net > 0) {
             var pieces = Math.round(net) / 3;
             $('#edit_no_pieces').val(Math.round(pieces));
-        }
-
-        else if ((product_code == 'G1119' || product_code == 'G1121') && net > 0) {
+        } else if ((product_code == 'G1119' || product_code == 'G1121') && net > 0) {
             var pieces = Math.round(net) / 1.8;
             $('#edit_no_pieces').val(Math.round(pieces));
-        }
-
-        else if (product_code == 'G1189' && net > 0) {
+        } else if (product_code == 'G1189' && net > 0) {
             var pieces = Math.round(net) / 1.6;
             $('#edit_no_pieces').val(Math.round(pieces));
-        }
-        else {
+        } else {
             $('#edit_no_pieces').val(0);
         }
 

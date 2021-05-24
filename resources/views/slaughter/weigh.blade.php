@@ -142,8 +142,9 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
-                    <button type="submit" onclick="return validateOnSubmit()" class="btn btn-primary btn-lg btn-block btn-huge"><i
-                            class="fa fa-paper-plane" aria-hidden="true"></i>
+                    <button type="submit" onclick="return validateOnSubmit()"
+                        class="btn btn-primary btn-lg btn-block btn-huge"><i class="fa fa-paper-plane"
+                            aria-hidden="true"></i>
                         Save</button>
                 </div>
             </div>
@@ -208,9 +209,8 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Classification Code</label>
-                        <input type="text" class="form-control" id="ms_classification"
-                            name="ms_classification" placeholder="" readonly
-                            required>
+                        <input type="text" class="form-control" id="ms_classification" name="ms_classification"
+                            placeholder="" readonly required>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -245,49 +245,51 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Receipt No.</th>
-                                <th>Slapmark </th>
-                                <th> Code</th>
-                                <th> Type</th>
-                                <th> weight(kgs)</th>
-                                <th>Meat %</th>
-                                <th>Classification</th>
-                                <th>Slaughter Date</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Receipt No.</th>
-                                <th>Slapmark </th>
-                                <th> Code</th>
-                                <th> Type</th>
-                                <th> weight (kgs)</th>
-                                <th>Meat %</th>
-                                <th>Classification</th>
-                                <th>Slaughter Date</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($slaughter_data as $data)
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td>{{ $data->receipt_no }}</td>
-                                <td>{{ $data->slapmark }}</td>
-                                <td>{{ $data->item_code }}</td>
-                                <td>{{ $data->description }}</td>
-                                <td>{{ number_format($data->actual_weight, 2) }}</td>
-                                <td>{{ $data->meat_percent }}</td>
-                                <td>{{ $data->classification_code }}</td>
-                                <td>{{ $data->created_at }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Receipt No.</th>
+                                    <th>Slapmark </th>
+                                    <th> Code</th>
+                                    <th> Type</th>
+                                    <th> weight(kgs)</th>
+                                    <th>Meat %</th>
+                                    <th>Classification</th>
+                                    <th>Slaughter Date</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Receipt No.</th>
+                                    <th>Slapmark </th>
+                                    <th> Code</th>
+                                    <th> Type</th>
+                                    <th> weight (kgs)</th>
+                                    <th>Meat %</th>
+                                    <th>Classification</th>
+                                    <th>Slaughter Date</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($slaughter_data as $data)
+                                <tr>
+                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $data->receipt_no }}</td>
+                                    <td>{{ $data->slapmark }}</td>
+                                    <td>{{ $data->item_code }}</td>
+                                    <td>{{ $data->description }}</td>
+                                    <td>{{ number_format($data->actual_weight, 2) }}</td>
+                                    <td>{{ $data->meat_percent }}</td>
+                                    <td>{{ $data->classification_code }}</td>
+                                    <td>{{ $data->created_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -306,46 +308,48 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example2" class="table table-striped table-bordered table-hover table-responsive">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Slapmark</th>
-                                <th> Code</th>
-                                <th> Type</th>
-                                <th> Weight(kgs)</th>
-                                <th>Meat % </th>
-                                <th>Classification </th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Slapmark</th>
-                                <th> Code</th>
-                                <th> Type</th>
-                                <th> Weight(kgs)</th>
-                                <th>Meat % </th>
-                                <th>Classification </th>
-                                <th>Date</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($slaps as $data)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->slapmark }}</td>
-                                <td>{{ $data->item_code }}</td>
-                                <td>{{ $data->description }}</td>
-                                <td>{{ number_format($data->actual_weight, 2) }}</td>
-                                <td>{{ $data->meat_percent }}</td>
-                                <td>{{ $data->classification_code }}</td>
-                                <td>{{ $data->created_at }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="example2" class="table table-striped table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Slapmark</th>
+                                    <th> Code</th>
+                                    <th> Type</th>
+                                    <th> Weight(kgs)</th>
+                                    <th>Meat % </th>
+                                    <th>Classification </th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Slapmark</th>
+                                    <th> Code</th>
+                                    <th> Type</th>
+                                    <th> Weight(kgs)</th>
+                                    <th>Meat % </th>
+                                    <th>Classification </th>
+                                    <th>Date</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($slaps as $data)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $data->slapmark }}</td>
+                                    <td>{{ $data->item_code }}</td>
+                                    <td>{{ $data->description }}</td>
+                                    <td>{{ number_format($data->actual_weight, 2) }}</td>
+                                    <td>{{ $data->meat_percent }}</td>
+                                    <td>{{ $data->classification_code }}</td>
+                                    <td>{{ $data->created_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -525,7 +529,7 @@
         var total_by_vendor = $('#total_by_vendor').val();
         var total_per_slap = $('#total_per_slap').val();
 
-        if (carcass_type != 'G0113' && !(net > 15 && net <= 250) ) {
+        if (carcass_type != 'G0113' && !(net > 15 && net <= 250)) {
             alert("Please ensure you have valid netweight of range 15-250kgs .");
             return false;
         }
@@ -536,11 +540,11 @@
         }
     }
 
-    function validateOnSubmit2(){
+    function validateOnSubmit2() {
         var net = $('#net').val();
         var carcass_type = $('#ms_carcass_type').val();
 
-        if (carcass_type != 'G0113' && !(net > 20 && net <= 250) ) {
+        if (carcass_type != 'G0113' && !(net > 20 && net <= 250)) {
             alert("Please ensure you have valid netweight of range 20-200kgs .");
             return false;
         }
@@ -568,70 +572,43 @@
 
                         if (carcass_type != "G0113" && s_weight < 40) {
                             $('#classification_code').val("RMPK SUB40");
-                        }
-
-                        else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                        } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+                                60 &&
                                 s_weight <= 75)) {
                             classification_code.value = "RM-CLS01";
-                        }
-
-                        else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                        } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >=
+                                60 &&
                                 s_weight <= 75)) {
                             classification_code.value = "RM-CLS02";
-                        }
-
-                        else if (carcass_type == "G0110" && (s_weight >= 56 &&
+                        } else if (carcass_type == "G0110" && (s_weight >= 56 &&
                                 s_weight <= 59)) {
                             classification_code.value = "RM-CLS02";
-                        }
-
-                        else if (carcass_type == "G0110" && (s_weight >= 76 &&
+                        } else if (carcass_type == "G0110" && (s_weight >= 76 &&
                                 s_weight <= 85)) {
                             classification_code.value = "RM-CLS03";
-                        }
-
-                        else if (carcass_type == "G0110" && (s_weight >= 50 &&
+                        } else if (carcass_type == "G0110" && (s_weight >= 50 &&
                                 s_weight <= 55)) {
                             classification_code.value = "RM-CLS04";
-                        }
-
-                        else if (carcass_type == "G0110" && (s_weight >= 40 &&
+                        } else if (carcass_type == "G0110" && (s_weight >= 40 &&
                                 s_weight <= 49)) {
                             classification_code.value = "RM-CLS05";
-                        }
-
-                        else if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100)) {
+                        } else if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100)) {
                             classification_code.value = "RM-CLS06";
-                        }
-
-                        else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+                        } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                             classification_code.value = "RM-CLS07";
-                        }
-
-                        else if (carcass_type == "G0110" && s_weight > 120) {
+                        } else if (carcass_type == "G0110" && s_weight > 120) {
                             classification_code.value = "RM-CLS08";
-                        }
-
-                        else if (carcass_type == "G0111") {
+                        } else if (carcass_type == "G0111") {
                             classification_code.value = "SOW-RM";
-                        }
-
-                        else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight <= 7)) {
+                        } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight <= 7)) {
                             classification_code.value = "RM-SK1";
-                        }
-
-                        else if (carcass_type == "G0113" && (s_weight >= 7 && s_weight < 9)) {
+                        } else if (carcass_type == "G0113" && (s_weight >= 7 && s_weight < 9)) {
                             classification_code.value = "RM-SK2";
-                        }
-
-                        else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 16)) {
+                        } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 16)) {
                             classification_code.value = "RM-SK3";
-                        }
-
-                        else if (carcass_type == "G0113" && (s_weight >= 17 && s_weight < 20)) {
+                        } else if (carcass_type == "G0113" && (s_weight >= 17 && s_weight < 20)) {
                             classification_code.value = "RM-SK4";
-                        }
-                        else {
+                        } else {
                             classification_code.value = "";
                         }
 
@@ -642,61 +619,37 @@
 
                             if (carcass_type == "G0110" && s_weight < 40) {
                                 classification_code.value = "PK SUB-40";
-                            }
-
-                            else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+                            } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (
+                                    s_weight >=
                                     60 &&
                                     s_weight <= 75)) {
                                 classification_code.value = "CLS01";
-                            }
-
-                            else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                            } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (
+                                    s_weight >= 60 &&
                                     s_weight <= 75)) {
                                 classification_code.value = "CLS02";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
                                 classification_code.value = "CLS02";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
                                 classification_code.value = "CLS03";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
                                 classification_code.value = "CLS04";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
                                 classification_code.value = "CLS05";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 86 &&
+                            } else if (carcass_type == "G0110" && (s_weight >= 86 &&
                                     s_weight <= 100)) {
                                 classification_code.value = "CLS06";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                                 classification_code.value = "CLS07";
-                            }
-
-                            else if (carcass_type == "G0110" && s_weight > 120) {
+                            } else if (carcass_type == "G0110" && s_weight > 120) {
                                 classification_code.value = "CLS08";
-                            }
-
-                            else if (carcass_type == "G0111") {
+                            } else if (carcass_type == "G0111") {
                                 classification_code.value = "SOW-3P";
-                            }
-
-                            else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
+                            } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
                                 classification_code.value = "3P-SK4";
-                            }
-
-                            else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
+                            } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
                                 classification_code.value = "3P-SK5";
-                            }
-
-                            else {
+                            } else {
                                 classification_code.value = "";
                             }
 
@@ -705,61 +658,37 @@
 
                             if (carcass_type == "G0110" && s_weight < 40) {
                                 classification_code.value = "PK SUB-40";
-                            }
-
-                            else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+                            } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (
+                                    s_weight >=
                                     60 &&
                                     s_weight <= 75)) {
                                 classification_code.value = "NC-CLS01";
-                            }
-
-                            else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+                            } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (
+                                    s_weight >= 60 &&
                                     s_weight <= 75)) {
                                 classification_code.value = "NC-CLS02";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
                                 classification_code.value = "NC-CLS02";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
                                 classification_code.value = "NC-CLS03";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
                                 classification_code.value = "NC-CLS04";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
                                 classification_code.value = "NC-CLS05";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 86 &&
+                            } else if (carcass_type == "G0110" && (s_weight >= 86 &&
                                     s_weight <= 100)) {
                                 classification_code.value = "NC-CLS06";
-                            }
-
-                            else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                                 classification_code.value = "NC-CLS07";
-                            }
-
-                            else if (carcass_type == "G0110" && s_weight > 120) {
+                            } else if (carcass_type == "G0110" && s_weight > 120) {
                                 classification_code.value = "NC-CLS08";
-                            }
-
-                            else if (carcass_type == "G0111") {
+                            } else if (carcass_type == "G0111") {
                                 classification_code.value = "SOW-3P";
-                            }
-
-                            else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
+                            } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
                                 classification_code.value = "3P-SK4";
-                            }
-
-                            else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
+                            } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
                                 classification_code.value = "3P-SK5";
-                            }
-                            
-                            else {
+                            } else {
                                 classification_code.value = "";
                             }
                         }
@@ -786,67 +715,41 @@
 
             if (carcass_type == "G0110" && s_weight < 40) {
                 $('#ms_classification').val("PK SUB-40");
-            }
-
-            else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
+            } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
                     60 &&
                     s_weight <= 75)) {
                 $('#ms_classification').val("CLS01");
-            }
-
-            else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
+            } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
                     s_weight <= 75)) {
                 $('#ms_classification').val("CLS02");
-            }
-
-            else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
+            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
                 $('#ms_classification').val("CLS02");
-            }
-
-            else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
+            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
                 $('#ms_classification').val("CLS03");
-            }
-
-            else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
+            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
                 $('#ms_classification').val("CLS04");
-            }
-
-            else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
+            } else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
                 $('#ms_classification').val("CLS05");
-            }
-
-            else if (carcass_type == "G0110" && (s_weight >= 86 &&
+            } else if (carcass_type == "G0110" && (s_weight >= 86 &&
                     s_weight <= 100)) {
                 $('#ms_classification').val("CLS06");
-            }
-
-            else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+            } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
                 $('#ms_classification').val("CLS07");
-            }
-
-            else if (carcass_type == "G0110" && s_weight > 120) {
+            } else if (carcass_type == "G0110" && s_weight > 120) {
                 classification_code.value = "CLS08";
                 $('#ms_classification').val("PK SUB-40");
-            }
-
-            else if (carcass_type == "G0111") {
+            } else if (carcass_type == "G0111") {
                 $('#ms_classification').val("SOW-3P");
-            }
-
-            else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
+            } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
                 $('#ms_classification').val("3P-SK4");
-            }
-
-            else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
+            } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
                 $('#ms_classification').val("3P-SK5");
-            }
-
-            else {
+            } else {
                 $('#ms_classification').val("");
             }
-            
+
         } else {
-            alert('Please get scale reading. current settlement is: '+ s_weight);
+            alert('Please get scale reading. current settlement is: ' + s_weight);
             $('#ms_classification').val("");
         }
     }

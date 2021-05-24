@@ -60,6 +60,7 @@
     <!-- /.card-header -->
     <div class="card-body">
         <div class="hidden" hidden>{{ $i = 1 }}</div>
+        <div class="table-responsive">
         <table id="example1" class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
@@ -104,7 +105,7 @@
 
                 @endif
             </tbody>
-        </table>
+        </table></div>
     </div>
     <!-- /.card-body -->
 </div>
@@ -119,6 +120,7 @@
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
+                    <div class="table-responsive">
                     <table id="example2" class="table table-bordered table-hover">
                         <thead>
                             <tr>
@@ -155,7 +157,7 @@
                                 </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                    </table></div>
                 </div>
                 <!-- /.card-body -->
             </div>

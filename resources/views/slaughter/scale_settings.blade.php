@@ -22,9 +22,20 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="hidden" hidden>{{ $i = 1 }}</div>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th style="width: 10px">#</th>
+                                <th>Scale Name</th>
+                                <th>ComPort</th>
+                                <th>BaudRate</th>
+                                <th>Tareweight</th>
+                                <Th>Date Created</Th>
+                                <th style="width: 30px">Config</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
                             <th style="width: 10px">#</th>
                             <th>Scale Name</th>
                             <th>ComPort</th>
@@ -32,19 +43,9 @@
                             <th>Tareweight</th>
                             <Th>Date Created</Th>
                             <th style="width: 30px">Config</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <th style="width: 10px">#</th>
-                        <th>Scale Name</th>
-                        <th>ComPort</th>
-                        <th>BaudRate</th>
-                        <th>Tareweight</th>
-                        <Th>Date Created</Th>
-                        <th style="width: 30px">Config</th>
-                    </tfoot>
-                    <tbody>
-                        @foreach($scale_settings as $data)
+                        </tfoot>
+                        <tbody>
+                            @foreach($scale_settings as $data)
                             <tr>
                                 <td>{{ $i++ }}</td>
                                 <td>{{ $data->scale }}</td>
@@ -61,9 +62,10 @@
                                         Edit</button>
                                 </td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -74,8 +76,7 @@
 <div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" action="{{ route('slaughter_update_scale_settings') }}"
-            method="post">
+        <form id="form-edit-scale" action="{{ route('slaughter_update_scale_settings') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -100,8 +101,10 @@
                             </button>
                         </div>
                         <div class="col-md-2" style="padding-top: 6.5%">
-                            <button class="btn btn-outline-success btn-sm form-control" id="comports_success">success</button>
-                            <button class="btn btn-outline-danger btn-sm form-control" id="comports_error">error!</button>
+                            <button class="btn btn-outline-success btn-sm form-control"
+                                id="comports_success">success</button>
+                            <button class="btn btn-outline-danger btn-sm form-control"
+                                id="comports_error">error!</button>
                         </div>
                     </div>
                     <div class="form-group">

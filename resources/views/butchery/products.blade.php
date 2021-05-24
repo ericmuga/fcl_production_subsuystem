@@ -2,10 +2,10 @@
 
 @section('content')
 
-@if( Session::get('session_userName') == 'EKaranja' ||Session::get('session_userName') == 'LNgotho' || Session::get('session_userName') == 'Mchepkemoi' )
+@if( Session::get('session_userName') == 'EKaranja' ||Session::get('session_userName') == 'LNgotho' ||
+Session::get('session_userName') == 'Mchepkemoi' )
 <div class="div">
-    <button class="btn btn-primary add_product"  onclick="isCollapsed()"
-        ><i class="fa fa-plus"></i> Add/Update
+    <button class="btn btn-primary add_product" onclick="isCollapsed()"><i class="fa fa-plus"></i> Add/Update
         Product</button> <br> <br>
 </div>
 @endif
@@ -54,7 +54,9 @@
                             </div>
                             <div class="form-group">
                                 <label for="role_name">Production Process: <code>**select all applicable</code></label>
-                                <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)" name="production_process[]" id="production_process">
+                                <select class="select2" multiple="multiple"
+                                    data-placeholder="Select Production Process(es)" name="production_process[]"
+                                    id="production_process">
 
                                 </select>
 
@@ -88,45 +90,47 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="hidden" hidden>{{ $i = 1 }}</div>
-                <table id="example1" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>Product Type</th>
-                            <th>Production Process(es)</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>#</th>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>Product Type</th>
-                            <th>Production Process(es)</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach($products as $data)
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $data->code }}</td>
-                            <td>{{ $data->description }}</td>
-                            @if ($data->product_type == 1)
+                <div class="table-responsive">
+                    <table id="example1" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Product Type</th>
+                                <th>Production Process(es)</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Product Type</th>
+                                <th>Production Process(es)</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($products as $data)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $data->code }}</td>
+                                <td>{{ $data->description }}</td>
+                                @if ($data->product_type == 1)
                                 <td> Main Product</td>
-                            @else
+                                @else
                                 <td> By Product</td>
-                            @endif
-                            
-                            <td> @foreach ($helpers->getProductProcesses($data->id) as $process)
-                                <span class="badge badge-info">{{ $process }}</span>
+                                @endif
 
-                                @endforeach </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                <td> @foreach ($helpers->getProductProcesses($data->id) as $process)
+                                    <span class="badge badge-info">{{ $process }}</span>
+
+                                    @endforeach </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -188,7 +192,7 @@
                 }
 
                 $('#production_process').html(formOptions);
-                
+
             },
             error: function (data) {
                 var errors = data.responseJSON;

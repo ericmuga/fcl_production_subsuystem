@@ -240,7 +240,8 @@ $arr_products = $products->toArray();
             class="fa fa-plus"></i>
         Output
     </button>
-</div><hr>
+</div>
+<hr>
 
 <div id="butchery_output_show" class="collapse">
     <div class="row">
@@ -254,43 +255,46 @@ $arr_products = $products->toArray();
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Code </th>
-                                <th>Carcass </th>
-                                <th>No. of Carcass</th>
-                                <th>Scale Weight(kgs)</th>
-                                <th>Date </th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Code </th>
-                                <th>Carcass </th>
-                                <th>No. of Carcass</th>
-                                <th>Scale Weight(kgs)</th>
-                                <th>Date </th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($beheading_data as $data)
-                            <tr>
-                                <td>{{ $i++ }}</td>
-                                <td id="edit1ModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}"
-                                    data-item="{{$data->description}}" data-no_carcass="{{ $data->no_of_carcass }}"
-                                    data-weight="{{number_format($data->actual_weight, 2)}}"><a
-                                        href="#">{{ $data->item_code }}</a> </td>
-                                <td> {{ $data->description }}</td>
-                                <td> {{ $data->no_of_carcass }}</td>
-                                <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                <td> {{ $data->created_at }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Code </th>
+                                    <th>Carcass </th>
+                                    <th>No. of Carcass</th>
+                                    <th>Scale Weight(kgs)</th>
+                                    <th>Date </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Code </th>
+                                    <th>Carcass </th>
+                                    <th>No. of Carcass</th>
+                                    <th>Scale Weight(kgs)</th>
+                                    <th>Date </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($beheading_data as $data)
+                                <tr>
+                                    <td>{{ $i++ }}</td>
+                                    <td id="edit1ModalShow" data-id="{{$data->id}}"
+                                        data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
+                                        data-no_carcass="{{ $data->no_of_carcass }}"
+                                        data-weight="{{number_format($data->actual_weight, 2)}}"><a
+                                            href="#">{{ $data->item_code }}</a> </td>
+                                    <td> {{ $data->description }}</td>
+                                    <td> {{ $data->no_of_carcass }}</td>
+                                    <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                    <td> {{ $data->created_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -307,40 +311,42 @@ $arr_products = $products->toArray();
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <table id="example2" class="table table-striped table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Product Code</th>
-                                <th>Product</th>
-                                <th>Scale Weight(kgs)</th>
-                                <th>Date </th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Product Code</th>
-                                <th>Product</th>
-                                <th>Scale Weight(kgs)</th>
-                                <th>Date </th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($butchery_data as $data)
-                            <tr>
-                                <td>{{ $loop->iteration}}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}"
-                                    data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}"
-                                    data-weight="{{number_format($data->actual_weight, 2)}}"><a
-                                        href="#">{{ $data->item_code }}</a> </td>
-                                <td> {{ $data->description }}</td>
-                                <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                <td> {{ $data->created_at }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <div class="table-responsive">
+                        <table id="example2" class="table table-striped table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Code</th>
+                                    <th>Product</th>
+                                    <th>Scale Weight(kgs)</th>
+                                    <th>Date </th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Product Code</th>
+                                    <th>Product</th>
+                                    <th>Scale Weight(kgs)</th>
+                                    <th>Date </th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($butchery_data as $data)
+                                <tr>
+                                    <td>{{ $loop->iteration}}</td>
+                                    <td id="itemCodeModalShow" data-id="{{$data->id}}"
+                                        data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}"
+                                        data-weight="{{number_format($data->actual_weight, 2)}}"><a
+                                            href="#">{{ $data->item_code }}</a> </td>
+                                    <td> {{ $data->description }}</td>
+                                    <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                    <td> {{ $data->created_at }}</td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -380,8 +386,8 @@ $arr_products = $products->toArray();
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();"  class="form-control" name="edit_weight1" id="edit_weight1" placeholder=""
-                            step="0.01" autocomplete="off" required autofocus>
+                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight1"
+                            id="edit_weight1" placeholder="" step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id1" id="item_id1" value="">
                 </div>
@@ -424,8 +430,8 @@ $arr_products = $products->toArray();
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();"  class="form-control" name="edit_weight" id="edit_weight" placeholder=""
-                            step="0.01" autocomplete="off" required autofocus>
+                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
+                            id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>

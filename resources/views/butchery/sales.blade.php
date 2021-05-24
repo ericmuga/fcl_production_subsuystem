@@ -6,36 +6,38 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Sales Entries | <span id="subtext-h1-title"><small> view butchery sales</small> </span></h3>
+                <h3 class="card-title"> Sales Entries | <span id="subtext-h1-title"><small> view butchery sales</small>
+                    </span></h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="hidden" hidden>{{ $i = 1 }}</div>
-                <table id="example1" class="table table-bordered table-hover">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>No. of Carcasses</th>
-                            <th> weight(kgs) </th>
-                            <th>Net Weight(kgs)</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tfoot>
-                        <tr>
-                            <th>#</th>
-                            <th>Product Code</th>
-                            <th>Product Name</th>
-                            <th>No. of Carcasses</th>
-                            <th> weight(kgs) </th>
-                            <th>Net Weight(kgs)</th>
-                            <th>Date</th>
-                        </tr>
-                    </tfoot>
-                    <tbody>
-                        @foreach($sales_data as $data)
+                <div class="table-responsive">
+                    <table id="example1" class="table table-bordered table-hover">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>No. of Carcasses</th>
+                                <th> weight(kgs) </th>
+                                <th>Net Weight(kgs)</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>No. of Carcasses</th>
+                                <th> weight(kgs) </th>
+                                <th>Net Weight(kgs)</th>
+                                <th>Date</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($sales_data as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td id="editModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}"
@@ -48,9 +50,10 @@
                                 <td>{{ number_format($data->net_weight, 2) }}</td>
                                 <td>{{ $data->created_at }}</td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
             <!-- /.card-body -->
         </div>
@@ -88,8 +91,8 @@
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight" id="edit_weight" placeholder=""
-                            step="0.01" autocomplete="off" required autofocus>
+                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
+                            id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
                 </div>
@@ -131,6 +134,7 @@
             $('#editModal').modal('show');
         });
     });
+
 </script>
-    
+
 @endsection

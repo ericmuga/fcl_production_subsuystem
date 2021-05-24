@@ -370,7 +370,9 @@ class ButcheryController extends Controller
 
         $products = Cache::remember('all_products_scale3', now()->addMinutes(120), function () {
             return DB::table('products')
-                ->select(DB::raw('TRIM(code) as code'), 'description')
+                ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+                ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'products.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
                 ->get();
         });
 
