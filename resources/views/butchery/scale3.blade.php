@@ -25,7 +25,7 @@
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
                                 <option value="{{ $product->code }}">
-                                    {{ substr($product->code, strpos($product->code, "G") + 1) . $product->shortcode }}
+                                    {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1) }}
                                 </option>
                                 @endforeach
                             </select>
@@ -39,11 +39,25 @@
                             <input type="text" class="form-control" id="product_type" value="" name="product_type">
                         </div>
                     </div>
-                    <div class="col-md-4" style="padding-top: 7.5%">
+                    <div class="col-md-4" style="padding-top: 7%">
                         <button class="btn btn-outline-info btn-sm form-control" id="btn_product_type" type="button"
                             data-toggle="modal" disabled>
                             <strong>Edit?</strong>
                         </button>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <div class="form-group" id="product_type_select">
+                            <label for="exampleInputPassword1">Product Name</label>
+                            <input type="text" class="form-control" id="product_name" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group" id="product_type_select">
+                            <label for="exampleInputPassword1">Production Process</label>
+                            <input type="text" class="form-control" id="production_process" value="">
+                        </div>
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
@@ -384,12 +398,6 @@
             $('#productTypesModal').modal('show');
         });
 
-        $("body").on("click", "#btn_process_type", function (a) {
-            a.preventDefault();
-
-            $('#productionProcessModal').modal('show');
-        });
-
         $('#product').change(function () {
             var code = $('#product').val();
             var product_code = code.trim();
@@ -401,7 +409,7 @@
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     },
-                    url: "{{ url('product_type_ajax') }}",
+                    url: "{{ url('product_details_ajax') }}",
                     data: {
                         'product_code': product_code,
 
@@ -409,7 +417,6 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
-                            // console.log(res.product_type);
                             $('#btn_product_type').prop('disabled', false);
 
                             // product type
@@ -418,6 +425,10 @@
                             } else {
                                 $('#product_type').val("By Product");
                             }
+
+                            // product name and process
+                            $('#product_name').val(res.description);
+                            $('#production_process').val(res.process);
 
                             // get number of pieces
                             if (product_code == 'G1169' || product_code == 'G1119' ||

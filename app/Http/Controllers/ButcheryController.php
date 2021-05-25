@@ -440,11 +440,13 @@ class ButcheryController extends Controller
         }
     }
 
-    public function getProductTypeAjax(Request $request)
+    public function getProductDetailsAjax(Request $request)
     {
         $data = DB::table('products')
-            ->where('code', $request->product_code)
-            ->select('product_type')
+            ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+            ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
+            ->where('products.code', $request->product_code)
+            ->select('product_type', 'process', 'description')
             ->first();
         return response()->json($data);
     }

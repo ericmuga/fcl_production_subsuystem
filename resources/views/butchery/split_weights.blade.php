@@ -3,19 +3,19 @@
 @section('content')
 
 @php
-    $to_split = \Session::get('data');
+$to_split = \Session::get('data');
 
 @endphp
 
 <div class="div">
-    <button class="btn btn-primary " data-toggle="collapse" data-target="#split_date"><i
-            class="fa fa-plus"></i>
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#split_date"><i class="fa fa-plus"></i>
         Split weights
     </button>
 </div>
 
 <!-- create product-->
-<div id="split_date" class="collapse"><hr>
+<div id="split_date" class="collapse">
+    <hr>
     <div class="form-inputs">
         <div class="row">
             <div class="col-lg-8" style="margin: 0 auto; float: none;">
@@ -24,14 +24,14 @@
                         <i class="fa fa-users"></i>
                         Enter date to split</div>
                     <div class="card-body">
-                        <form action="{{ route('load_split_data') }}" method="post"
-                            id="add-branch-form">
+                        <form action="{{ route('load_split_data') }}" method="post" id="add-branch-form">
                             @csrf
                             <div class="form-group">
                                 <label>Date:format(mm/dd/yyyy)</label>
                                 <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" id="dateinput" name="dateinput"
-                                        data-target="#reservationdate" value="{{ \Session::get('display_date') }}" required/>
+                                    <input type="text" class="form-control datetimepicker-input" id="dateinput"
+                                        name="dateinput" data-target="#reservationdate"
+                                        value="{{ \Session::get('display_date') }}" required />
                                     <div class="input-group-append" data-target="#reservationdate"
                                         data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -55,37 +55,39 @@
 <div class="card collapse" id="splitting_tableshow">
     <div class="card-header">
         <h3 class="card-title"> Split weights | <span id="subtext-h1-title"><small> showing unsplitted deboned
-                    weights filtered by date: <code style="font-size: 15px"><strong>{{ Session::get('display_date') }}</strong></code></small> </span></h3>
+                    weights filtered by date: <code
+                        style="font-size: 15px"><strong>{{ Session::get('display_date') }}</strong></code></small>
+            </span></h3>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
         <div class="hidden" hidden>{{ $i = 1 }}</div>
         <div class="table-responsive">
-        <table id="example1" class="table table-striped table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Code </th>
-                    <th>product </th>
-                    <th>Cummulative Weight(kgs)</th>
-                    <th>Action</th>
-                    {{-- <th>Date </th> --}}
-                </tr>
-            </thead>
-            <tfoot>
-                <tr>
-                    <th>#</th>
-                    <th>Code </th>
-                    <th>product </th>
-                    <th>Cummulative Weight(kgs)</th>
-                    <th>Action</th>
-                    {{-- <th>Date </th> --}}
-                </tr>
-            </tfoot>
-            <tbody>
-                @if (isset($to_split))
+            <table id="example1" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Code </th>
+                        <th>product </th>
+                        <th>Cummulative Weight(kgs)</th>
+                        <th>Action</th>
+                        {{-- <th>Date </th> --}}
+                    </tr>
+                </thead>
+                <tfoot>
+                    <tr>
+                        <th>#</th>
+                        <th>Code </th>
+                        <th>product </th>
+                        <th>Cummulative Weight(kgs)</th>
+                        <th>Action</th>
+                        {{-- <th>Date </th> --}}
+                    </tr>
+                </tfoot>
+                <tbody>
+                    @if (isset($to_split))
 
-                @foreach($to_split as $data)
+                    @foreach($to_split as $data)
                     <tr>
                         <td>{{ $i++ }}</td>
                         <td> {{ $data->item_code }}</td>
@@ -99,53 +101,56 @@
                         </td>
                         {{-- <td> {{ $data->created_at }}</td> --}}
                     </tr>
-                @endforeach
-                @else
+                    @endforeach
+                    @else
                     <td> No date selected</td>
 
-                @endif
-            </tbody>
-        </table></div>
+                    @endif
+                </tbody>
+            </table>
+        </div>
     </div>
     <!-- /.card-body -->
 </div>
 
-<div id="splitted_output_show" class=""> <hr>
+<div id="splitted_output_show" class="">
+    <hr>
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Splitted Entries | <span id="subtext-h1-title"><small> All Output</small> </span></h3>
+                    <h3 class="card-title"> Splitted Entries | <span id="subtext-h1-title"><small> All Output</small>
+                        </span></h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
                     <div class="table-responsive">
-                    <table id="example2" class="table table-bordered table-hover">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Parent Item</th>
-                                <th>New Item</th>
-                                <th>Weight(kgs)</th>
-                                <th>Process</th>
-                                <th>Percentage</th>
-                                <th>Date</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>#</th>
-                                <th>Parent Item</th>
-                                <th>New Item</th>
-                                <th>Weight(kgs)</th>
-                                <th>Process</th>
-                                <th>Percentage</th>
-                                <th>Date</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($splitted_data as $data)
+                        <table id="example2" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Parent Item</th>
+                                    <th>New Item</th>
+                                    <th>Weight(kgs)</th>
+                                    <th>Process</th>
+                                    <th>Percentage</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Parent Item</th>
+                                    <th>New Item</th>
+                                    <th>Weight(kgs)</th>
+                                    <th>Process</th>
+                                    <th>Percentage</th>
+                                    <th>Date</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                @foreach($splitted_data as $data)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->parent_item }}</td>
@@ -155,9 +160,10 @@
                                     <td>{{ $data->percentage }}</td>
                                     <td>{{ $data->created_at }}</td>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table></div>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <!-- /.card-body -->
             </div>
@@ -190,7 +196,7 @@
                                     value="{{ old('new_item1') }}">
                                     <option value="" selected disabled>Select Item</option>
                                     @foreach($products as $p)
-                                        <option value="{{ $p->code }}">{{ $p->description }}</option>
+                                    <option value="{{ $p->code }}">{{ $p->description }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -201,7 +207,7 @@
                                     value="{{ old('new_process1') }}">
                                     <option value="" selected disabled>Select Item</option>
                                     @foreach($processes as $p)
-                                        <option value="{{ $p->process_code }}">{{ $p->process }}</option>
+                                    <option value="{{ $p->process_code }}">{{ $p->process }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -227,7 +233,7 @@
                                     value="{{ old('new_item2') }}">
                                     <option value="" selected disabled>Select Item</option>
                                     @foreach($products as $p)
-                                        <option value="{{ $p->code }}">{{ $p->description }}</option>
+                                    <option value="{{ $p->code }}">{{ $p->description }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -238,7 +244,7 @@
                                     value="{{ old('new_process2') }}">
                                     <option value="" selected disabled>Select Item</option>
                                     @foreach($processes as $p)
-                                        <option value="{{ $p->process_code }}">{{ $p->process }}</option>
+                                    <option value="{{ $p->process_code }}">{{ $p->process }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -264,7 +270,7 @@
                                     value="{{ old('new_item3') }}">
                                     <option value="" selected disabled>Select Item</option>
                                     @foreach($products as $p)
-                                        <option value="{{ $p->code }}">{{ $p->description }}</option>
+                                    <option value="{{ $p->code }}">{{ $p->description }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -275,7 +281,7 @@
                                     value="{{ old('new_process3') }}">
                                     <option value="" selected disabled>Select Item</option>
                                     @foreach($processes as $p)
-                                        <option value="{{ $p->process_code }}">{{ $p->process }}</option>
+                                    <option value="{{ $p->process_code }}">{{ $p->process }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -382,14 +388,14 @@
 </script>
 
 @if( Session::get('splitting_table') == 'show' )
-    <script>
-        $(function () {
-            // $('#myModal').modal('show');
-            $('#splitting_tableshow').toggle('collapse');
+<script>
+    $(function () {
+        // $('#myModal').modal('show');
+        $('#splitting_tableshow').toggle('collapse');
 
-        });
+    });
 
-    </script>
+</script>
 @endif
 
 @endsection
