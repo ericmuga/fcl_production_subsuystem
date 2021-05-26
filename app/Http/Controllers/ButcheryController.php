@@ -397,7 +397,7 @@ class ButcheryController extends Controller
 
             # insert record
             DB::table('deboned_data')->insert([
-                'item_code' =>  $request->product,
+                'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
                 'process_code' => (int)$request->production_process,

@@ -39,12 +39,12 @@
                             <input type="text" class="form-control" id="product_type" value="" name="product_type">
                         </div>
                     </div>
-                    <div class="col-md-4" style="padding-top: 7%">
+                    {{-- <div class="col-md-4" style="padding-top: 7%">
                         <button class="btn btn-outline-info btn-sm form-control" id="btn_product_type" type="button"
                             data-toggle="modal" disabled>
                             <strong>Edit?</strong>
                         </button>
-                    </div>
+                    </div> --}}
                 </div>
                 <div class="row form-group">
                     <div class="col-md-6">
@@ -403,7 +403,6 @@
             var code = $('#product').val();
             var shortcode = code.split('-')[0];
             var product_code = code.split('-')[1];
-
             if (product_code != '') {
                 $.ajax({
                     type: "GET",
@@ -431,6 +430,9 @@
                             // product name and process
                             $('#product_name').val(res.description);
                             $('#production_process').val(res.process);
+
+                            //get scale reading
+                            getScaleReading();
 
                             // get number of pieces
                             if (product_code == 'G1169' || product_code == 'G1119' ||
@@ -554,7 +556,7 @@
 
     function getNumberOfPieces(product_code, net) {
 
-        if (product_code == 'G1169' && net > 0) {
+        if (product_code  =='G1169' && net > 0) {
             var pieces = Math.round(net) / 3;
             $('#no_of_pieces').val(Math.round(pieces));
         }

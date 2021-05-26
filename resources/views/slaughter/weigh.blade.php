@@ -143,7 +143,7 @@
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()"
-                        class="btn btn-primary btn-lg btn-block btn-huge"><i class="fa fa-paper-plane"
+                        class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
                             aria-hidden="true"></i>
                         Save</button>
                 </div>
