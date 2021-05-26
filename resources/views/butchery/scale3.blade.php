@@ -24,7 +24,7 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
-                                <option value="{{ $product->code }}">
+                                <option value="{{ $product->shortcode.'-'.$product->code }}">
                                     {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1) }}
                                 </option>
                                 @endforeach
@@ -400,8 +400,8 @@
 
         $('#product').change(function () {
             var code = $('#product').val();
-            var product_code = code.trim();
-            var product_type = document.getElementById('product_type');
+            var shortcode = code.split('-')[0];
+            var product_code = code.split('-')[1];
 
             if (product_code != '') {
                 $.ajax({
@@ -412,6 +412,7 @@
                     url: "{{ url('product_details_ajax') }}",
                     data: {
                         'product_code': product_code,
+                        'shortcode': shortcode,
 
                     },
                     dataType: 'JSON',
@@ -673,7 +674,7 @@
         var code = $('#product').val();
 
         if (code != "" && net.value > 0) {
-            var product_code = code.trim();
+            var product_code = code.split('-')[1];
             getNumberOfPieces(product_code, net.value);
 
         } else {

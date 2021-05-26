@@ -446,6 +446,7 @@ class ButcheryController extends Controller
             ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
             ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
             ->where('products.code', $request->product_code)
+            ->where('processes.shortcode', $request->shortcode)
             ->select('product_type', 'process', 'description')
             ->first();
         return response()->json($data);
