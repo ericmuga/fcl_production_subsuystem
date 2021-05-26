@@ -24,7 +24,7 @@
         </p>
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ $lined_baconers?? "0" }}</h3>
+                <h3>{{ (int)($lined[0]->count ?? 0) + (int)($lined_ms[0]->count ?? 0) }}</h3>
                 <p>No. of Baconers slaughtered</p>
             </div>
             <div class="icon">
@@ -41,7 +41,7 @@
         </p>
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $baconers?? "0" }}</h3>
+                <h3>{{ $no_of_carcass[0]->total?? 0 }}</h3>
                 <p>No. of Beheaded Baconers(sales count: {{ $sales_count }})</p>
             </div>
             <div class="icon">
@@ -57,7 +57,7 @@
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ number_format($baconers_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
+                <h3>{{ number_format($weights[0]->total?? 0, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
                 <p>Beheaded Baconers Total Weight </p>
             </div>
@@ -70,8 +70,8 @@
     <!-- ./col -->
     <div class="col-lg-3 col-6">
         @php
-            if($baconers_weight == 0.00){
-                $baconers_weight = 1.00;
+            if($weights[0]->total == 0.00){
+                $weights[0]->total = 1.00;
             }
         @endphp
         <p class="text-center">
@@ -79,34 +79,34 @@
         </p>
         <div class="progress-group">
             legs
-            <span class="float-right"><b>{{ number_format($b_legs, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[0]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-primary" style="width: {{ $b_legs/$baconers_weight*100 }}%"></div>
+                <div class="progress-bar bg-primary" style="width: {{ $parts_weights[0]->netweight?? 0 / $weights[0]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($b_shoulders, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[1]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-danger" style="width: {{ $b_shoulders/$baconers_weight*100 }}%"></div>
+                <div class="progress-bar bg-danger" style="width: {{ $parts_weights[1]->netweight?? 0/$weights[0]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             <span class="progress-text">Middles</span>
-            <span class="float-right"><b>{{ number_format($b_middles, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[2]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-success" style="width: {{ $b_middles/$baconers_weight*100 }}%"></div>
+                <div class="progress-bar bg-success" style="width: {{ $parts_weights[2]->netweight?? 0 / $weights[0]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             Total Output
-            <span class="float-right"><b>{{ number_format($three_parts_baconers, 2) }}</b>(kgs)</span>
+            <span class="float-right"><b>{{ number_format($three_parts_weights[0]->netweight?? 0, 2) }}</b>(kgs)</span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-warning"
-                    style="width: {{ $three_parts_baconers/$baconers_weight*100 }}%"></div>
+                    style="width: {{ $three_parts_weights[0]->netweight?? 0 / $weights[0]->total*100 }}%"></div>
             </div>
         </div>
         <div class="footer">
@@ -130,7 +130,7 @@
         </p>
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ $lined_sows?? "0" }}</h3>
+                <h3>{{ (int)($lined[1]->count ?? 0) + ($lined_ms[1]->count ?? 0) }}</h3>
                 <p>No. of Sows Slaughtered</p>
             </div>
             <div class="icon">
@@ -147,7 +147,7 @@
         </p>
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $sows?? "0" }}</h3>
+                <h3>{{ $no_of_carcass[1]->total?? 0 }}</h3>
                 <p>No. of Beheaded Sows</p>
             </div>
             <div class="icon">
@@ -163,7 +163,7 @@
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ number_format($sows_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
+                <h3>{{ number_format($weights[1]->total?? 0, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
                 <p>Beheaded Sows Total Weight Output</p>
             </div>
@@ -176,8 +176,8 @@
     <!-- ./col -->
     <div class="col-lg-3 col-6">
         @php
-            if($sows_weight == 0.00){
-                $sows_weight = 1.00;
+            if($weights[1]->total == 0.00){
+                $weights[1]->total = 1.00;
             }
         @endphp
         <p class="text-center">
@@ -185,34 +185,34 @@
         </p>
         <div class="progress-group">
             legs
-            <span class="float-right"><b>{{ number_format($s_legs, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[3]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-primary" style="width: {{ $s_legs/$sows_weight*100 }}%"></div>
+                <div class="progress-bar bg-primary" style="width: {{ $parts_weights[3]->netweight?? 0/$weights[1]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($b_shoulders, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[4]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-danger" style="width: {{ $s_shoulders/$sows_weight*100 }}%"></div>
+                <div class="progress-bar bg-danger" style="width: {{ $parts_weights[4]->netweight?? 0 / $weights[1]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             <span class="progress-text">Middles</span>
-            <span class="float-right"><b>{{ number_format($s_middles, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[5]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-success" style="width: {{ $s_middles/$sows_weight*100 }}%"></div>
+                <div class="progress-bar bg-success" style="width: {{ $parts_weights[5]->netweight?? 0/$weights[1]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             Total Output
-            <span class="float-right"><b>{{ number_format($three_parts_sows, 2) }}</b>(kgs)</span>
+            <span class="float-right"><b>{{ number_format($three_parts_weights[1]->netweight?? 0, 2) }}</b>(kgs)</span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-warning"
-                    style="width: {{ $three_parts_sows/$sows_weight*100 }}%"></div>
+                    style="width: {{ $three_parts_weights[1]->netweight?? 0 / $weights[1]->total*100 }}%"></div>
             </div>
         </div>
         <div class="footer">
