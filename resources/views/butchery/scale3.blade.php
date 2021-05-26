@@ -179,7 +179,7 @@
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
                     <div class="table-responsive">
-                        <table id="example1" class="table table-striped table-bordered table-hover">
+                        <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -204,6 +204,7 @@
                                     <th>Net Weight(kgs)</th>
                                     <th>No. of Pieces</th>
                                     <th>Date </th>
+
                                 </tr>
                             </tfoot>
                             <tbody>
