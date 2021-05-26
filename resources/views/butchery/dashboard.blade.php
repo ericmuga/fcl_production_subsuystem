@@ -87,17 +87,17 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($parts_weights[1]->netweight?? 0, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[2]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-danger" style="width: {{ $parts_weights[1]->netweight?? 0/$weights[0]->total*100 }}%"></div>
+                <div class="progress-bar bg-danger" style="width: {{ $parts_weights[2]->netweight?? 0/$weights[0]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             <span class="progress-text">Middles</span>
-            <span class="float-right"><b>{{ number_format($parts_weights[2]->netweight?? 0, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[4]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-success" style="width: {{ $parts_weights[2]->netweight?? 0 / $weights[0]->total*100 }}%"></div>
+                <div class="progress-bar bg-success" style="width: {{ $parts_weights[4]->netweight?? 0 / $weights[0]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
@@ -185,17 +185,17 @@
         </p>
         <div class="progress-group">
             legs
-            <span class="float-right"><b>{{ number_format($parts_weights[3]->netweight?? 0, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[1]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-primary" style="width: {{ $parts_weights[3]->netweight?? 0/$weights[1]->total*100 }}%"></div>
+                <div class="progress-bar bg-primary" style="width: {{ $parts_weights[1]->netweight?? 0/$weights[1]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($parts_weights[4]->netweight?? 0, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($parts_weights[3]->netweight?? 0, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
-                <div class="progress-bar bg-danger" style="width: {{ $parts_weights[4]->netweight?? 0 / $weights[1]->total*100 }}%"></div>
+                <div class="progress-bar bg-danger" style="width: {{ $parts_weights[3]->netweight?? 0 / $weights[1]->total*100 }}%"></div>
             </div>
         </div>
         <!-- /.progress-group -->

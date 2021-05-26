@@ -78,6 +78,7 @@ class ButcheryController extends Controller
             ->groupBy('carcass_type')
             ->get()->toArray();
 
+
         $parts_weights = DB::table('butchery_data')
             ->whereDate('created_at', Carbon::today())
             ->whereIn('carcass_type', ['G1031', 'G1030'])

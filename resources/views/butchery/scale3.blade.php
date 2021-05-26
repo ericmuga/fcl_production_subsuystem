@@ -217,7 +217,8 @@
                                         data-type_id="{{ $data->type_id }}"
                                         data-production_process="{{ $data->process_code }}"
                                         data-item="{{ $helpers->getProductName($data->item_code) }}"><a
-                                            href="#">{{ $data->item_code }}</a> </td>
+                                            href="#">{{ $data->item_code }}</a> 
+                                    </td>
                                     <td>{{ $helpers->getProductName($data->item_code) }}</td>
                                     <td> {{ $data->product_type }}</td>
                                     <td> {{ $data->process }}</td>
@@ -556,7 +557,7 @@
 
     function getNumberOfPieces(product_code, net) {
 
-        if (product_code  =='G1169' && net > 0) {
+        if (product_code == 'G1169' && net > 0) {
             var pieces = Math.round(net) / 3;
             $('#no_of_pieces').val(Math.round(pieces));
         }
