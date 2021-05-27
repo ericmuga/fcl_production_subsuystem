@@ -35,62 +35,105 @@ class ButcheryController extends Controller
     {
         $title = "dashboard";
 
-        $no_of_carcass = DB::table('beheading_data')
+        $baconers = DB::table('beheading_data')
             ->whereDate('created_at', Carbon::today())
-            ->whereIn('item_code', ["G1031", "G1030"])
-            ->select(DB::raw('SUM(beheading_data.no_of_carcass) as total'))
-            ->groupBy('item_code')
-            ->get()->toArray();
+            ->where('item_code', "G1030")
+            ->sum('no_of_carcass');
 
-        $weights = DB::table('beheading_data')
+        $sows = DB::table('beheading_data')
             ->whereDate('created_at', Carbon::today())
-            ->whereIn('item_code', ["G1031", "G1030"])
-            ->select(DB::raw('SUM(net_weight) as total'))
-            ->groupBy('item_code')
-            ->get()->toArray();
+            ->where('item_code', "G1031")
+            ->sum('no_of_carcass');
 
-        $lined = Cache::remember('lined', now()->addMinutes(360), function () {
+        $baconers_weight = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', "G1030")
+            ->sum('net_weight');
+
+        $sows_weight = DB::table('beheading_data')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', "G1031")
+            ->sum('net_weight');
+
+        $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(120), function () {
             $helpers = new Helpers();
 
-            return DB::table('slaughter_data')
+            $record1 = DB::table('slaughter_data')
+                ->where('item_code', 'G0110')
                 ->whereDate('created_at', $helpers->getButcheryDate())
-                ->whereIn('item_code', ['G0110', 'G0111'])
-                ->select(DB::raw('COUNT(id) as count'))
-                ->groupBy('item_code')
-                ->get()->toArray();
+                ->count();
+
+            $record2 = DB::table('missing_slap_data')
+                ->where('item_code', 'G0110')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->count();
+
+            return $record1 + $record2;
         });
 
-        $lined_ms = Cache::remember('lined_ms', now()->addMinutes(360), function () {
+        $lined_sows = Cache::remember('linedup_sows', now()->addMinutes(120), function () {
             $helpers = new Helpers();
 
-            return DB::table('missing_slap_data')
+            $record1 = DB::table('slaughter_data')
+                ->where('item_code', 'G0111')
                 ->whereDate('created_at', $helpers->getButcheryDate())
-                ->whereIn('item_code', ['G0110', 'G0111'])
-                ->select(DB::raw('COUNT(id) as count'))
-                ->groupBy('item_code')
-                ->get()->toArray();
+                ->count();
+
+            $record2 = DB::table('missing_slap_data')
+                ->where('item_code', 'G0111')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->count();
+
+            return $record1 + $record2;
         });
 
-        $three_parts_weights = DB::table('butchery_data')
+        $three_parts_baconers = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
-            ->whereIn('carcass_type', ['G1030', 'G1031'])
-            ->select(DB::raw('SUM(net_weight) as netweight'))
-            ->groupBy('carcass_type')
-            ->get()->toArray();
+            ->sum('net_weight');
 
-
-        $parts_weights = DB::table('butchery_data')
+        $three_parts_sows = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
             ->whereDate('created_at', Carbon::today())
-            ->whereIn('carcass_type', ['G1031', 'G1030'])
-            ->select(DB::raw('SUM(net_weight) as netweight'))
-            ->groupBy('carcass_type', 'item_code')
-            ->get()->toArray();
+            ->sum('net_weight');
 
-        $sales_count = DB::table('sales')
+        $b_legs = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
             ->whereDate('created_at', Carbon::today())
-            ->count();
+            ->where('item_code', 'G1100')
+            ->sum('net_weight');
 
-        return view('butchery.dashboard', compact('title', 'no_of_carcass', 'weights', 'lined', 'lined_ms', 'three_parts_weights', 'helpers', 'parts_weights', 'sales_count'));
+        $b_shoulders = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1101')
+            ->sum('net_weight');
+
+        $b_middles = DB::table('butchery_data')
+            ->where('carcass_type', 'G1030')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1102')
+            ->sum('net_weight');
+
+        $s_legs = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1100')
+            ->sum('net_weight');
+
+        $s_shoulders = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1101')
+            ->sum('net_weight');
+
+        $s_middles = DB::table('butchery_data')
+            ->where('carcass_type', 'G1031')
+            ->whereDate('created_at', Carbon::today())
+            ->where('item_code', 'G1102')
+            ->sum('net_weight');
+
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)
