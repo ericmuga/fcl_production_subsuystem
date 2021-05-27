@@ -433,7 +433,7 @@
                             $('#production_process').val(res.process);
 
                             //get scale reading
-                            getScaleReading();
+                            // getScaleReading();
 
                             // get number of pieces
                             if (product_code == 'G1169' || product_code == 'G1119' ||
