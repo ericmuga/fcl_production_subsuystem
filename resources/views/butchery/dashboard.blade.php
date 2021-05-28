@@ -25,7 +25,7 @@
         <div class="small-box bg-success">
             <div class="inner">
                 <h3>{{ $lined_baconers?? "0" }}</h3>
-                <p>No. of Baconers</p>
+                <p>No. of Baconers slaughtered</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -42,7 +42,7 @@
         <div class="small-box bg-info">
             <div class="inner">
                 <h3>{{ $baconers?? "0" }}</h3>
-                <p>No. of Beheaded Baconers</p>
+                <p>No. of Beheaded Baconers(sales count: {{ $sales_count }})</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -59,7 +59,7 @@
             <div class="inner">
                 <h3>{{ number_format($baconers_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
-                <p>Baconers Total Weight </p>
+                <p>Beheaded Baconers Total Weight </p>
             </div>
             <div class="icon">
                 <i class="ion ion-alert"></i>
@@ -131,7 +131,7 @@
         <div class="small-box bg-success">
             <div class="inner">
                 <h3>{{ $lined_sows?? "0" }}</h3>
-                <p>No. of Sows</p>
+                <p>No. of Sows Slaughtered</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -165,7 +165,7 @@
             <div class="inner">
                 <h3>{{ number_format($sows_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
 
-                <p>Sows Total Weight Output</p>
+                <p>Beheaded Sows Total Weight Output</p>
             </div>
             <div class="icon">
                 <i class="ion ion-alert"></i>
