@@ -193,7 +193,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($b_shoulders, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($s_shoulders, 2) }}</b>kgs</span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-danger" style="width: {{ $s_shoulders/$sows_weight*100 }}%"></div>
             </div>
