@@ -146,7 +146,7 @@ class ButcheryController extends Controller
                 ->sum('net_weight');
         });
 
-        $slaughtered_sows_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () {
+        $slaughtered_sows_weight = Cache::remember('slaughtered_sows_weight', now()->addMinutes(360), function () {
             $helpers = new Helpers();
 
             return DB::table('slaughter_data')
