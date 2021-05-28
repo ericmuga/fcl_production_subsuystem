@@ -55,7 +55,7 @@ class ButcheryController extends Controller
             ->where('item_code', "G1031")
             ->sum('net_weight');
 
-        $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(120), function () {
+        $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(360), function () {
             $helpers = new Helpers();
 
             $record1 = DB::table('slaughter_data')
@@ -71,7 +71,7 @@ class ButcheryController extends Controller
             return $record1 + $record2;
         });
 
-        $lined_sows = Cache::remember('linedup_sows', now()->addMinutes(120), function () {
+        $lined_sows = Cache::remember('linedup_sows', now()->addMinutes(360), function () {
             $helpers = new Helpers();
 
             $record1 = DB::table('slaughter_data')
@@ -137,7 +137,25 @@ class ButcheryController extends Controller
             ->whereDate('created_at', Carbon::today())
             ->count();
 
-        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles', 'sales_count'));
+        $slaughtered_baconers_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () {
+            $helpers = new Helpers();
+
+            return DB::table('slaughter_data')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->where('item_code', 'G0110')
+                ->sum('net_weight');
+        });
+
+        $slaughtered_sows_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () {
+            $helpers = new Helpers();
+
+            return DB::table('slaughter_data')
+                ->whereDate('created_at', $helpers->getButcheryDate())
+                ->where('item_code', 'G0111')
+                ->sum('net_weight');
+        });
+
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles', 'sales_count', 'slaughtered_baconers_weight', 'slaughtered_sows_weight'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)

@@ -24,8 +24,8 @@
         </p>
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ $lined_baconers?? "0" }}</h3>
-                <p>No. of Baconers slaughtered</p>
+                <h3>{{ $lined_baconers?? "0" }} | <sup style="font-size: 20px">{{ number_format($slaughtered_baconers_weight, 2) }} kgs</sup></h3> 
+                <p>No. of Baconers & netweight</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -130,8 +130,8 @@
         </p>
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ $lined_sows?? "0" }}</h3>
-                <p>No. of Sows Slaughtered</p>
+                <h3>{{ $lined_sows?? "0" }} | <sup style="font-size: 20px">{{ number_format($slaughtered_sows_weight, 2) }} kgs</sup></h3>
+                <p>No. of Sows & netweight</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
