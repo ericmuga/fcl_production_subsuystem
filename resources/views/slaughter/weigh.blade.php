@@ -254,7 +254,7 @@
                                     <th>Slapmark </th>
                                     <th> Code</th>
                                     <th> Type</th>
-                                    <th> weight(kgs)</th>
+                                    <th> Scale Reading(kgs)</th>
                                     <th>Meat %</th>
                                     <th>Classification</th>
                                     <th>Slaughter Date</th>
@@ -267,7 +267,7 @@
                                     <th>Slapmark </th>
                                     <th> Code</th>
                                     <th> Type</th>
-                                    <th> weight (kgs)</th>
+                                    <th> Scale Reading (kgs)</th>
                                     <th>Meat %</th>
                                     <th>Classification</th>
                                     <th>Slaughter Date</th>
