@@ -167,7 +167,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(function () {
             $("#example1").DataTable({
                 "responsive": false,
-                "sScrollX": true,
                 "autoWidth": false,
                 "lengthChange": true,
                 "lengthMenu": [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
@@ -179,7 +178,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(function () {
             $("#example2").DataTable({
                 "responsive": false,
-                "sScrollX": true,
                 "autoWidth": false,
                 "lengthChange": true,
                 "lengthMenu": [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
@@ -190,7 +188,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
         $(function () {
             //Initialize Select2 Elements
-            $('.select2').select2()
+             $('.select2').select2({
+                width: '100%',
+                placeholder: "Please Select"
+            });
         });
 
         //Date picker        

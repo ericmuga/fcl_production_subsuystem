@@ -135,7 +135,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(function () {
             $("#example1").DataTable({
                 "responsive": false,
-                // "sScrollX": true,
                 "autoWidth": false,
                 "lengthChange": true,
                 "lengthMenu": [
@@ -150,7 +149,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         $(function () {
             $("#example2").DataTable({
                 "responsive": false,
-                // "sScrollX": true,
                 "autoWidth": false,
                 "lengthChange": true,
                 "lengthMenu": [
