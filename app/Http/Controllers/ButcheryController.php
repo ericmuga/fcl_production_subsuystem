@@ -419,7 +419,7 @@ class ButcheryController extends Controller
                 'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
-                'process_code' => (int)$request->production_process,
+                'process_code' => (int)$request->production_process_code,
                 'product_type' => $product_type,
                 'no_of_pieces' => $request->no_of_pieces,
                 'user_id' => $helpers->authenticatedUserId(),
@@ -466,7 +466,7 @@ class ButcheryController extends Controller
             ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
             ->where('products.code', $request->product_code)
             ->where('processes.shortcode', $request->shortcode)
-            ->select('product_type', 'process', 'description')
+            ->select('product_type', 'product_processes.process_code', 'process', 'description')
             ->first();
         return response()->json($data);
     }

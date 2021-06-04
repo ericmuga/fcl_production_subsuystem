@@ -56,8 +56,9 @@
                     <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Production Process</label>
-                            <input type="text" class="form-control" id="production_process" value="">
+                            <input type="text" class="form-control" id="production_process" name="production_process" value="">
                         </div>
+                        <input type="hidden" class="form-control" id="production_process_code" name="production_process_code" value="">
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
@@ -431,6 +432,7 @@
                             // product name and process
                             $('#product_name').val(res.description);
                             $('#production_process').val(res.process);
+                            $('#production_process_code').val(res.process_code);
 
                             //get scale reading
                             // getScaleReading();
