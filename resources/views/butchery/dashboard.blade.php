@@ -20,7 +20,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})</strong>
+            <strong> Baconers: </strong>({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})
         </p>
         <div class="small-box bg-success">
             <div class="inner">
@@ -37,7 +37,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Scale 1</strong>
+            <strong>Scale 1 </strong>(slaughter chiller - butchery)
         </p>
         <div class="small-box bg-info">
             <div class="inner">
@@ -53,7 +53,7 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Sales</strong>
+            <strong>Sales </strong>(Slaughter chiller - Despatch)
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
@@ -75,7 +75,7 @@
             }
         @endphp
         <p class="text-center">
-            <strong>Scale 2 Output</strong>
+            <strong>Scale 2 Output </strong>(Breaking Pig)
         </p>
         <div class="progress-group">
             legs
@@ -126,7 +126,7 @@
     <div class="col-lg-4 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})</strong>
+            <strong> Sows: </strong>({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})
         </p>
         <div class="small-box bg-success">
             <div class="inner">
@@ -143,7 +143,7 @@
     <div class="col-lg-4 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Scale 1</strong>
+            <strong>Scale 1 </strong>(slaughter chiller - butchery)
         </p>
         <div class="small-box bg-info">
             <div class="inner">
@@ -163,7 +163,7 @@
             }
         @endphp
         <p class="text-center">
-            <strong>Scale 2 Output</strong>
+            <strong>Scale 2 Output </strong>(Breaking Sow)
         </p>
         <div class="progress-group">
             legs
