@@ -64,7 +64,7 @@
             <div class="icon">
                 <i class="ion ion-alert"></i>
             </div>
-            <a href="{{ route('butchery_breaking_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('butchery_sales_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
