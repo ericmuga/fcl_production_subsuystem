@@ -41,8 +41,8 @@
         </p>
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $baconers?? "0" }}</h3>
-                <p>No. of Beheaded Baconers(sales count: {{ $sales_count }})</p>
+                <h3>{{ $baconers?? "0" }} | <sup style="font-size: 20px">{{ number_format($baconers_weight, 2) }} kgs</sup></h3>
+                <p>No. of Beheaded Baconers & netweight</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -53,13 +53,13 @@
     <div class="col-lg-3 col-6">
         <!-- small box -->
         <p class="text-center">
-            <strong>Scale 1 output</strong>
+            <strong>Sales</strong>
         </p>
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ number_format($baconers_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
+                <h3>{{ $sales[0]->count?? "0" }} | <sup style="font-size: 20px">{{ number_format($sales[0]->total_net, 2) }} kgs</sup></h3>
 
-                <p>Beheaded Baconers Total Weight </p>
+                <p>Sales Baconers & Total Weight </p>
             </div>
             <div class="icon">
                 <i class="ion ion-alert"></i>
@@ -123,7 +123,7 @@
 
 <div class="row">
     <!-- ./col -->
-    <div class="col-lg-3 col-6">
+    <div class="col-lg-4 col-6">
         <!-- small box -->
         <p class="text-center">
             <strong> Slaughtered: ({{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }})</strong>
@@ -140,15 +140,15 @@
         </div>
     </div>
     <!-- ./col -->
-    <div class="col-lg-3 col-6">
+    <div class="col-lg-4 col-6">
         <!-- small box -->
         <p class="text-center">
             <strong>Scale 1</strong>
         </p>
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $sows?? "0" }}</h3>
-                <p>No. of Beheaded Sows</p>
+                <h3>{{ $sows?? "0" }} | <sup style="font-size: 20px">{{ number_format($sows_weight, 2) }} kgs</sup></h3>
+                <p>No. of Beheaded Sows & netweight</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -156,25 +156,7 @@
             <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <div class="col-lg-3 col-6">
-        <!-- small box -->
-        <p class="text-center">
-            <strong>Scale 1 output</strong>
-        </p>
-        <div class="small-box bg-warning">
-            <div class="inner">
-                <h3>{{ number_format($sows_weight, 2) }} <sup style="font-size: 20px">kgs</sup></h3>
-
-                <p>Beheaded Sows Total Weight Output</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-alert"></i>
-            </div>
-            <a href="{{ route('butchery_breaking_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    <!-- ./col -->
-    <div class="col-lg-3 col-6">
+    <div class="col-lg-4 col-6">
         @php
             if($sows_weight == 0.00){
                 $sows_weight = 1.00;

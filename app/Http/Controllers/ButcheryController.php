@@ -133,9 +133,10 @@ class ButcheryController extends Controller
             ->where('item_code', 'G1102')
             ->sum('net_weight');
 
-        $sales_count = DB::table('sales')
+        $sales = DB::table('sales')
             ->whereDate('created_at', Carbon::today())
-            ->count();
+            ->select(DB::raw('SUM(sales.net_weight) as total_net'), DB::raw('COUNT(sales.id) as count'))
+            ->get()->toArray();
 
         $slaughtered_baconers_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () {
             $helpers = new Helpers();
@@ -155,7 +156,7 @@ class ButcheryController extends Controller
                 ->sum('net_weight');
         });
 
-        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles', 'sales_count', 'slaughtered_baconers_weight', 'slaughtered_sows_weight'));
+        return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles', 'sales', 'slaughtered_baconers_weight', 'slaughtered_sows_weight'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)
