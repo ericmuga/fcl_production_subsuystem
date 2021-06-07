@@ -71,6 +71,7 @@
                 <thead>
                     <tr>
                         <th>#</th>
+                        <th>Tnx id</th>
                         <th>Code </th>
                         <th>product </th>
                         <th>Product Type</th>
@@ -84,6 +85,7 @@
                 <tfoot>
                     <tr>
                         <th>#</th>
+                        <th>Tnx id</th>
                         <th>Code </th>
                         <th>product </th>
                         <th>Product Type</th>
@@ -98,6 +100,7 @@
                     @foreach($deboning_data as $data)
                     <tr>
                         <td>{{ $i++ }}</td>
+                        <td>{{ $data->id }}</td>
                         <td> {{ $data->item_code }}</td>
                         <td>{{ $helpers->getProductName($data->item_code) }}</td>
                         <td> {{ $data->product_type }}</td>
