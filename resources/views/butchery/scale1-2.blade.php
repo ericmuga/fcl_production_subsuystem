@@ -55,28 +55,32 @@ $arr_products = $products->toArray();
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="G1030" id="baconers"
-                                            name="carcass_type" checked>
-                                        <label for="form-check-label">Baconers</label>
+                                        <label for="baconers">
+                                            <input class="form-check-input" type="radio" value="G1030" id="baconers"
+                                                name="carcass_type" checked> Baconers
+                                        </label>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" value="G1031" id="sows"
-                                            name="carcass_type">
-                                        <label for="form-check-label">Sows </label>
+                                        <label for="sows">
+                                            <input class="form-check-input" type="radio" value="G1031" id="sows"
+                                                name="carcass_type"> Sows
+                                        </label>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G1033" id="headless_sale"
-                                    name="carcass_type">
-                                <label for="form-check-label">Porker, Headles-sales</label>
+                                <label for="headless_sale">
+                                    <input class="form-check-input" type="radio" value="G1033" id="headless_sale"
+                                        name="carcass_type"> Porker, Headles-sales
+                                </label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="radio" value="G1032" id="headOn_sale"
-                                    name="carcass_type">
-                                <label for="form-check-label">Porker, HeadOn-sales</label>
+                                <label for="headOn_sale">
+                                    <input class="form-check-input" type="radio" value="G1032" id="headOn_sale"
+                                        name="carcass_type">Porker, HeadOn-sales
+                                </label>
                             </div>
                         </div>
                     </div>
