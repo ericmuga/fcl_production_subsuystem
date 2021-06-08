@@ -135,7 +135,7 @@ class ButcheryController extends Controller
 
         $sales = DB::table('sales')
             ->whereDate('created_at', Carbon::today())
-            ->select(DB::raw('SUM(sales.net_weight) as total_net'), DB::raw('COUNT(sales.id) as count'))
+            ->select(DB::raw('SUM(sales.net_weight) as total_net'), DB::raw('SUM(sales.no_of_carcass) as count'))
             ->get()->toArray();
 
         $slaughtered_baconers_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () {
@@ -213,7 +213,7 @@ class ButcheryController extends Controller
     {
         try {
             // insert sales substr($string, 0, -1);
-            if ($request->carcass_type == "G1032" || $request->carcass_type == "G1033") {
+            if ($request->carcass_type == "G1032" || $request->carcass_type == "G1033" || $request->carcass_type == "G1034") {
 
                 DB::table('sales')->insert([
                     'item_code' => $request->carcass_type,

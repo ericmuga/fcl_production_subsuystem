@@ -575,7 +575,11 @@ class ProductProcessesSeeder extends Seeder
                 'product_id' => $this->getProductId("G5012"),
                 'process_code' => '8',
             ],
-            # 94
+            [
+                'product_id' => $this->getProductId("G1034"),
+                'process_code' => '0',
+            ],
+            # 95
 
 
         ];
