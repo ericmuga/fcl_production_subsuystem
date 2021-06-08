@@ -85,7 +85,7 @@ $arr_products = $products->toArray();
                             <div class="form-check">
                                 <label for="carcassSide_sale">
                                     <input class="form-check-input" type="radio" value="G1034" id="carcassSide_sale"
-                                        name="carcass_type"> Pig, Carcass-Side without Tail
+                                        name="carcass_type"> Pig, Carcass-Side without Tail-Sales
                                 </label>
                             </div>
                             
