@@ -330,6 +330,7 @@ $arr_products = $products->toArray();
                                     <th>Product Code</th>
                                     <th>Product</th>
                                     <th>Scale Weight(kgs)</th>
+                                    <th>No. of Pieces</th>
                                     <th>Date </th>
                                 </tr>
                             </thead>
@@ -339,6 +340,7 @@ $arr_products = $products->toArray();
                                     <th>Product Code</th>
                                     <th>Product</th>
                                     <th>Scale Weight(kgs)</th>
+                                    <th>No. of Pieces</th>
                                     <th>Date </th>
                                 </tr>
                             </tfoot>
@@ -352,6 +354,7 @@ $arr_products = $products->toArray();
                                             href="#">{{ $data->item_code }}</a> </td>
                                     <td> {{ $data->description }}</td>
                                     <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                    <td> {{ number_format($data->no_of_items, 2) }}</td>
                                     <td> {{ $data->created_at }}</td>
                                 </tr>
                                 @endforeach
