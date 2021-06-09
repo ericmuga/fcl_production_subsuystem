@@ -349,12 +349,12 @@ $arr_products = $products->toArray();
                                 <tr>
                                     <td>{{ $loop->iteration}}</td>
                                     <td id="itemCodeModalShow" data-id="{{$data->id}}"
-                                        data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}"
+                                        data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}" data-pieces="{{ $data->no_of_items }}"
                                         data-weight="{{number_format($data->actual_weight, 2)}}"><a
                                             href="#">{{ $data->item_code }}</a> </td>
                                     <td> {{ $data->description }}</td>
                                     <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                    <td> {{ number_format($data->no_of_items, 2) }}</td>
+                                    <td> {{ $data->no_of_items }}</td>
                                     <td> {{ $data->created_at }}</td>
                                 </tr>
                                 @endforeach
@@ -441,6 +441,11 @@ $arr_products = $products->toArray();
                             <option value="{{trim($data->code)}}">{{$data->description}}</option>
                             @endforeach
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>No. of Pieces</label>
+                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_pieces" value=""
+                            name="edit_no_pieces" placeholder="">
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
@@ -532,11 +537,13 @@ $arr_products = $products->toArray();
 
             var product = $(this).data('item_code');
             var item = $(this).data('item');
+            var pieces = $(this).data('pieces');
             var weight = $(this).data('weight');
             var id = $(this).data('id');
 
             $('#edit_product').val(product);
             $('#item_name').val(item);
+            $('#edit_no_pieces').val(pieces);
             $('#edit_weight').val(weight);
             $('#item_id').val(id);
 

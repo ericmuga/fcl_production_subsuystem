@@ -100,7 +100,7 @@
                         <td> {{ $data->product_type }}</td>
                         <td> {{ number_format($data->actual_weight, 2) }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
-                        <td> {{ number_format($data->no_of_items, 2) }}</td>
+                        <td> {{ $data->no_of_items }}</td>
                         <td> {{ $data->process }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>
