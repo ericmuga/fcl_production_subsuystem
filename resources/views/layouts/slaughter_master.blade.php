@@ -55,7 +55,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
         href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
 
     <!-- toastr -->
-    {{-- <link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css"> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
 </head>
 
@@ -127,8 +126,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{ asset('assets/plugins/select2/js/select2.full.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('assets/dist/js/adminlte.min.js') }}"></script>
-    {{-- <script src="{{asset('assets/dist/js/pages/dashboard.js') }}">
-    </script> --}}
     <!-- jQuery UI 1.11.4 -->
     <script src="{{ asset('assets/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
     <script>
