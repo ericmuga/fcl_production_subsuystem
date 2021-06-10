@@ -804,4 +804,19 @@ class ButcheryController extends Controller
 
         return view('butchery.sales', compact('title', 'sales_data', 'helpers'));
     }
+
+    public function getDeboningProductsList()
+    {
+        $title = "Deboning-Products-List";
+
+        $products = Cache::remember('products_list_scale3', now()->addMinutes(120), function () {
+            return DB::table('products')
+                ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+                ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'products.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->get();
+        });
+
+        return view('butchery.products_list_deboning', compact('title', 'products'));
+    }
 }
