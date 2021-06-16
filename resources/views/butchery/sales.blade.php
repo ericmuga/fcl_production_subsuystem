@@ -23,6 +23,7 @@
                                 <th> weight(kgs) </th>
                                 <th>Net Weight(kgs)</th>
                                 <th>Date</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -34,6 +35,7 @@
                                 <th> weight(kgs) </th>
                                 <th>Net Weight(kgs)</th>
                                 <th>Date</th>
+                                <th>Actions</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -49,6 +51,25 @@
                                 <td>{{ number_format($data->actual_weight, 2) }}</td>
                                 <td>{{ number_format($data->net_weight, 2) }}</td>
                                 <td>{{ $data->created_at }}</td>
+                                @if ( $data->returned == 0 )
+                                    <td>
+                                        <button type="button" data-id="{{$data->id}}"
+                                            data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
+                                            data-no_carcass="{{ $data->no_of_carcass }}"
+                                            data-weight="{{number_format($data->actual_weight, 2)}}"
+                                            class="btn btn-info btn-sm" title="Return Sale" id="returnSaleModalShow"><i
+                                                class="fa fa-undo" aria-hidden="true"></i>
+                                        </button>
+                                    </td>
+                                @elseif ($data->returned == 1)
+                                    <td>
+                                        <span class="badge badge-warning">returned</span>
+                                    </td>  
+                                @elseif(($data->returned == 2))  
+                                    <td>
+                                        <span class="badge badge-success">returned entry</span>
+                                    </td>                                 
+                                @endif
                             </tr>
                             @endforeach
                         </tbody>
@@ -82,6 +103,7 @@
                         <select class="form-control" name="edit_carcass" id="edit_carcass">
                             <option value="G1033">Porker, Headles-sales</option>
                             <option value="G1032">Porker, HeadOn-sales</option>
+                            <option value="G1034">Pig, Carcass-Side without Tail-Sales</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -110,6 +132,36 @@
 </div>
 <!--End Edit scale1 modal-->
 
+<!-- Return Sale modal -->
+<div class="modal fade" id="returnSaleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-sales-returns" action="{{route('butchery_sales_returns')}}" method="post">
+            @csrf
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">return sales Item: <strong><input style="border:none"
+                            type="text" id="item_name2" name="item_name" value="" readonly></strong></h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">Please confirm if you want to return this product.
+                <input type="hidden" id="return_no_carcass" value=""  name="return_no_carcass" >
+                <input type="hidden" name="return_weight" id="return_weight">
+                <input type="hidden" name="return_item_code" id="return_item_code" value="">
+                <input type="hidden" name="return_item_id" id="return_item_id" value="">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-outline-info btn-lg  float-right"><i
+                        class="fa fa-spinner" aria-hidden="true"></i> Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end logout -->
+
 @endsection
 
 @section('scripts')
@@ -132,6 +184,26 @@
             $('#item_id').val(id);
 
             $('#editModal').modal('show');
+        });
+
+        // returns modal
+        $("body").on("click", "#returnSaleModalShow", function (a) {
+            a.preventDefault();
+
+            var id = $(this).data('id');
+            var product = $(this).data('product_code');
+            var item = $(this).data('item');
+            var no_carcass = $(this).data('no_carcass');
+            var weight = $(this).data('weight');
+
+
+            $('#return_item_id').val(id);
+            $('#return_item_code').val(product);
+            $('#item_name2').val(item);
+            $('#return_no_carcass').val(no_carcass);
+            $('#return_weight').val(weight);
+
+            $('#returnSaleModal').modal('show');
         });
     });
 

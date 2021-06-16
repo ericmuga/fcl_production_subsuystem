@@ -330,6 +330,50 @@ class ButcheryController extends Controller
         }
     }
 
+    public function updateSalesReturns(Request $request, Helpers $helpers)
+    {
+        try {
+            // do sale return 
+            DB::transaction(function () use ($request, $helpers) {
+                // update returned flag 
+                DB::table('sales')
+                    ->where('id', $request->return_item_id)
+                    ->update([
+                        'returned' => 1,
+                        'updated_at' => Carbon::now(),
+                    ]);
+
+                // insert negative sales
+                DB::table('sales')->insert([
+                    'item_code' => $request->return_item_code,
+                    'no_of_carcass' => -1 * abs($request->return_no_carcass),
+                    'actual_weight' => -1 * abs($request->return_weight),
+                    'process_code' => 0, //process behead pig by default
+                    'returned' => 2,
+                    'net_weight' => -1 * abs($request->return_weight - (2.4 * $request->return_no_carcass)),
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+
+                // insert beheading data
+                DB::table('beheading_data')->insert([
+                    'item_code' => "G1030",
+                    'no_of_carcass' => abs($request->return_no_carcass),
+                    'actual_weight' => $request->return_weight,
+                    'net_weight' => $request->return_weight - (2.4 * abs($request->return_no_carcass)),
+                    'process_code' => 0,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+            });
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+
+        Toastr::success("Sales return of {$request->item_name} completed successfully", 'Success');
+        return redirect()->back();
+    }
+
     public function updateScaleTwoData(Request $request)
     {
         try {
