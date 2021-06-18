@@ -52,23 +52,23 @@
                                 <td>{{ number_format($data->net_weight, 2) }}</td>
                                 <td>{{ $data->created_at }}</td>
                                 @if ( $data->returned == 0 )
-                                    <td>
-                                        <button type="button" data-id="{{$data->id}}"
-                                            data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
-                                            data-no_carcass="{{ $data->no_of_carcass }}"
-                                            data-weight="{{number_format($data->actual_weight, 2)}}"
-                                            class="btn btn-info btn-sm" title="Return Sale" id="returnSaleModalShow"><i
-                                                class="fa fa-undo" aria-hidden="true"></i>
-                                        </button>
-                                    </td>
+                                <td>
+                                    <button type="button" data-id="{{$data->id}}"
+                                        data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
+                                        data-no_carcass="{{ $data->no_of_carcass }}"
+                                        data-weight="{{number_format($data->actual_weight, 2)}}"
+                                        class="btn btn-info btn-sm" title="Return Sale" id="returnSaleModalShow"><i
+                                            class="fa fa-undo"></i>
+                                    </button>
+                                </td>
                                 @elseif ($data->returned == 1)
-                                    <td>
-                                        <span class="badge badge-warning">returned</span>
-                                    </td>  
-                                @elseif(($data->returned == 2))  
-                                    <td>
-                                        <span class="badge badge-success">returned entry</span>
-                                    </td>                                 
+                                <td>
+                                    <span class="badge badge-warning">returned</span>
+                                </td>
+                                @elseif(($data->returned == 2))
+                                <td>
+                                    <span class="badge badge-success">returned entry</span>
+                                </td>
                                 @endif
                             </tr>
                             @endforeach
@@ -138,26 +138,32 @@
     <div class="modal-dialog" role="document">
         <form id="form-sales-returns" action="{{route('butchery_sales_returns')}}" method="post">
             @csrf
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">return sales Item: <strong><input style="border:none"
-                            type="text" id="item_name2" name="item_name" value="" readonly></strong></h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Sale Return</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Please confirm if you want to return this product</p>
+                    <label for="item_name">Item Name: </label>
+                    <p><strong><input style="border:none" type="text" id="item_name2" name="item_name" value=""
+                                readonly></strong></p>
+                    <label for="item_name">Item Weight: </label>
+                    <p><strong><input style="border:none" type="text" id="weight" name="weight" value=""
+                                readonly></strong></p>
+                    <input type="hidden" id="return_no_carcass" value="" name="return_no_carcass">
+                    <input type="hidden" name="return_weight" id="return_weight">
+                    <input type="hidden" name="return_item_code" id="return_item_code" value="">
+                    <input type="hidden" name="return_item_id" id="return_item_id" value="">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-outline-info btn-lg  float-right"><i class="fa fa-spinner"
+                            aria-hidden="true"></i> Confirm</button>
+                </div>
             </div>
-            <div class="modal-body">Please confirm if you want to return this product.
-                <input type="hidden" id="return_no_carcass" value=""  name="return_no_carcass" >
-                <input type="hidden" name="return_weight" id="return_weight">
-                <input type="hidden" name="return_item_code" id="return_item_code" value="">
-                <input type="hidden" name="return_item_id" id="return_item_id" value="">
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-outline-info btn-lg  float-right"><i
-                        class="fa fa-spinner" aria-hidden="true"></i> Confirm</button>
-            </div>
-        </div>
     </div>
 </div>
 <!-- end logout -->
@@ -202,6 +208,7 @@
             $('#item_name2').val(item);
             $('#return_no_carcass').val(no_carcass);
             $('#return_weight').val(weight);
+            $('#weight').val(weight);
 
             $('#returnSaleModal').modal('show');
         });
