@@ -156,7 +156,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </script>
 
     <!-- toastr -->
-    {{-- <script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     {!! Toastr::message() !!}
 
