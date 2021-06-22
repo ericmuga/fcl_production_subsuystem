@@ -726,6 +726,7 @@
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
+                        console.log('weight: '+ obj.response);
                         reading.value = obj.response;
                         getNet();
 
