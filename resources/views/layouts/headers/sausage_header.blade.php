@@ -1,6 +1,6 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container">
-        <a href="{{ route('admin_dashboard') }}" class="navbar-brand">
+        <a href="{{ route('sausage_dashboard') }}" class="navbar-brand">
             <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
                 class="brand-image" style="">
             <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
@@ -15,13 +15,17 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="{{ route('butchery_dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">User Management</a>
+                        class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('admin_users') }}" class="dropdown-item"><i class="fas fa-users"></i> Users
+                        <li><a href="{{ route('sausage_entries') }}" class="dropdown-item"> Today's Entries
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('items_list') }}" class="dropdown-item"> Items List
                             </a>
                         </li>
                     </ul>

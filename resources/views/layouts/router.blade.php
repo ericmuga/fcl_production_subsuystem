@@ -76,9 +76,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="card p-2 bg-success" style="height: 250px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
-                                        href="{{ route('admin_dashboard') }}">
-                                        <h4 class="card-title">Admin</h4>
-                                        <p class="card-text">Select this option to switch to Admin.
+                                        href="{{ route('sausage_dashboard') }}">
+                                        <h4 class="card-title">Sausage</h4>
+                                        <p class="card-text">Select this option to switch to Sausage interface.
                                         </p>
                                     </a>
                                 </div>

@@ -1,9 +1,9 @@
 <?php
 
-use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ButcheryController;
-use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\SausageController;
 use App\Http\Controllers\SlaughterController;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
@@ -89,9 +89,8 @@ Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])-
 /*-------------End Butchery------------------ */
 
 
-/*-------------Admin------------------ */
-Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin_dashboard');
-Route::get('/admin/users', [AdminController::class, 'getUsers'])->name('admin_users');
-Route::post('/admin/add/user', [AdminController::class, 'addUser'])->name('admin_add_user');
-Route::get('/admin/password', [AdminController::class, 'changePassword'])->name('admin_change_password');
+/*-------------Sausage------------------ */
+Route::get('/sausage/dashboard', [SausageController::class, 'index'])->name('sausage_dashboard');
+Route::get('/sausage/today-entries', [SausageController::class, 'productionEntries'])->name('sausage_entries');
+Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 /*-------------End Admin------------------ */

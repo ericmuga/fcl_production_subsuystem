@@ -1,4 +1,4 @@
-@extends('layouts.admin_master')
+@extends('layouts.sausage_master')
 
 @section('content-header')
 <div class="container">
