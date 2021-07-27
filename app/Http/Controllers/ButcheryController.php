@@ -766,8 +766,12 @@ class ButcheryController extends Controller
 
     public function combinedBeheadingReport(Request $request)
     {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
         $beheading_combined = DB::table('beheading_data')
-            ->whereDate('beheading_data.created_at', Carbon::parse($request->date))
+            // ->whereDate('beheading_data.created_at', Carbon::parse($request->date))
+            ->whereBetween('beheading_data.created_at', array($from_date, $to_date))
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
             ->select('beheading_data.item_code', 'products.description AS Carcass', DB::raw('SUM(beheading_data.no_of_carcass) as total_carcasses'), DB::raw('SUM(beheading_data.net_weight) as total_net'))
             ->groupBy('beheading_data.item_code', 'products.description')
@@ -775,7 +779,7 @@ class ButcheryController extends Controller
 
         $exports = Session::put('session_export_data', $beheading_combined);
 
-        return Excel::download(new BeheadedCombinedExport, 'BeheadingPigSummaryReport-' . $request->date . '.xlsx');
+        return Excel::download(new BeheadedCombinedExport, 'BeheadingPigSummaryReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function getBrakingReport(Helpers $helpers)
@@ -794,8 +798,11 @@ class ButcheryController extends Controller
 
     public function combinedBreakingReport(Request $request)
     {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
         $butchery_combined = DB::table('butchery_data')
-            ->whereDate('butchery_data.created_at', Carbon::parse($request->date))
+            ->whereBetween('butchery_data.created_at', array($from_date, $to_date))
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
             ->select('butchery_data.item_code', 'products.description AS product_type', DB::raw('SUM(butchery_data.net_weight)'))
             ->groupBy('butchery_data.item_code', 'products.description')
@@ -803,7 +810,7 @@ class ButcheryController extends Controller
 
         $exports = Session::put('session_export_data', $butchery_combined);
 
-        return Excel::download(new BreakingCombinedExport, 'BreakingPigSummaryReport-' . $request->date . '.xlsx');
+        return Excel::download(new BreakingCombinedExport, 'BreakingPigSummaryReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function getDeboningReport(Helpers $helpers)
@@ -822,8 +829,11 @@ class ButcheryController extends Controller
 
     public function combinedDeboningReport(Request $request)
     {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
         $deboned_combined = DB::table('deboned_data')
-            ->whereDate('deboned_data.created_at', Carbon::parse($request->date))
+            ->whereBetween('deboned_data.created_at', array($from_date, $to_date))
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
@@ -833,7 +843,7 @@ class ButcheryController extends Controller
 
         $exports = Session::put('session_export_data', $deboned_combined);
 
-        return Excel::download(new DebonedCombinedExport, 'DebonedPigSummaryReport-' . $request->date . '.xlsx');
+        return Excel::download(new DebonedCombinedExport, 'DebonedPigSummaryReport-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function getSalesReport(Helpers $helpers)

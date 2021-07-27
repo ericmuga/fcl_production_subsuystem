@@ -27,18 +27,23 @@
                             <form action="{{ url('/export-breaking-combined-report') }}" method="post"
                                 id="export-logs-form">
                                 {{ csrf_field() }}
-
-                                <div class="row">
-                                    *Filter by date<br>
-                                    <div class="form-group col-md-6">
-                                        <label for="stemplate_date_created_from_flagged">Date:(dd/mm/yyyy)</label>
-                                        <input type="date" class="form-control" name="date"
-                                            id="stemplate_date_created_from_flagged" autofocus required>
+                                
+                                <h6>*Filter by date range</h6>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label for="stemplate_date_created_from_flagged">From: (dd/mm/yyyy)</label>
+                                        <input type="date" class="form-control" name="from_date"
+                                            id="stemplate_date_created_from_flagged" required>
                                     </div>
-                                    <div class="form-group col-md-6">
-                                        <button type="submit" class="btn btn-primary "><i class="fa fa-paper-plane"
-                                                aria-hidden="true"></i> Export now</button>
+                                    <div class="col-md-6">
+                                        <label for="stemplate_date_created_from_flagged">To: (dd/mm/yyyy)</label>
+                                        <input type="date" class="form-control" name="to_date"
+                                            id="stemplate_date_created_from_flagged" required>
                                     </div>
+                                </div> <br>
+                                <div class="div" align="center">
+                                    <button type="submit" class="btn btn-primary "><i class="fa fa-paper-plane"
+                                            aria-hidden="true"></i> Export now</button>
                                 </div>
                             </form>
                             @if(count($errors))
