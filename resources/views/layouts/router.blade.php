@@ -76,9 +76,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="card p-2 bg-success" style="height: 250px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                                        href="#">
+                                        <h4 class="card-title">Choping</h4>
+                                        <p class="card-text">Select this option to switch to Choping section.
+                                        </p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> <hr>
+                <div class="row">
+                    <div class="container-fluid">
+                        <div class="card-deck-wrapper">
+                            <div class="card-deck">
+                                <div class="card p-2 bg-dark" style="height: 250px">
+                                    <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('sausage_dashboard') }}">
                                         <h4 class="card-title">Sausage</h4>
-                                        <p class="card-text">Select this option to switch to Sausage interface.
+                                        <p class="card-text">Select this option to switch to Sausage Section.
+                                        </p>
+                                    </a>
+                                </div>
+                                <div class="card p-2 bg-light" style="height: 250px">
+                                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                                        href="#">
+                                        <h4 class="card-title">High Care</h4>
+                                        <p class="card-text">Select this option to switch to High Care interface.
+                                        </p>
+                                    </a>
+                                </div>
+                                <div class="card p-2 bg-danger" style="height: 250px">
+                                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                                        href="#">
+                                        <h4 class="card-title">Dispatch</h4>
+                                        <p class="card-text">Select this option to switch to Dispatch interface.
                                         </p>
                                     </a>
                                 </div>
@@ -86,7 +118,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </div>
                     </div>
                 </div>
-
                 <!-- /.content -->
             </div>
             <!-- /.content-wrapper -->
