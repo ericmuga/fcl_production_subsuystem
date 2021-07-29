@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             ProcessesSeeder::class,
             ProductTypeSeeder::class,
             ProductProcessesSeeder::class,
+            EntryTypeSeeder::class,
         ]);
     }
 }

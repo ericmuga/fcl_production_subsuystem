@@ -460,16 +460,28 @@ class ButcheryController extends Controller
                 $product_type = 2;
             }
 
-            # insert record
-            DB::table('deboned_data')->insert([
-                'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
-                'actual_weight' => $request->reading,
-                'net_weight' => $request->net,
-                'process_code' => (int)$request->production_process_code,
-                'product_type' => $product_type,
-                'no_of_pieces' => $request->no_of_pieces,
-                'user_id' => $helpers->authenticatedUserId(),
-            ]);
+            DB::transaction(function () use ($request, $helpers, $product_type) {
+                # insert record
+                DB::table('deboned_data')->insert([
+                    'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
+                    'actual_weight' => $request->reading,
+                    'net_weight' => $request->net,
+                    'process_code' => (int)$request->production_process_code,
+                    'product_type' => $product_type,
+                    'no_of_pieces' => $request->no_of_pieces,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+
+                # add into stock
+                DB::table('transactions')->insert([
+                    'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
+                    'chiller_code' => 'D',
+                    'location_code' => '1570',
+                    'entry_code' => '5',
+                    'net_weight' => $request->net,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+            });
 
             Toastr::success("record {$request->product} inserted successfully", 'Success');
             return redirect()->back();
