@@ -17,6 +17,7 @@ class CreateProductProcessesTable extends Migration
             $table->id();
             $table->foreignId('product_id')->constrained('products');
             $table->integer('process_code');
+            $table->integer('product_type');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

@@ -287,6 +287,9 @@
                                 <option value="2">
                                     By Product
                                 </option>
+                                <option value="3">
+                                    Intake
+                                </option>
                             </select>
                         </div>
                     </div>
@@ -405,6 +408,7 @@
             var code = $('#product').val();
             var shortcode = code.split('-')[0];
             var product_code = code.split('-')[1];
+
             if (product_code != '') {
                 $.ajax({
                     type: "GET",
@@ -420,22 +424,24 @@
                     dataType: 'JSON',
                     success: function (res) {
                         if (res) {
+                            // console.log(res);
                             $('#btn_product_type').prop('disabled', false);
 
                             // product type
-                            if (res.product_type == 1) {
+                            if (res[0].product_type == '1') {
                                 $('#product_type').val("Main Product");
-                            } else {
+
+                            } else if (res[0].product_type == '2') {
                                 $('#product_type').val("By Product");
+
+                            } else {
+                                $('#product_type').val("Intake");
                             }
 
                             // product name and process
-                            $('#product_name').val(res.description);
-                            $('#production_process').val(res.process);
-                            $('#production_process_code').val(res.process_code);
-
-                            //get scale reading
-                            // getScaleReading();
+                            $('#product_name').val(res[0].description);
+                            $('#production_process').val(res[0].process);
+                            $('#production_process_code').val(res[0].process_code);
 
                             // get number of pieces
                             if (product_code == 'G1169' || product_code == 'G1119' ||
@@ -453,7 +459,7 @@
                     },
                     error: function (data) {
                         var errors = data.responseJSON;
-                        // console.log(errors);
+                        console.log(errors);
                         alert('error occured when pulling production types');
                     }
                 });

@@ -437,7 +437,7 @@ class ButcheryController extends Controller
             return DB::table('products')
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
-                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'products.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
                 ->get();
         });
 
@@ -458,6 +458,8 @@ class ButcheryController extends Controller
             $product_type = 1;
             if ($request->product_type == "By Product") {
                 $product_type = 2;
+            } elseif ($request->product_type == "Intake") {
+                $product_type = 3;
             }
 
             DB::transaction(function () use ($request, $helpers, $product_type) {
@@ -524,8 +526,9 @@ class ButcheryController extends Controller
             ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
             ->where('products.code', $request->product_code)
             ->where('processes.shortcode', $request->shortcode)
-            ->select('product_type', 'product_processes.process_code', 'process', 'description')
-            ->first();
+            ->select('product_processes.product_type', 'product_processes.process_code', 'process', 'description')
+            ->get();
+
         return response()->json($data);
     }
 
@@ -881,7 +884,7 @@ class ButcheryController extends Controller
             return DB::table('products')
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
-                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'products.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
                 ->get();
         });
 

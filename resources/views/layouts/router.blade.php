@@ -58,7 +58,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="container-fluid">
                         <div class="card-deck-wrapper">
                             <div class="card-deck">
-                                <div class="card p-2 bg-info" style="height: 250px">
+                                <div class="card p-2 bg-info" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('slaughter_dashboard') }}">
                                         <h4 class="card-title">Slaughter</h4>
@@ -66,7 +66,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                 </div>
-                                <div class="card p-2 bg-warning" style="height: 250px">
+                                <div class="card p-2 bg-warning" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('butchery_dashboard') }}">
                                         <h4 class="card-title">Butchery</h4>
@@ -74,11 +74,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                 </div>
-                                <div class="card p-2 bg-success" style="height: 250px">
+                                <div class="card p-2 bg-success" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                                         href="#">
-                                        <h4 class="card-title">Choping</h4>
-                                        <p class="card-text">Select this option to switch to Choping section.
+                                        <h4 class="card-title">Butchery Stocks</h4>
+                                        <p class="card-text">Select this option to switch to Butchery Stocks section.
                                         </p>
                                     </a>
                                 </div>
@@ -90,7 +90,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="container-fluid">
                         <div class="card-deck-wrapper">
                             <div class="card-deck">
-                                <div class="card p-2 bg-dark" style="height: 250px">
+                                <div class="card p-2 bg-dark" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('sausage_dashboard') }}">
                                         <h4 class="card-title">Sausage</h4>
@@ -98,7 +98,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                 </div>
-                                <div class="card p-2 bg-light" style="height: 250px">
+                                <div class="card p-2 bg-primary" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                                         href="#">
                                         <h4 class="card-title">High Care</h4>
@@ -106,7 +106,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                 </div>
-                                <div class="card p-2 bg-danger" style="height: 250px">
+                                <div class="card p-2 bg-danger" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                                         href="#">
                                         <h4 class="card-title">Dispatch</h4>

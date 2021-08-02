@@ -45,9 +45,14 @@
                                 <td>{{ $data->description }}</td>
                                 @if ($data->product_type == 1)
                                     <td> Main Product</td>
-                                @else
+
+                                @elseif($data->product_type == 2)
                                     <td> By Product</td>
+
+                                @else
+                                    <td> Intake</td>
                                 @endif
+                                
                                 <td>{{ $data->process_code }}</td>
                                 <td>{{ $data->process }}</td>
                             </tr>
