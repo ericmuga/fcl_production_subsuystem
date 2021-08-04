@@ -5,6 +5,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\SlaughterController;
+use App\Http\Controllers\ButcheryStockController;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
@@ -87,6 +88,11 @@ Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSetting
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
 /*-------------End Butchery------------------ */
+
+
+/*-------------stocks------------------ */
+Route::get('/stocks/dashboard', [ButcheryStockController::class, 'index'])->name('stock_dashboard');
+/*-------------End Admin------------------ */
 
 
 /*-------------Sausage------------------ */

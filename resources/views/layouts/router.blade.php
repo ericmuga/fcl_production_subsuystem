@@ -76,7 +76,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 </div>
                                 <div class="card p-2 bg-success" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
-                                        href="#">
+                                        href="{{ route('stock_dashboard') }}">
                                         <h4 class="card-title">Butchery Stocks</h4>
                                         <p class="card-text">Select this option to switch to Butchery Stocks section.
                                         </p>
