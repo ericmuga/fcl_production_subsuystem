@@ -344,7 +344,7 @@ class SlaughterController extends Controller
         $slaughter_combined = DB::table('slaughter_data')
             ->whereDate('slaughter_data.created_at', Carbon::parse($request->date))
             ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
-            ->select('slaughter_data.item_code', 'carcass_types.description AS carcass', DB::raw('SUM(slaughter_data.net_weight) As total_net'))
+            ->select('slaughter_data.item_code', 'carcass_types.description AS carcass', DB::raw('COUNT(slaughter_data.id) As no_of_carcasses'), DB::raw('SUM(slaughter_data.net_weight) As total_net'))
             ->groupBy('slaughter_data.item_code', 'carcass_types.description')
             ->get();
 

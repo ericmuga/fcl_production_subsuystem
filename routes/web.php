@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ButcheryController;
+use App\Http\Controllers\ButcheryStockController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SausageController;
@@ -91,7 +92,8 @@ Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])-
 
 
 /*-------------stocks------------------ */
-Route::get('/stocks/dashboard', [ButcheryStockController::class, 'index'])->name('stock_dashboard');
+Route::get('/stocks/dashboard', [ButcheryStockController::class, 'index'])->name('stock_dashboard');
+Route::get('/stocks/transactions', [ButcheryStockController::class, 'stocksTransactions'])->name('stocks_transactions');
 /*-------------End Admin------------------ */
 
 

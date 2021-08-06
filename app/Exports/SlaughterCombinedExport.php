@@ -21,7 +21,7 @@ class SlaughterCombinedExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code', 'Carcass', 'Total Net Weight'
+                'Item Code', 'Carcass', 'No Of Carcass', 'Total Net Weight'
             ];
     }
 }
