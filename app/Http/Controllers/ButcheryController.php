@@ -833,7 +833,7 @@ class ButcheryController extends Controller
             ->whereDate('butchery_data.created_at', '>=', $from_date)
             ->whereDate('butchery_data.created_at', '<=', $to_date)
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
-            ->select('butchery_data.item_code', 'products.description AS product_type', DB::raw('SUM(butchery_data.net_weight)'))
+            ->select('butchery_data.item_code', 'products.description AS product_type', DB::raw('SUM(butchery_data.no_of_items) as total_pieces'), DB::raw('SUM(butchery_data.net_weight)'))
             ->groupBy('butchery_data.item_code', 'products.description')
             ->get();
 
