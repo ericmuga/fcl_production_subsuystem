@@ -474,28 +474,28 @@ class ButcheryController extends Controller
                     'user_id' => $helpers->authenticatedUserId(),
                 ]);
 
-                # update stock
-                if ($product_type == 3) {
-                    # reduce stock
-                    DB::table('transactions')->insert([
-                        'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
-                        'chiller_code' => 'D',
-                        'location_code' => '1570',
-                        'entry_code' => '5',
-                        'net_weight' => -1 * abs($request->net),
-                        'user_id' => $helpers->authenticatedUserId(),
-                    ]);
-                } else {
-                    # add stock
-                    DB::table('transactions')->insert([
-                        'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
-                        'chiller_code' => 'D',
-                        'location_code' => '1570',
-                        'entry_code' => '5',
-                        'net_weight' => $request->net,
-                        'user_id' => $helpers->authenticatedUserId(),
-                    ]);
-                }
+                // # update stock
+                // if ($product_type == 3) {
+                //     # reduce stock
+                //     DB::table('transactions')->insert([
+                //         'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
+                //         'chiller_code' => 'D',
+                //         'location_code' => '1570',
+                //         'entry_code' => '5',
+                //         'net_weight' => -1 * abs($request->net),
+                //         'user_id' => $helpers->authenticatedUserId(),
+                //     ]);
+                // } else {
+                //     # add stock
+                //     DB::table('transactions')->insert([
+                //         'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
+                //         'chiller_code' => 'D',
+                //         'location_code' => '1570',
+                //         'entry_code' => '5',
+                //         'net_weight' => $request->net,
+                //         'user_id' => $helpers->authenticatedUserId(),
+                //     ]);
+                // }
             });
 
             Toastr::success("record {$request->product} inserted successfully", 'Success');
