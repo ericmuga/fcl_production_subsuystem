@@ -19,7 +19,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>23,150<sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>200 products<sup style="font-size: 20px"> 20,456 Kgs</sup></h3>
 
                 <p>Chiller C</p>
             </div>

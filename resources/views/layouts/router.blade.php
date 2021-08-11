@@ -86,7 +86,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </div>
                     </div>
                 </div> <hr>
-                {{-- <div class="row">
+                <div class="row">
                     <div class="container-fluid">
                         <div class="card-deck-wrapper">
                             <div class="card-deck">
@@ -117,7 +117,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                             </div>
                         </div>
                     </div>
-                </div> --}}
+                </div>
                 <!-- /.content -->
             </div>
             <!-- /.content-wrapper -->

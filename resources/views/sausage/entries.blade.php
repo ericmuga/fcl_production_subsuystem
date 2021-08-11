@@ -17,9 +17,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Barcode</th>
-                                <th>Item Name </th>
+                                <th>Item Code </th>
                                 <th>Item description</th>
-                                <th>Production Time</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -27,10 +26,9 @@
                             <tr>
                                 <th>#</th>
                                 <th>Barcode</th>
-                                <th>Item Name </th>
+                                <th>Item Code </th>
                                 <th>Item description</th>
-                                <th>Production Time</th>
-                                <th>Actions</th>
+                                <th>Count</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -38,10 +36,9 @@
                             <tr>
                                 <td>{{ $i++ }}</td>
                                 <td>{{ $data->barcode }}</td>
-                                <td></td>
-                                <td></td>
-                                <td>{{ $data->created_at }}</td>
-                                <td></td>
+                                <td>{{ $data->code }}</td>
+                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->total_count }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -55,3 +52,4 @@
     <!-- /.col -->
 </div>
 @endsection
+
