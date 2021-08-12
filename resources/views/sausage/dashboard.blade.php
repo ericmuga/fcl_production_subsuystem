@@ -42,7 +42,7 @@
             
           @endif
 
-          <p>Highest Product per Tonnage</p>
+          <p>Highest Product per Entry</p>
         </div>
         <div class="icon">
           <i class="ion ion-stats-bars"></i>
