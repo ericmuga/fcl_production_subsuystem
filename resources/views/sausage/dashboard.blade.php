@@ -34,14 +34,8 @@
       <!-- small box -->
       <div class="small-box bg-success">
         <div class="inner">
-          @if ($highest_product[0])
-            <h3>{{ $highest_product[0]->total_count }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $highest_product[0]->description }}</sup></h3>
-
-          @else
-          <h3>0pkts| <sup style="font-size: 20px">not available</sup></h3></h3>
-            
-          @endif
-
+          <h3>{{ $highest_product[0]->total_count?? "0" }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $highest_product[0]->description?? "not available" }}</sup></h3>
+         
           <p>Highest Product per Entry</p>
         </div>
         <div class="icon">
@@ -54,13 +48,7 @@
       <!-- small box -->
       <div class="small-box bg-warning">
         <div class="inner">
-          @if ($lowest_product[0])
-            <h3>{{ $lowest_product[0]->total_count }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $lowest_product[0]->description }}</sup></h3>
-
-          @else
-          <h3>0pkts| <sup style="font-size: 20px">not available</sup></h3></h3>
-            
-          @endif
+          <h3>{{ $lowest_product[0]->total_count?? "0" }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $lowest_product[0]->description?? "not available" }}</sup></h3>
 
           <p>Lowest Product per Entry</p>
         </div>
