@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Sausage Production Registry | showing <strong>{{ $title }}</strong></h3>
+                <h3 class="card-title">Sausage Production Registry | showing <strong>{{ $filter? : "All" }} </strong>Entries for today</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">

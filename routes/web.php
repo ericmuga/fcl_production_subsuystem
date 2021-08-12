@@ -99,6 +99,6 @@ Route::get('/stocks/transactions', [ButcheryStockController::class, 'stocksTrans
 
 /*-------------Sausage------------------ */
 Route::get('/sausage/dashboard', [SausageController::class, 'index'])->name('sausage_dashboard');
-Route::get('/sausage/today-entries', [SausageController::class, 'productionEntries'])->name('sausage_entries');
+Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'productionEntries'])->name('sausage_entries');
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 /*-------------End Admin------------------ */
