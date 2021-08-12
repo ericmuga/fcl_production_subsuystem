@@ -107,14 +107,12 @@ class SausageController extends Controller
     public function itemsList()
     {
         $title = "Items-List";
-        $category = "JF-SAUSAGE";
 
-        $items = Cache::remember('items_list', now()->addMinutes(480), function () use ($category) {
+        $items = Cache::remember('items_list', now()->addMinutes(480), function () {
             return DB::table('items')
-                ->where('category', $category)
                 ->get();
         });
 
-        return view('sausage.items', compact('title', 'category', 'items'));
+        return view('sausage.items', compact('title', 'items'));
     }
 }

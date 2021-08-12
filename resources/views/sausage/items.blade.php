@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Items Registry | showing {{ $category }} category</h3>
+                <h3 class="card-title">Items Registry | showing All Items</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -20,7 +20,6 @@
                                 <th>Item Code</th>
                                 <th>Barcode</th>
                                 <th>Item Name </th>
-                                <th>Item category</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -29,7 +28,6 @@
                                 <th>Item Code</th>
                                 <th>Barcode</th>
                                 <th>Item Name </th>
-                                <th>Item category</th>
                             </tr>
                             </tr>
                         </tfoot>
@@ -40,7 +38,6 @@
                                 <td>{{ $data->code }}</td>
                                 <td>{{ $data->barcode }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td>{{ $data->category }}</td>
                             </tr>
                             @endforeach
                         </tbody>
