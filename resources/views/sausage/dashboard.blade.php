@@ -19,9 +19,9 @@
       <!-- small box -->
       <div class="small-box bg-info">
         <div class="inner">
-          <h3>200pkts | <sup style="font-size: 20px"> 20,456 Kgs</sup></h3>
+          <h3>{{ $total_entries }} <sup style="font-size: 20px">pkts</sup> | <sup style="font-size: 20px"> {{ number_format($total_tonnage, 2) }} Kgs</sup></h3>
 
-          <p>Value Pack Pork Sausages 1kg</p>
+          <p>Total Entries Today</p>
         </div>
         <div class="icon">
           <i class="ion ion-bag"></i>
@@ -34,9 +34,15 @@
       <!-- small box -->
       <div class="small-box bg-success">
         <div class="inner">
-          <h3>5,323<sup style="font-size: 20px"></sup></h3>
+          @if ($highest_product[0])
+            <h3>{{ $highest_product[0]->total_count }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $highest_product[0]->description }}</sup></h3>
 
-          <p>Spicy Pork Sausages V/P 1kg</p>
+          @else
+          <h3>0pkts| <sup style="font-size: 20px">not available</sup></h3></h3>
+            
+          @endif
+
+          <p>Highest Product per Tonnage</p>
         </div>
         <div class="icon">
           <i class="ion ion-stats-bars"></i>
@@ -48,9 +54,15 @@
       <!-- small box -->
       <div class="small-box bg-warning">
         <div class="inner">
-          <h3>635</h3>
+          @if ($lowest_product[0])
+            <h3>{{ $lowest_product[0]->total_count }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $lowest_product[0]->description }}</sup></h3>
 
-          <p>Smoked Sausage - 500 gms </p>
+          @else
+          <h3>0pkts| <sup style="font-size: 20px">not available</sup></h3></h3>
+            
+          @endif
+
+          <p>Lowest Product per Entry</p>
         </div>
         <div class="icon">
           <i class="ion ion-pie-graph"></i>
@@ -63,9 +75,9 @@
       <!-- small box -->
       <div class="small-box bg-danger">
         <div class="inner">
-          <h3>635</h3>
+          <h3>{{ $wrong_entries }}</h3>
 
-          <p>Smoked Sausage - 500 gms </p>
+          <p>Probable wrong Entries</p>
         </div>
         <div class="icon">
           <i class="ion ion-pie-graph"></i>

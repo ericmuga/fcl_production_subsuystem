@@ -18,8 +18,9 @@ class CreateItemsTable extends Migration
             $table->string('code')->unique(); // stands for both unique and indexable
             $table->string('barcode')->unique();
             $table->string('description', 50);
-            $table->string('category', 50);
+            $table->string('category', 50)->nullable();
             $table->string('unit_of_measure', 10)->nullable();
+            $table->double('qty_per_unit_of_measure');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
