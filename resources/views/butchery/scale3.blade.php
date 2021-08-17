@@ -24,8 +24,8 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
-                                <option value="{{ $product->shortcode.'-'.$product->code }}">
-                                    {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1) }}
+                                <option value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
+                                    {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->product_type_name }}
                                 </option>
                                 @endforeach
                             </select>
@@ -143,6 +143,9 @@
                             </option>
                             <option value="2">
                                 By Product
+                            </option>
+                            <option value="3">
+                                Intake
                             </option>
                         </select>
                     </div>
@@ -398,6 +401,8 @@
             var code = 1;
             if (product == "By Product") {
                 code = 2;
+            } else if (product == "Intake") {
+                code = 3;
             }
             $('#edit_product_type').val(code);
 
@@ -408,6 +413,7 @@
             var code = $('#product').val();
             var shortcode = code.split('-')[0];
             var product_code = code.split('-')[1];
+            var product_type_code = code.split('-')[2];
 
             if (product_code != '') {
                 $.ajax({
@@ -419,6 +425,7 @@
                     data: {
                         'product_code': product_code,
                         'shortcode': shortcode,
+                        'product_type_code': product_type_code,
 
                     },
                     dataType: 'JSON',
@@ -607,6 +614,8 @@
             $('#product_type').val("Main Product");
         } else if (edit_product_type == 2) {
             $('#product_type').val("By Product");
+        } else if (edit_product_type == 3) {
+            $('#product_type').val("Intake");
         }
         $('#productTypesModal').modal('hide');
 

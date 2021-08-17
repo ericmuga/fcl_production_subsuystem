@@ -437,7 +437,8 @@ class ButcheryController extends Controller
             return DB::table('products')
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
-                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_types.code as product_type_code', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
                 ->get();
         });
 
@@ -539,7 +540,8 @@ class ButcheryController extends Controller
             ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
             ->where('products.code', $request->product_code)
             ->where('processes.shortcode', $request->shortcode)
-            ->select('product_processes.product_type', 'product_processes.process_code', 'process', 'description')
+            ->where('product_processes.product_type', $request->product_type_code)
+            ->select('product_processes.product_type', 'product_processes.process_code', 'product_processes.product_type', 'process', 'description')
             ->get();
 
         return response()->json($data);
@@ -898,6 +900,7 @@ class ButcheryController extends Controller
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
                 ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->orderBy('products.code')
                 ->get();
         });
 

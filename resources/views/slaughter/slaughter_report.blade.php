@@ -107,6 +107,7 @@
                                 <th>Rounded weight(kgs)</th>
                                 <th>Meat %</th>
                                 <th>Classification</th>
+                                <th>Weight Capture Mode</th>
                                 <th>Slaughter Date</th>
                             </tr>
                         </thead>
@@ -122,6 +123,7 @@
                                 <th>Rounded weight(kgs)</th>
                                 <th>Meat %</th>
                                 <th>Classification</th>
+                                <th>Weight Capture Mode</th>
                                 <th>Slaughter Date</th>
                             </tr>
                         </tfoot>
@@ -138,6 +140,11 @@
                                 <td>{{ round($data->net_weight) }}</td>
                                 <td>{{ $data->meat_percent }}</td>
                                 <td>{{ $data->classification_code }}</td>
+                                @if ($data->manual_weight == 1)
+                                <td><span class="badge badge-warning">manual</span></td>
+                                @else
+                                    <td><span class="badge badge-success">auto</span></td>
+                                @endif
                                 <td>{{ $data->created_at }}</td>
                             </tr>
                             @endforeach

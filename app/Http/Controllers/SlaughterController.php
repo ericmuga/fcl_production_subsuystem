@@ -178,6 +178,11 @@ class SlaughterController extends Controller
     {
         try {
             // try save
+            // dd($request->all());
+            $manual_weight = 0;
+            if ($request->manual_weight == 'on') {
+                $manual_weight = 1;
+            }
             DB::table('slaughter_data')->insert([
                 'receipt_no' => $request->receipt_no,
                 'slapmark' => $request->slapmark,
@@ -190,6 +195,7 @@ class SlaughterController extends Controller
                 'vendor_name' => $request->vendor_name,
                 'meat_percent' => $request->meat_percent,
                 'classification_code' => $request->classification_code,
+                'manual_weight' => $manual_weight,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 
