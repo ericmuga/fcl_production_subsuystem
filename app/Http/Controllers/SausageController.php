@@ -19,17 +19,17 @@ class SausageController extends Controller
         $title = "Dashboard";
 
         $total_tonnage = DB::table('sausage_entries')
-            // ->where('sausage_entries.created_at', today())
+            ->where('sausage_entries.created_at', today())
             ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
             ->sum(DB::raw('1 * items.qty_per_unit_of_measure'));
 
         $total_entries =  DB::table('sausage_entries')
-            // ->where('sausage_entries.created_at', today())
+            ->where('sausage_entries.created_at', today())
             ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
             ->count('sausage_entries.barcode');
 
         $highest_product = DB::table('sausage_entries')
-            // ->where('sausage_entries.created_at', today())
+            ->where('sausage_entries.created_at', today())
             ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
             ->where('items.code', '!=', null)
             ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure')
@@ -39,7 +39,7 @@ class SausageController extends Controller
             ->get()->toArray();
 
         $lowest_product = DB::table('sausage_entries')
-            // ->where('sausage_entries.created_at', today())
+            ->where('sausage_entries.created_at', today())
             ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
             ->where('items.code', '!=', null)
             ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure')
@@ -49,7 +49,7 @@ class SausageController extends Controller
             ->get()->toArray();
 
         $wrong_entries =  DB::table('sausage_entries')
-            // ->where('sausage_entries.created_at', today())
+            ->where('sausage_entries.created_at', today())
             ->where('items.code', null)
             ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
             ->count('sausage_entries.barcode');
@@ -64,7 +64,7 @@ class SausageController extends Controller
         if (!$filter) {
             # no filter
             $entries = DB::table('sausage_entries')
-                // ->where('sausage_entries.created_at', today())
+                ->where('sausage_entries.created_at', today())
                 ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
                 ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure')
                 ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
@@ -73,7 +73,7 @@ class SausageController extends Controller
         } elseif ($filter == 'highest-product') {
             $entries = DB::table('sausage_entries')
                 ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
-                // ->where('sausage_entries.created_at', today())
+                ->where('sausage_entries.created_at', today())
                 ->where('items.code', '!=', null)
                 ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure')
                 ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
@@ -83,7 +83,7 @@ class SausageController extends Controller
         } elseif ($filter == 'lowest-product') {
             $entries = DB::table('sausage_entries')
                 ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
-                // ->where('sausage_entries.created_at', today())
+                ->where('sausage_entries.created_at', today())
                 ->where('items.code', '!=', null)
                 ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure')
                 ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
@@ -93,7 +93,7 @@ class SausageController extends Controller
         } elseif ($filter == 'probable-wrong-entries') {
             $entries = DB::table('sausage_entries')
                 ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
-                // ->where('sausage_entries.created_at', today())
+                ->where('sausage_entries.created_at', today())
                 ->where('items.code', null)
                 ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure')
                 ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
