@@ -456,6 +456,7 @@ class ButcheryController extends Controller
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
+
             $product_type = 1;
             if ($request->product_type == "By Product") {
                 $product_type = 2;
@@ -463,10 +464,13 @@ class ButcheryController extends Controller
                 $product_type = 3;
             }
 
-            DB::transaction(function () use ($request, $helpers, $product_type) {
+            $item = explode('-', $request->product);
+            $item_code = $item[1];
+
+            DB::transaction(function () use ($request, $helpers, $item_code, $product_type) {
                 # insert record
                 DB::table('deboned_data')->insert([
-                    'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
+                    'item_code' => $item_code,
                     'actual_weight' => $request->reading,
                     'net_weight' => $request->net,
                     'process_code' => (int)$request->production_process_code,
