@@ -83,7 +83,7 @@
                         <th>Production Process</th>
                         <th>Weight(kgs)</th>
                         <th>Net Weight(kgs)</th>
-                        <th>Returned Status</th>
+                        <th>Returned Entry</th>
                         <th>Date </th>
                     </tr>
                 </thead>
@@ -96,7 +96,7 @@
                         <th>Production Process</th>
                         <th>Weight(kgs)</th>
                         <th>Net Weight(kgs)</th>
-                        <th>Returned Status</th>
+                        <th>Returned Entry</th>
                         <th>Date </th>
                     </tr>
                 </tfoot>
