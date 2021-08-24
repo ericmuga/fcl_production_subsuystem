@@ -361,6 +361,7 @@ class ButcheryController extends Controller
                     'actual_weight' => $request->return_weight,
                     'net_weight' => $request->return_weight - (2.4 * abs($request->return_no_carcass)),
                     'process_code' => 0,
+                    'return_entry' => 1,
                     'user_id' => $helpers->authenticatedUserId(),
                 ]);
             });

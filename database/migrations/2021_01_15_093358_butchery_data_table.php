@@ -21,6 +21,7 @@ class ButcheryDataTable extends Migration
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
             $table->tinyInteger('product_type');
+            $table->tinyInteger('return_entry')->default(0);
             $table->integer('no_of_items')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
