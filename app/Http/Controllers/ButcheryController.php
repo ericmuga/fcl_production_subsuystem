@@ -355,15 +355,28 @@ class ButcheryController extends Controller
                 ]);
 
                 // insert beheading data
-                DB::table('beheading_data')->insert([
-                    'item_code' => "G1030",
-                    'no_of_carcass' => abs($request->return_no_carcass),
-                    'actual_weight' => $request->return_weight,
-                    'net_weight' => $request->return_weight - (2.4 * abs($request->return_no_carcass)),
-                    'process_code' => 0,
-                    'return_entry' => 1,
-                    'user_id' => $helpers->authenticatedUserId(),
-                ]);
+                if ($request->return_item_code == 'G1034') {
+                    # half carcass, returned without tail to be returned as G1035
+                    DB::table('beheading_data')->insert([
+                        'item_code' => "G1035",
+                        'no_of_carcass' => abs($request->return_no_carcass),
+                        'actual_weight' => $request->return_weight,
+                        'net_weight' => $request->return_weight - (2.4 * abs($request->return_no_carcass)),
+                        'process_code' => 0,
+                        'return_entry' => 1,
+                        'user_id' => $helpers->authenticatedUserId(),
+                    ]);
+                } else {
+                    DB::table('beheading_data')->insert([
+                        'item_code' => "G1030",
+                        'no_of_carcass' => abs($request->return_no_carcass),
+                        'actual_weight' => $request->return_weight,
+                        'net_weight' => $request->return_weight - (2.4 * abs($request->return_no_carcass)),
+                        'process_code' => 0,
+                        'return_entry' => 1,
+                        'user_id' => $helpers->authenticatedUserId(),
+                    ]);
+                }
             });
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
