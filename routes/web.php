@@ -79,7 +79,7 @@ Route::post('/butchery/product-add', [ButcheryController::class, 'addProduct'])-
 Route::post('/load_split_data', [ButcheryController::class, 'loadSplitData'])->name('load_split_data');
 Route::get('/butchery/beheading-report', [ButcheryController::class, 'getBeheadingReport'])->name('butchery_beheading_report');
 Route::post('export-beheading-combined-report', [ButcheryController::class, 'combinedBeheadingReport']);
-Route::get('/butchery/braking-report', [ButcheryController::class, 'getBrakingReport'])->name('butchery_breaking_report');
+Route::get('/butchery/breaking-report', [ButcheryController::class, 'getBrakingReport'])->name('butchery_breaking_report');
 Route::post('export-breaking-combined-report', [ButcheryController::class, 'combinedBreakingReport']);
 Route::get('/butchery/deboning-report', [ButcheryController::class, 'getDeboningReport'])->name('butchery_deboning_report');
 Route::post('export-deboned-combined-report', [ButcheryController::class, 'combinedDeboningReport']);

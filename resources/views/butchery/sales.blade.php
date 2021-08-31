@@ -6,7 +6,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Sales Entries | <span id="subtext-h1-title"><small> view butchery sales</small>
+                <h3 class="card-title"> Sales Entries | <span id="subtext-h1-title"><small> view butchery sale for last 7 days</small>
                     </span></h3>
             </div>
             <!-- /.card-header -->

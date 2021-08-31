@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="">
-            <h1 class="m-0"> Reports |<small> Pork Deboning Report</small></h1>
+            <h1 class="m-0"> Reports |<small> Pork Deboning Report </small></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
@@ -65,7 +65,7 @@
 </div>
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"> showing all Entries | <span id="subtext-h1-title"><small> filter, view,
+        <h3 class="card-title"> showing Entries for last 7 days| <span id="subtext-h1-title"><small> filter, view,
                     export</small> </span></h3>
     </div>
     <!-- /.card-header -->

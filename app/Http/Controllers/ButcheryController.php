@@ -806,7 +806,7 @@ class ButcheryController extends Controller
             ->leftJoin('processes', 'beheading_data.process_code', '=', 'processes.process_code')
             ->select('beheading_data.*', 'products.description AS product_type', 'processes.process')
             ->orderBy('beheading_data.created_at', 'DESC')
-            ->take(1000)
+            ->where('beheading_data.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
@@ -832,13 +832,13 @@ class ButcheryController extends Controller
 
     public function getBrakingReport(Helpers $helpers)
     {
-        $title = "Braking-Report";
+        $title = "Breaking-Report";
         $butchery_data = DB::table('butchery_data')
             ->leftJoin('products', 'butchery_data.item_code', '=', 'products.code')
             ->leftJoin('processes', 'butchery_data.process_code', '=', 'processes.process_code')
             ->select('butchery_data.*', 'products.description AS product_type', 'processes.process')
             ->orderBy('butchery_data.created_at', 'DESC')
-            ->take(1000)
+            ->where('butchery_data.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));
@@ -870,7 +870,7 @@ class ButcheryController extends Controller
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
             ->orderBy('deboned_data.created_at', 'DESC')
-            ->take(1000)
+            ->where('deboned_data.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.deboned', compact('title', 'deboning_data', 'helpers'));
@@ -903,7 +903,7 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
             ->select('sales.*', 'products.description')
             ->orderBy('created_at', 'DESC')
-            ->take(1000)
+            ->where('sales.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.sales', compact('title', 'sales_data', 'helpers'));

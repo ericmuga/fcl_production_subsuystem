@@ -297,7 +297,7 @@ $arr_products = $products->toArray();
                                         data-no_carcass="{{ $data->no_of_carcass }}"
                                         data-weight="{{number_format($data->actual_weight, 2)}}"><a
                                             href="#">{{ $data->item_code }}</a> </td>
-                                    @if($data->description == '')
+                                    @if($data->item_code == 'G1035')
                                     <td> Pig, Carcass-Side with Tail</td>
                                     @else
                                     <td> {{ $data->description }}</td>

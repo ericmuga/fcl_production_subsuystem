@@ -66,7 +66,7 @@
 
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title"> showing all Entries | <span id="subtext-h1-title"><small> filter, view, export</small>
+        <h3 class="card-title"> showing Entries for last 7 days| <span id="subtext-h1-title"><small> filter, view, export</small>
             </span></h3>
     </div>
     <!-- /.card-header -->
@@ -106,7 +106,11 @@
                         <td>{{ $i++ }}</td>
                         <td> {{ $data->item_code }}</td>
                         <td> {{ $data->no_of_carcass }}</td>
-                        <td> {{ $data->product_type }}</td>
+                        @if($data->item_code == 'G1035')
+                            <td> Pig, Carcass-Side with Tail</td>
+                        @else
+                            <td> {{ $data->product_type }}</td>
+                        @endif
                         <td> {{ $data->process }}</td>
                         <td> {{ number_format($data->actual_weight, 2) }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
