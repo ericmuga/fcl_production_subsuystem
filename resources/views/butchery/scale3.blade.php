@@ -25,7 +25,7 @@
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
                                 <option value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
-                                    {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->product_type_name }}
+                                    {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->description.'-'.$product->product_type_name }}
                                 </option>
                                 @endforeach
                             </select>
