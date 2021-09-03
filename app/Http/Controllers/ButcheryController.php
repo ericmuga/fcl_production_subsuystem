@@ -233,14 +233,25 @@ class ButcheryController extends Controller
                 $process_code = 1; //Behead sow
             }
 
-            DB::table('beheading_data')->insert([
-                'item_code' => $request->carcass_type,
-                'no_of_carcass' => $request->no_of_carcass,
-                'actual_weight' => $request->reading,
-                'net_weight' => $request->net,
-                'process_code' => $process_code,
-                'user_id' => $helpers->authenticatedUserId(),
-            ]);
+            if ($request->carcass_type == 'G1035') {
+                DB::table('beheading_data')->insert([
+                    'item_code' => $request->carcass_type,
+                    'no_of_carcass' => $request->no_of_carcass,
+                    'actual_weight' => $request->reading,
+                    'net_weight' => $request->net,
+                    'process_code' => '1',
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+            } else {
+                DB::table('beheading_data')->insert([
+                    'item_code' => $request->carcass_type,
+                    'no_of_carcass' => $request->no_of_carcass,
+                    'actual_weight' => $request->reading,
+                    'net_weight' => $request->net,
+                    'process_code' => $process_code,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+            }
 
             Toastr::success('record inserted successfully', 'Success');
             return redirect()->back();
