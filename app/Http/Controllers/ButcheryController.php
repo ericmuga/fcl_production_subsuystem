@@ -265,22 +265,42 @@ class ButcheryController extends Controller
     public function saveScaleTwoData(Request $request, Helpers $helpers)
     {
         try {
-            # insert record
-            $process_code = 2; //Breaking Pig, (Leg, Mdl, Shld)
             if ($request->carcass_type == 'G1031') {
-                $process_code = 3; //Breaking Sow into Leg,Mid,&Shd
+                # insert sow
+                $item_code = '';
+                if ($request->item_code == 'G1100') {
+                    //leg
+                    $item_code = 'G1108';
+                } elseif ($request->item_code == 'G1101') {
+                    // shoulder
+                    $item_code = 'G1109';
+                } else {
+                    // middle
+                    $item_code = 'G1110';
+                }
+                DB::table('butchery_data')->insert([
+                    'carcass_type' =>  $request->carcass_type,
+                    'item_code' => $item_code,
+                    'actual_weight' => $request->reading2,
+                    'net_weight' => $request->net2,
+                    'no_of_items' => $request->no_of_items,
+                    'process_code' => '3',
+                    'product_type' => $request->product_type,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+            } else {
+                #insert for baconer
+                DB::table('butchery_data')->insert([
+                    'carcass_type' =>  $request->carcass_type,
+                    'item_code' =>  $request->item_code,
+                    'actual_weight' => $request->reading2,
+                    'net_weight' => $request->net2,
+                    'no_of_items' => $request->no_of_items,
+                    'process_code' => '2',
+                    'product_type' => $request->product_type,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
             }
-
-            DB::table('butchery_data')->insert([
-                'carcass_type' =>  $request->carcass_type,
-                'item_code' =>  $request->item_code,
-                'actual_weight' => $request->reading2,
-                'net_weight' => $request->net2,
-                'no_of_items' => $request->no_of_items,
-                'process_code' => $process_code,
-                'product_type' => $request->product_type,
-                'user_id' => $helpers->authenticatedUserId(),
-            ]);
 
             Toastr::success('record inserted successfully', 'Success');
             return redirect()

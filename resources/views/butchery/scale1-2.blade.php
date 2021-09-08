@@ -233,7 +233,7 @@ $arr_products = $products->toArray();
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">No. of pieces </label>
-                            <input type="number" class="form-control" id="no_of_items" value="" name="no_of_items"
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_items" value="16" name="no_of_items"
                                 placeholder="">
                         </div>
                     </div>
