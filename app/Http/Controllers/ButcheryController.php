@@ -175,6 +175,9 @@ class ButcheryController extends Controller
                 ->orWhere('code', 'G1100')
                 ->orWhere('code', 'G1101')
                 ->orWhere('code', 'G1102')
+                ->orWhere('code', 'G1108')
+                ->orWhere('code', 'G1109')
+                ->orWhere('code', 'G1110')
                 ->orderBy('code', 'ASC')
                 ->get();
         });
