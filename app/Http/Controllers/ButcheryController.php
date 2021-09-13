@@ -335,20 +335,23 @@ class ButcheryController extends Controller
         }
     }
 
-    public function updateScaleOneData(Request $request)
+    public function updateScaleOneData(Request $request, Helpers $helpers)
     {
         try {
             // update
-            DB::table('beheading_data')
-                ->where('id', $request->item_id1)
-                ->update([
-                    'item_code' => $request->edit_carcass,
-                    'no_of_carcass' => $request->edit_no_carcass,
-                    'actual_weight' => $request->edit_weight1,
-                    'net_weight' => $request->edit_weight1 - 2.4,
-                    'updated_at' => Carbon::now(),
-                ]);
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('beheading_data')
+                    ->where('id', $request->item_id1)
+                    ->update([
+                        'item_code' => $request->edit_carcass,
+                        'no_of_carcass' => $request->edit_no_carcass,
+                        'actual_weight' => $request->edit_weight1,
+                        'net_weight' => $request->edit_weight1 - 2.4,
+                        'updated_at' => Carbon::now(),
+                    ]);
 
+                $helpers->insertChangeDataLogs('beheading_data', $request->item_id1, '3');
+            });
 
             Toastr::success("record {$request->item_name1} updated successfully", 'Success');
             return redirect()->back();
@@ -359,20 +362,23 @@ class ButcheryController extends Controller
         }
     }
 
-    public function updateSalesData(Request $request)
+    public function updateSalesData(Request $request, Helpers $helpers)
     {
         try {
             // update
-            DB::table('sales')
-                ->where('id', $request->item_id)
-                ->update([
-                    'item_code' => $request->edit_carcass,
-                    'no_of_carcass' => $request->edit_no_carcass,
-                    'actual_weight' => $request->edit_weight,
-                    'net_weight' => $request->edit_weight - (2.4 * $request->edit_no_carcass),
-                    'updated_at' => Carbon::now(),
-                ]);
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('sales')
+                    ->where('id', $request->item_id)
+                    ->update([
+                        'item_code' => $request->edit_carcass,
+                        'no_of_carcass' => $request->edit_no_carcass,
+                        'actual_weight' => $request->edit_weight,
+                        'net_weight' => $request->edit_weight - (2.4 * $request->edit_no_carcass),
+                        'updated_at' => Carbon::now(),
+                    ]);
 
+                $helpers->insertChangeDataLogs('sales', $request->item_id, '3');
+            });
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
@@ -441,20 +447,23 @@ class ButcheryController extends Controller
         return redirect()->back();
     }
 
-    public function updateScaleTwoData(Request $request)
+    public function updateScaleTwoData(Request $request, Helpers $helpers)
     {
         try {
             // update
-            DB::table('butchery_data')
-                ->where('id', $request->item_id)
-                ->update([
-                    'item_code' => $request->edit_product,
-                    'actual_weight' => $request->edit_weight,
-                    'no_of_items' => $request->edit_no_pieces,
-                    'net_weight' => $request->edit_weight - 7.50,
-                    'updated_at' => Carbon::now(),
-                ]);
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('butchery_data')
+                    ->where('id', $request->item_id)
+                    ->update([
+                        'item_code' => $request->edit_product,
+                        'actual_weight' => $request->edit_weight,
+                        'no_of_items' => $request->edit_no_pieces,
+                        'net_weight' => $request->edit_weight - 7.50,
+                        'updated_at' => Carbon::now(),
+                    ]);
 
+                $helpers->insertChangeDataLogs('butchery_data', $request->item_id, '3');
+            });
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
@@ -579,21 +588,25 @@ class ButcheryController extends Controller
         }
     }
 
-    public function updateScaleThreeData(Request $request)
+    public function updateScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
             // update
-            DB::table('deboned_data')
-                ->where('id', $request->item_id)
-                ->update([
-                    'item_code' => $request->edit_product,
-                    'process_code' => $request->edit_production_process,
-                    'product_type' => $request->edit_product_type2,
-                    'actual_weight' => $request->edit_weight,
-                    'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
-                    'no_of_pieces' => $request->edit_no_pieces,
-                    'updated_at' => Carbon::now(),
-                ]);
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('deboned_data')
+                    ->where('id', $request->item_id)
+                    ->update([
+                        'item_code' => $request->edit_product,
+                        'process_code' => $request->edit_production_process,
+                        'product_type' => $request->edit_product_type2,
+                        'actual_weight' => $request->edit_weight,
+                        'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
+                        'no_of_pieces' => $request->edit_no_pieces,
+                        'updated_at' => Carbon::now(),
+                    ]);
+
+                $helpers->insertChangeDataLogs('deboned_data', $request->item_id, '3');
+            });
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();

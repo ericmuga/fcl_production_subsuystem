@@ -83,7 +83,7 @@
     <!-- /.col -->
 </div>
 
-<!-- Edit scale1 Modal -->
+<!-- Edit sales Modal -->
 <div id="editModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!--Start create user modal-->
@@ -104,6 +104,10 @@
                             <option value="G1033">Porker, Headles-sales</option>
                             <option value="G1032">Porker, HeadOn-sales</option>
                             <option value="G1034">Pig, Carcass-Side without Tail-Sales</option>
+                            <option value="G1101">Pork Shoulder</option>
+                            <option value="G1102">Pork Middle</option>
+                            <option value="G1109">Sow Shoulder</option>
+                            <option value="G1110">Sow Middle</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -130,7 +134,7 @@
         </form>
     </div>
 </div>
-<!--End Edit scale1 modal-->
+<!--End Edit sales modal-->
 
 <!-- Return Sale modal -->
 <div class="modal fade" id="returnSaleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"

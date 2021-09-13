@@ -263,4 +263,14 @@ class Helpers
         }
         return $number_of_carcasses;
     }
+
+    public function insertChangeDataLogs($table_name, $item_id, $entry_type)
+    {
+        DB::table('change_logs')->insert([
+            'table_name' => $table_name,
+            'item_id' => $item_id,
+            'entry_type' => $entry_type,
+            'user_id' => $this->authenticatedUserId(),
+        ]);
+    }
 }
