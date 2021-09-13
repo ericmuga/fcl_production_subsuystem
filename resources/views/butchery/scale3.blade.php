@@ -452,7 +452,7 @@
 
                             // get number of pieces
                             if (product_code == 'G1169' || product_code == 'G1119' ||
-                                product_code == 'G1121' || product_code == 'G1189') {
+                                product_code == 'G1121' || product_code == 'G1189' || product_code == 'G1164' || product_code == 'G1126') {
                                 var net = $('#net').val();
                                 getNumberOfPieces(product_code, net);
 
@@ -577,13 +577,28 @@
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
-        if ((product_code == 'G1119' || product_code == 'G1121') && net > 0) {
+        if ((product_code == 'G1119') && net > 0) {
             var pieces = Math.round(net) / 1.8;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
+        if ((product_code == 'G1121') && net > 0){
+            var pieces = Math.round(net) / 3;
+            $('#no_of_pieces').val(Math.round(pieces));
+        }
+
         if (product_code == 'G1189' && net > 0) {
-            var pieces = Math.round(net) / 1.6;
+            var pieces = Math.round(net) / 2;
+            $('#no_of_pieces').val(Math.round(pieces));
+        }
+
+        if (product_code == 'G1164' && net > 0) {
+            var pieces = Math.round(net) / 5
+            $('#no_of_pieces').val(Math.round(pieces));
+        }
+
+        if (product_code == 'G1126' && net > 0) {
+            var pieces = Math.round(net) / 5;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
