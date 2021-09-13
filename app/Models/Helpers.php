@@ -237,4 +237,30 @@ class Helpers
     {
         Cache::forget($key);
     }
+
+    public function getSowItemCodeConversion($request_code)
+    {
+        $item_code = '';
+        if ($request_code == 'G1100') {
+            //leg
+            $item_code = 'G1108';
+        } elseif ($request_code == 'G1101') {
+            // shoulder
+            $item_code = 'G1109';
+        } else {
+            // middle
+            $item_code = 'G1110';
+        }
+
+        return $item_code;
+    }
+
+    public function numberOfSalesCarcassesCalculation($no_of_pieces)
+    {
+        $number_of_carcasses = '1';
+        if ($no_of_pieces > 1) {
+            $number_of_carcasses = ceil($no_of_pieces / 2);
+        }
+        return $number_of_carcasses;
+    }
 }

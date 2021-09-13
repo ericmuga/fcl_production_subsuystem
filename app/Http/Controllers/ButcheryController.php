@@ -267,42 +267,61 @@ class ButcheryController extends Controller
 
     public function saveScaleTwoData(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
+        $user_id = $helpers->authenticatedUserId();
+
         try {
-            if ($request->carcass_type == 'G1031') {
-                # insert sow
-                $item_code = '';
-                if ($request->item_code == 'G1100') {
-                    //leg
-                    $item_code = 'G1108';
-                } elseif ($request->item_code == 'G1101') {
-                    // shoulder
-                    $item_code = 'G1109';
-                } else {
-                    // middle
-                    $item_code = 'G1110';
+            if ($request->for_sale == 'on') {
+                # save for sale
+                $item_code = $request->item_code;
+
+                if ($request->carcass_type == 'G1031') {
+                    # insert sow
+                    $item_code = $helpers->getSowItemCodeConversion($request->carcass_type);
                 }
-                DB::table('butchery_data')->insert([
-                    'carcass_type' =>  $request->carcass_type,
+
+                DB::table('sales')->insert([
                     'item_code' => $item_code,
+                    'no_of_carcass' => $helpers->numberOfSalesCarcassesCalculation(
+                        $request->no_of_items
+                    ),
                     'actual_weight' => $request->reading2,
                     'net_weight' => $request->net2,
-                    'no_of_items' => $request->no_of_items,
-                    'process_code' => '3',
-                    'product_type' => $request->product_type,
-                    'user_id' => $helpers->authenticatedUserId(),
+                    'process_code' => 0, //process behead pig by default
+                    'user_id' => $user_id,
                 ]);
+
+                Toastr::success('sale recorded successfully', 'Success');
+                return redirect()->back();
             } else {
-                #insert for baconer
-                DB::table('butchery_data')->insert([
-                    'carcass_type' =>  $request->carcass_type,
-                    'item_code' =>  $request->item_code,
-                    'actual_weight' => $request->reading2,
-                    'net_weight' => $request->net2,
-                    'no_of_items' => $request->no_of_items,
-                    'process_code' => '2',
-                    'product_type' => $request->product_type,
-                    'user_id' => $helpers->authenticatedUserId(),
-                ]);
+                # save for production
+                if ($request->carcass_type == 'G1031') {
+                    # insert sow
+                    $item_code = $helpers->getSowItemCodeConversion($request->carcass_type);
+
+                    DB::table('butchery_data')->insert([
+                        'carcass_type' =>  $request->carcass_type,
+                        'item_code' => $item_code,
+                        'actual_weight' => $request->reading2,
+                        'net_weight' => $request->net2,
+                        'no_of_items' => $request->no_of_items,
+                        'process_code' => '3',
+                        'product_type' => $request->product_type,
+                        'user_id' => $user_id,
+                    ]);
+                } else {
+                    #insert for baconer
+                    DB::table('butchery_data')->insert([
+                        'carcass_type' =>  $request->carcass_type,
+                        'item_code' =>  $request->item_code,
+                        'actual_weight' => $request->reading2,
+                        'net_weight' => $request->net2,
+                        'no_of_items' => $request->no_of_items,
+                        'process_code' => '2',
+                        'product_type' => $request->product_type,
+                        'user_id' => $user_id,
+                    ]);
+                }
             }
 
             Toastr::success('record inserted successfully', 'Success');
