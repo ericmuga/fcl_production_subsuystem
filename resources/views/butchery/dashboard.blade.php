@@ -79,7 +79,7 @@
         </p>
         <div class="progress-group">
             legs
-            <span class="float-right"><b>{{ number_format($b_legs, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($b_legs, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-primary" style="width: {{ $b_legs/$baconers_weight*100 }}%"></div>
             </div>
@@ -87,7 +87,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($b_shoulders, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($b_shoulders, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-danger" style="width: {{ $b_shoulders/$baconers_weight*100 }}%"></div>
             </div>
@@ -95,7 +95,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             <span class="progress-text">Middles</span>
-            <span class="float-right"><b>{{ number_format($b_middles, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($b_middles, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-success" style="width: {{ $b_middles/$baconers_weight*100 }}%"></div>
             </div>
@@ -103,7 +103,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             Total Output
-            <span class="float-right"><b>{{ number_format($three_parts_baconers, 2) }}</b>(kgs)</span>
+            <span class="float-right"><b>{{ number_format($three_parts_baconers, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-warning"
                     style="width: {{ $three_parts_baconers/$baconers_weight*100 }}%"></div>
@@ -167,7 +167,7 @@
         </p>
         <div class="progress-group">
             legs
-            <span class="float-right"><b>{{ number_format($s_legs, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($s_legs, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-primary" style="width: {{ $s_legs/$sows_weight*100 }}%"></div>
             </div>
@@ -175,7 +175,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             Shoulders
-            <span class="float-right"><b>{{ number_format($s_shoulders, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($s_shoulders, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-danger" style="width: {{ $s_shoulders/$sows_weight*100 }}%"></div>
             </div>
@@ -183,7 +183,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             <span class="progress-text">Middles</span>
-            <span class="float-right"><b>{{ number_format($s_middles, 2) }}</b>kgs</span>
+            <span class="float-right"><b>{{ number_format($s_middles, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-success" style="width: {{ $s_middles/$sows_weight*100 }}%"></div>
             </div>
@@ -191,7 +191,7 @@
         <!-- /.progress-group -->
         <div class="progress-group">
             Total Output
-            <span class="float-right"><b>{{ number_format($three_parts_sows, 2) }}</b>(kgs)</span>
+            <span class="float-right"><b>{{ number_format($three_parts_sows, 2) }}</b><sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar bg-warning"
                     style="width: {{ $three_parts_sows/$sows_weight*100 }}%"></div>

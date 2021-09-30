@@ -81,7 +81,7 @@
             <div class="modal-footer">
                 <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
                 <a href="{{ route('logout') }}" type="submit"
-                    class="btn btn-warning btn-lg  float-right"><i class="fa fa-send"></i> Logout</a>
+                    class="btn btn-warning btn-lg  float-right"><i class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
     </div>
