@@ -24,7 +24,8 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
-                                <option value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
+                                <option
+                                    value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
                                     {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->description.'-'.$product->product_type_name }}
                                 </option>
                                 @endforeach
@@ -56,9 +57,11 @@
                     <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Production Process</label>
-                            <input type="text" class="form-control" id="production_process" name="production_process" value="">
+                            <input type="text" class="form-control" id="production_process" name="production_process"
+                                value="">
                         </div>
-                        <input type="hidden" class="form-control" id="production_process_code" name="production_process_code" value="">
+                        <input type="hidden" class="form-control" id="production_process_code"
+                            name="production_process_code" value="">
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
@@ -78,9 +81,10 @@
                         oninput="getNet()" placeholder="" readonly>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="manual_weight">
+                    <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div> <br>
+                <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Scale Tare-Weight</label>
                     <input type="number" class="form-control" id="tareweight" name="tareweight"
@@ -221,7 +225,7 @@
                                         data-type_id="{{ $data->type_id }}"
                                         data-production_process="{{ $data->process_code }}"
                                         data-item="{{ $helpers->getProductName($data->item_code) }}"><a
-                                            href="#">{{ $data->item_code }}</a> 
+                                            href="#">{{ $data->item_code }}</a>
                                     </td>
                                     <td>{{ $helpers->getProductName($data->item_code) }}</td>
                                     <td> {{ $data->product_type }}</td>
@@ -334,6 +338,18 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+
+        let reading = document.getElementById('reading');
+        if (($('#old_manual').val()) == "on") {
+            $('#manual_weight').prop('checked', true);
+            reading.readOnly = false;
+            reading.focus();
+            $('#reading').val("");
+
+        } else {
+            reading.readOnly = true;
+
+        }
 
         $("body").on("click", "#itemCodeModalShow", function (e) {
             e.preventDefault();
@@ -452,7 +468,8 @@
 
                             // get number of pieces
                             if (product_code == 'G1169' || product_code == 'G1119' ||
-                                product_code == 'G1121' || product_code == 'G1189' || product_code == 'G1164' || product_code == 'G1126') {
+                                product_code == 'G1121' || product_code == 'G1189' ||
+                                product_code == 'G1164' || product_code == 'G1126') {
                                 var net = $('#net').val();
                                 getNumberOfPieces(product_code, net);
 
@@ -582,7 +599,7 @@
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
-        if ((product_code == 'G1121') && net > 0){
+        if ((product_code == 'G1121') && net > 0) {
             var pieces = Math.round(net) / 3;
             $('#no_of_pieces').val(Math.round(pieces));
         }
@@ -756,7 +773,7 @@
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
-                        console.log('weight: '+ obj.response);
+                        console.log('weight: ' + obj.response);
                         reading.value = obj.response;
                         getNet();
 
