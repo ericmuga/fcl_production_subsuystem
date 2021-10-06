@@ -450,11 +450,18 @@ class ButcheryController extends Controller
     public function updateScaleTwoData(Request $request, Helpers $helpers)
     {
         try {
+            $carcass_type = 'G1030';
+
+            if ($request->edit_product == 'G1108' || $request->edit_product == 'G1109' || $request->edit_product == 'G1110') {
+                # code...
+                $carcass_type = 'G1031';
+            }
             // update
-            DB::transaction(function () use ($request, $helpers) {
+            DB::transaction(function () use ($request, $helpers, $carcass_type) {
                 DB::table('butchery_data')
                     ->where('id', $request->item_id)
                     ->update([
+                        'carcass_type' => $carcass_type,
                         'item_code' => $request->edit_product,
                         'actual_weight' => $request->edit_weight,
                         'no_of_items' => $request->edit_no_pieces,
