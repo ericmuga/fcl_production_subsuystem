@@ -102,8 +102,6 @@ class Helpers
             $ip = '127.0.0.1';
         }
         return $url = 'http://' . $ip . ':3000/api/get-scale-reading';
-
-        // return $url = config('app.read_scale_api_url');
     }
 
     public function getComportListServiceUrl()
