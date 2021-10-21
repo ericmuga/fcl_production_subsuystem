@@ -112,8 +112,6 @@ class Helpers
             $ip = '127.0.0.1';
         }
         return $url = 'http://' . $ip . ':3000/api/get-comport-list';
-
-        // return $url = config('app.list_comport_api_url');
     }
 
     public function get_scale_read($comport)
