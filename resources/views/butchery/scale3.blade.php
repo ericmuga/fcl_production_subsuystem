@@ -108,17 +108,17 @@
                         placeholder="" required>
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0" name="no_of_pieces"
-                        placeholder="" required>
-                </div>
-                <div class="form-group">
                     <label for="exampleInputPassword1">Production Date</label>
                     <select class="form-control" name="prod_date" id="prod_date" required>
                         <option selected value="today">Today</option>
                         <option value="yesterday">Yesterday</option>
                     </select>
                 </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">No. of pieces </label>
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0" name="no_of_pieces"
+                        placeholder="" required>
+                </div>                
                 <div class="form-group" style="padding-top: 10%">
                     <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
                             class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
