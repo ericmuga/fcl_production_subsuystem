@@ -62,7 +62,7 @@
         </div>
     </div>
 </div>
-</div>
+
 <div class="card">
     <div class="card-header">
         <h3 class="card-title"> showing Entries for last 7 days| <span id="subtext-h1-title"><small> filter, view,
