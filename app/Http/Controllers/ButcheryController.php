@@ -664,7 +664,6 @@ class ButcheryController extends Controller
 
         $products = Cache::remember('products_list', now()->addMinutes(120), function () {
             return DB::table('products')
-                ->where('code', '!=', '')
                 ->get();
         });
 
@@ -998,7 +997,7 @@ class ButcheryController extends Controller
     {
         $title = "Deboning-Products-List";
 
-        $products = Cache::remember('products_list_scale3', now()->addMinutes(120), function () {
+        $products = Cache::remember('deboning_list_scale3', now()->addMinutes(120), function () {
             return DB::table('products')
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
