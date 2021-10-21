@@ -529,7 +529,8 @@ class ButcheryController extends Controller
             ->whereDate('deboned_data.created_at', Carbon::today())
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
-            ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code')
+            ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
+            ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description')
             ->orderBy('deboned_data.created_at', 'DESC')
             ->get();
 

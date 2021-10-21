@@ -226,10 +226,10 @@
                                         data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}"
                                         data-type_id="{{ $data->type_id }}"
                                         data-production_process="{{ $data->process_code }}"
-                                        data-item="{{ $helpers->getProductName($data->item_code) }}"><a
+                                        data-item="{{ $data->description }}"><a
                                             href="#">{{ $data->item_code }}</a>
                                     </td>
-                                    <td>{{ $helpers->getProductName($data->item_code) }}</td>
+                                    <td>{{ $data->description }}</td>
                                     <td> {{ $data->product_type }}</td>
                                     <td> {{ $data->process }}</td>
                                     <td> {{ number_format($data->actual_weight, 2) }}</td>
