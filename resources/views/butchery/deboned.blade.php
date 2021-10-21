@@ -107,7 +107,7 @@
                         <td>{{ $i++ }}</td>
                         <td>{{ $data->id }}</td>
                         <td> {{ $data->item_code }}</td>
-                        <td>{{ $helpers->getProductName($data->item_code) }}</td>
+                        <td>{{ $data->description }}</td>
                         <td> {{ $data->product_type }}</td>
                         <td> {{ $data->process }}</td>
                         <td> {{ number_format($data->actual_weight, 2) }}</td>

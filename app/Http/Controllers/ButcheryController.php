@@ -948,10 +948,12 @@ class ButcheryController extends Controller
     public function getDeboningReport(Helpers $helpers)
     {
         $title = "Deboning-Report";
+
         $deboning_data = DB::table('deboned_data')
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
-            ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process')
+            ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
+            ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process', 'products.description')
             ->orderBy('deboned_data.created_at', 'DESC')
             ->where('deboned_data.created_at', '>=', today()->subDays(7))
             ->get();
