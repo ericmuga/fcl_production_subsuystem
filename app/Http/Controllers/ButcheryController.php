@@ -538,6 +538,7 @@ class ButcheryController extends Controller
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
+        // dd($request->prod_date);
         try {
 
             $product_type = 1;
@@ -547,10 +548,15 @@ class ButcheryController extends Controller
                 $product_type = 3;
             }
 
+            $prod_date = now();
+            if ($request->prod_date == "yesterday") {
+                $prod_date = now()->subDays(1);
+            }
+
             $item = explode('-', $request->product);
             $item_code = $item[1];
 
-            DB::transaction(function () use ($request, $helpers, $item_code, $product_type) {
+            DB::transaction(function () use ($request, $helpers, $item_code, $product_type, $prod_date) {
                 # insert record
                 DB::table('deboned_data')->insert([
                     'item_code' => $item_code,
@@ -560,6 +566,7 @@ class ButcheryController extends Controller
                     'product_type' => $product_type,
                     'no_of_pieces' => $request->no_of_pieces,
                     'user_id' => $helpers->authenticatedUserId(),
+                    'created_at' => $prod_date,
                 ]);
 
                 // # update stock

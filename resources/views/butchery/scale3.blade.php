@@ -104,18 +104,20 @@
             <div class="card-body text-center">
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of Crates</label>
-                    <select class="form-control" name="no_of_crates" id="no_of_crates" required>
-                        <option>0</option>
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option selected>4</option>
-                    </select>
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4" name="no_of_crates"
+                        placeholder="" required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" id="no_of_pieces" value="0" name="no_of_pieces"
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0" name="no_of_pieces"
                         placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Production Date</label>
+                    <select class="form-control" name="prod_date" id="prod_date" required>
+                        <option selected value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                    </select>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
                     <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
