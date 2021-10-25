@@ -268,7 +268,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="exampleInputPassword1">Product</label>
-                        <select class="form-control" name="edit_product" id="edit_product" required>
+                        <select class="form-control select2" name="edit_product" id="edit_product" required>
                             @foreach($products as $product)
                             <option value="{{ trim($product->code) }}" selected="selected">
                                 {{ ucwords($product->description) }} - {{ $product->code }}
@@ -323,8 +323,8 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning btn-lg">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
@@ -371,6 +371,8 @@
             $('#item_id').val(id);
             $('#edit_production_process').val(process_code);
             $('#edit_product_type2').val(type_id);
+
+            $('#edit_product').select2('destroy').select2();
 
             loadEditProductionProcesses(code);
 

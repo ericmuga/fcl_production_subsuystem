@@ -421,8 +421,8 @@ $arr_products = $products->toArray();
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning btn-lg">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
@@ -450,7 +450,7 @@ $arr_products = $products->toArray();
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="baud" class="col-form-label">Product</label>
-                        <select class="form-control" name="edit_product" id="edit_product">
+                        <select class="form-control select2" name="edit_product" id="edit_product">
                             @foreach($products as $data)
                             <option value="{{trim($data->code)}}">{{$data->description}}</option>
                             @endforeach
@@ -470,8 +470,8 @@ $arr_products = $products->toArray();
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning btn-lg">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
@@ -560,6 +560,8 @@ $arr_products = $products->toArray();
             $('#edit_no_pieces').val(pieces);
             $('#edit_weight').val(weight);
             $('#item_id').val(id);
+
+            $('#edit_product').select2('destroy').select2();
 
             $('#itemCodeModal').modal('show');
         });
