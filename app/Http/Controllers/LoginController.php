@@ -78,7 +78,7 @@ class LoginController extends Controller
             }
         }
 
-        $user = DB::table('users')->where('username', $request->username)->first();
+        $user = DB::table('users')->where('username', $request->username)->firstOrFail();
 
         # Check if session exists and log out the previous session
         $previous_session = $user->session;
