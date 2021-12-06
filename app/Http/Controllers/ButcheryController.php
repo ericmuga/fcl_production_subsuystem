@@ -411,6 +411,7 @@ class ButcheryController extends Controller
                     'returned' => 2,
                     'net_weight' => -1 * abs($request->return_weight - (2.4 * $request->return_no_carcass)),
                     'user_id' => $helpers->authenticatedUserId(),
+                    'created_at' => $request->item_created_date
                 ]);
 
                 // insert beheading data

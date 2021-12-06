@@ -56,7 +56,7 @@
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
                                         data-no_carcass="{{ $data->no_of_carcass }}"
-                                        data-weight="{{number_format($data->actual_weight, 2)}}"
+                                        data-weight="{{number_format($data->actual_weight, 2)}}" data-timestamp="{{ $data->created_at }}"
                                         class="btn btn-info btn-sm" title="Return Sale" id="returnSaleModalShow"><i
                                             class="fa fa-undo"></i>
                                     </button>
@@ -161,6 +161,7 @@
                     <input type="hidden" name="return_weight" id="return_weight">
                     <input type="hidden" name="return_item_code" id="return_item_code" value="">
                     <input type="hidden" name="return_item_id" id="return_item_id" value="">
+                    <input type="hidden" name="item_created_date" id="item_created_date" value="">
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
@@ -203,7 +204,8 @@
             var id = $(this).data('id');
             var product = $(this).data('product_code');
             var item = $(this).data('item');
-            var no_carcass = $(this).data('no_carcass');
+            var no_carcass = $(this).data('no_carcass');            
+            var created_date = $(this).data('timestamp');
             var weight = $(this).data('weight');
 
 
@@ -211,7 +213,8 @@
             $('#return_item_code').val(product);
             $('#item_name2').val(item);
             $('#return_no_carcass').val(no_carcass);
-            $('#return_weight').val(weight);
+            $('#return_weight').val(weight);            
+            $('#item_created_date').val(created_date);
             $('#weight').val(weight);
 
             $('#returnSaleModal').modal('show');
