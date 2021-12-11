@@ -267,7 +267,6 @@ class ButcheryController extends Controller
 
     public function saveScaleTwoData(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         $user_id = $helpers->authenticatedUserId();
 
         try {
@@ -277,7 +276,7 @@ class ButcheryController extends Controller
 
                 if ($request->carcass_type == 'G1031') {
                     # insert sow
-                    $item_code = $helpers->getSowItemCodeConversion($request->carcass_type);
+                    $item_code = $helpers->getSowItemCodeConversion($request->item_code);
                 }
 
                 DB::table('sales')->insert([
@@ -297,7 +296,7 @@ class ButcheryController extends Controller
                 # save for production
                 if ($request->carcass_type == 'G1031') {
                     # insert sow
-                    $item_code = $helpers->getSowItemCodeConversion($request->carcass_type);
+                    $item_code = $helpers->getSowItemCodeConversion($request->item_code);
 
                     DB::table('butchery_data')->insert([
                         'carcass_type' =>  $request->carcass_type,
@@ -347,7 +346,7 @@ class ButcheryController extends Controller
                         'no_of_carcass' => $request->edit_no_carcass,
                         'actual_weight' => $request->edit_weight1,
                         'net_weight' => $request->edit_weight1 - 2.4,
-                        'updated_at' => Carbon::now(),
+                        'updated_at' => now(),
                     ]);
 
                 $helpers->insertChangeDataLogs('beheading_data', $request->item_id1, '3');
