@@ -12,7 +12,7 @@
 @endsection
 
 @section('content')
-<form id="form-save-scale3" action="{{ route('butchery_scale3_save') }}" method="post">
+<form id="form-save-scale3" class="form-prevent-multiple-submits"  action="{{ route('butchery_scale3_save') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -120,8 +120,8 @@
                         placeholder="" required>
                 </div>                
                 <div class="form-group" style="padding-top: 10%">
-                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
-                            class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
+                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
 <div class="modal fade" id="productTypesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-product-type" action="#" method="post">
+        <form id="form-product-type" class="form-prevent-multiple-submits"  action="#" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -255,7 +255,7 @@
 <div id="itemCodeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!--Start create user modal-->
-        <form id="form-edit-role" action="{{route('butchery_scale3_update')}}" method="post">
+        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('butchery_scale3_update')}}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -340,6 +340,10 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+
+        $('.form-prevent-multiple-submits').on('submit', function(){
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
 
         let reading = document.getElementById('reading');
         if (($('#old_manual').val()) == "on") {
@@ -747,7 +751,7 @@
         if (net == "" || net <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
-        };
+        }
         return $valid;
     }
 
