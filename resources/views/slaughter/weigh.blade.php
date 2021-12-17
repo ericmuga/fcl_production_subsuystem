@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- weigh -->
-<form id="form-slaughter-weigh" action="{{ route('save_weigh_data') }}" method="post">
+<form id="form-slaughter-weigh" class="form-prevent-multiple-submits"  action="{{ route('save_weigh_data') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card ">
@@ -145,7 +145,7 @@
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()"
-                        class="btn btn-primary btn-lg"><i class="fa fa-paper-plane"
+                        class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i class="fa fa-paper-plane"
                             aria-hidden="true"></i>
                         Save</button>
                 </div>
@@ -159,7 +159,7 @@
 <div class="modal fade" id="slapModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-edit-scale" action="{{ route('save_missing_data') }}" method="post">
+        <form id="form-edit-scale" class="form-prevent-multiple-submits" action="{{ route('save_missing_data') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -216,7 +216,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" onclick="return validateOnSubmit2()" type="submit">
+                    <button class="btn btn-primary btn-prevent-multiple-submits" onclick="return validateOnSubmit2()" type="submit">
                         <i class="fa fa-save"></i> Post
                     </button>
                 </div>
@@ -367,6 +367,10 @@
 <script>
     $(document).ready(function () {
         loadWeighData();
+
+        $('.form-prevent-multiple-submits').on('submit', function(){
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
 
         $(".readonly").keydown(function (e) {
             e.preventDefault();
