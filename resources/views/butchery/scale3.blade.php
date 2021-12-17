@@ -157,7 +157,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary" type="button" onclick="setProductCode()">
+                    <button class="btn btn-primary btn-prevent-multiple-submits" type="submit" onclick="setProductCode()">
                         <i class="fa fa-save"></i> Edit
                     </button>
                 </div>
@@ -324,7 +324,7 @@
                 <div class="modal-footer">
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg">
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits" type="submit">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
