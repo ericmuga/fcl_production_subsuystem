@@ -40,7 +40,7 @@ $arr_products = $products->toArray();
 <div class="row">
     <!-- scale 1 -->
     <div class="col-md-6">
-        <form id="form-butchery-scale1" action="{{ route('butchery_scale1_save') }}" method="post">
+        <form id="form-butchery-scale1" class="form-prevent-multiple-submits"  action="{{ route('butchery_scale1_save') }}" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -133,7 +133,7 @@ $arr_products = $products->toArray();
                                     disabled></small>
                         </div><br>
                         <div class="form-group" style="padding-top: 20%">
-                            <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg"><i
+                            <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                                     class="fa fa-paper-plane" aria-hidden="true"></i> Save</button>
                         </div>
                     </div>
@@ -145,7 +145,7 @@ $arr_products = $products->toArray();
 
     <!-- scale 2 -->
     <div class="col-md-6">
-        <form id="scale2" action="{{ route('butchery_scale2_save') }}" method="post">
+        <form id="scale2" class="form-prevent-multiple-submits" action="{{ route('butchery_scale2_save') }}" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -243,7 +243,7 @@ $arr_products = $products->toArray();
                     </div>
                     <div class="card-body text-center" style="padding-bottom: 25%">
                         <div class="form-group">
-                            <button type="submit" onclick="return checkNet2OnSubmit()" class="btn btn-primary btn-lg"><i
+                            <button type="submit" onclick="return checkNet2OnSubmit()" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                                     class="fa fa-paper-plane" aria-hidden="true"></i> Save
                             </button>
                         </div>
@@ -389,7 +389,7 @@ $arr_products = $products->toArray();
 <div id="edit1Modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!--Start create user modal-->
-        <form id="form-edit-role" action="{{route('butchery_scale1_update')}}" method="post">
+        <form id="form-edit-role" class="form-prevent-multiple-submits"  action="{{route('butchery_scale1_update')}}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -422,7 +422,7 @@ $arr_products = $products->toArray();
                 <div class="modal-footer">
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg">
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits" type="submit">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
@@ -437,7 +437,7 @@ $arr_products = $products->toArray();
 <div id="itemCodeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" action="{{ route('butchery_scale2_update') }}" method="post">
+        <form id="form-edit-scale" class="form-prevent-multiple-submits"  action="{{ route('butchery_scale2_update') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -471,7 +471,7 @@ $arr_products = $products->toArray();
                 <div class="modal-footer">
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg">
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits" type="submit">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
@@ -486,6 +486,10 @@ $arr_products = $products->toArray();
 @section('scripts')
 <script>
     $(document).ready(function () {
+
+        $('.form-prevent-multiple-submits').on('submit', function(){
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
 
         $('.messageCheckbox').change(function () {
             var checkedValue = document.querySelector('.messageCheckbox:checked').value;
