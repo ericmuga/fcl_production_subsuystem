@@ -603,27 +603,27 @@
         }
 
         if ((product_code == 'G1119') && net > 0) {
-            var pieces = Math.round(net) / 1.8;
+            var pieces = Math.round(net) / 0.53;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
         if ((product_code == 'G1121') && net > 0) {
-            var pieces = Math.round(net) / 3;
+            var pieces = Math.round(net) / 0.61;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
         if (product_code == 'G1189' && net > 0) {
-            var pieces = Math.round(net) / 2;
+            var pieces = Math.round(net) / 2.30;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
         if (product_code == 'G1164' && net > 0) {
-            var pieces = Math.round(net) / 5
+            var pieces = Math.round(net) / 4.93;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
         if (product_code == 'G1126' && net > 0) {
-            var pieces = Math.round(net) / 5;
+            var pieces = Math.round(net) / 5.55;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
@@ -634,14 +634,26 @@
         if (product_code == 'G1169' && net > 0) {
             var pieces = Math.round(net) / 3;
             $('#edit_no_pieces').val(Math.round(pieces));
-        } else if ((product_code == 'G1119' || product_code == 'G1121') && net > 0) {
-            var pieces = Math.round(net) / 1.8;
+
+        } else if(product_code == 'G1126' && net > 0){
+            var pieces = Math.round(net) / 5.55;
             $('#edit_no_pieces').val(Math.round(pieces));
-        } else if (product_code == 'G1189' && net > 0) {
-            var pieces = Math.round(net) / 1.6;
+
+        } else if(product_code == 'G1119' && net > 0) {
+            var pieces = Math.round(net) / 0.53;
             $('#edit_no_pieces').val(Math.round(pieces));
-        } else {
-            $('#edit_no_pieces').val(0);
+
+        } else if(product_code == 'G1189' && net > 0) {
+            var pieces = Math.round(net) / 2.30;
+            $('#edit_no_pieces').val(Math.round(pieces));
+
+        } else if(product_code == 'G1164' && net > 0) {
+            var pieces = Math.round(net) / 4.93;
+            $('#edit_no_pieces').val(Math.round(pieces));
+
+        } else if(product_code == 'G1121' && net > 0) {
+            var pieces = Math.round(net) / 0.61;
+            $('#edit_no_pieces').val(Math.round(pieces));
         }
 
     }
