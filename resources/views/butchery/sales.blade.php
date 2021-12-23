@@ -87,7 +87,7 @@
 <div id="editModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!--Start create user modal-->
-        <form id="form-edit-role" action="{{route('butchery_sales_update')}}" method="post">
+        <form id="form-edit-role" class="form-prevent-multiple-submits" action="{{route('butchery_sales_update')}}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -125,7 +125,7 @@
                 <div class="modal-footer">
                     <div class="form-group">
                         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning">
+                        <button class="btn btn-warning btn-prevent-multiple-submits">
                             <i class="fa fa-save"></i> Update
                         </button>
                     </div>
@@ -140,7 +140,7 @@
 <div class="modal fade" id="returnSaleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-sales-returns" action="{{route('butchery_sales_returns')}}" method="post">
+        <form id="form-sales-returns"  class="form-prevent-multiple-submits" action="{{route('butchery_sales_returns')}}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -165,7 +165,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-outline-info btn-lg  float-right"><i class="fa fa-spinner"
+                    <button type="submit" class="btn btn-outline-info btn-lg btn-prevent-multiple-submits float-right"><i class="fa fa-spinner"
                             aria-hidden="true"></i> Confirm</button>
                 </div>
             </div>
@@ -178,6 +178,10 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        $('.form-prevent-multiple-submits').on('submit', function(){
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
+
         $("body").on("click", "#editModalShow", function (a) {
             a.preventDefault();
 
