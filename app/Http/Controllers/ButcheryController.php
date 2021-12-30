@@ -565,6 +565,7 @@ class ButcheryController extends Controller
                     'net_weight' => $request->net,
                     'process_code' => (int)$request->production_process_code,
                     'product_type' => $product_type,
+                    'no_of_crates' => $request->no_of_crates - 1,
                     'no_of_pieces' => $request->no_of_pieces,
                     'user_id' => $helpers->authenticatedUserId(),
                     'created_at' => $prod_date,
@@ -971,7 +972,7 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
-            ->select('deboned_data.item_code', 'products.description AS product', 'product_types.description', 'processes.process', DB::raw('SUM(deboned_data.no_of_pieces) AS no_of_pieces'), DB::raw('SUM(deboned_data.net_weight) AS net_weight'))
+            ->select('deboned_data.item_code', 'products.description AS product', 'product_types.description', 'processes.process', DB::raw('SUM(deboned_data.no_of_crates) AS no_of_crates'), DB::raw('SUM(deboned_data.no_of_pieces) AS no_of_pieces'), DB::raw('SUM(deboned_data.net_weight) AS net_weight'))
             ->groupBy('deboned_data.item_code', 'products.description', 'product_types.description', 'processes.process')
             ->get();
 

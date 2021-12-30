@@ -21,7 +21,7 @@ class DebonedCombinedExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code', 'Product Name', 'Product Type', 'Process', 'Total Pieces', 'Total Net Weight'
+                'Item Code', 'Product Name', 'Product Type', 'Process', 'Total Crates', 'Total Pieces', 'Total Net Weight'
             ];
     }
 }

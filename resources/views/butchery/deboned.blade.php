@@ -83,6 +83,7 @@
                         <th>Production Process</th>
                         <th>Weight(kgs)</th>
                         <th>Net Weight(kgs)</th>
+                        <th>No. of Crates</th>
                         <th>No. of pieces</th>
                         <th>Date </th>
                     </tr>
@@ -97,6 +98,7 @@
                         <th>Production Process</th>
                         <th>Weight(kgs)</th>
                         <th>Net Weight(kgs)</th>
+                        <th>No. of Crates</th>
                         <th>No. of pieces</th>
                         <th>Date </th>
                     </tr>
@@ -112,6 +114,7 @@
                         <td> {{ $data->process }}</td>
                         <td> {{ number_format($data->actual_weight, 2) }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
+                        <td> {{ $data->no_of_crates }}</td>
                         <td> {{ $data->no_of_pieces }}</td>
                         <td> {{ $data->created_at }}</td>
                     </tr>
