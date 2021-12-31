@@ -611,7 +611,7 @@
         }
 
         if ((product_code == 'G1121') && net > 0) {
-            var pieces = Math.round(net) / 0.61;
+            var pieces = Math.round(net) / 2.15;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
@@ -621,12 +621,12 @@
         }
 
         if (product_code == 'G1164' && net > 0) {
-            var pieces = Math.round(net) / 4.93;
+            var pieces = Math.round(net) / 4.66;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
         if (product_code == 'G1126' && net > 0) {
-            var pieces = Math.round(net) / 5.55;
+            var pieces = Math.round(net) / 6.49;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
@@ -639,7 +639,7 @@
             $('#edit_no_pieces').val(Math.round(pieces));
 
         } else if(product_code == 'G1126' && net > 0){
-            var pieces = Math.round(net) / 5.55;
+            var pieces = Math.round(net) / 6.49;
             $('#edit_no_pieces').val(Math.round(pieces));
 
         } else if(product_code == 'G1119' && net > 0) {
@@ -651,11 +651,11 @@
             $('#edit_no_pieces').val(Math.round(pieces));
 
         } else if(product_code == 'G1164' && net > 0) {
-            var pieces = Math.round(net) / 4.93;
+            var pieces = Math.round(net) / 4.66;
             $('#edit_no_pieces').val(Math.round(pieces));
 
         } else if(product_code == 'G1121' && net > 0) {
-            var pieces = Math.round(net) / 0.61;
+            var pieces = Math.round(net) / 2.15;
             $('#edit_no_pieces').val(Math.round(pieces));
         }
 
