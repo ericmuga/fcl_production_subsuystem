@@ -60,7 +60,7 @@
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" name="password" placeholder="Password" required>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>
@@ -71,9 +71,9 @@
                         <div class="col-7">
                             <div class="icheck-primary">
                                 <input type="checkbox" id="remember" name="remember"
-                                    {{ old('remember') ? 'checked' : '' }}>
+                                    {{ old('remember') ? 'checked' : '' }} onclick="showPassword()">
                                 <label for="remember">
-                                    Remember Me
+                                    Show Password
                                 </label>
                             </div>
                         </div>
@@ -111,6 +111,17 @@
     <!-- toastr -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     {!! Toastr::message() !!}
+
+    <script>
+        function showPassword() {
+            var x = document.getElementById("password");
+            if (x.type === "password") {
+                x.type = "text";
+            } else {
+                x.type = "password";
+            }
+        }
+    </script>
 </body>
 
 </html>
