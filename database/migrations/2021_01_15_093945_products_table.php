@@ -17,7 +17,7 @@ class ProductsTable extends Migration
             $table->id();
             $table->string('code', 20)->unique(); // stands for both unique and indexable
             $table->string('description', 50);
-            $table->string('unit_of_measure', 10)->nullable();
+            $table->string('unit_of_measure', 10)->default('KG');
             $table->tinyInteger('product_type')->nullable();
             $table->tinyInteger('process_type')->nullable();
             $table->timestamp('created_at')->useCurrent();

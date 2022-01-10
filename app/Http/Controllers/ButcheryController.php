@@ -526,7 +526,8 @@ class ButcheryController extends Controller
         });
 
         $deboning_data = DB::table('deboned_data')
-            ->whereDate('deboned_data.created_at', Carbon::today())
+            ->where('processes.process_code', '!=', '15')
+            ->whereDate('deboned_data.created_at', today())
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
@@ -1008,5 +1009,92 @@ class ButcheryController extends Controller
         });
 
         return view('butchery.products_list_deboning', compact('title', 'products'));
+    }
+
+    public function weighMarination(Helpers $helpers)
+    {
+        $title = "Scale-4";
+
+        $configs = Cache::remember('scale3_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'butchery')
+                ->where('scale', 'scale 3')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
+
+        $products = Cache::remember('marination_products', now()->addMinutes(120), function () {
+            return  DB::table('products')
+                ->where('processes.process_code', '15')
+                ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+                ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
+                ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_processes.process_code', 'product_processes.product_type as product_type_code', 'processes.process', 'processes.shortcode')
+                ->get();
+        });
+
+        $marination_data = DB::table('deboned_data')
+            ->where('processes.process_code', '15')
+            ->whereDate('deboned_data.created_at', today())
+            ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
+            ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
+            ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
+            ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description')
+            ->orderBy('deboned_data.created_at', 'DESC')
+            ->get();
+
+        return view('butchery.marination', compact('title', 'products', 'configs', 'marination_data', 'helpers'));
+    }
+
+    public function saveMarinationData(Request $request, Helpers $helpers)
+    {
+        $item = explode("-", $request->product);
+
+        try {
+            //saving...
+            DB::table('deboned_data')->insert([
+                'item_code' => $item[0],
+                'actual_weight' => $request->reading,
+                'net_weight' => $request->net,
+                'process_code' => '15',
+                'product_type' => $item[1],
+                'no_of_pieces' => '0',
+                'no_of_crates' => $request->no_of_crates,
+                'user_id' => $helpers->authenticatedUserId(),
+
+            ]);
+            Toastr::success("Item {$item[0]} recorded successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
+    public function updateMarinationData(Request $request, Helpers $helpers)
+    {
+        try {
+            // update
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('deboned_data')
+                    ->where('id', $request->item_id)
+                    ->update([
+                        'item_code' => $request->edit_product,
+                        'actual_weight' => $request->edit_weight,
+                        'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
+                        'updated_at' => now(),
+                    ]);
+
+                $helpers->insertChangeDataLogs('deboned_data', $request->item_id, '3');
+            });
+
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
     }
 }

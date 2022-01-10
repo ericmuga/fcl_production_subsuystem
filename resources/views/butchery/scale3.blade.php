@@ -86,7 +86,7 @@
                 </div> <br>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Scale Tare-Weight</label>
+                    <label for="exampleInputPassword1">Crates Tare-Weight</label>
                     <input type="number" class="form-control" id="tareweight" name="tareweight"
                         value="{{ number_format($configs[0]->tareweight * 4, 2) }}" readonly>
                     <input type="hidden" class="form-control " id="default_tareweight"

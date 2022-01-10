@@ -88,6 +88,12 @@ Route::get('/butchery/scale3-products', [ButcheryController::class, 'getDeboning
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
+
+// Marination
+Route::get('butchery-marination', [ButcheryController::class, 'weighMarination'])->name('weigh_marination');
+Route::post('butchery-marination/save', [ButcheryController::class, 'saveMarinationData'])->name('save_marination');
+Route::post('butchery-marination/update', [ButcheryController::class, 'updateMarinationData'])->name('update_marination');
+
 /*-------------End Butchery------------------ */
 
 

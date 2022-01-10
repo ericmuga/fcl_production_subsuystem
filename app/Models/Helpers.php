@@ -32,6 +32,11 @@ class Helpers
         return date("F jS, Y", strtotime($date));
     }
 
+    public function amPmDate($date)
+    {
+        return date('d-m-Y g:i A', strtotime($date));
+    }
+
     public function getProductName($code)
     {
         return Product::where('code', $code)->value('description');
