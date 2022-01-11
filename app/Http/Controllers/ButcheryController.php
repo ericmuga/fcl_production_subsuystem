@@ -516,8 +516,9 @@ class ButcheryController extends Controller
                 ->get()->toArray();
         });
 
-        $products = Cache::remember('all_products_scale3', now()->addMinutes(120), function () {
+        $products = Cache::remember('all_products_scale3', now()->addMinutes(480), function () {
             return DB::table('products')
+                ->where('product_processes.process_code', '!=', 15) //excluding marination products
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
                 ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
