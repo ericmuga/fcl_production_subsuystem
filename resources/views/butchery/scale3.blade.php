@@ -611,7 +611,7 @@
         }
 
         if ((product_code == 'G1121') && net > 0) {
-            var pieces = Math.round(net) / 2.15;
+            var pieces = Math.round(net) / 1.7;
             $('#no_of_pieces').val(Math.round(pieces));
         }
 
@@ -655,7 +655,7 @@
             $('#edit_no_pieces').val(Math.round(pieces));
 
         } else if(product_code == 'G1121' && net > 0) {
-            var pieces = Math.round(net) / 2.15;
+            var pieces = Math.round(net) / 1.7;
             $('#edit_no_pieces').val(Math.round(pieces));
         }
 
