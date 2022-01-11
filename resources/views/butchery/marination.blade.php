@@ -39,8 +39,8 @@
             <div class="card-body text-center">
                 <div class="form-group">
                     <label for="exampleInputEmail1">Reading</label>
-                    <input type="number" step="0.01" class="form-control" id="reading" name="reading" value=""
-                        oninput="getNet()" placeholder="">
+                    <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
+                        oninput="getNet()" placeholder="" onfocus="this.select();">
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
@@ -291,7 +291,7 @@
             var net = net_weight - (1.8 * crates_no);
         });
 
-        $('#no_of_crates').change(function () {
+        $('#no_of_crates').keyup(function () {
             var number_of_crates = $(this).val();
             var default_tareweight = $('#default_tareweight').val();
 
