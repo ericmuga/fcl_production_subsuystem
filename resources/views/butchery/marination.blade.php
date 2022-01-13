@@ -23,7 +23,7 @@
                         <div class="col-md-12">
                             <label for="exampleInputPassword1"> Product Code</label>
                             <select class="form-control select2" name="product" id="product" required>
-                                <option value="" >Select product</option>
+                                <option value="">Select product</option>
                                 @foreach($products as $product)
                                 <option value="{{ $product->code.'-'.$product->product_type_code }}">
                                     {{ $product->code.' '.$product->description.'-'.$product->product_type_name }}
@@ -68,6 +68,16 @@
                     <label for="exampleInputPassword1">No. of Crates</label>
                     <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4"
                         name="no_of_crates" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <span class="tinyLabel">Marination Date</span>
+                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                        <input type="text" class="form-control datetimepicker-input" id="marination_date"
+                            name="marination_date" required data-target="#reservationdate" />
+                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
                     <button type="submit" onclick="return checkNetOnSubmit()"
@@ -222,15 +232,15 @@
 <script>
     $(document).ready(function () {
 
-        $('#product').on("change", function(e) {
+        $('#product').on("change", function (e) {
             e.preventDefault();
             var selectedCode = $(this).children("option:selected").val();
             var reading = document.getElementById('reading');
 
             if (selectedCode !== '') {
-                $('#product').select2('destroy').select2();                
+                $('#product').select2('destroy').select2();
                 reading.focus();
-            }                        
+            }
         });
 
         $('#manual_weight').prop('checked', true);

@@ -1051,6 +1051,10 @@ class ButcheryController extends Controller
     {
         $item = explode("-", $request->product);
 
+        // dd($request->all());
+        // $date = $request->marination_date;
+        // $date = Carbon::parse($request->marination_date);
+        // dd($date);
         try {
             //saving...
             DB::table('deboned_data')->insert([
@@ -1062,6 +1066,7 @@ class ButcheryController extends Controller
                 'no_of_pieces' => '0',
                 'no_of_crates' => $request->no_of_crates,
                 'user_id' => $helpers->authenticatedUserId(),
+                'created_at' => Carbon::parse($request->marination_date),
 
             ]);
             Toastr::success("Item {$item[0]} recorded successfully", 'Success');
