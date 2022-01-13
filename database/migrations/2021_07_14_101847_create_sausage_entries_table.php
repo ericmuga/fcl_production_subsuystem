@@ -15,8 +15,10 @@ class CreateSausageEntriesTable extends Migration
     {
         Schema::create('sausage_entries', function (Blueprint $table) {
             $table->id();
-            $table->string('origin_timestamp')->unique();
+            $table->string('origin_timestamp');
             $table->string('barcode');
+            $table->integer('occurrences')->default(0);
+            $table->unique(['origin_timestamp', 'barcode']);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

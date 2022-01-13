@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\SausageEntry;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -11,7 +12,7 @@ class SausageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('session_check')->except(['insertBarcodes']);
     }
 
     public function index()
@@ -114,5 +115,32 @@ class SausageController extends Controller
         });
 
         return view('sausage.items', compact('title', 'items'));
+    }
+
+    public function insertBarcodes(Request $request)
+    {
+        try {
+            //saving...
+            foreach ($request->request_data as $el) {
+                $el2 = explode(" ", $el);
+
+                $entries = SausageEntry::upsert([
+                    [
+                        'origin_timestamp' =>  $el2[0] . ' ' . today()->format('Y-m-d'),
+                        'barcode' => $el2[1],
+                    ],
+                ], ['origin_timestamp', 'barcode'], []);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'action successful'
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }
