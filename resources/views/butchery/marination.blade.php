@@ -71,13 +71,8 @@
                 </div>
                 <div class="form-group">
                     <span class="tinyLabel">Marination Date</span>
-                    <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" id="marination_date"
-                            name="marination_date" required data-target="#reservationdate" />
-                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
-                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                        </div>
-                    </div>
+                    <input type="datetime-local" class="form-control" id="marination_date"
+                        name="marination_date" required>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
                     <button type="submit" onclick="return checkNetOnSubmit()"
