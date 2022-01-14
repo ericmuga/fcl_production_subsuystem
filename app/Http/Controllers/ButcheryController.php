@@ -1036,7 +1036,7 @@ class ButcheryController extends Controller
 
         $marination_data = DB::table('deboned_data')
             ->where('processes.process_code', '15')
-            ->whereDate('deboned_data.created_at', today())
+            ->whereDate('deboned_data.created_at', '>=', today()->subDays(7))
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')

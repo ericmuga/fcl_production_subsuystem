@@ -98,7 +98,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Marination output data | <span id="subtext-h1-title"><small> entries
+                    <h3 class="card-title"> Marination output data | <span id="subtext-h1-title"><small> showing last <strong>7 days</strong> entries
                                 ordered by
                                 latest</small> </span></h3>
                 </div>
