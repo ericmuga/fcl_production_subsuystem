@@ -20,3 +20,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/barcodes-insert', [SausageController::class, 'insertBarcodes']);
+Route::post('/last-insert', [SausageController::class, 'lastInsert']);

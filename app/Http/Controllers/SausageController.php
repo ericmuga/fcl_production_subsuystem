@@ -12,7 +12,7 @@ class SausageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except(['insertBarcodes']);
+        $this->middleware('session_check')->except(['insertBarcodes', 'lastInsert']);
     }
 
     public function index()
@@ -117,6 +117,21 @@ class SausageController extends Controller
         return view('sausage.items', compact('title', 'items'));
     }
 
+    public function lastInsert()
+    {
+        $last = DB::table('sausage_entries')
+            ->whereDate('created_at', today())
+            ->select('origin_timestamp')
+            ->orderByDesc('id')
+            ->first();
+
+        $res = '';
+        if ($last && $last != null) {
+            $res = $last->origin_timestamp;
+        }
+        return response($res);
+    }
+
     public function insertBarcodes(Request $request)
     {
         try {
@@ -129,7 +144,7 @@ class SausageController extends Controller
                         'origin_timestamp' =>  $el2[0] . ' ' . today()->format('Y-m-d'),
                         'barcode' => $el2[1],
                     ],
-                ], ['origin_timestamp', 'barcode'], []);
+                ], ['origin_timestamp', 'barcode'], ['occurrences' => DB::raw('occurrences+1')]);
             }
 
             return response()->json([
