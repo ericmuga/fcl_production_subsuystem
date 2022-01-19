@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\SausageEntry;
+use Faker\Core\Barcode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -121,13 +122,16 @@ class SausageController extends Controller
     {
         $last = DB::table('sausage_entries')
             ->whereDate('created_at', today())
-            ->select('origin_timestamp')
+            ->select('origin_timestamp', 'barcode')
             ->orderByDesc('id')
-            ->first();
+            ->limit(1)
+            ->get()->toArray();
 
         $res = '';
-        if ($last && $last != null) {
-            $res = $last->origin_timestamp;
+        if (!empty($last)) {
+            $origin = $last[0]->origin_timestamp;
+            $barcode = $last[0]->barcode;
+            $res = strstr($origin,  ' ', true) . ' ' . $barcode;
         }
         return response($res);
     }
