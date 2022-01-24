@@ -120,7 +120,7 @@
                         placeholder="" required>
                 </div>                
                 <div class="form-group" style="padding-top: 10%">
-                    <button type="submit" onclick="return checkNetOnSubmit()" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                    <button type="submit" onclick="return validateOnSubmit()" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
@@ -760,12 +760,21 @@
 
     }
 
-    function checkNetOnSubmit() {
+    function validateOnSubmit() {
         var net = $('#net').val();
+        var product_type = $('#product_type').val();
+        var no_of_pieces = $('#no_of_pieces').val();
+
         $valid = true;
         if (net == "" || net <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
+        }
+
+        //check main product pieces
+        if (product_type == 'Main Product' && no_of_pieces < 1){
+            $valid = false;
+            alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product");
         }
         return $valid;
     }
