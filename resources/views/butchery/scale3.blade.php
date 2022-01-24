@@ -764,6 +764,8 @@
         var net = $('#net').val();
         var product_type = $('#product_type').val();
         var no_of_pieces = $('#no_of_pieces').val();
+        var process = $('#production_process').val();
+        var process_substring = process.substr(0,process.indexOf(' '));        
 
         $valid = true;
         if (net == "" || net <= 0.00) {
@@ -772,9 +774,9 @@
         }
 
         //check main product pieces
-        if (product_type == 'Main Product' && no_of_pieces < 1){
+        if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone'){
             $valid = false;
-            alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product");
+            alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product in deboning process");
         }
         return $valid;
     }
