@@ -57,13 +57,13 @@
                                         data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
                                         data-no_carcass="{{ $data->no_of_carcass }}"
                                         data-weight="{{number_format($data->actual_weight, 2)}}" data-timestamp="{{ $data->created_at }}"
-                                        class="btn btn-info btn-sm" title="Return Sale" id="returnSaleModalShow"><i
+                                        class="btn btn-info btn-xs" title="Return Sale" id="returnSaleModalShow"><i
                                             class="fa fa-undo"></i>
                                     </button>
                                 </td>
                                 @elseif ($data->returned == 1)
                                 <td>
-                                    <span class="badge badge-warning">returned</span>
+                                    <span class="badge badge-warning">returned item</span>
                                 </td>
                                 @elseif(($data->returned == 2))
                                 <td>
@@ -152,10 +152,10 @@
                 <div class="modal-body">
                     <p>Please confirm if you want to return this product</p>
                     <label for="item_name">Item Name: </label>
-                    <p><strong><input style="border:none" type="text" id="item_name2" name="item_name" value=""
+                    <p><strong><input style="border:none" type="text" class="form-control" id="item_name2" name="item_name" value=""
                                 readonly></strong></p>
                     <label for="item_name">Item Weight: </label>
-                    <p><strong><input style="border:none" type="text" id="weight" name="weight" value=""
+                    <p><strong><input style="border:none" type="text" class="form-control" id="weight" name="weight" value=""
                                 readonly></strong></p>
                     <input type="hidden" id="return_no_carcass" value="" name="return_no_carcass">
                     <input type="hidden" name="return_weight" id="return_weight">
