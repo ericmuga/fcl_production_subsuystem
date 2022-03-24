@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\SlaughterCombinedExport;
 use App\Exports\SlaughterForNavExport;
+use App\Exports\SlaughterLinesExport;
 use App\Imports\ReceiptsImport;
 use App\Models\Helpers;
 use App\Models\MissingSlapData;
@@ -357,6 +358,25 @@ class SlaughterController extends Controller
         $exports = Session::put('session_export_data', $slaughter_combined);
 
         return Excel::download(new SlaughterCombinedExport, 'SlaughterSummaryReport-' . $request->date . '.xlsx');
+    }
+
+    public function exportSlaughterLinesReport(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
+        $slaughter_lines = DB::table('slaughter_data')
+            ->leftJoin('carcass_types', 'slaughter_data.item_code', '=', 'carcass_types.code')
+            ->leftJoin('users', 'slaughter_data.user_id', '=', 'users.id')
+            ->select('slaughter_data.receipt_no', 'slaughter_data.slapmark', 'slaughter_data.item_code', 'carcass_types.description', 'slaughter_data.vendor_no', 'slaughter_data.vendor_name', 'slaughter_data.actual_weight', 'slaughter_data.net_weight', 'slaughter_data.meat_percent', 'slaughter_data.settlement_weight', 'slaughter_data.classification_code', 'slaughter_data.manual_weight', 'users.username', 'slaughter_data.created_at', 'carcass_types.updated_at')
+            ->orderBy('slaughter_data.created_at', 'DESC')
+            ->whereDate('slaughter_data.created_at', '>=', $from_date)
+            ->whereDate('slaughter_data.created_at', '<=', $to_date)
+            ->get();
+
+        $exports = Session::put('session_export_data', $slaughter_lines);
+
+        return Excel::download(new SlaughterLinesExport, 'SlaughterLinesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function exportSlaughterForNav(Request $request, Helpers $helpers)

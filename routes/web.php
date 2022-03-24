@@ -47,6 +47,7 @@ Route::get('/slaughter/receipts', [SlaughterController::class, 'importedReceipts
 Route::post('/slaughter/import-receipts', [SlaughterController::class, 'importReceipts'])->name('slaughter_import_receipts');
 Route::get('/slaughter/data-report', [SlaughterController::class, 'slaughterDataReport'])->name('slaughter_data_report');
 Route::post('export-slaughter-combined-report', [SlaughterController::class, 'combinedSlaughterReport']);
+Route::post('export-slaughter-lines-report', [SlaughterController::class, 'exportSlaughterLinesReport']);
 Route::post('export-slaughter-for-nav', [SlaughterController::class, 'exportSlaughterForNav']);
 Route::get('/slaughter/scale-settings', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
 Route::post('/slaughter/update/scale-settings', [SlaughterController::class, 'UpdateScalesettings'])->name('slaughter_update_scale_settings');

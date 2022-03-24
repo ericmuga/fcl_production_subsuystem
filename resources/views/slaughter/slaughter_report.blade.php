@@ -8,7 +8,7 @@
     </div>
     <div class="col-md-3" style="margin-bottom: 1%">
         <button class="btn btn-warning btn-lg" data-toggle="modal" data-target="#export_for_nav"><i
-                class="fas fa-file-excel"></i> Generate For Nav Import</button>
+                class="fas fa-file-excel"></i> Export Slaughter Lines</button>
     </div>
 </div>
 
@@ -51,31 +51,36 @@
 <!-- Start Export for nav Modal -->
 <div class="modal fade" id="export_for_nav" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <form id="form-produce-check" action="{{ url('/export-slaughter-for-nav') }}" method="post">
+    <form id="form-produce-check" action="{{ url('/export-slaughter-lines-report') }}" method="post">
         @csrf
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Export for Nav Upload</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Export Slaughter Lines</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="row">
-                        *Filter by date<br>
-                        <div class="form-group col-md-6">
-                            <label for="stemplate_date_created_from_flagged">Date:(dd/mm/yyyy)</label>
-                            <input type="date" class="form-control" name="date" id="stemplate_date_created_from_flagged"
-                                autofocus required>
+                    <h6>*Filter by date range</h6>
+                    <div class="row form-group">
+                        <div class="col-md-6">
+                            <label for="stemplate_date_created_from_flagged">From: (dd/mm/yyyy)</label>
+                            <input type="date" class="form-control" name="from_date"
+                                id="stemplate_date_created_from_flagged" required>
                         </div>
-                    </div>
+                        <div class="col-md-6">
+                            <label for="stemplate_date_created_from_flagged">To: (dd/mm/yyyy)</label>
+                            <input type="date" class="form-control" name="to_date"
+                                id="stemplate_date_created_from_flagged" required>
+                        </div>
+                    </div> <br>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary btn-flat float-left" type="button"
                         data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success btn-lg  float-right"><i class="fa fa-send"></i>
-                        Export</button>
+                        Export Now</button>
                 </div>
             </div>
         </div>
@@ -143,7 +148,7 @@
                                 @if ($data->manual_weight == 1)
                                 <td><span class="badge badge-warning">manual</span></td>
                                 @else
-                                    <td><span class="badge badge-success">auto</span></td>
+                                <td><span class="badge badge-success">auto</span></td>
                                 @endif
                                 <td>{{ $data->created_at }}</td>
                             </tr>
