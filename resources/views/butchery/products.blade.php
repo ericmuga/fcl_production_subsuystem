@@ -2,8 +2,8 @@
 
 @section('content')
 
-@if( Session::get('session_userName') == 'EKaranja' ||Session::get('session_userName') == 'LNgotho' ||
-Session::get('session_userName') == 'Mchepkemoi' )
+@if( Session::get('session_userName') == 'EKaranja' || Session::get('session_userName') == 'LGithinji' || Session::get('session_userName') == 'AMugumo' ||
+Session::get('session_userName') == 'EMuga')
 <div class="div">
     <button class="btn btn-primary add_product" onclick="isCollapsed()"><i class="fa fa-plus"></i> Add/Update
         Product</button> <br> <br>
@@ -98,7 +98,6 @@ Session::get('session_userName') == 'Mchepkemoi' )
                                 <th>Product Code</th>
                                 <th>Product Name</th>
                                 <th>Product Type</th>
-                                <th>Production Process(es)</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -107,7 +106,6 @@ Session::get('session_userName') == 'Mchepkemoi' )
                                 <th>Product Code</th>
                                 <th>Product Name</th>
                                 <th>Product Type</th>
-                                <th>Production Process(es)</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -121,11 +119,6 @@ Session::get('session_userName') == 'Mchepkemoi' )
                                 @else
                                 <td> By Product</td>
                                 @endif
-
-                                <td> @foreach ($helpers->getProductProcesses($data->id) as $process)
-                                    <span class="badge badge-info">{{ $process }}</span>
-
-                                    @endforeach </td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -4,7 +4,7 @@
 
 <!-- Edit Modal product-processes -->
 <div id="editProductsModal" class="modal" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">Modal title</h5>
@@ -16,65 +16,81 @@
                 <form action="{{ route('butchery_add_product') }}" method="post" id="add-branch-form">
                     @csrf
                     <div class="card-body">
-                        <div class="form-group">
-                            <label for="role_name">Item Code:</label>
-                            <input autocomplete="off" type="text" class="form-control" id="code" name="code"
-                                value="{{ old('code') }}" required>
-
-                            @error('code')
-                            <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                        <div class="row form-group">
+                            <div class="col-md-4">
+                                <label for="role_name">Item Code:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="code" name="code"
+                                    value="" readonly>
                             </div>
-                            @enderror
-
-                        </div>
-                        <div class="form-group">
-                            <label for="role_name">Product Name:</label>
-                            <input autocomplete="off" type="text" class="form-control" id="product" name="product"
-                                value="{{ old('product') }}" required>
-
-                            @error('product')
-                            <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                            <div class="col-md-4">
+                                <label for="role_name">Product Name:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="product" name="product"
+                                    value="" readonly>
                             </div>
-                            @enderror
-
+                            <div class="col-md-4">
+                                <label for="role_name">Product Type:</label>
+                                <input autocomplete="off" type="text" class="form-control" id="product_type" name="product_type"
+                                    value="" readonly>
+                            </div>
                         </div>
                         <div class="form-group">
-                            <label for="role_name">Product Type:</label>
-                            <select name="product_type" id="product_type" class="form-control" required autofocus>
-                                <option value="" selected disabled>Choose One</option>
-                                <option value="1">Main Product</option>
-                                <option value="2">By Product</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="role_name">Production Process: <code>**select all applicable</code></label>
-                            <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)"
+                            <h5>Production Process: <code>**select all applicable</code></h5><br>
+                            {{-- <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)"
                                 name="production_process[]" id="production_process">
-
-                            </select>
-
-                            @error('production_process')
-                            <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                            </select> --}}
+                            <div class="row">
+                                @foreach($processes as $p)
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input type="checkbox" id="process_id" name="process_id[]"
+                                            value="{{ $p->process_code }}"> {{ $p->process }}
+                                    </label>
+                                </div>
+                                @endforeach
                             </div>
-                            @enderror
-
                         </div>
                     </div>
-                    <div class="card-footer ">
+                    <div class="card-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary btn-lg float-right"><i class="fa fa-paper-plane"
                                 aria-hidden="true"></i> Add/Update
                         </button>
                     </div>
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            </div>
         </div>
     </div>
 </div>
 <!--End edit Modal product-processes -->
+
+<!-- delete modal -->
+<div id="deleteProductsModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <form action="{{ route('butchery_products_delete') }}" method="POST">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Item: </h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Please confirm you want to delete this item.
+                    <input style="border:none; font-weight: bold"
+                                type="text" id="item_name" name="item_name" value="" readonly>
+                </div>
+                <input type="hidden" name="item_id" id="item_id" value="">
+                <div class="modal-footer">
+                    <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
+                    <button type="submit"
+                        class="btn btn-danger btn-lg  float-right"><i class="fas fa-trash"></i> Delete
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- end delete -->
 
 <div class="row">
     <div class="col-12">
@@ -91,10 +107,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Shortcode</th>
-                                <th>Product Code</th>
                                 <th>Product Name</th>
                                 <th>Product Type</th>
-                                <th>Production Code</th>
                                 <th>Production Process</th>
                                 <th>Action</th>
                             </tr>
@@ -103,10 +117,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Shortcode</th>
-                                <th>Product Code</th>
                                 <th>Product Name</th>
                                 <th>Product Type</th>
-                                <th>Production Code</th>
                                 <th>Production Process</th>
                                 <th>Action</th>
                             </tr>
@@ -117,7 +129,6 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->shortcode . substr($data->code, strpos($data->code, "G") + 1) }}
                                 </td>
-                                <td>{{ $data->code }}</td>
                                 <td>{{ $data->description }}</td>
                                 @if ($data->product_type == 1)
                                 <td> Main Product</td>
@@ -129,13 +140,18 @@
                                 <td> Intake</td>
                                 @endif
 
-                                <td>{{ $data->process_code }}</td>
                                 <td>{{ $data->process }}</td>
                                 <td>
-                                    <button type="button" data-id="{{ $data->code }}" class="btn btn-info btn-xs"
-                                        id="editProductsModalShow" data-toggle="tooltip" title="edit"><i
-                                            class="fas fa-edit"></i>
+                                    @if( Session::get('session_userName') == 'EKaranja' ||
+                                    Session::get('session_userName') == 'AMugumo' || Session::get('session_userName') == 'LGithinji' ||
+                                    Session::get('session_userName') == 'EMuga')
+                                    
+                                    <button type="button" data-id="{{ $data->id }}" data-desc="{{ trim($data->description).' for '.trim($data->process) }}" class="btn btn-danger btn-xs"
+                                        id="deleteProductsModalShow" data-toggle="tooltip" title="delete"><i
+                                            class="fas fa-trash"></i>
                                     </button>
+
+                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -155,55 +171,81 @@
 <script>
     $(document).ready(function () {
 
-        loadProductProcesses();
-
         // edit product-process
-        $("body").on("click", "#editProductsModalShow", function (a) {
-            a.preventDefault();
+        $("body").on("click", "#editProductProcessModalShow", function (e) {
+            e.preventDefault();
 
             var id = $(this).data('id');
+            var code = $(this).data('code');
+            var type = $(this).data('product_type');
+            var product_id = $(this).data('product_id');
+            var product = $(this).data('desc');
+
+            loadProductProcesses(product_id, type);
+
+            switch(type) {
+                case 1:
+                    // code block
+                    type = 'Main Product'
+                    break;
+                case 2:
+                    // code block
+                    type = 'By Product'
+                    break;
+                case 3:
+                    // code block
+                    type = 'Intake'
+                    break;
+                default:
+                    type = "Main Product"
+            }
 
 
             $('#return_item_id').val(id);
+            $('#code').val(code);
+            $('#product').val(product);
+            $('#product_type').val(type);
 
             $('#editProductsModal').modal('show');
         });
+
+        // delete product-process
+        $("body").on("click", "#deleteProductsModalShow", function (e) {
+            e.preventDefault();
+
+            var id = $(this).data('id');
+            var name = $(this).data('desc');
+
+            $('#item_id').val(id);
+            $('#item_name').val(name);
+
+            $('#deleteProductsModal').modal('show');
+        });
     })
 
-    const loadProductProcesses = () => {
-        $.ajax({
-            type: "GET",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                    .attr('content')
-            },
-            url: "{{ url('products/processes_ajax') }}",
-            dataType: 'JSON',
-            success: function (data) {
-                // console.log(data);
-                var formOptions = "";
-                for (var key in data) {
-                    var process_code = data[key].process_code;
+    const loadProductProcesses = (product_id, type) => {
+        const url = '/products/processes_ajax/edit'
 
-                    var process_name = data[key].process;
+        const request_data = {
+            product_id: product_id,
+            type: type,
+        }
 
-                    formOptions += "<option value='" +
-                        process_code + "'>" + process_name +
-                        "</option>";
-                }
-
-                $('#production_process').html(formOptions);
-
-            },
-            error: function (data) {
-                var errors = data.responseJSON;
-                // console.log(errors);
-                alert(
-                    'error occured when pulling production processes'
-                );
-            }
-
-        });
+        return axios.post(url, request_data)
+            .then((response) => {
+                // console.log(response.data)
+                let data = response.data
+                data.forEach(element => {
+                    console.log(element.process_code)
+                    
+                    $("input[type=checkbox][value="+element.process_code+"]").prop("checked", true);
+                    $("input[type=checkbox][value !="+element.process_code+"]").prop("checked", false);
+                    
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
 </script>

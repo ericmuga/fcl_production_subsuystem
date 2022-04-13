@@ -516,7 +516,6 @@ class ButcheryController extends Controller
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
-        // dd($request->prod_date);
         try {
 
             $product_type = 1;
@@ -648,10 +647,40 @@ class ButcheryController extends Controller
         return view('butchery.products', compact('title', 'products', 'helpers'));
     }
 
+    public function deleteProductProcess(Request $request, Helpers $helpers)
+    {
+        try {
+            //code...
+            DB::table('product_processes')
+                ->where('id', $request->item_id)
+                ->delete();
+
+            $helpers->optimizeCache();
+
+            Toastr::success("record {$request->item_name} deleted successfully", 'Success');
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
+
+        return back();
+    }
+
     public function loadProductionProcesses(Request $request)
     {
         $processes = DB::table('processes')
             ->select('process_code', 'process')
+            ->get();
+
+        return response()->json($processes);
+    }
+
+    public function loadProductionProcessesEdit(Request $request)
+    {
+        $processes = DB::table('product_processes')
+            ->select('process_code')
+            ->where('product_id', $request->product_id)
+            ->where('product_type', $request->type)
             ->get();
 
         return response()->json($processes);
@@ -975,16 +1004,23 @@ class ButcheryController extends Controller
     {
         $title = "Deboning-Products-List";
 
+        $processes = Cache::remember('processes_list', now()->addHours(8), function () {
+            return DB::table('processes')->get();
+        });
+
+        $selected_processes = DB::table('product_processes')
+            ->get();
+
         $products = Cache::remember('deboning_list_scale3', now()->addMinutes(120), function () {
             return DB::table('products')
                 ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
-                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->select('product_processes.id', 'products.id as product_id', DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
                 ->orderBy('products.code')
                 ->get();
         });
 
-        return view('butchery.products_list_deboning', compact('title', 'products'));
+        return view('butchery.products_list_deboning', compact('title', 'products', 'processes'));
     }
 
     public function weighMarination(Helpers $helpers)
@@ -1026,10 +1062,6 @@ class ButcheryController extends Controller
     {
         $item = explode("-", $request->product);
 
-        // dd($request->all());
-        // $date = $request->marination_date;
-        // $date = Carbon::parse($request->marination_date);
-        // dd($date);
         try {
             //saving...
             DB::table('deboned_data')->insert([

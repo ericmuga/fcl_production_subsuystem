@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -273,5 +274,12 @@ class Helpers
             'entry_type' => $entry_type,
             'user_id' => $this->authenticatedUserId(),
         ]);
+    }
+
+    public function optimizeCache()
+    {
+        $clear = Artisan::call('cache:clear');
+        $optimize = Artisan::call('optimize');
+        $view = Artisan::call('view:cache');
     }
 }
