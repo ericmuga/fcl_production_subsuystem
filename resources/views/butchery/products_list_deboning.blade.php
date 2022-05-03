@@ -3,7 +3,7 @@
 @section('content')
 
 <!-- Edit Modal product-processes -->
-<div id="editProductsModal" class="modal" tabindex="-1" role="dialog">
+<div id="addProductProcessModal" class="modal" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -13,28 +13,31 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('butchery_add_product') }}" method="post" id="add-branch-form">
+                <form action="{{ route('butchery_products_add') }}" class="form-prevent-multiple-submits" method="post" id="add-branch-form">
                     @csrf
                     <div class="card-body">
                         <div class="row form-group">
-                            <div class="col-md-4">
-                                <label for="role_name">Item Code:</label>
-                                <input autocomplete="off" type="text" class="form-control" id="code" name="code"
-                                    value="" readonly>
-                            </div>
-                            <div class="col-md-4">
-                                <label for="role_name">Product Name:</label>
-                                <input autocomplete="off" type="text" class="form-control" id="product" name="product"
-                                    value="" readonly>
+                            <div class="col-md-8">
+                                <label for="role_name">Item :</label>
+                                <select class="form-control select2" name="product" id="product" required>
+                                    <option value="">Select product</option>
+                                    @foreach($products_list as $data)
+                                    <option value="{{trim($data->code)}}">{{$data->description}}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div class="col-md-4">
                                 <label for="role_name">Product Type:</label>
-                                <input autocomplete="off" type="text" class="form-control" id="product_type" name="product_type"
-                                    value="" readonly>
+                                <select name="product_type" id="product_type" class="form-control" required autofocus>
+                                    <option value="" selected disabled>Choose One</option>
+                                    <option value="1">Main Product</option>
+                                    <option value="2">By Product</option>
+                                    <option value="3">Intake</option>
+                                </select>
                             </div>
                         </div>
                         <div class="form-group">
-                            <h5>Production Process: <code>**select all applicable</code></h5><br>
+                            <h5>Production Process: <code>**select one process per Product Type</code></h5><br>
                             {{-- <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)"
                                 name="production_process[]" id="production_process">
                             </select> --}}
@@ -47,12 +50,17 @@
                                     </label>
                                 </div>
                                 @endforeach
+
+                                @error('process_id')
+                                <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-lg float-right"><i class="fa fa-paper-plane"
+                        <button type="submit" class="btn btn-primary btn-prevent-multiple-submits btn-lg float-right"><i class="fa fa-paper-plane"
                                 aria-hidden="true"></i> Add/Update
                         </button>
                     </div>
@@ -76,14 +84,13 @@
                     </button>
                 </div>
                 <div class="modal-body">Please confirm you want to delete this item.
-                    <input style="border:none; font-weight: bold"
-                                type="text" id="item_name" name="item_name" value="" readonly>
+                    <input style="border:none; font-weight: bold" type="text" id="item_name" name="item_name" value=""
+                        readonly>
                 </div>
                 <input type="hidden" name="item_id" id="item_id" value="">
                 <div class="modal-footer">
                     <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
-                    <button type="submit"
-                        class="btn btn-danger btn-lg  float-right"><i class="fas fa-trash"></i> Delete
+                    <button type="submit" class="btn btn-danger btn-lg  float-right"><i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
             </div>
@@ -91,6 +98,16 @@
     </div>
 </div>
 <!-- end delete -->
+
+@if( Session::get('session_userName') == 'EKaranja' || Session::get('session_userName') == 'LGithinji' ||
+Session::get('session_userName') == 'AMugumo' ||
+Session::get('session_userName') == 'EMuga')
+<div class="div">
+    <button type="button" class="btn btn-primary" id="addProductProcessModalShow" data-toggle="tooltip" title="add"><i
+            class="fas fa-plus"> Add Product Process</i>
+    </button> <br><br>
+</div>
+@endif
 
 <div class="row">
     <div class="col-12">
@@ -143,12 +160,14 @@
                                 <td>{{ $data->process }}</td>
                                 <td>
                                     @if( Session::get('session_userName') == 'EKaranja' ||
-                                    Session::get('session_userName') == 'AMugumo' || Session::get('session_userName') == 'LGithinji' ||
+                                    Session::get('session_userName') == 'AMugumo' || Session::get('session_userName') ==
+                                    'LGithinji' ||
                                     Session::get('session_userName') == 'EMuga')
-                                    
-                                    <button type="button" data-id="{{ $data->id }}" data-desc="{{ trim($data->description).' for '.trim($data->process) }}" class="btn btn-danger btn-xs"
-                                        id="deleteProductsModalShow" data-toggle="tooltip" title="delete"><i
-                                            class="fas fa-trash"></i>
+
+                                    <button type="button" data-id="{{ $data->id }}"
+                                        data-desc="{{ trim($data->description).' for '.trim($data->process) }}"
+                                        class="btn btn-danger btn-xs" id="deleteProductsModalShow" data-toggle="tooltip"
+                                        title="delete"><i class="fas fa-trash"></i>
                                     </button>
 
                                     @endif
@@ -168,45 +187,27 @@
 @endsection
 
 @section('scripts')
+
+@if(Session::get('input_errors') == 'add_productProcess' )
+<script>
+    $(function () {
+        $('#addProductProcessModal').modal('show');
+    });
+
+</script>
+@endif
+
 <script>
     $(document).ready(function () {
+        $('.form-prevent-multiple-submits').on('submit', function(){
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
 
         // edit product-process
-        $("body").on("click", "#editProductProcessModalShow", function (e) {
+        $("body").on("click", "#addProductProcessModalShow", function (e) {
             e.preventDefault();
 
-            var id = $(this).data('id');
-            var code = $(this).data('code');
-            var type = $(this).data('product_type');
-            var product_id = $(this).data('product_id');
-            var product = $(this).data('desc');
-
-            loadProductProcesses(product_id, type);
-
-            switch(type) {
-                case 1:
-                    // code block
-                    type = 'Main Product'
-                    break;
-                case 2:
-                    // code block
-                    type = 'By Product'
-                    break;
-                case 3:
-                    // code block
-                    type = 'Intake'
-                    break;
-                default:
-                    type = "Main Product"
-            }
-
-
-            $('#return_item_id').val(id);
-            $('#code').val(code);
-            $('#product').val(product);
-            $('#product_type').val(type);
-
-            $('#editProductsModal').modal('show');
+            $('#addProductProcessModal').modal('show');
         });
 
         // delete product-process
@@ -237,10 +238,11 @@
                 let data = response.data
                 data.forEach(element => {
                     console.log(element.process_code)
-                    
-                    $("input[type=checkbox][value="+element.process_code+"]").prop("checked", true);
-                    $("input[type=checkbox][value !="+element.process_code+"]").prop("checked", false);
-                    
+
+                    $("input[type=checkbox][value=" + element.process_code + "]").prop("checked", true);
+                    $("input[type=checkbox][value !=" + element.process_code + "]").prop("checked",
+                        false);
+
                 });
             })
             .catch((error) => {

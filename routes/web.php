@@ -73,6 +73,7 @@ Route::post('/butchery/scale-3-update', [ButcheryController::class, 'updateScale
 Route::get('/product_details_ajax', [ButcheryController::class, 'getProductDetailsAjax'])->name('product_type_ajax');
 Route::get('/product_process_ajax', [ButcheryController::class, 'getProductProcessesAjax']);
 Route::get('/butchery/products', [ButcheryController::class, 'products'])->name('butchery_products');
+Route::post('/butchery/products/add', [ButcheryController::class, 'addProductProcess'])->name('butchery_products_add');
 Route::post('/butchery/products/delete', [ButcheryController::class, 'deleteProductProcess'])->name('butchery_products_delete');
 Route::get('/products/processes_ajax', [ButcheryController::class, 'loadProductionProcesses']);
 Route::post('/products/processes_ajax/edit', [ButcheryController::class, 'loadProductionProcessesEdit']);

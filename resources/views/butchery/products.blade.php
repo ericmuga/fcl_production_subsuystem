@@ -52,20 +52,6 @@ Session::get('session_userName') == 'EMuga')
                                     <option value="2">By Product</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="role_name">Production Process: <code>**select all applicable</code></label>
-                                <select class="select2" multiple="multiple"
-                                    data-placeholder="Select Production Process(es)" name="production_process[]"
-                                    id="production_process">
-
-                                </select>
-
-                                @error('production_process')
-                                <div class="error alert alert-danger alert-dismissible fade show">{{ $message }}
-                                </div>
-                                @enderror
-
-                            </div>
                         </div>
                         <div class="card-footer ">
                             <button type="submit" class="btn btn-primary btn-lg float-right"><i

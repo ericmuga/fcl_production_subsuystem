@@ -516,6 +516,7 @@ class ButcheryController extends Controller
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         try {
 
             $product_type = 1;
@@ -533,9 +534,9 @@ class ButcheryController extends Controller
             $item = explode('-', $request->product);
             $item_code = $item[1];
 
-            DB::transaction(function () use ($request, $helpers, $item_code, $product_type, $prod_date) {
-                # insert record
-                DB::table('deboned_data')->insert([
+            if ($request->for_transfer == 'on') {
+                # transfers
+                DB::table('transfers')->insert([
                     'item_code' => $item_code,
                     'actual_weight' => $request->reading,
                     'net_weight' => $request->net,
@@ -543,38 +544,35 @@ class ButcheryController extends Controller
                     'product_type' => $product_type,
                     'no_of_crates' => $request->no_of_crates - 1,
                     'no_of_pieces' => $request->no_of_pieces,
+                    'transfer_to' => $request->transfer_to,
                     'user_id' => $helpers->authenticatedUserId(),
-                    'created_at' => $prod_date,
                 ]);
 
-                // # update stock
-                // if ($product_type == 3) {
-                //     # reduce stock
-                //     DB::table('transactions')->insert([
-                //         'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
-                //         'chiller_code' => 'D',
-                //         'location_code' => '1570',
-                //         'entry_code' => '5',
-                //         'net_weight' => -1 * abs($request->net),
-                //         'user_id' => $helpers->authenticatedUserId(),
-                //     ]);
-                // } else {
-                //     # add stock
-                //     DB::table('transactions')->insert([
-                //         'item_code' =>  substr($request->product, strpos($request->product, "-") + 1),
-                //         'chiller_code' => 'D',
-                //         'location_code' => '1570',
-                //         'entry_code' => '5',
-                //         'net_weight' => $request->net,
-                //         'user_id' => $helpers->authenticatedUserId(),
-                //     ]);
-                // }
-            });
+                Toastr::success("Transfer record {$request->product} inserted successfully", 'Success');
+                return redirect()
+                    ->back()
+                    ->withInput();
+            } else {
+                DB::transaction(function () use ($request, $helpers, $item_code, $product_type, $prod_date) {
+                    # insert record
+                    DB::table('deboned_data')->insert([
+                        'item_code' => $item_code,
+                        'actual_weight' => $request->reading,
+                        'net_weight' => $request->net,
+                        'process_code' => (int)$request->production_process_code,
+                        'product_type' => $product_type,
+                        'no_of_crates' => $request->no_of_crates - 1,
+                        'no_of_pieces' => $request->no_of_pieces,
+                        'user_id' => $helpers->authenticatedUserId(),
+                        'created_at' => $prod_date,
+                    ]);
+                });
 
-            Toastr::success("record {$request->product} inserted successfully", 'Success');
-            return redirect()
-                ->back()
-                ->withInput();
+                Toastr::success("Deboning record {$request->product} inserted successfully", 'Success');
+                return redirect()
+                    ->back()
+                    ->withInput();
+            }
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back()
@@ -647,6 +645,57 @@ class ButcheryController extends Controller
         return view('butchery.products', compact('title', 'products', 'helpers'));
     }
 
+    public function addProductProcess(Request $request, Helpers $helpers)
+    {
+        $validator = Validator::make($request->all(), [
+            'process_id' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            # failed validation
+            $messages = $validator->errors();
+            foreach ($messages->all() as $message) {
+                Toastr::error($message, 'Error!');
+            }
+            return back()
+                ->withInput()
+                ->with('input_errors', 'add_productProcess')
+                ->withErrors($validator);
+        }
+
+        dd($request->all());
+        try {
+            // delete existing processes of same product
+            DB::table('product_processes')
+                // ->where('product_type', $product->id)
+                // ->where('product_type', $product->id)
+                ->delete();
+
+            // insert production processes
+            foreach ($request->production_process as $key => $process_code) {
+
+                // DB::table('product_processes')->insert(
+                //     [
+                //         'product_id' => $product->id,
+                //         'process_code' => $process_code,
+                //     ]
+                // );
+            }
+
+            DB::table('product_processes')
+                ->where('id', $request->item_id)
+                ->insert([]);
+
+            $helpers->forgetCache('deboning_list_scale3');
+
+            Toastr::success("Item {$request->item_name} with production process(es) added successfully", 'Success');
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+        }
+
+        return back();
+    }
+
     public function deleteProductProcess(Request $request, Helpers $helpers)
     {
         try {
@@ -655,12 +704,11 @@ class ButcheryController extends Controller
                 ->where('id', $request->item_id)
                 ->delete();
 
-            $helpers->optimizeCache();
+            $helpers->forgetCache('deboning_list_scale3');
 
             Toastr::success("record {$request->item_name} deleted successfully", 'Success');
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
-            return back();
         }
 
         return back();
@@ -780,7 +828,7 @@ class ButcheryController extends Controller
     public function addProduct(Request $request, Helpers $helpers)
     {
         $validator = Validator::make($request->all(), [
-            'production_process' => 'required',
+            'code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -811,27 +859,9 @@ class ButcheryController extends Controller
                         'updated_at' => now(),
                     ]
                 );
-
-                // delete existing processes of same product
-                DB::table('product_processes')->where('product_id', $product->id)->delete();
-
-                // insert production processes
-                foreach ($request->production_process as $key => $process_code) {
-
-                    DB::table('product_processes')->insert(
-                        [
-                            'product_id' => $product->id,
-                            'process_code' => $process_code,
-                        ]
-                    );
-                }
             });
 
             $helpers->forgetCache('products_list');
-
-            Toastr::success('record inserted successfully', 'Success');
-            return redirect()
-                ->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back()
@@ -1008,7 +1038,8 @@ class ButcheryController extends Controller
             return DB::table('processes')->get();
         });
 
-        $selected_processes = DB::table('product_processes')
+        $products_list = DB::table('products')
+            ->select('code', 'description')
             ->get();
 
         $products = Cache::remember('deboning_list_scale3', now()->addMinutes(120), function () {
@@ -1020,7 +1051,7 @@ class ButcheryController extends Controller
                 ->get();
         });
 
-        return view('butchery.products_list_deboning', compact('title', 'products', 'processes'));
+        return view('butchery.products_list_deboning', compact('title', 'products', 'products_list', 'processes'));
     }
 
     public function weighMarination(Helpers $helpers)

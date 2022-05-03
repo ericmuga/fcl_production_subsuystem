@@ -12,7 +12,8 @@
 @endsection
 
 @section('content')
-<form id="form-save-scale3" class="form-prevent-multiple-submits"  action="{{ route('butchery_scale3_save') }}" method="post">
+<form id="form-save-scale3" class="form-prevent-multiple-submits" action="{{ route('butchery_scale3_save') }}"
+    method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -102,10 +103,21 @@
 
         <div class="card ">
             <div class="card-body text-center">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4" name="no_of_crates"
-                        placeholder="" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">No. of Crates</label>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
+                                value="4" name="no_of_crates" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">No. of pieces </label>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces"
+                                value="0" name="no_of_pieces" placeholder="" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Production Date</label>
@@ -113,14 +125,23 @@
                         <option selected value="today">Today</option>
                         <option value="yesterday">Yesterday</option>
                     </select>
+                </div><br>
+                
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
+                    <label class="form-check-label" for="for_transfer"><strong> For Transfer?</strong></label>
+                </div> <br>
+                <div id="transfer_div" class="form-group collapse">
+                    <label for="exampleInputPassword1">Transfer To</label>
+                    <select class="form-control select2" name="transfer_to" id="transfer_to" required>
+                        <option selected value="1">Sausage</option>
+                        <option value="2">High Care</option>
+                        <option value="3">Despatch</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0" name="no_of_pieces"
-                        placeholder="" required>
-                </div>                
-                <div class="form-group" style="padding-top: 10%">
-                    <button type="submit" onclick="return validateOnSubmit()" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                <div class="form-group" style="padding-top: 5%">
+                    <button type="submit" onclick="return validateOnSubmit()"
+                        class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
@@ -132,7 +153,7 @@
 <div class="modal fade" id="productTypesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-product-type" class="form-prevent-multiple-submits"  action="#" method="post">
+        <form id="form-product-type" class="form-prevent-multiple-submits" action="#" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -157,7 +178,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary btn-prevent-multiple-submits" type="submit" onclick="setProductCode()">
+                    <button class="btn btn-primary btn-prevent-multiple-submits" type="submit"
+                        onclick="setProductCode()">
                         <i class="fa fa-save"></i> Edit
                     </button>
                 </div>
@@ -228,8 +250,7 @@
                                         data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}"
                                         data-type_id="{{ $data->type_id }}"
                                         data-production_process="{{ $data->process_code }}"
-                                        data-item="{{ $data->description }}"><a
-                                            href="#">{{ $data->item_code }}</a>
+                                        data-item="{{ $data->description }}"><a href="#">{{ $data->item_code }}</a>
                                     </td>
                                     <td>{{ $data->description }}</td>
                                     <td> {{ $data->product_type }}</td>
@@ -258,7 +279,8 @@
 <div id="itemCodeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('butchery_scale3_update')}}" method="post">
+        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('butchery_scale3_update')}}"
+            method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -344,7 +366,7 @@
 <script>
     $(document).ready(function () {
 
-        $('.form-prevent-multiple-submits').on('submit', function(){
+        $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
@@ -537,6 +559,17 @@
             }
 
         });
+
+        $('#for_transfer').change(function () {
+            var for_transfer = document.getElementById('for_transfer');
+            if (for_transfer.checked == true) {
+                $('#transfer_div').collapse('show')
+
+            } else {
+                $('#transfer_div').collapse('hide')
+            }
+
+        });
     });
 
     function loadEditProductionProcesses(code) {
@@ -638,23 +671,23 @@
             var pieces = Math.round(net) / 3;
             $('#edit_no_pieces').val(Math.round(pieces));
 
-        } else if(product_code == 'G1126' && net > 0){
+        } else if (product_code == 'G1126' && net > 0) {
             var pieces = Math.round(net) / 6.49;
             $('#edit_no_pieces').val(Math.round(pieces));
 
-        } else if(product_code == 'G1119' && net > 0) {
+        } else if (product_code == 'G1119' && net > 0) {
             var pieces = Math.round(net) / 0.53;
             $('#edit_no_pieces').val(Math.round(pieces));
 
-        } else if(product_code == 'G1189' && net > 0) {
+        } else if (product_code == 'G1189' && net > 0) {
             var pieces = Math.round(net) / 2.30;
             $('#edit_no_pieces').val(Math.round(pieces));
 
-        } else if(product_code == 'G1164' && net > 0) {
+        } else if (product_code == 'G1164' && net > 0) {
             var pieces = Math.round(net) / 4.66;
             $('#edit_no_pieces').val(Math.round(pieces));
 
-        } else if(product_code == 'G1121' && net > 0) {
+        } else if (product_code == 'G1121' && net > 0) {
             var pieces = Math.round(net) / 1.7;
             $('#edit_no_pieces').val(Math.round(pieces));
         }
@@ -765,7 +798,7 @@
         var product_type = $('#product_type').val();
         var no_of_pieces = $('#no_of_pieces').val();
         var process = $('#production_process').val();
-        var process_substring = process.substr(0,process.indexOf(' '));        
+        var process_substring = process.substr(0, process.indexOf(' '));
 
         $valid = true;
         if (net == "" || net <= 0.00) {
@@ -774,7 +807,7 @@
         }
 
         //check main product pieces
-        if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone'){
+        if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone') {
             $valid = false;
             alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product in deboning process");
         }
