@@ -13,22 +13,26 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('butchery_products_add') }}" class="form-prevent-multiple-submits" method="post" id="add-branch-form">
+                <form action="{{ route('butchery_products_add') }}" class="form-prevent-multiple-submits" method="post"
+                    id="add-branch-form">
                     @csrf
                     <div class="card-body">
                         <div class="row form-group">
                             <div class="col-md-8">
                                 <label for="role_name">Item :</label>
-                                <select class="form-control select2" name="product" id="product" required>
-                                    <option value="">Select product</option>
+                                <select class="form-control select2 load_processes" name="product" id="product"
+                                    required>
+                                    <option value="" selected disabled>Select product</option>
                                     @foreach($products_list as $data)
-                                    <option value="{{trim($data->code)}}">{{$data->description}}</option>
+                                    <option value="{{trim($data->id.'-'.$data->code)}}">
+                                        {{$data->code .' '.$data->description}}</option>
                                     @endforeach
                                 </select>
                             </div>
                             <div class="col-md-4">
                                 <label for="role_name">Product Type:</label>
-                                <select name="product_type" id="product_type" class="form-control" required autofocus>
+                                <select name="product_type" id="product_type"
+                                    class="form-control select2 load_processes" required autofocus>
                                     <option value="" selected disabled>Choose One</option>
                                     <option value="1">Main Product</option>
                                     <option value="2">By Product</option>
@@ -38,15 +42,20 @@
                         </div>
                         <div class="form-group">
                             <h5>Production Process: <code>**select one process per Product Type</code></h5><br>
-                            {{-- <select class="select2" multiple="multiple" data-placeholder="Select Production Process(es)"
-                                name="production_process[]" id="production_process">
-                            </select> --}}
+                            <div id="loading" class="collapse">
+                                <div class="row d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div><br>
+
                             <div class="row">
                                 @foreach($processes as $p)
                                 <div class="col-md-4">
                                     <label class="checkbox-inline">
-                                        <input type="checkbox" id="process_id" name="process_id[]"
-                                            value="{{ $p->process_code }}"> {{ $p->process }}
+                                        <input class="check_group" type="checkbox" id="process_code"
+                                            name="process_code[]" value="{{ $p->process_code }}"> {{ $p->process }}
                                     </label>
                                 </div>
                                 @endforeach
@@ -60,8 +69,9 @@
                     </div>
                     <div class="card-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary btn-prevent-multiple-submits btn-lg float-right"><i class="fa fa-paper-plane"
-                                aria-hidden="true"></i> Add/Update
+                        <button type="submit" onclick="return validateOnSubmit()"
+                            class="btn btn-primary btn-prevent-multiple-submits btn-lg float-right"><i
+                                class="fa fa-paper-plane" aria-hidden="true"></i> Add/Update
                         </button>
                     </div>
                 </form>
@@ -199,11 +209,11 @@ Session::get('session_userName') == 'EMuga')
 
 <script>
     $(document).ready(function () {
-        $('.form-prevent-multiple-submits').on('submit', function(){
+        $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        // edit product-process
+        // modify product-process
         $("body").on("click", "#addProductProcessModalShow", function (e) {
             e.preventDefault();
 
@@ -222,22 +232,42 @@ Session::get('session_userName') == 'EMuga')
 
             $('#deleteProductsModal').modal('show');
         });
+
+        $('.load_processes').change(function () {
+
+            if ($('#product').val() != null && $('#product_type').val() != null) {
+                let product = $('#product').val()
+                let product_id = product.substring(0, product.indexOf("-"));
+                let product_type = $('#product_type').val()
+
+                loadProductProcesses(product_id, product_type)
+            }
+        });
     })
 
-    const loadProductProcesses = (product_id, type) => {
+    const validateOnSubmit = () => {
+        if ($('.check_group').filter(':checked').length < 1) {
+            alert("Please Check at least one process Box");
+            return false;
+        }
+    }
+
+    const loadProductProcesses = (prod_id, prod_type) => {
+        $('#loading').collapse('show'); 
+
         const url = '/products/processes_ajax/edit'
 
         const request_data = {
-            product_id: product_id,
-            type: type,
+            product_id: prod_id,
+            product_type: prod_type,
         }
 
         return axios.post(url, request_data)
             .then((response) => {
-                // console.log(response.data)
+                $('#loading').collapse('hide'); 
+
                 let data = response.data
                 data.forEach(element => {
-                    console.log(element.process_code)
 
                     $("input[type=checkbox][value=" + element.process_code + "]").prop("checked", true);
                     $("input[type=checkbox][value !=" + element.process_code + "]").prop("checked",

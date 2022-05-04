@@ -516,7 +516,6 @@ class ButcheryController extends Controller
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         try {
 
             $product_type = 1;
@@ -626,10 +625,12 @@ class ButcheryController extends Controller
     public function getProductProcessesAjax(Request $request)
     {
         $product_id = DB::table('products')->where('code', $request->product_code)->value('id');
+
         $processes = DB::table('product_processes')
             ->where('product_id', $product_id)
             ->select('process_code')
             ->get();
+
         return response()->json($processes);
     }
 
@@ -648,7 +649,7 @@ class ButcheryController extends Controller
     public function addProductProcess(Request $request, Helpers $helpers)
     {
         $validator = Validator::make($request->all(), [
-            'process_id' => 'required',
+            'process_code' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -663,32 +664,30 @@ class ButcheryController extends Controller
                 ->withErrors($validator);
         }
 
-        dd($request->all());
         try {
-            // delete existing processes of same product
-            DB::table('product_processes')
-                // ->where('product_type', $product->id)
-                // ->where('product_type', $product->id)
-                ->delete();
+            DB::transaction(function () use ($request) {
+                // delete existing processes of same product
+                DB::table('product_processes')
+                    ->where('product_id', strtok($request->product,  '-'))
+                    ->where('product_type', $request->product_type)
+                    ->delete();
 
-            // insert production processes
-            foreach ($request->production_process as $key => $process_code) {
+                // insert production processes
+                foreach ($request->process_code as $code) {
 
-                // DB::table('product_processes')->insert(
-                //     [
-                //         'product_id' => $product->id,
-                //         'process_code' => $process_code,
-                //     ]
-                // );
-            }
-
-            DB::table('product_processes')
-                ->where('id', $request->item_id)
-                ->insert([]);
+                    DB::table('product_processes')->insert(
+                        [
+                            'product_id' => strtok($request->product,  '-'),
+                            'process_code' => $code,
+                            'product_type' => $request->product_type,
+                        ]
+                    );
+                }
+            });
 
             $helpers->forgetCache('deboning_list_scale3');
 
-            Toastr::success("Item {$request->item_name} with production process(es) added successfully", 'Success');
+            Toastr::success("Item {$request->product} with production process(es) added successfully", 'Success');
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
         }
@@ -728,8 +727,8 @@ class ButcheryController extends Controller
         $processes = DB::table('product_processes')
             ->select('process_code')
             ->where('product_id', $request->product_id)
-            ->where('product_type', $request->type)
-            ->get();
+            ->where('product_type', $request->product_type)
+            ->get()->toArray();
 
         return response()->json($processes);
     }
@@ -1039,7 +1038,7 @@ class ButcheryController extends Controller
         });
 
         $products_list = DB::table('products')
-            ->select('code', 'description')
+            ->select('id', 'code', 'description')
             ->get();
 
         $products = Cache::remember('deboning_list_scale3', now()->addMinutes(120), function () {
