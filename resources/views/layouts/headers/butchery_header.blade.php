@@ -66,6 +66,10 @@
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>
+                                    <a tabindex="-1" href="{{ route('butchery_transfers_report') }}" class="dropdown-item"> Transfers Report</a>
+                                </li>
+                                <li class="dropdown-divider"></li>
+                                <li>
                                     <a tabindex="-1" href="{{ route('butchery_scale3_list') }}" class="dropdown-item"> Scale3 Products</a>
                                 </li>
                             </ul>

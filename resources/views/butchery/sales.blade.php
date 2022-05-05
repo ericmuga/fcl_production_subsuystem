@@ -171,7 +171,7 @@
             </div>
     </div>
 </div>
-<!-- end logout -->
+<!-- end Return sales -->
 
 @endsection
 

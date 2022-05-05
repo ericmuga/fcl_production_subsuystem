@@ -388,6 +388,32 @@ class ButcheryController extends Controller
         }
     }
 
+    public function updateTransfersData(Request $request, Helpers $helpers)
+    {
+        try {
+            // update
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('transfers')
+                    ->where('id', $request->item_id)
+                    ->update([
+                        'item_code' => $request->edit_carcass,
+                        'actual_weight' => $request->edit_weight,
+                        'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
+                        'updated_at' => Carbon::now(),
+                    ]);
+
+                $helpers->insertChangeDataLogs('transfers', $request->item_id, '3');
+            });
+
+            Toastr::success("record {$request->item_name} updated successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
     public function updateSalesReturns(Request $request, Helpers $helpers)
     {
         try {
@@ -1027,6 +1053,24 @@ class ButcheryController extends Controller
             ->get();
 
         return view('butchery.sales', compact('title', 'sales_data', 'helpers'));
+    }
+
+    public function getTransfersReport(Helpers $helpers)
+    {
+        $title = "Transfers-Report";
+
+        $products_list = DB::table('products')
+            ->select('id', 'code', 'description')
+            ->get();
+
+        $transfers_data = DB::table('transfers')
+            ->leftJoin('products', 'transfers.item_code', '=', 'products.code')
+            ->select('transfers.*', 'products.description')
+            ->orderBy('created_at', 'DESC')
+            ->where('transfers.created_at', '>=', today()->subDays(7))
+            ->get();
+
+        return view('butchery.transfers', compact('title', 'transfers_data', 'products_list', 'helpers'));
     }
 
     public function getDeboningProductsList()

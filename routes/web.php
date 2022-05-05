@@ -64,6 +64,7 @@ Route::post('/butchery/scale-1-save', [ButcheryController::class, 'saveScaleOneD
 Route::post('/butchery/scale-2-save', [ButcheryController::class, 'saveScaleTwoData'])->name('butchery_scale2_save');
 Route::post('/butchery/scale-1-update', [ButcheryController::class, 'updateScaleOneData'])->name('butchery_scale1_update');
 Route::post('/butchery/sales-update', [ButcheryController::class, 'updateSalesData'])->name('butchery_sales_update');
+Route::post('/butchery/transfers-update', [ButcheryController::class, 'updateTransfersData'])->name('butchery_transfers_update');
 Route::post('/butchery/sales-returns', [ButcheryController::class, 'updateSalesReturns'])->name('butchery_sales_returns');
 Route::post('/butchery/scale-2-update', [ButcheryController::class, 'updateScaleTwoData'])->name('butchery_scale2_update');
 Route::get('/slaughter-data-ajax', [ButcheryController::class, 'loadSlaughterDataAjax'])->name('load_slaughter_data');
@@ -88,6 +89,7 @@ Route::post('export-breaking-combined-report', [ButcheryController::class, 'comb
 Route::get('/butchery/deboning-report', [ButcheryController::class, 'getDeboningReport'])->name('butchery_deboning_report');
 Route::post('export-deboned-combined-report', [ButcheryController::class, 'combinedDeboningReport']);
 Route::get('/butchery/sales-report', [ButcheryController::class, 'getSalesReport'])->name('butchery_sales_report');
+Route::get('/butchery/transfers-report', [ButcheryController::class, 'getTransfersReport'])->name('butchery_transfers_report');
 Route::get('/butchery/scale3-products', [ButcheryController::class, 'getDeboningProductsList'])->name('butchery_scale3_list');
 Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
