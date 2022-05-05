@@ -103,6 +103,13 @@
 
         <div class="card ">
             <div class="card-body text-center">
+                <div class="form-group">
+                    <label for="exampleInputPassword1">Production Date</label>
+                    <select class="form-control" name="prod_date" id="prod_date" required>
+                        <option selected value="today">Today</option>
+                        <option value="yesterday">Yesterday</option>
+                    </select>
+                </div><br>
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
@@ -118,15 +125,7 @@
                                 value="0" name="no_of_pieces" placeholder="" required>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Production Date</label>
-                    <select class="form-control" name="prod_date" id="prod_date" required>
-                        <option selected value="today">Today</option>
-                        <option value="yesterday">Yesterday</option>
-                    </select>
-                </div><br>
-                
+                </div><br>                
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
                     <label class="form-check-label" for="for_transfer"><strong> For Transfer?</strong></label>
