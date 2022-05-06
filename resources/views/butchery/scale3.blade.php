@@ -109,27 +109,21 @@
                         <option selected value="today">Today</option>
                         <option value="yesterday">Yesterday</option>
                     </select>
-                </div><br>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">No. of Crates</label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
-                                value="4" name="no_of_crates" placeholder="" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">No. of pieces </label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces"
-                                value="0" name="no_of_pieces" placeholder="" required>
-                        </div>
-                    </div>
-                </div><br>                
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">No. of Crates</label>
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
+                        value="4" name="no_of_crates" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputPassword1">No. of pieces </label>
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces"
+                        value="0" name="no_of_pieces" placeholder="" required>
+                </div>        
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
                     <label class="form-check-label" for="for_transfer"><strong> For Transfer?</strong></label>
-                </div> <br>
+                </div><br>
                 <div id="transfer_div" class="form-group collapse">
                     <label for="exampleInputPassword1">Transfer To</label>
                     <select class="form-control select2" name="transfer_to" id="transfer_to" required>
