@@ -122,7 +122,7 @@ class SausageController extends Controller
     {
         $last = DB::table('sausage_entries')
             ->whereDate('created_at', today())
-            ->select('origin_timestamp', 'barcode')
+            ->select('origin_timestamp', 'scanner_ip', 'barcode')
             ->orderByDesc('id')
             ->limit(1)
             ->get()->toArray();
@@ -130,8 +130,10 @@ class SausageController extends Controller
         $res = '';
         if (!empty($last)) {
             $origin = $last[0]->origin_timestamp;
+            $scanner = $last[0]->scanner_ip;
             $barcode = $last[0]->barcode;
-            $res = strstr($origin,  ' ', true) . ' ' . $barcode;
+
+            $res = $origin . ' ' . $scanner . ' ' . $barcode;
         }
         return response($res);
     }
@@ -145,10 +147,11 @@ class SausageController extends Controller
 
                 $entries = SausageEntry::upsert([
                     [
-                        'origin_timestamp' =>  $el2[0] . ' ' . today()->format('Y-m-d'),
-                        'barcode' => $el2[1],
+                        'origin_timestamp' => $el2[0],
+                        'scanner_ip' => $el2[1],
+                        'barcode' => $el2[2],
                     ],
-                ], ['origin_timestamp', 'barcode'], ['occurrences' => DB::raw('occurrences+1')]);
+                ], ['origin_timestamp', 'scanner_ip', 'barcode'], ['occurrences' => DB::raw('occurrences+1')]);
             }
 
             return response()->json([
