@@ -4,7 +4,6 @@
 <div class="container">
     <div class="row mb-2">
         <div class="col-sm-12">
-            {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
             <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> showing today's numbers | Date:
                         <code> {{ $helpers->dateToHumanFormat($date) }}</code></small>
         </div><!-- /.col -->
@@ -54,7 +53,6 @@
                 <p>Missing Slapmarks</p>
             </div>
             <div class="icon">
-                {{-- <i class="ion ion-pie-graph"></i> --}}
                 <i class="fa fa-eye-slash" aria-hidden="true"></i>
             </div>
             <a href="{{ route('missing_slap_data') }}" class="small-box-footer">More info <i
@@ -90,7 +88,6 @@
                 <p> Total Weight Output</p>
             </div>
             <div class="icon">
-                {{-- <i class="ion ion-alert"></i> --}}
                 <i class="fa fa-bars" aria-hidden="true"></i>
             </div>
             <a href="{{ route('slaughter_data_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
