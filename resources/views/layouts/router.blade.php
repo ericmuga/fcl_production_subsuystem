@@ -17,7 +17,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+        href="{{ asset('assets/googlefonts.css') }}">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Ionicons -->
@@ -34,7 +34,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('assets/plugins/summernote/summernote-bs4.min.css') }}">
     <!-- toastr -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/toastr.min.css') }}">
 </head>
 
 <body class="hold-transition layout-top-nav">
@@ -142,7 +142,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <script src="{{ asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}">
         </script>
         <!-- toastr -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+        <script src="{{ asset('assets/toastr.min.js') }}"></script>
         {!! Toastr::message() !!}
         
         @yield('scripts')

@@ -23,8 +23,8 @@
                 <h3>{{ $lined_up }}</h3>
                 <p>No. of Animals from lairage</p>
             </div>
-            <div class="icon">
-                <i class="ion ion-bag"></i>
+            <div class="icon">                
+                <i class="fa fa-share-alt"></i>
             </div>
             <a href="{{ route('slaughter_receipts') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
@@ -36,10 +36,10 @@
         <div class="small-box bg-success">
             <div class="inner">
                 <h3>{{ $slaughtered }}<sup style="font-size: 20px"></sup></h3>
-                <p>Slaughtered</p>
+                <p>Slaughtered & Weighed</p>
             </div>
             <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                <i class="fa fa-balance-scale"></i>
             </div>
             <a href="{{ route('slaughter_data_report') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
@@ -54,7 +54,8 @@
                 <p>Missing Slapmarks</p>
             </div>
             <div class="icon">
-                <i class="ion ion-pie-graph"></i>
+                {{-- <i class="ion ion-pie-graph"></i> --}}
+                <i class="fa fa-eye-slash" aria-hidden="true"></i>
             </div>
             <a href="{{ route('missing_slap_data') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
@@ -69,7 +70,7 @@
                 <p>Remaining count</p>
             </div>
             <div class="icon">
-                <i class="ion ion-alert"></i>
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -89,7 +90,8 @@
                 <p> Total Weight Output</p>
             </div>
             <div class="icon">
-                <i class="ion ion-alert"></i>
+                {{-- <i class="ion ion-alert"></i> --}}
+                <i class="fa fa-bars" aria-hidden="true"></i>
             </div>
             <a href="{{ route('slaughter_data_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>

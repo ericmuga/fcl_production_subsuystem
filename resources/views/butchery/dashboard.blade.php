@@ -28,7 +28,8 @@
                 <p>No. of Baconers & netweight</p>
             </div>
             <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                {{-- <i class="ion ion-stats-bars"></i> --}}
+                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -44,8 +45,8 @@
                 <h3>{{ $baconers?? "0" }} | <sup style="font-size: 20px">{{ number_format($baconers_weight, 2) }} kgs</sup></h3>
                 <p>No. of Beheaded Baconers & netweight</p>
             </div>
-            <div class="icon">
-                <i class="ion ion-bag"></i>
+            <div class="icon">                
+                <i class="fa fa-share-alt"></i>
             </div>
             <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -61,8 +62,8 @@
 
                 <p>Sales Baconers & Total Weight </p>
             </div>
-            <div class="icon">
-                <i class="ion ion-alert"></i>
+            <div class="icon">                
+                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
             </div>
             <a href="{{ route('butchery_sales_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -134,7 +135,7 @@
                 <p>No. of Sows & netweight</p>
             </div>
             <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                <i class="fa fa-shopping-bag" aria-hidden="true"></i>
             </div>
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -150,8 +151,8 @@
                 <h3>{{ $sows?? "0" }} | <sup style="font-size: 20px">{{ number_format($sows_weight, 2) }} kgs</sup></h3>
                 <p>No. of Beheaded Sows & netweight</p>
             </div>
-            <div class="icon">
-                <i class="ion ion-bag"></i>
+            <div class="icon">                                
+                <i class="fa fa-share-alt"></i>
             </div>
             <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
