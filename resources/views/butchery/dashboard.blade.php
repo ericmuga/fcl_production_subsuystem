@@ -46,7 +46,7 @@
                 <p>No. of Beheaded Baconers & netweight</p>
             </div>
             <div class="icon">                
-                <i class="fa fa-share-alt"></i>
+                <i class="fa fa-balance-scale"></i>
             </div>
             <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -63,7 +63,7 @@
                 <p>Sales Baconers & Total Weight </p>
             </div>
             <div class="icon">                
-                <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+                <i class="fa fa-shopping-cart" aria-hidden="true"></i>
             </div>
             <a href="{{ route('butchery_sales_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
@@ -152,7 +152,7 @@
                 <p>No. of Beheaded Sows & netweight</p>
             </div>
             <div class="icon">                                
-                <i class="fa fa-share-alt"></i>
+                <i class="fa fa-balance-scale"></i>
             </div>
             <a href="{{ route('butchery_beheading_report') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>

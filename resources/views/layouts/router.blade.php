@@ -127,7 +127,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                     <div class="icon text-center">
-                                        <i class="fa fa-exclamation-triangle fa-4x" aria-hidden="true"></i>
+                                        <i class="fa fa-check-circle fa-4x" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>

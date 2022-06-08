@@ -47,7 +47,7 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-dark">
+        <div class="small-box bg-secondary">
             <div class="inner">
                 <h3>23,150<sup style="font-size: 20px">Kgs</sup></h3>
 
@@ -62,7 +62,7 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-danger">
+        <div class="small-box bg-warning">
             <div class="inner">
                 <h3>635</h3>
 

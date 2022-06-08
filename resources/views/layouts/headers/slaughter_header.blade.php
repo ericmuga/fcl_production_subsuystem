@@ -38,6 +38,7 @@
                                     <a tabindex="-1" href="{{ route('slaughter_data_report') }}"
                                         class="dropdown-item">Slaughter Report</a>
                                 </li>
+                                <li class="dropdown-divider"></li>
                                 <li>
                                     <a tabindex="-1" href="{{ route('missing_slap_data') }}"
                                         class="dropdown-item">Missing Slapmarks Report</a>
