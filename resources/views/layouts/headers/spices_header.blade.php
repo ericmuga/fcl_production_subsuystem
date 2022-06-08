@@ -3,7 +3,7 @@
         <a href="{{ route('sausage_dashboard') }}" class="navbar-brand">
             <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
                 class="brand-image" style="">
-            <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
+            <span class="brand-text font-weight-light"><strong> FCL Weight Management System | <small>Spices Section</small></strong></span>
         </a>
 
         <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
@@ -15,17 +15,13 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('stock_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('sausage_entries') }}" class="dropdown-item"> Today's Entries
-                            </a>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('items_list') }}" class="dropdown-item"> Items List
+                        <li><a href="{{ route('stocks_transactions') }}" class="dropdown-item"> Today's Entries
                             </a>
                         </li>
                     </ul>

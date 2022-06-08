@@ -6,6 +6,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\SlaughterController;
+use App\Http\Controllers\SpicesController;
 use App\Http\Controllers\ButcheryStockController;
 use Illuminate\Support\Facades\Route;
 use Rap2hpoutre\LaravelLogViewer\LogViewerController;
@@ -114,3 +115,7 @@ Route::get('/sausage/dashboard', [SausageController::class, 'index'])->name('sau
 Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'productionEntries'])->name('sausage_entries');
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 /*-------------End Admin------------------ */
+
+/*-------------Start Spices------------------ */
+Route::get('/spices/dashboard', [SpicesController::class, 'index'])->name('spices_dashboard');
+/*-------------End Spices------------------ */
