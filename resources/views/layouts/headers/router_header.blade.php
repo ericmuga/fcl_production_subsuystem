@@ -16,7 +16,7 @@
         <!-- Right navbar links -->
         <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
             <li class="nav-item dropdown no-arrow">
-                <a class="nav-link dropdown-toggle" style="color:gray" href="#" id="userDropdown" role="button"
+                <a class="nav-link dropdown-toggle" style="color:black" href="#" id="userDropdown" role="button"
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-user-circle"></i> {{ Session::get('session_userName') }}
                 </a>
