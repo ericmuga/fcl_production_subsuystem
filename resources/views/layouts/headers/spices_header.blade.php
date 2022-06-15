@@ -15,13 +15,25 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="{{ route('stock_dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('spices_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Production</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('stocks_transactions') }}" class="dropdown-item"> Batches
+                        <li><a href="#" class="dropdown-item"> Create New Batch
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('batches_list', 'open') }}" class="dropdown-item"> Open Batches
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('batches_list', 'closed') }}" class="dropdown-item"> Closed Batches
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('batches_list', 'posted') }}" class="dropdown-item"> Posted Batches
                             </a>
                         </li>
                     </ul>
@@ -30,7 +42,7 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('stocks_transactions') }}" class="dropdown-item"> Template list
+                        <li><a href="{{ route('template_list') }}" class="dropdown-item"> Template list
                             </a>
                         </li>
                     </ul>

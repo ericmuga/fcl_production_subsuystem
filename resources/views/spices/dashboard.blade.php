@@ -64,9 +64,9 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>635</h3>
+                <h3>22,150<sup style="font-size: 20px">Kgs</sup></h3>
 
-                <p>Total Transactions </p>
+                <p>Consumed Weights Totals </p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
