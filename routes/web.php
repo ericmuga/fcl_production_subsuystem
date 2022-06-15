@@ -121,5 +121,6 @@ Route::get('/spices/dashboard', [SpicesController::class, 'index'])->name('spice
 Route::get('/spices/template-list', [SpicesController::class, 'templateList'])->name('template_list');
 Route::post('template-list/upload', [SpicesController::class, 'importReceipts'])->name('template_upload');
 Route::get('template-lines/{template_no}', [SpicesController::class, 'templateLines'])->name('template_lines');
+Route::post('production/batches/create', [SpicesController::class, 'createBatchLines'])->name('batches_create');
 Route::get('production/batches/{filter?}', [SpicesController::class, 'BatchLists'])->name('batches_list');
 /*-------------End Spices------------------ */

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Helpers;
 use App\Models\TemplateHeader;
 use Brian2694\Toastr\Facades\Toastr;
+use Faker\Extension\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -102,12 +103,44 @@ class SpicesController extends Controller
         }
     }
 
-    public function BatchLists($filter = null)
+    public function createBatchLines(Request $request, Helpers $helpers)
+    {
+        // dd($request->all());
+        try {
+            // get template lines
+            $temp_lines = DB::table('template_lines')->where('template_no', $request->temp_no)->get();
+
+            if (!empty($temp_lines)) {
+                foreach ($temp_lines as $tl) {
+                    DB::table('production_lines')->insert([
+                        'template_no' => $request->temp_no,
+                        'batch_no' => $request->batch_no,
+                        'status' => $request->status,
+                        'quantity' => ($tl->percentage / 100) * $request->output_qty,
+                        'user_id' => $helpers->authenticatedUserId(),
+                    ]);
+                }
+            }
+
+            Toastr::success("Batch {$request->batch_no} added successfully", "Success");
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
+    }
+
+    public function BatchLists(Helpers $helpers, $filter = null)
     {
         $title = "Production Lines";
 
         $status = $filter;
 
-        return view('spices.production-lines', compact('title', 'status'));
+        $templates = DB::table('template_header')->get();
+
+        $lines = DB::table('production_lines')->get();
+
+        return view('spices.production-lines', compact('title', 'status', 'templates', 'lines', 'helpers'));
     }
 }

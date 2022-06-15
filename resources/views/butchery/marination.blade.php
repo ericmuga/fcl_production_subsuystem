@@ -71,8 +71,8 @@
                 </div>
                 <div class="form-group">
                     <span class="tinyLabel">Marination Date</span>
-                    <input type="datetime-local" class="form-control" id="marination_date"
-                        name="marination_date" required>
+                    <input type="datetime-local" class="form-control" id="marination_date" name="marination_date"
+                        required>
                 </div>
                 <div class="form-group" style="padding-top: 10%">
                     <button type="submit" onclick="return checkNetOnSubmit()"
@@ -98,7 +98,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Marination output data | <span id="subtext-h1-title"><small> showing last <strong>7 days</strong> entries
+                    <h3 class="card-title"> Marination output data | <span id="subtext-h1-title"><small> showing last
+                                <strong>7 days</strong> entries
                                 ordered by
                                 latest</small> </span></h3>
                 </div>

@@ -20,11 +20,7 @@
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Production</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="#" class="dropdown-item"> Create New Batch
-                            </a>
-                        </li>
-                        <li class="dropdown-divider"></li>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
                         <li><a href="{{ route('batches_list', 'open') }}" class="dropdown-item"> Open Batches
                             </a>
                         </li>
