@@ -72,6 +72,10 @@ class SpicesController extends Controller
                     $rowData[] = fgetcsv($fileD);
                 }
 
+                //delete template headers and lines
+                DB::table('template_header')->delete();
+                DB::table('template_lines')->delete();
+
                 foreach ($rowData as $key => $row) {
                     //get Template no from header
                     $template = TemplateHeader::firstOrCreate(
@@ -82,7 +86,7 @@ class SpicesController extends Controller
                     DB::table('template_lines')->insert(
                         [
                             'template_no' => $template->template_no,
-                            'item_no' => $row[1],
+                            'item_code' => $row[1],
                             'percentage' => $row[2],
                             'type' => $row[3],
                             'main_product' => $row[4],
@@ -105,19 +109,29 @@ class SpicesController extends Controller
 
     public function createBatchLines(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
+        $temp_no = strtok($request->temp_no,  '-');
+
         try {
+            //insert batch
+            DB::table('batches')->insert([
+                'batch_no' => $request->batch_no,
+                'template_no' => $temp_no,
+                'output_quantity' => $request->output_qty,
+                'status' => $request->status,
+                'user_id' => $helpers->authenticatedUserId(),
+            ]);
+
             // get template lines
-            $temp_lines = DB::table('template_lines')->where('template_no', $request->temp_no)->get();
+            $temp_lines = DB::table('template_lines')->where('template_no', $temp_no)
+                ->select('item_code', 'percentage')
+                ->get();
 
             if (!empty($temp_lines)) {
                 foreach ($temp_lines as $tl) {
                     DB::table('production_lines')->insert([
-                        'template_no' => $request->temp_no,
                         'batch_no' => $request->batch_no,
-                        'status' => $request->status,
+                        'item_code' => $tl->item_code,
                         'quantity' => ($tl->percentage / 100) * $request->output_qty,
-                        'user_id' => $helpers->authenticatedUserId(),
                     ]);
                 }
             }
@@ -131,16 +145,37 @@ class SpicesController extends Controller
         }
     }
 
-    public function BatchLists(Helpers $helpers, $filter = null)
+    public function batchLists(Helpers $helpers, $filter = null)
+    {
+        $title = "Batches";
+
+        $templates = DB::table('template_header')
+            ->where('template_lines.main_product', 'Yes')
+            ->leftJoin('template_lines', 'template_header.template_no', '=', 'template_lines.template_no')
+            ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
+            ->get();
+
+        $batches = DB::table('batches')
+            ->leftJoin('users', 'batches.user_id', '=', 'users.id')
+            ->leftJoin('template_header', 'batches.template_no', '=', 'template_header.template_no')
+            ->select('batches.*', 'users.username', 'template_header.template_name')
+            ->orderBy('batches.created_at', 'DESC')
+            ->get();
+
+        return view('spices.batches', compact('title', 'filter', 'templates', 'batches', 'helpers'));
+    }
+
+    public function productionLines($batch_no, Helpers $helpers)
     {
         $title = "Production Lines";
 
-        $status = $filter;
+        $lines = DB::table('production_lines')
+            ->where('batch_no', $batch_no)
+            ->leftJoin('template_lines', 'production_lines.item_code', '=', 'template_lines.item_code')
+            ->select('production_lines.*', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.location')
+            ->orderBy('production_lines.item_code', 'ASC')
+            ->get();
 
-        $templates = DB::table('template_header')->get();
-
-        $lines = DB::table('production_lines')->get();
-
-        return view('spices.production-lines', compact('title', 'status', 'templates', 'lines', 'helpers'));
+        return view('spices.production-lines', compact('title', 'lines', 'helpers', 'batch_no'));
     }
 }

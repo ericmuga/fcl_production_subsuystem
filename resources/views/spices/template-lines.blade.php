@@ -44,7 +44,7 @@
                             @foreach($template_lines as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->item_no }}</td>
+                                <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->percentage }}</td>
                                 <td>{{ $data->type }}</td>

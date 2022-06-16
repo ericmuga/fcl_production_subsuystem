@@ -16,10 +16,8 @@ class CreateProductionLinesTable extends Migration
         Schema::create('production_lines', function (Blueprint $table) {
             $table->id();
             $table->string('batch_no');
-            $table->string('template_no');
-            $table->string('status');
+            $table->string('item_code');
             $table->decimal('quantity');
-            $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

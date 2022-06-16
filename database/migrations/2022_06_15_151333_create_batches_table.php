@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTemplateLinesTable extends Migration
+class CreateBatchesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,13 @@ class CreateTemplateLinesTable extends Migration
      */
     public function up()
     {
-        Schema::create('template_lines', function (Blueprint $table) {
+        Schema::create('batches', function (Blueprint $table) {
             $table->id();
+            $table->string('batch_no')->unique();
             $table->string('template_no');
-            $table->string('item_code');
-            $table->string('description');
-            $table->decimal('percentage');
-            $table->string('type');
-            $table->string('main_product');
-            $table->string('shortcode');
-            $table->string('unit_measure');
-            $table->string('location');
+            $table->string('status');
+            $table->decimal('output_quantity');
+            $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -36,6 +32,6 @@ class CreateTemplateLinesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('template_lines');
+        Schema::dropIfExists('batches');
     }
 }
