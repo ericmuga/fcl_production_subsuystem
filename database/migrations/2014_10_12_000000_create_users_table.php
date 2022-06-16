@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->string('password')->nullable();
             $table->boolean('change_password')->default(true);
             $table->string('section', 50)->nullable();
+            $table->string('role', 50)->nullable();
             $table->string('session')->nullable();
             $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();

@@ -89,6 +89,7 @@ class LoginController extends Controller
 
         Session::put('session_userId', $user->id);
         Session::put('session_userName', $user->username);
+        Session::put('session_role', $user->role);
         Session::put('live_session_id', sha1(microtime()));
 
         DB::table('users')

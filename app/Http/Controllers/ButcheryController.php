@@ -509,6 +509,8 @@ class ButcheryController extends Controller
     {
         $title = "Scale-3";
 
+        $filter = Session::get('session_role');
+
         $configs = Cache::remember('scale3_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
@@ -529,12 +531,20 @@ class ButcheryController extends Controller
 
         $deboning_data = DB::table('deboned_data')
             ->where('processes.process_code', '!=', '15')
-            ->whereDate('deboned_data.created_at', today())
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
             ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description')
             ->orderBy('deboned_data.created_at', 'DESC')
+            ->when($filter == 'admin', function ($q) {
+                $q->whereBetween(
+                    'deboned_data.created_at',
+                    [now()->startOfWeek(), now()->endOfWeek()]
+                ); // today plus last 7 days
+            })
+            ->when($filter != 'admin', function ($q) {
+                $q->whereDate('deboned_data.created_at', today()); // today only
+            })
             ->get();
 
         return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers'));
