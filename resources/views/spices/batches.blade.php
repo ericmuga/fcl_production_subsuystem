@@ -158,28 +158,11 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        $("body").on("click", "#itemCodeModalShow", function (e) {
-            e.preventDefault();
-
-            var code = $(this).data('code');
-            var item = $(this).data('item');
-            var weight = $(this).data('weight');
-            var no_of_pieces = $(this).data('no_of_pieces');
-            var id = $(this).data('id');
-            var process_code = $(this).data('production_process');
-            var type_id = $(this).data('type_id');
-
-            $('#edit_product').val(code);
-            $('#item_name').val(item);
-            $('#edit_weight').val(weight);
-            $('#edit_no_pieces').val(no_of_pieces)
-            $('#item_id').val(id);
-            $('#edit_production_process').val(process_code);
-            $('#edit_product_type2').val(type_id);
-
-            $('#edit_product').select2('destroy').select2();
-
-            $('#itemCodeModal').modal('show');
+        $('#temp_no').change(function () {
+            var temp_no = $(this).val();
+            var output = $('#output_product').val(temp_no.substring(temp_no.indexOf('-') + 1));
+            $('#temp_no').select2('destroy').select2();
+            $('#output_qty').focus()
         });
     });
 
