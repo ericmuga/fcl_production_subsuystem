@@ -5,10 +5,24 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Production Lines Entries | <span id="subtext-h1-title"><small> showing batch
-                            <strong>{{ $batch_no }}</strong> entries
-                            ordered by
-                            latest</small> </span></h3>
+                <div class="row">
+                    <div class="col-md-7">
+                        <h3 class="card-title"> Production Lines Entries | <span id="subtext-h1-title">showing batch No:
+                                <strong>{{ $batch_no }}</strong> entries
+                                ordered by
+                                latest</span></h3>
+                    </div>
+                    <div class="col-md-5">
+                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#closeModal"><i
+                                class="fas fa-lock"></i>
+                            Close Batch
+                        </button>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal"><i
+                                class="fas fa-save"></i>
+                            Post Batch
+                        </button>
+                    </div>
+                </div>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -27,7 +41,6 @@
                                 <th>Unit Measure</th>
                                 <th>Location</th>
                                 <th>Date</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -43,7 +56,6 @@
                                 <th>Unit Measure</th>
                                 <th>Location</th>
                                 <th>Date</th>
-                                <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -67,11 +79,10 @@
                                 @else
                                 <td><span class="badge badge-success">Output</span></td>
                                 @endif
-                                
+
                                 <td>{{ $data->unit_measure }}</td>
                                 <td>{{ $data->location }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
-                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -85,6 +96,37 @@
     </div>
 </div>
 <!-- slicing ouput data show -->
+
+<!--Close Modal -->
+<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="recipient-name" class="col-form-label">Recipient:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Message:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Close Modal -->
 
 @endsection
 

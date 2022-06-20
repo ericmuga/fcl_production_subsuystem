@@ -17,6 +17,7 @@ class CreateTemplateLinesTable extends Migration
             $table->id();
             $table->string('template_no');
             $table->string('item_code');
+            $table->index(['template_no', 'item_code']);
             $table->string('description');
             $table->decimal('percentage');
             $table->string('type');

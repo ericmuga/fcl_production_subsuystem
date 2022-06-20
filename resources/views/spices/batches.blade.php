@@ -61,7 +61,7 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Status</label>
                         <div class="col-sm-9">
-                            <input type="email" readonly class="form-control" value="Open" id="status" name="status"
+                            <input type="email" readonly class="form-control" value="open" id="status" name="status"
                                 placeholder="" readonly>
                         </div>
                     </div>
@@ -132,7 +132,15 @@
                                 <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
                                 </td>
                                 <td>{{ $data->template_name }}</td>
-                                <td>{{ $data->status }}</td>
+
+                                @if ($data->status == 'open')
+                                <td><span class="badge badge-success">Open</span></td>
+                                @elseif ($data->status == 'closed')
+                                <td><span class="badge badge-warning">Closed</span></td>
+                                @else
+                                <td><span class="badge badge-danger">Posted</span></td>
+                                @endif
+
                                 <td>{{ $data->template_output }}</td>
                                 <td>{{ $data->output_quantity }}</td>
                                 <td>{{ $data->username }}</td>
