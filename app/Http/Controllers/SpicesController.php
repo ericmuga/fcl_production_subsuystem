@@ -156,9 +156,20 @@ class SpicesController extends Controller
             ->get();
 
         $batches = DB::table('batches')
+            ->where('template_lines.main_product', 'Yes')
             ->leftJoin('users', 'batches.user_id', '=', 'users.id')
             ->leftJoin('template_header', 'batches.template_no', '=', 'template_header.template_no')
-            ->select('batches.*', 'users.username', 'template_header.template_name')
+            ->leftJoin('template_lines', 'batches.template_no', '=', 'template_lines.template_no')
+            ->select('batches.*', 'users.username', 'template_header.template_name', 'template_lines.description as template_output')
+            ->when($filter == 'open', function ($q) {
+                $q->where('batches.status', '=', 'open'); // open batches
+            })
+            ->when($filter == 'posted', function ($q) {
+                $q->where('batches.status', '=', 'posted'); // posted batches
+            })
+            ->when($filter == 'closed', function ($q) {
+                $q->where('batches.status', '=', 'closed'); // closed batches
+            })
             ->orderBy('batches.created_at', 'DESC')
             ->get();
 

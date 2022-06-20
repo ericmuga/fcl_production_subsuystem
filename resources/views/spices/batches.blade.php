@@ -107,6 +107,7 @@
                                 <th>Batch No</th>
                                 <th>Template</th>
                                 <th>Status</th>
+                                <th>Output Product</th>
                                 <th>Output Quantity</th>
                                 <th>created By</th>
                                 <th>Date</th>
@@ -118,6 +119,7 @@
                                 <th>Batch No</th>
                                 <th>Template</th>
                                 <th>Status</th>
+                                <th>Output Product</th>
                                 <th>Output Quantity</th>
                                 <th>created By</th>
                                 <th>Date</th>
@@ -131,6 +133,7 @@
                                 </td>
                                 <td>{{ $data->template_name }}</td>
                                 <td>{{ $data->status }}</td>
+                                <td>{{ $data->template_output }}</td>
                                 <td>{{ $data->output_quantity }}</td>
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
