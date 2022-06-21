@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="div">
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#import_template"><i
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#import_template"><i
             class="fas fa-file-excel"></i> Import
         Template List</button>
 </div>
