@@ -17,6 +17,7 @@ class CreateProductionLinesTable extends Migration
             $table->id();
             $table->string('batch_no');
             $table->string('item_code');
+            $table->unique(['batch_no', 'item_code']);
             $table->decimal('quantity');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

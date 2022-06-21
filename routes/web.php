@@ -127,6 +127,3 @@ Route::post('production/batches/create', [SpicesController::class, 'createBatchL
 Route::get('production/batches/{filter?}', [SpicesController::class, 'batchLists'])->name('batches_list');
 Route::get('production/lines/{batch_no}', [SpicesController::class, 'productionLines'])->name('production_lines');
 /*-------------End Spices------------------ */
-
-
-Route::post('api/test', [SpicesController::class, 'createInvoice'])->name('verify_pin');
