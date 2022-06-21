@@ -13,14 +13,23 @@
                                 latest</span></h3>
                     </div>
                     <div class="col-md-5">
+
+                        @if ($lines->first()->status == 'open')                            
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal"><i class="fas fa-pencil-alt"></i>
+                            Edit Batch 
+                        </button>
                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#closeModal"><i
                                 class="fas fa-lock"></i>
                             Close Batch
                         </button>
+
+                        @elseif ($lines->first()->status == 'closed')   
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal"><i
                                 class="fas fa-save"></i>
                             Post Batch
                         </button>
+                        @endif
+
                     </div>
                 </div>
             </div>
@@ -97,36 +106,63 @@
 </div>
 <!-- slicing ouput data show -->
 
-<!--Close Modal -->
-<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="form-group">
-            <label for="recipient-name" class="col-form-label">Recipient:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="form-group">
-            <label for="message-text" class="col-form-label">Message:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
+<!--Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="#"
+            method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Items in Batch No: <strong><input style="border:none"
+                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <strong><em> please wait, we are working on this part</em></strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Update</button>
+                </div>
+            </div>
         </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
-      </div>
     </div>
-  </div>
 </div>
 <!--Close Modal -->
+
+<!--Close Modal -->
+<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="#"
+            method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Close Batch No: <strong><input style="border:none"
+                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <strong><em> please wait, we are working on this part</em></strong>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-warning btn-lg btn-prevent-multiple-submits"><i
+                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Close Batch</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--Edit Modal -->
 
 @endsection
 

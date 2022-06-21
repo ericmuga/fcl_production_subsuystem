@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Helpers;
 use App\Models\TemplateHeader;
 use Brian2694\Toastr\Facades\Toastr;
-use Faker\Extension\Helper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -181,9 +180,10 @@ class SpicesController extends Controller
         $title = "Production Lines";
 
         $lines = DB::table('production_lines')
-            ->where('batch_no', $batch_no)
+            ->where('production_lines.batch_no', $batch_no)
+            ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
             ->leftJoin('template_lines', 'production_lines.item_code', '=', 'template_lines.item_code')
-            ->select('production_lines.*', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.location')
+            ->select('production_lines.*', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.location', 'batches.status')
             ->orderBy('production_lines.item_code', 'ASC')
             ->get();
 

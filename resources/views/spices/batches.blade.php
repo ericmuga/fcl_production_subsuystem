@@ -69,7 +69,7 @@
             </div>
 
             <div class="card">
-                <div class="card-body text-center form-group">                    
+                <div class="card-body text-center form-group">
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Output Qty</label>
                         <div class="col-sm-9">
@@ -78,8 +78,7 @@
                         </div>
                     </div><br>
                     <div class="div" style="padding-top: ">
-                        <button type="submit"
-                            class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                        <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                                 class="fa fa-paper-plane single-click" aria-hidden="true"></i> Run</button>
                     </div>
                 </div>
@@ -105,6 +104,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Batch No</th>
+                                <th>Template No</th>
                                 <th>Template</th>
                                 <th>Status</th>
                                 <th>Output Product</th>
@@ -117,6 +117,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Batch No</th>
+                                <th>Template No</th>
                                 <th>Template</th>
                                 <th>Status</th>
                                 <th>Output Product</th>
@@ -131,6 +132,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
                                 </td>
+                                <td>{{ $data->template_no }}</td>
                                 <td>{{ $data->template_name }}</td>
 
                                 @if ($data->status == 'open')
