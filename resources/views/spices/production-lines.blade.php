@@ -24,7 +24,7 @@
                         </button>
 
                         @elseif ($lines->first()->status == 'closed')   
-                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal"><i
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#postModal"><i
                                 class="fas fa-save"></i>
                             Post Batch
                         </button>
@@ -139,19 +139,21 @@
 <div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-close-post" class="form-prevent-multiple-submits" action="#"
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('close_post_batch') }}"
             method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Close Batch No: <strong><input style="border:none"
-                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Close Batch No: <input style="border:none; font-weight: bold;"
+                                type="text" id="item_name1" name="item_name" value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <strong><em> please wait, we are working on this part</em></strong>
+                    <strong><em> Please Confirm you want to close this Batch</em></strong>
+                    <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
+                    <input type="hidden" value="close" name="filter" id="filter">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -162,7 +164,38 @@
         </form>
     </div>
 </div>
-<!--Edit Modal -->
+<!--Close Modal -->
+
+<!--Post Modal -->
+<div class="modal fade" id="postModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('close_post_batch') }}"
+            method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Post Batch No: <input style="border:none; font-weight: bold;"
+                                type="text" id="item_name2" name="item_name" value="{{ $batch_no }}" readonly></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <strong><em> Please Confirm you want to Post this Batch</em></strong>
+                    <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
+                    <input type="hidden" value="post" name="filter" id="filter">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger btn-lg btn-prevent-multiple-submits"><i
+                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Post Batch</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--Post Modal -->
 
 @endsection
 

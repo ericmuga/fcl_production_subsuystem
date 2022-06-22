@@ -138,7 +138,7 @@ class SpicesController extends Controller
 
             Toastr::success("Batch {$request->batch_no} added successfully", "Success");
             return redirect()
-                ->back();
+                ->route('batches_list');
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back();
@@ -161,7 +161,7 @@ class SpicesController extends Controller
             ->leftJoin('template_header', 'batches.template_no', '=', 'template_header.template_no')
             ->leftJoin('template_lines', 'batches.template_no', '=', 'template_lines.template_no')
             ->select('batches.*', 'users.username', 'template_header.template_name', 'template_lines.description as template_output')
-            ->when($filter == 'open', function ($q) {
+            ->when($filter == 'open' || $filter == '', function ($q) {
                 $q->where('batches.status', '=', 'open'); // open batches
             })
             ->when($filter == 'posted', function ($q) {
@@ -193,5 +193,39 @@ class SpicesController extends Controller
             ->get();
 
         return view('spices.production-lines', compact('title', 'lines', 'helpers', 'batch_no'));
+    }
+
+    public function closeOrPostBatch(Request $request, Helpers $helpers)
+    {
+        try {
+            $route_filter = 'closed';
+
+            if ($request->filter == 'close') {
+                //close batch
+                DB::table('batches')
+                    ->where('batch_no', $request->batch_no)
+                    ->update([
+                        'status' => 'closed',
+                        'closed_by' => $helpers->authenticatedUserId(),
+                        'updated_at' => now(),
+                    ]);
+            } elseif ($request->filter == 'post') {
+                $route_filter = 'posted';
+                //post batch
+                DB::table('batches')
+                    ->where('batch_no', $request->batch_no)
+                    ->update([
+                        'status' => 'posted',
+                        'posted_by' => $helpers->authenticatedUserId(),
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            Toastr::success("Action {$request->filter} batch no: {$request->item_name} completed successfully", 'Success');
+            return redirect()->route('batches_list', $route_filter);
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
     }
 }

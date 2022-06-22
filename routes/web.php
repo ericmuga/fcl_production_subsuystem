@@ -126,4 +126,5 @@ Route::get('template-lines/{template_no}', [SpicesController::class, 'templateLi
 Route::post('production/batches/create', [SpicesController::class, 'createBatchLines'])->name('batches_create');
 Route::get('production/batches/{filter?}', [SpicesController::class, 'batchLists'])->name('batches_list');
 Route::get('production/lines/{batch_no}', [SpicesController::class, 'productionLines'])->name('production_lines');
+Route::post('production/batch/close', [SpicesController::class, 'closeOrPostBatch'])->name('close_post_batch');
 /*-------------End Spices------------------ */
