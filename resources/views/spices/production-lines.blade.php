@@ -14,16 +14,17 @@
                     </div>
                     <div class="col-md-5">
 
-                        @if ($lines->first()->status == 'open')                            
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal"><i class="fas fa-pencil-alt"></i>
-                            Edit Batch 
+                        @if ($lines->first()->status == 'open')
+                        <button type="button" onClick="editModal()" class="btn btn-primary" id="#editModalShow"><i
+                                class="fas fa-pencil-alt"></i>
+                            Edit Batch
                         </button>
                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#closeModal"><i
                                 class="fas fa-lock"></i>
                             Close Batch
                         </button>
 
-                        @elseif ($lines->first()->status == 'closed')   
+                        @elseif ($lines->first()->status == 'closed')
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#postModal"><i
                                 class="fas fa-save"></i>
                             Post Batch
@@ -109,20 +110,60 @@
 <!--Edit Modal -->
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form id="form-close-post" class="form-prevent-multiple-submits" action="#"
-            method="post">
+    <div class="modal-dialog modal-xl" role="document">
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="#" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Items in Batch No: <strong><input style="border:none"
-                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Items in Batch No: <input
+                            style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
+                            value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <strong><em> please wait, we are working on this part</em></strong>
+                    @foreach ($lines as $l)
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label>Item Code</label>
+                            <input type="text" class="form-control" id="item_code" value="{{ $l->item_code }}" name="item_code[]"
+                                placeholder="" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Item </label>
+                            <input type="text" class="form-control" id="item_code" value="{{ $l->description }}" name="item_code"
+                                placeholder="" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Qty</label>
+                            <input type="number" class="form-control" id="qty" value="{{ $l->quantity }}" name="qty[]" step="0.01" onClick="this.select();" 
+                                placeholder="">
+                        </div>
+                        <div class="col-md-3">
+                            <label>Type</label>
+                            <input type="text" class="form-control" id="type" value="{{ $l->type }}" name="type"
+                                placeholder="" readonly>
+                        </div>
+                    </div><hr>
+                    <div class="form-group">
+                        @if ($l->type == 'Output')
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label>Total Intake Qty</label>
+                                <input type="number" class="form-control" id="total_intake" value="{{ $l->quantity }}"
+                                    name="total_intake" placeholder="" readonly>
+                            </div>
+                            <div class="col-md-6">
+                                <label>Total Output Qty</label>
+                                <input type="number" class="form-control" id="total_output" value="{{ $l->quantity }}"
+                                    name="total_output" placeholder="">
+
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    @endforeach
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -144,8 +185,9 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Close Batch No: <input style="border:none; font-weight: bold;"
-                                type="text" id="item_name1" name="item_name" value="{{ $batch_no }}" readonly></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Close Batch No: <input
+                            style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
+                            value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -175,8 +217,9 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Post Batch No: <input style="border:none; font-weight: bold;"
-                                type="text" id="item_name2" name="item_name" value="{{ $batch_no }}" readonly></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Post Batch No: <input
+                            style="border:none; font-weight: bold;" type="text" id="item_name2" name="item_name"
+                            value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -207,30 +250,17 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        $("body").on("click", "#itemCodeModalShow", function (e) {
-            e.preventDefault();
-
-            var code = $(this).data('code');
-            var item = $(this).data('item');
-            var weight = $(this).data('weight');
-            var no_of_pieces = $(this).data('no_of_pieces');
-            var id = $(this).data('id');
-            var process_code = $(this).data('production_process');
-            var type_id = $(this).data('type_id');
-
-            $('#edit_product').val(code);
-            $('#item_name').val(item);
-            $('#edit_weight').val(weight);
-            $('#edit_no_pieces').val(no_of_pieces)
-            $('#item_id').val(id);
-            $('#edit_production_process').val(process_code);
-            $('#edit_product_type2').val(type_id);
-
-            $('#edit_product').select2('destroy').select2();
-
-            $('#itemCodeModal').modal('show');
-        });
     });
+
+    const editModal = () => {
+
+        var item = $('#item_name1').val();
+
+        $('#item_name3').val(item);
+
+        $('#editModal').modal('show');
+
+    }
 
 </script>
 @endsection

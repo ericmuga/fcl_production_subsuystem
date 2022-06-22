@@ -6,8 +6,7 @@
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#import_template"><i
             class="fas fa-file-excel"></i> Import
         Template List</button>
-</div>
-<hr>
+</div><br>
 
 <!-- Import modal -->
 <div class="modal fade" id="import_template" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
