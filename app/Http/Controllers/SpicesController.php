@@ -185,14 +185,12 @@ class SpicesController extends Controller
         $lines = DB::table('production_lines')
             ->where('production_lines.batch_no', $batch_no)
             ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
-            // ->leftJoin('template_lines', 'production_lines.item_code', '=', 'template_lines.item_code')
             ->join('template_lines', function ($join) use ($table) {
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
                 $join->on($table . '.template_no', '=', 'template_lines.template_no');
             })
-            // ->select('production_lines.*', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.location', 'batches.status')
             ->orderBy('production_lines.item_code', 'ASC')
-            ->get()->dd();
+            ->get();
 
         return view('spices.production-lines', compact('title', 'lines', 'helpers', 'batch_no'));
     }
