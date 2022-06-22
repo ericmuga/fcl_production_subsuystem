@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-5">
-            <h1 class="m-0"> {{ $title }} |<small>Showing <strong>{{ $filter? : 'Open' }}</strong> Batches </small></h1>
+            <h1 class="m-0"> {{ $title }} |<small>Showing <strong>{{ $filter? : 'open' }}</strong> Batches </small></h1>
         </div><!-- /.col -->
         <div class="col-sm-7">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
@@ -109,7 +109,15 @@
                                 <th>Status</th>
                                 <th>Output Product</th>
                                 <th>Output Quantity</th>
-                                <th>created By</th>
+                                @if ($filter == 'open' || $filter == '')
+                                    <th>created By</th>
+                                    
+                                @elseif ($filter == 'closed')
+                                    <th>closed By</th>
+                                @elseif ($filter == 'posted')
+                                    <th>posted By</th>
+                                @endif
+                                
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -122,7 +130,14 @@
                                 <th>Status</th>
                                 <th>Output Product</th>
                                 <th>Output Quantity</th>
-                                <th>created By</th>
+                                @if ($filter == 'open' || $filter == '')
+                                    <th>created By</th>
+                                    
+                                @elseif ($filter == 'closed')
+                                    <th>closed By</th>
+                                @elseif ($filter == 'posted')
+                                    <th>posted By</th>
+                                @endif
                                 <th>Date</th>
                             </tr>
                         </tfoot>
