@@ -111,11 +111,13 @@
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-        <form id="form-close-post" class="form-prevent-multiple-submits" action="#" method="post">
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('update_batch') }}"
+            method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Items in Batch No: <input
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Items for @foreach ($lines as $l )
+                        @if ($loop->last) <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
                             style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
                             value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
@@ -127,26 +129,27 @@
                     <div class="row">
                         <div class="col-md-3">
                             <label>Item Code</label>
-                            <input type="text" class="form-control" id="item_code" value="{{ $l->item_code }}" name="item_code[]"
-                                placeholder="" readonly>
+                            <input type="text" class="form-control" id="item_code" value="{{ $l->item_code }}"
+                                name="item_code[]" placeholder="" readonly>
                         </div>
                         <div class="col-md-3">
                             <label>Item </label>
-                            <input type="text" class="form-control" id="item_code" value="{{ $l->description }}" name="item_code"
-                                placeholder="" readonly>
+                            <input type="text" class="form-control" id="item" value="{{ $l->description }}"
+                                name="item" placeholder="" readonly>
                         </div>
                         <div class="col-md-3">
                             <label>Qty</label>
-                            <input type="number" class="form-control" id="qty" value="{{ $l->quantity }}" name="qty[]" step="0.01" onClick="this.select();" 
-                                placeholder="">
+                            <input type="number" class="form-control" id="qty" value="{{ $l->quantity }}" name="qty[]"
+                                step="0.01" onClick="this.select();" placeholder="">
                         </div>
                         <div class="col-md-3">
                             <label>Type</label>
                             <input type="text" class="form-control" id="type" value="{{ $l->type }}" name="type"
                                 placeholder="" readonly>
                         </div>
-                    </div><hr>
-                    <div class="form-group">
+                    </div>
+                    <hr>
+                    {{-- <div class="form-group">
                         @if ($l->type == 'Output')
                         <div class="row">
                             <div class="col-md-6">
@@ -162,7 +165,7 @@
                             </div>
                         </div>
                         @endif
-                    </div>
+                    </div> --}}
                     @endforeach
                 </div>
                 <div class="modal-footer">
@@ -174,7 +177,7 @@
         </form>
     </div>
 </div>
-<!--Close Modal -->
+<!--Edit Modal -->
 
 <!--Close Modal -->
 <div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -185,7 +188,8 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Close Batch No: <input
+                    <h5 class="modal-title" id="exampleModalLabel">Close batch for @foreach ($lines as $l )
+                        @if ($loop->last) <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
                             style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
                             value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
@@ -217,8 +221,9 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Post Batch No: <input
-                            style="border:none; font-weight: bold;" type="text" id="item_name2" name="item_name"
+                    <h5 class="modal-title" id="exampleModalLabel">Post Batch Items for @foreach ($lines as $l )
+                        @if ($loop->last) <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
+                            style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
                             value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>

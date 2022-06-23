@@ -195,6 +195,29 @@ class SpicesController extends Controller
         return view('spices.production-lines', compact('title', 'lines', 'helpers', 'batch_no'));
     }
 
+    public function updateBatchItems(Request $request)
+    {
+        try {
+            //update
+            foreach ($request->item_code as $key => $value) {
+
+                DB::table('production_lines')
+                    ->where('batch_no', $request->item_name)
+                    ->where('item_code', $value)
+                    ->update([
+                        'quantity' => $request->qty[$key],
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            Toastr::success("Update items on batch no: {$request->item_name} completed successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
+    }
+
     public function closeOrPostBatch(Request $request, Helpers $helpers)
     {
         try {
