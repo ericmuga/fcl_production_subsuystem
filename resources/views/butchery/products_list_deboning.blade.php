@@ -267,11 +267,10 @@ Session::get('session_userName') == 'EMuga')
                 $('#loading').collapse('hide'); 
 
                 let data = response.data
+                $(".check_group").prop("checked", false);
                 data.forEach(element => {
 
                     $("input[type=checkbox][value=" + element.process_code + "]").prop("checked", true);
-                    $("input[type=checkbox][value !=" + element.process_code + "]").prop("checked",
-                        false);
 
                 });
             })
