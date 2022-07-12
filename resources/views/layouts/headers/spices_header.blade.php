@@ -41,6 +41,14 @@
                         <li><a href="{{ route('template_list') }}" class="dropdown-item"> Template list
                             </a>
                         </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('spices_items') }}" class="dropdown-item"> Items list
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('spices_stock') }}" class="dropdown-item"> Stocks list
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

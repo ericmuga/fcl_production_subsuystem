@@ -32,6 +32,33 @@ class SpicesController extends Controller
         return view('spices.template-list', compact('title', 'templates'));
     }
 
+    public function itemsList()
+    {
+        $title = "Items List";
+
+        $items = DB::table('spices_items')->get();
+
+        return view('spices.items', compact('title', 'items'));
+    }
+
+    public function stockList()
+    {
+        $title = "Stock List";
+
+        $stock = DB::table('spices_stock')->get();
+
+        return view('spices.stocks', compact('title', 'stock'));
+    }
+
+    public function stockLines()
+    {
+        $title = "Stock Lines";
+
+        $lines = DB::table('spices_stock')->get();
+
+        return view('spices.stock-lines', compact('title', 'lines'));
+    }
+
     public function templateLines(Request $request)
     {
         $title = "Template Lines";

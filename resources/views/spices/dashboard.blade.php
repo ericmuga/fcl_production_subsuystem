@@ -18,11 +18,26 @@
 <div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>22,150<sup style="font-size: 20px">Kgs</sup></h3>
+
+                <p>Today's Total Received</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-md-3 col-6">
+        <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>200 products<sup style="font-size: 20px"> 20,456 Kgs</sup></h3>
+                <h3>200 |<sup style="font-size: 20px"> 20,456 Kgs</sup></h3>
 
-                <p>A</p>
+                <p>Total Products Received</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -36,7 +51,7 @@
             <div class="inner">
                 <h3>5,323<sup style="font-size: 20px">Kgs</sup></h3>
 
-                <p>B</p>
+                <p>Total Consumption</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -51,7 +66,7 @@
             <div class="inner">
                 <h3>23,150<sup style="font-size: 20px">Kgs</sup></h3>
 
-                <p>Total Cumm Weight</p>
+                <p>Stock Levels</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -59,22 +74,7 @@
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <!-- ./col -->
-    <div class="col-md-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-warning">
-            <div class="inner">
-                <h3>22,150<sup style="font-size: 20px">Kgs</sup></h3>
-
-                <p>Consumed Weights Totals </p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    <!-- ./col -->
+    <!-- ./col -->    
 </div>
 <!-- /.row -->
 
