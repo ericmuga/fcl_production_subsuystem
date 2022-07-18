@@ -72,7 +72,7 @@
                                 @endif
                                 @endforeach
                             </select>
-                            <input type="number" class="input_checks" id="loading_value" value="0">
+                            <input type="hidden" class="input_checks" id="loading_value" value="0">
                         </div>
                         <div class="col-md-4" style="padding-top: 7%">
                             <button class="btn btn-outline-info btn-sm form-control" type="button" data-toggle="modal"
