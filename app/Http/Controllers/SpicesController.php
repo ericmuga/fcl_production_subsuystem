@@ -71,7 +71,7 @@ class SpicesController extends Controller
         return view('spices.template-lines', compact('title', 'template_lines', 'temp_no'));
     }
 
-    public function importReceipts(Request $request, Helpers $helpers)
+    public function importTemplates(Request $request, Helpers $helpers)
     {
         $validator = Validator::make($request->all(), [
             'file' => 'required|mimes:csv,txt',
@@ -120,6 +120,63 @@ class SpicesController extends Controller
                             'location' => $row[6],
                             'unit_measure' => $row[7],
                             'description' => $row[8],
+                        ]
+                    );
+                }
+            });
+
+            Toastr::success('Template Header and Lines uploaded successfully', 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error Occurred. Wrong Data format!. Records not saved!');
+            return back();
+        }
+    }
+
+    public function importStockLines(Request $request, Helpers $helpers)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:csv,txt',
+
+        ]);
+
+        if ($validator->fails()) {
+            # failed validation
+            $messages = $validator->errors();
+            foreach ($messages->all() as $message) {
+                Toastr::error($message, 'Error!');
+            }
+            return back();
+        }
+
+        try {
+            //code...
+            DB::transaction(function () use ($request, $helpers) {
+
+                $fileD = fopen($request->file, "r");
+                $column = fgetcsv($fileD); // skips first row as header
+
+                while (!feof($column)) {
+                    $rowData[] = fgetcsv($column);
+                }
+
+                //delete template headers and lines
+                // DB::table('template_header')->delete();
+                // DB::table('template_lines')->delete();
+
+                foreach ($rowData as $key => $row) {
+                    //get Template no from header
+                    // $item = TemplateHeader::firstOrCreate(
+                    //     ['template_no' =>  $row[0]],
+                    //     ['template_name' => $row[0], 'user_id' => $helpers->authenticatedUserId()],
+                    // );
+
+                    DB::table('spices_stock')->insert(
+                        [
+                            'item_code' => $row[2],
+                            'description' => $row[1],
+                            'quantity' => $row[2],
+                            'entry_type' => 1
                         ]
                     );
                 }

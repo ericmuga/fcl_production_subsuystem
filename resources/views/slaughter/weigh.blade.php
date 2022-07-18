@@ -3,7 +3,8 @@
 @section('content')
 
 <!-- weigh -->
-<form id="form-slaughter-weigh" class="form-prevent-multiple-submits"  action="{{ route('save_weigh_data') }}" method="post">
+<form id="form-slaughter-weigh" class="form-prevent-multiple-submits" action="{{ route('save_weigh_data') }}"
+    method="post">
     @csrf
     <div class="card-group">
         <div class="card ">
@@ -30,8 +31,8 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
-                </div> 
-                @endif  <br>
+                </div>
+                @endif <br>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Tare-Weight</label>
                     <input type="number" class="form-control" id="tareweight" name="tareweight"
@@ -71,6 +72,7 @@
                                 @endif
                                 @endforeach
                             </select>
+                            <input type="number" class="input_checks" id="loading_value" value="0">
                         </div>
                         <div class="col-md-4" style="padding-top: 7%">
                             <button class="btn btn-outline-info btn-sm form-control" type="button" data-toggle="modal"
@@ -159,7 +161,8 @@
 <div class="modal fade" id="slapModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-edit-scale" class="form-prevent-multiple-submits" action="{{ route('save_missing_data') }}" method="post">
+        <form id="form-edit-scale" class="form-prevent-multiple-submits" action="{{ route('save_missing_data') }}"
+            method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -216,7 +219,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary btn-prevent-multiple-submits" onclick="return validateOnSubmit2()" type="submit">
+                    <button class="btn btn-primary btn-prevent-multiple-submits" onclick="return validateOnSubmit2()"
+                        type="submit">
                         <i class="fa fa-save"></i> Post
                     </button>
                 </div>
@@ -368,7 +372,15 @@
     $(document).ready(function () {
         loadWeighData();
 
-        $('.form-prevent-multiple-submits').on('submit', function(){
+        $("#form-slaughter-weigh").submit(function () {
+            let loading_val = $('#loading_value').val()
+            if (loading_val != 1) {
+                alert('please wait for loading data to complete')
+                return false;
+            }
+        });
+
+        $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
@@ -427,6 +439,7 @@
     });
 
     function loadWeighData() {
+        $('#loading_value').val(0)
         /* Start weigh data ajax */
         var slapmark = $('#slapmark').val();
         var carcass_type = $('#carcass_type').val();
@@ -504,6 +517,9 @@
                                     .total_per_slap - obj2
                                     .total_weighed);
 
+                                //update loading_val
+                                $('#loading_value').val(1)
+                                $(".btn-prevent-multiple-submits").attr('disabled', false);
 
                             },
                             error: function (data) {
