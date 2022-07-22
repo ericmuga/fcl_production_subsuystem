@@ -55,8 +55,7 @@ class ButcheryController extends Controller
             ->where('item_code', "G1031")
             ->sum('net_weight');
 
-        $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(360), function () {
-            $helpers = new Helpers();
+        $lined_baconers = Cache::remember('lined_baconers', now()->addMinutes(360), function () use ($helpers) {
 
             $record1 = DB::table('slaughter_data')
                 ->where('item_code', 'G0110')
@@ -71,8 +70,7 @@ class ButcheryController extends Controller
             return $record1 + $record2;
         });
 
-        $lined_sows = Cache::remember('linedup_sows', now()->addMinutes(360), function () {
-            $helpers = new Helpers();
+        $lined_sows = Cache::remember('linedup_sows', now()->addMinutes(360), function () use ($helpers) {
 
             $record1 = DB::table('slaughter_data')
                 ->where('item_code', 'G0111')
@@ -138,8 +136,7 @@ class ButcheryController extends Controller
             ->select(DB::raw('SUM(sales.net_weight) as total_net'), DB::raw('SUM(sales.no_of_carcass) as count'))
             ->get()->toArray();
 
-        $slaughtered_baconers_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () {
-            $helpers = new Helpers();
+        $slaughtered_baconers_weight = Cache::remember('slaughtered_baconers_weight', now()->addMinutes(360), function () use ($helpers) {
 
             return DB::table('slaughter_data')
                 ->whereDate('created_at', $helpers->getButcheryDate())
@@ -147,8 +144,7 @@ class ButcheryController extends Controller
                 ->sum('net_weight');
         });
 
-        $slaughtered_sows_weight = Cache::remember('slaughtered_sows_weight', now()->addMinutes(360), function () {
-            $helpers = new Helpers();
+        $slaughtered_sows_weight = Cache::remember('slaughtered_sows_weight', now()->addMinutes(360), function () use ($helpers) {
 
             return DB::table('slaughter_data')
                 ->whereDate('created_at', $helpers->getButcheryDate())
