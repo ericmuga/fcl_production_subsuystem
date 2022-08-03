@@ -49,6 +49,10 @@
                         <li><a href="{{ route('spices_stock') }}" class="dropdown-item"> Stocks list
                             </a>
                         </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('spices_physical_stock') }}" class="dropdown-item"> Physical Stock
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

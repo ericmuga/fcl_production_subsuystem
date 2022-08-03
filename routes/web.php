@@ -124,6 +124,8 @@ Route::get('/spices/template-list', [SpicesController::class, 'templateList'])->
 Route::get('/spices/items-list', [SpicesController::class, 'itemsList'])->name('spices_items');
 Route::get('/spices/stock-list', [SpicesController::class, 'stockList'])->name('spices_stock');
 Route::get('/spices/stock-lines', [SpicesController::class, 'stockLines'])->name('spices_stock_lines');
+Route::get('/spices/physical-stock', [SpicesController::class, 'physicalStock'])->name('spices_physical_stock');
+Route::post('/spices/physical-stock/create', [SpicesController::class, 'addPhysicalStock'])->name('add_physical_stock');
 Route::post('template-list/upload', [SpicesController::class, 'importTemplates'])->name('template_upload');
 Route::get('template-lines/{template_no}', [SpicesController::class, 'templateLines'])->name('template_lines');
 Route::post('production/batches/create', [SpicesController::class, 'createBatchLines'])->name('batches_create');

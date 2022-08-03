@@ -6,6 +6,7 @@ use App\Models\Helpers;
 use App\Models\TemplateHeader;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -57,6 +58,23 @@ class SpicesController extends Controller
         $lines = DB::table('spices_stock')->get();
 
         return view('spices.stock-lines', compact('title', 'lines'));
+    }
+
+    public function physicalStock()
+    {
+        $title = "Physical Stocks";
+
+        $lines = DB::table('physical_stocks')->get();
+
+        $items = Cache::rememberForever('physical_stock_list', function () {
+            return DB::table('spices_items')->select('code', 'description')->get();
+        });
+
+        return view('spices.physical-stocks', compact('title', 'items', 'lines'));
+    }
+
+    public function addPhysicalStock(Request $request)
+    {
     }
 
     public function templateLines(Request $request)
