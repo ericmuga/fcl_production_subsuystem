@@ -19,10 +19,13 @@
                                 <th>#</th>
                                 <th>Item No</th>
                                 <th>Desc</th>
-                                <th>Unit Measure </th>
+                                <th>Quantity</th>
+                                <th>Unit Measure</th>
                                 <th>Entry Type</th>
+                                <th>Unit Measure </th>
+                                <th>Created By</th>
+                                <th>Physical Stock Ref </th>
                                 <th>Date</th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -30,10 +33,13 @@
                                 <th>#</th>
                                 <th>Item No</th>
                                 <th>Desc</th>
+                                <th>Quantity</th>
+                                <th>Unit Measure</th>
+                                <th>Entry Type</th>
                                 <th>Unit Measure </th>
-                                <th>Book Stock(calc)</th>
-                                <th>Consumed Stock(calc)</th>
-                                <th>Physical Stock</th>
+                                <th>Created By</th>
+                                <th>Physical Stock Ref </th>
+                                <th>Date</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -42,12 +48,19 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td>{{ $data->percentage }}</td>
-                                <td>{{ $data->type }}</td>
-                                <td>{{ $data->main_product }}</td>
-                                <td>{{ $data->shortcode }}</td>
+                                <td>{{ number_format($data->quantity, 2) }}</td>
                                 <td>{{ $data->unit_measure }}</td>
-                                <td>{{ $data->location }}</td>
+                                @if ($data->entry_type == 1)
+                                    <td><span class="badge badge-primary">Transfer</span></td>
+                                @elseif($data->entry_type == 2)
+                                    <td><span class="badge badge-success">Consumption</span></td>
+                                @elseif($data->entry_type == 3)
+                                    <td><span class="badge badge-warning">Physical Stock</span></td>
+                                @endif  
+                                <td>{{ $data->unit_measure }}</td>
+                                <td>{{ $data->user }}</td>
+                                <td>{{ $data->physical_stock_ref }}</td>
+                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

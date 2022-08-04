@@ -75,8 +75,8 @@
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td>{{ $data->percentage }}</td>
-                                <td>{{ $data->quantity }}</td>
+                                <td>{{ number_format($data->percentage, 2) }}</td>
+                                <td>{{ number_format($data->quantity, 2) }}</td>
 
                                 @if ($data->main_product == 'No')
                                 <td><span class="badge badge-warning">No</span></td>
@@ -233,6 +233,12 @@
                     <strong><em> Please Confirm you want to Post this Batch</em></strong>
                     <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
                     <input type="hidden" value="post" name="filter" id="filter">
+                    @foreach($lines as $data)
+                        @if (str_starts_with($data->item_code, 'H'))
+                            <input type="" value="{{ $data->item_code.':' }} {{ $data->quantity }}" name="item_array[]" id="item_array">  
+                        @else                          
+                        @endif
+                    @endforeach
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

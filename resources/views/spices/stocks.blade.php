@@ -7,9 +7,9 @@
         <h3>Stocks List Registry </h3>
     </div>
     <div class="col-md-5">
-        <button class="btn btn-primary" id="createItemModalShow"><i class="fas fa-plus"></i> Incoming
+        {{-- <button class="btn btn-primary" id="createItemModalShow"><i class="fas fa-plus"></i> Incoming
             Stock
-        </button>
+        </button> --}}
         <a href="{{ route('spices_stock_lines') }}" class="btn btn-warning"><i class="fas fa-eye"></i> View
             Stock Lines
         </a>
@@ -50,12 +50,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td>{{ $data->percentage }}</td>
-                                <td>{{ $data->type }}</td>
-                                <td>{{ $data->main_product }}</td>
-                                <td>{{ $data->shortcode }}</td>
                                 <td>{{ $data->unit_measure }}</td>
-                                <td>{{ $data->location }}</td>
+                                <td>{{ $data->book_stock }}</td>
+                                <td></td>
+                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>

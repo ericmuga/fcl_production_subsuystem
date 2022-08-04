@@ -46,35 +46,73 @@ class SpicesController extends Controller
     {
         $title = "Stock List";
 
-        $stock = DB::table('spices_stock')->get();
+        $stock = DB::table('spices_stock')
+            ->leftJoin('spices_items', 'spices_stock.item_code', '=', 'spices_items.code')
+            ->select(
+                'spices_stock.item_code',
+                'spices_items.code',
+                'spices_items.description',
+                'spices_items.unit_measure',
+                DB::raw('SUM(spices_stock.quantity) as book_stock')
+            )
+            ->groupBy('spices_stock.item_code', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure')
+            ->orderBy('spices_stock.item_code')
+            ->get();
 
         return view('spices.stocks', compact('title', 'stock'));
     }
 
-    public function stockLines()
+    public function stockLines(Helpers $helpers)
     {
         $title = "Stock Lines";
 
-        $lines = DB::table('spices_stock')->get();
+        $lines = DB::table('spices_stock')
+            ->leftJoin('users', 'spices_stock.user_id', '=', 'users.id')
+            ->leftJoin('spices_items', 'spices_stock.item_code', '=', 'spices_items.code')
+            ->select('spices_stock.*', 'users.username as user', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure')
+            ->get();
 
-        return view('spices.stock-lines', compact('title', 'lines'));
+        return view('spices.stock-lines', compact('title', 'lines', 'helpers'));
     }
 
-    public function physicalStock()
+    public function physicalStock(Helpers $helpers)
     {
         $title = "Physical Stocks";
 
-        $lines = DB::table('physical_stocks')->get();
+        $lines = DB::table('physical_stocks')
+            ->leftJoin('spices_items', 'physical_stocks.item_code', '=', 'spices_items.code')
+            ->leftJoin('users', 'physical_stocks.user_id', '=', 'users.id')
+            ->orderBy('physical_stocks.created_at', 'DESC')
+            ->select('physical_stocks.*', 'users.username as user', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure')
+            ->get();
 
         $items = Cache::rememberForever('physical_stock_list', function () {
             return DB::table('spices_items')->select('code', 'description')->get();
         });
 
-        return view('spices.physical-stocks', compact('title', 'items', 'lines'));
+        return view('spices.physical-stocks', compact('title', 'items', 'lines', 'helpers'));
     }
 
-    public function addPhysicalStock(Request $request)
+    public function addPhysicalStock(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
+        try {
+            //save ...
+            DB::transaction(function () use ($request, $helpers) {
+                DB::table('physical_stocks')->insert([
+                    'item_code' => $request->item_code,
+                    'quantity' => $request->quantity,
+                    'status' => '1',
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
+            });
+
+            Toastr::success('New physical Stock entry saved successfully', 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
     }
 
     public function templateLines(Request $request)
@@ -337,13 +375,30 @@ class SpicesController extends Controller
             } elseif ($request->filter == 'post') {
                 $route_filter = 'posted';
                 //post batch
-                DB::table('batches')
-                    ->where('batch_no', $request->batch_no)
-                    ->update([
-                        'status' => 'posted',
-                        'posted_by' => $helpers->authenticatedUserId(),
-                        'updated_at' => now(),
-                    ]);
+                DB::transaction(
+                    function () use ($request, $helpers) {
+                        //update batch to posted
+                        DB::table('batches')
+                            ->where('batch_no', $request->batch_no)
+                            ->update([
+                                'status' => 'posted',
+                                'posted_by' => $helpers->authenticatedUserId(),
+                                'updated_at' => now(),
+                            ]);
+
+                        //insert into Negative adjustments in stock entries
+                        foreach ($request->item_array as $item) {
+                            # code...
+
+                            DB::table('spices_stock')->insert([
+                                'item_code' => strtok($item, ':'),
+                                'quantity' => -1 * abs((float)substr($item, strpos($item, ":") + 1)), // negative adjustment
+                                'entry_type' => '2', //consumption
+                                'user_id' => $helpers->authenticatedUserId(),
+                            ]);
+                        }
+                    }
+                );
             }
 
             Toastr::success("Action {$request->filter} batch no: {$request->item_name} completed successfully", 'Success');

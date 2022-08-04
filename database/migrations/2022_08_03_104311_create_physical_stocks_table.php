@@ -16,7 +16,7 @@ class CreatePhysicalStocksTable extends Migration
         Schema::create('physical_stocks', function (Blueprint $table) {
             $table->id();
             $table->string('item_code');
-            $table->integer('quantity');
+            $table->decimal('quantity');
             $table->string('status');
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();

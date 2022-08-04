@@ -25,7 +25,6 @@
                                 <th>Item Code</th>
                                 <th>Description</th>
                                 <th>Unit of Measure </th>
-                                <th>Action</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -34,17 +33,15 @@
                                 <th>Item Code</th>
                                 <th>Description</th>
                                 <th>Unit of Measure </th>
-                                <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($items as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->item_code }}</td>
+                                <td>{{ $data->code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->unit_measure }}</td>
-                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>

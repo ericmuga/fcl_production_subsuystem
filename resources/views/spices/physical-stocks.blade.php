@@ -25,7 +25,9 @@
                                 <th>Desc</th>
                                 <th>Unit Measure </th>
                                 <th>Entry Type</th>
-                                <th>Date</th>
+                                <th>Quantity</th>
+                                <th>Created By</th>
+                                <th>Date</th>                                
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -35,9 +37,11 @@
                                 <th>Item No</th>
                                 <th>Desc</th>
                                 <th>Unit Measure </th>
-                                <th>Book Stock(calc)</th>
-                                <th>Consumed Stock(calc)</th>
-                                <th>Physical Stock</th>
+                                <th>Entry Type</th>
+                                <th>Quantity</th>
+                                <th>Created By</th>
+                                <th>Date</th>
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -46,12 +50,16 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td>{{ $data->percentage }}</td>
-                                <td>{{ $data->type }}</td>
-                                <td>{{ $data->main_product }}</td>
-                                <td>{{ $data->shortcode }}</td>
                                 <td>{{ $data->unit_measure }}</td>
-                                <td>{{ $data->location }}</td>
+                                @if ($data->status == 1)
+                                    <td><span class="badge badge-info">raw</span></td>
+                                @else
+                                    <td><span class="badge badge-success">post</span></td>
+                                @endif        
+                                <td>{{ $data->quantity }}</td>
+                                <td>{{ $data->user }}</td>                        
+                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td></td>
                             </tr>
                             @endforeach
                         </tbody>
