@@ -110,7 +110,7 @@ class SausageController extends Controller
     {
         $title = "Items-List";
 
-        $items = Cache::remember('items_list', now()->addMinutes(480), function () {
+        $items = Cache::remember('items_list', now()->addHours(10), function () {
             return DB::table('items')
                 ->get();
         });
@@ -164,5 +164,35 @@ class SausageController extends Controller
                 'message' => $e->getMessage()
             ]);
         }
+    }
+
+    public function getIdt()
+    {
+        $title = "IDT";
+
+        $filter = '';
+
+        $items = Cache::remember('items_list', now()->addHours(10), function () {
+            return DB::table('items')
+                ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
+                ->get();
+        });
+
+        // $transfer_lines = DB::table('idt_transfers')
+        //     ->orderBy('created_at', 'DESC')
+        //     ->get();
+        $transfer_lines = '';
+
+        return view('sausage.idt', compact('title', 'filter', 'transfer_lines', 'items'));
+    }
+
+    public function getItemDetails(Request $request)
+    {
+        $item = DB::table('items')
+            ->where('code', $request->product_code)
+            ->select('qty_per_unit_of_measure', 'unit_count_per_crate')
+            ->first();
+
+        return response()->json($item);
     }
 }

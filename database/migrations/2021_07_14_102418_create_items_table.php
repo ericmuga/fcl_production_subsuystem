@@ -20,7 +20,8 @@ class CreateItemsTable extends Migration
             $table->string('description', 50);
             $table->string('category', 50)->nullable();
             $table->string('unit_of_measure', 10)->nullable();
-            $table->double('qty_per_unit_of_measure');
+            $table->double('qty_per_unit_of_measure')->default(0);
+            $table->integer('unit_count_per_crate')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

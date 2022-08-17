@@ -29,8 +29,9 @@
                                 <th>Desc</th>
                                 <th>Unit Measure </th>
                                 <th>Book Stock(calc)</th>
-                                <th>Consumed Stock(calc)</th>
-                                <th>Physical Stock</th>
+                                <th>Actions</th>
+                                {{-- <th>Consumed Stock(calc)</th>
+                                <th>Physical Stock</th> --}}
                             </tr>
                         </thead>
                         <tfoot>
@@ -40,8 +41,9 @@
                                 <th>Desc</th>
                                 <th>Unit Measure </th>
                                 <th>Book Stock(calc)</th>
-                                <th>Consumed Stock(calc)</th>
-                                <th>Physical Stock</th>
+                                <th>Actions</th>
+                                {{-- <th>Consumed Stock(calc)</th>
+                                <th>Physical Stock</th> --}}
                             </tr>
                         </tfoot>
                         <tbody>
@@ -51,9 +53,9 @@
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->unit_measure }}</td>
-                                <td>{{ $data->book_stock }}</td>
-                                <td></td>
-                                <td></td>
+                                <td>{{ number_format($data->book_stock, 2) }}</td>
+                                <td><a href="{{ route('spices_stock_line_info', $data->item_code ) }}" title="more info" class="btn btn-info btn-xs"> <i class="fa fa-info-circle" aria-hidden="true"></i></a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>

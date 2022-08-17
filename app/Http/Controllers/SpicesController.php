@@ -53,7 +53,7 @@ class SpicesController extends Controller
                 'spices_items.code',
                 'spices_items.description',
                 'spices_items.unit_measure',
-                DB::raw('SUM(spices_stock.quantity) as book_stock')
+                DB::raw('SUM(spices_stock.quantity)  as book_stock')
             )
             ->groupBy('spices_stock.item_code', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure')
             ->orderBy('spices_stock.item_code')

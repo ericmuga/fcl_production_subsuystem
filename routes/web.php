@@ -114,6 +114,8 @@ Route::get('/stocks/transactions', [ButcheryStockController::class, 'stocksTrans
 
 /*-------------Sausage------------------ */
 Route::get('/sausage/dashboard', [SausageController::class, 'index'])->name('sausage_dashboard');
+Route::get('/sausage/idt', [SausageController::class, 'getIdt'])->name('sausage_idt');
+Route::post('/item/details-axios', [SausageController::class, 'getItemDetails'])->name('item_details');
 Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'productionEntries'])->name('sausage_entries');
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 /*-------------End Admin------------------ */
@@ -124,6 +126,7 @@ Route::get('/spices/template-list', [SpicesController::class, 'templateList'])->
 Route::get('/spices/items-list', [SpicesController::class, 'itemsList'])->name('spices_items');
 Route::get('/spices/stock-list', [SpicesController::class, 'stockList'])->name('spices_stock');
 Route::get('/spices/stock-lines', [SpicesController::class, 'stockLines'])->name('spices_stock_lines');
+Route::get('/spices/stock-lines-info', [SpicesController::class, 'stockLineInfo'])->name('spices_stock_line_info');
 Route::get('/spices/physical-stock', [SpicesController::class, 'physicalStock'])->name('spices_physical_stock');
 Route::post('/spices/physical-stock/create', [SpicesController::class, 'addPhysicalStock'])->name('add_physical_stock');
 Route::post('template-list/upload', [SpicesController::class, 'importTemplates'])->name('template_upload');

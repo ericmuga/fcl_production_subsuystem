@@ -122,7 +122,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{asset('assets/plugins/summernote/summernote-bs4.min.js')}}"></script>
     <!-- overlayScrollbars -->
     <script src="{{asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
-
+    <!-- axios -->
+    <script src="{{ asset('assets/axios.min.js') }}"></script>
 
     <script>
         $(function () {
