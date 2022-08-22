@@ -179,12 +179,6 @@ class SausageController extends Controller
                 ->get();
         });
 
-        // $chillers = Cache::remember('chillers', now()->addHours(10), function () {
-        //     return DB::table('chillers')
-        //         ->select('chiller_code', 'description')
-        //         ->get();
-        // });
-
         $transfer_lines = '';
 
         return view('sausage.idt', compact('title', 'filter', 'transfer_lines', 'items'));
@@ -242,5 +236,10 @@ class SausageController extends Controller
         }
 
         return response()->json($status);
+    }
+
+    public function saveIdTransfer(Request $request)
+    {
+        dd($request->all());
     }
 }

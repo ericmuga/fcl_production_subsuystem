@@ -19,7 +19,7 @@
 
 @section('content')
 <div id="toggle_collapse" class="collapse">
-    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('batches_create') }}"
+    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('save_idt') }}"
         method="post">
         @csrf
         <div class="card-group">
@@ -42,14 +42,14 @@
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate </label>
                             <div class="col-sm-9">
-                                <input type="email" readonly class="form-control" value="0" id="create_count"
-                                    name="status" placeholder="" name="create_count">
+                                <input type="number" readonly class="form-control" value="0" id="unit_crate_count"
+                                    name="status" placeholder="" name="unit_crate_count">
                             </div>
                         </div>
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure </label>
                             <div class="col-sm-9">
-                                <input type="email" readonly class="form-control" value="0" id="unit_measure"
+                                <input type="number" readonly class="form-control" value="0" id="unit_measure"
                                     name="status" placeholder="" name="unit_measure">
                             </div>
                         </div>
@@ -64,50 +64,48 @@
                             <select class="form-control select2 locations" name="location_to" id="location_to" required>
                                 <option value="">Select chiller</option>
                             </select>
-                            {{-- <select class="form-control locations select2 select2-success"
-                                data-placeholder="Select Product" id="product"
-                                data-dropdown-css-class="select2-success">
-                                <option value="" selected="selected"></option>
-                            </select> --}}
                         </div>
                     </div><br>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Total Crates</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" id="total_crates" name="total_crates" value=""
-                                onkeyup="handleChange()" placeholder="">
+                            <input type="number" class="form-control crates" id="total_crates" name="total_crates" value=""
+                                required onkeyup="handleChange()" placeholder="">
                         </div>
                     </div><br>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">No. of full Crates</label>
                         <div class="col-sm-9">
-                            <input type="email" class="form-control" value="" id="full_crates" name="full_crates"
-                                onkeyup="handleChange()" placeholder="">
+                            <input type="number" class="form-control crates" value="" id="full_crates" name="full_crates"
+                                required onkeyup="handleChange()" placeholder="">
                         </div>
                     </div><br>
                     <div class="row incomplete_pieces">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Pieces in incomplete Crate</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" value="" id="incomplete_pieces"
-                                name="incomplete_pieces" placeholder="">
+                            <input type="number" class="form-control crates" value="0" id="incomplete_pieces"
+                                name="incomplete_pieces" onClick="this.select();" placeholder="">
                         </div>
-                    </div><br>
+                    </div>
+                    <span class="text-danger" id="err1"></span>
+                     <span class="text-success" id="succ1"></span>
+                    <input type="hidden" name="crates_valid" id="crates_valid" value="0">                    
                 </div>
             </div>
             <div class="card">
                 <div class="card-body text-center form-group">
                     <div class="row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Pieces</label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces</label>
                         <div class="col-sm-9">
-                            <input type="number" readonly class="form-control" value="" id="pieces" name="status"
-                                placeholder="" readonly>
+                            <input type="number" class="form-control" value="0" id="pieces" name="status"
+                                placeholder="">
                         </div>
                     </div><br>
                     <div class="row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Weight</label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
                         <div class="col-sm-9">
-                            <input type="number" readonly class="form-control" value="" id="weight" name="status"
-                                placeholder="" readonly>
+                            <input type="number" class="form-control" value="0" id="weight" name="status"
+                                placeholder="" >
                         </div>
                     </div>
                     <hr>
@@ -131,13 +129,14 @@
                                 <span class="text-danger" id="err"></span>
                                 <span class="text-success" id="succ"></span>
                             </div>
-                            <input type="" name="user_valid" id="user_valid" value="0">
-                            <input type="" name="location_code" id="location_code" value="3535">
+                            <input type="hidden" name="user_valid" id="user_valid" value="0">
+                            <input type="hidden" name="location_code" id="location_code" value="3535">
                         </div>
                     </div>
                     <div class="div" style="padding-top: ">
-                        <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
-                                class="fa fa-paper-plane single-click" aria-hidden="true"></i> Post</button>
+                        <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
+                            onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
+                                aria-hidden="true"></i> Post</button>
                     </div>
                 </div>
             </div>
@@ -258,10 +257,40 @@
             loadProductDetails(product_code);
         });
 
+        $('.crates').keyup(function () {
+            validateCrates()
+        })
+
         $("#validate").on("click", function () {
-            validateUser();
+            validateUser()
         });
     });
+
+    const validateOnSubmit = () => {
+        let status = true
+
+        let total_crates = $("#total_crates").val();
+        let full_crates = $("#full_crates").val();
+        let incomplete_pieces = $('#incomplete_pieces').val();
+
+        let crates_validity = $("#crates_valid").val();
+        let user_validity = $("#user_valid").val();
+
+        if (crates_validity == 0) {
+            status = false
+            alert("please ensure you have valid crates before submitting")
+
+        } else if(user_validity == 0){
+            status = false
+            alert("please ensure you have validated user before submitting")
+
+        } else if (parseInt(full_crates) < parseInt(total_crates) && (parseInt(incomplete_pieces) < 1) ){
+            status = false
+            alert("please enter incomplete pieces")
+        }
+
+        return status
+    }
 
     const handleChange = () => {
         let total_crates = $("#total_crates").val();
@@ -272,6 +301,7 @@
                 $('.incomplete_pieces').show();
             } else {
                 $('.incomplete_pieces').hide();
+                $('#incomplete_pieces').val(0)
             }
         }
     }
@@ -288,8 +318,8 @@
         return axios.post(url, request_data)
             .then((response) => {
                 $('#loading').collapse('hide');
-
-                $('#crate_count').val(response.data.unit_count_per_crate)
+                
+                $('#unit_crate_count').val(response.data.unit_count_per_crate)
                 $('#unit_measure').val(parseFloat(response.data.qty_per_unit_of_measure).toFixed(2))
             })
             .catch((error) => {
@@ -348,7 +378,6 @@
         return axios.post(url, request_data)
             .then((res) => {
                 if (res) {
-                    console.log(res.data)
                     if (res.data == 1) {
                         // proceed to domain check
                         LdapApiRequest(username, password)
@@ -361,7 +390,11 @@
             .catch((error) => {
                 console.log(error);
             })
+    }
 
+    const setCratesValidityMessage = (field_succ, field_err, message_succ, message_err) => {
+        document.getElementById(field_succ).innerHTML = message_succ
+        document.getElementById(field_err).innerHTML = message_err
     }
 
     const setUserMessage = (field_succ, field_err, message_succ, message_err) => {
@@ -371,6 +404,44 @@
 
     const setUserValidity = (status) => {
         $("#user_valid").val(status);
+    }
+
+    const validateCrates = () => {
+        let total_crates = $("#total_crates").val();
+        let full_crates = $("#full_crates").val();
+
+        let diff = parseInt(total_crates) - parseInt(full_crates)
+
+        if (diff < 0 || diff > 1) {
+            setCratesValidity(0)
+            setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
+            $('#pieces').val(0)
+            $('#weight').val(0)
+            // alert(
+            //     "Please ensure there can only be maximum one incomplete crate & the full crates cannot exceed total crates")
+                
+        } else {
+            setCratesValidity(1)
+            setCratesValidityMessage('succ1', 'err1', '', '')
+            calculatePiecesAndWeight(full_crates)
+
+        }
+    }
+
+    const calculatePiecesAndWeight = (full_crates) => {
+        let crate_unit_count = $('#unit_crate_count').val()
+        let incomplete_pieces = $('#incomplete_pieces').val()
+        let unit_measure = $('#unit_measure').val()
+
+        let pieces = (parseInt(full_crates) * parseInt(crate_unit_count)) + parseInt(incomplete_pieces)
+        let weight = pieces * unit_measure
+
+        $('#pieces').val(pieces)
+        $('#weight').val(weight)
+    }
+
+    const setCratesValidity = (status) => {
+        $("#crates_valid").val(status);
     }
 
     const LdapApiRequest = (user_name, pass) => {

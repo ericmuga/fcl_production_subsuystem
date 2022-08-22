@@ -119,6 +119,7 @@ Route::post('/item/details-axios', [SausageController::class, 'getItemDetails'])
 Route::post('/fetch-transferToLocations-axios', [SausageController::class, 'getTransferToLocations'])->name('fetch_transfer_locations');
 Route::post('/check-user-rights', [SausageController::class, 'checkUserRights'])->name('check_user_rights');
 Route::post('/validate-user', [SausageController::class, 'validateUser'])->name('validateUser');
+Route::post('/save/idt', [SausageController::class, 'saveIdTransfer'])->name('save_idt');
 Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'productionEntries'])->name('sausage_entries');
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 /*-------------End Admin------------------ */
