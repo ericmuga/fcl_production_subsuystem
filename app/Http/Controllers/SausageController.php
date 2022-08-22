@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Helpers;
 use App\Models\SausageEntry;
+use Brian2694\Toastr\Facades\Toastr;
 use Faker\Core\Barcode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Mockery\Matcher\Type;
 
 class SausageController extends Controller
@@ -167,7 +169,7 @@ class SausageController extends Controller
         }
     }
 
-    public function getIdt()
+    public function getIdt(Helpers $helpers)
     {
         $title = "IDT";
 
@@ -179,9 +181,15 @@ class SausageController extends Controller
                 ->get();
         });
 
-        $transfer_lines = '';
+        $transfer_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->select('idt_transfers.*', 'items.description', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->whereDate('idt_transfers.created_at', today())
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->get();
 
-        return view('sausage.idt', compact('title', 'filter', 'transfer_lines', 'items'));
+        return view('sausage.idt', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
     }
 
     public function getItemDetails(Request $request)
@@ -238,8 +246,46 @@ class SausageController extends Controller
         return response()->json($status);
     }
 
-    public function saveIdTransfer(Request $request)
+    public function saveIdTransfer(Request $request, Helpers $helpers)
     {
-        dd($request->all());
+        // dd($request->all());
+        $validator = Validator::make($request->all(), [
+            'crates_valid' => 'required|boolean',
+            'user_valid' => 'required|boolean',
+
+        ]);
+
+        if ($validator->fails()) {
+            # failed validation
+            $messages = $validator->errors();
+            foreach ($messages->all() as $message) {
+                Toastr::error($message, 'Error!');
+            }
+            return back();
+        }
+
+        try {
+            // try save
+            DB::table('idt_transfers')->insert([
+                'product_code' => $request->product,
+                'location_code' => $request->location_code,
+                'chiller_code' => $request->chiller_code,
+                'total_crates' => $request->total_crates,
+                'full_crates' => $request->full_crates,
+                'incomplete_crate_pieces' => $request->incomplete_pieces,
+                'total_pieces' => $request->pieces,
+                'total_weight' => $request->weight,
+                'received_by' => $request->username,
+                'user_id' => $helpers->authenticatedUserId(),
+            ]);
+
+            Toastr::success('IDT Transfer recorded successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
     }
 }

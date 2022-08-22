@@ -42,15 +42,15 @@
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control" value="0" id="unit_crate_count"
-                                    name="status" placeholder="" name="unit_crate_count">
+                                <input type="number" readonly class="form-control input_params" value="0" id="unit_crate_count"
+                                    name="unit_crate_count" placeholder="" name="unit_crate_count">
                             </div>
                         </div>
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control" value="0" id="unit_measure"
-                                    name="status" placeholder="" name="unit_measure">
+                                <input type="number" readonly class="form-control input_params" value="0" id="unit_measure"
+                                    name="unit_measure" placeholder="" name="unit_measure">
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
-                            <select class="form-control select2 locations" name="location_to" id="location_to" required>
+                            <select class="form-control select2 locations" name="chiller_code" id="chiller_code" required>
                                 <option value="">Select chiller</option>
                             </select>
                         </div>
@@ -97,14 +97,14 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" value="0" id="pieces" name="status"
+                            <input type="number" class="form-control" value="0" id="pieces" name="pieces"
                                 placeholder="">
                         </div>
                     </div><br>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" value="0" id="weight" name="status"
+                            <input type="number" step=".01" class="form-control" value="0" id="weight" name="weight"
                                 placeholder="" >
                         </div>
                     </div>
@@ -118,7 +118,7 @@
                                         placeholder="username">
                                 </div>
                                 <div class="col-md-4">
-                                    <input type="password" class="form-control" value="" id="password" name="password"
+                                    <input type="password" class="form-control" value="" id="password"
                                         placeholder="Password">
                                 </div>
                                 <div class="col-md-4">
@@ -166,68 +166,62 @@
                     <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Batch No</th>
-                                <th>Template No</th>
-                                <th>Template</th>
-                                <th>Status</th>
-                                <th>Output Product</th>
-                                <th>Output Quantity</th>
-                                @if ($filter == 'open' || $filter == '')
-                                <th>created By</th>
-
-                                @elseif ($filter == 'closed')
-                                <th>closed By</th>
-                                @elseif ($filter == 'posted')
-                                <th>posted By</th>
-                                @endif
-
+                               <th>#</th>
+                                <th>Product Code</th>
+                                <th>Product</th>
+                                <th>Std Crate Count</th>
+                                <th>Std Unit Measure</th>
+                                <th>Location </th>
+                                <th>Chiller</th>
+                                <th>Total Crates</th>
+                                <th>Full Crates</th>
+                                <th>Incomplete Crate Pieces</th>
+                                <th>Total Pieces</th>
+                                <th>Total Weight</th>
+                                <th>Created By</th>
+                                <th>Received By</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Batch No</th>
-                                <th>Template No</th>
-                                <th>Template</th>
-                                <th>Status</th>
-                                <th>Output Product</th>
-                                <th>Output Quantity</th>
-                                @if ($filter == 'open' || $filter == '')
-                                <th>created By</th>
-
-                                @elseif ($filter == 'closed')
-                                <th>closed By</th>
-                                @elseif ($filter == 'posted')
-                                <th>posted By</th>
-                                @endif
+                                <th>Product Code</th>
+                                <th>Product</th>
+                                <th>Std Crate Count</th>
+                                <th>Std Unit Measure</th>
+                                <th>Location </th>
+                                <th>Chiller</th>
+                                <th>Total Crates</th>
+                                <th>Full Crates</th>
+                                <th>Incomplete Crate Pieces</th>
+                                <th>Total Pieces</th>
+                                <th>Total Weight</th>
+                                <th>Created By</th>
+                                <th>Received By</th>
                                 <th>Date</th>
                             </tr>
                         </tfoot>
                         <tbody>
-                            {{-- @foreach($transfer_lines as $data)
+                            @foreach($transfer_lines as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                            <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
-                            </td>
-                            <td>{{ $data->template_no }}</td>
-                            <td>{{ $data->template_name }}</td>
-
-                            @if ($data->status == 'open')
-                            <td><span class="badge badge-success">Open</span></td>
-                            @elseif ($data->status == 'closed')
-                            <td><span class="badge badge-warning">Closed</span></td>
-                            @else
-                            <td><span class="badge badge-danger">Posted</span></td>
-                            @endif
-
-                            <td>{{ $data->template_output }}</td>
-                            <td>{{ $data->output_quantity }}</td>
-                            <td>{{ $data->username }}</td>
-                            <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>{{ $data->product_code }}</td>
+                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->unit_count_per_crate }}</td>
+                                <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
+                                <td>{{ $data->location_code }}</td>
+                                <td>{{ $data->chiller_code }}</td>
+                                <td>{{ $data->total_crates }}</td>
+                                <td>{{ $data->full_crates }}</td>
+                                <td>{{ $data->incomplete_crate_pieces }}</td>
+                                <td>{{ $data->total_pieces }}</td>
+                                <td>{{ $data->total_weight }}</td>
+                                <td>{{ $data->username }}</td>
+                                <td>{{ $data->received_by }}</td>
+                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
-                            @endforeach --}}
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
@@ -260,6 +254,11 @@
         $('.crates').keyup(function () {
             validateCrates()
         })
+
+        // $('.input_params').change(function () {
+        //     console.log('params changed')
+        //     validateCrates()
+        // })
 
         $("#validate").on("click", function () {
             validateUser()
@@ -321,6 +320,7 @@
                 
                 $('#unit_crate_count').val(response.data.unit_count_per_crate)
                 $('#unit_measure').val(parseFloat(response.data.qty_per_unit_of_measure).toFixed(2))
+                validateCrates()
             })
             .catch((error) => {
                 console.log(error);
@@ -407,6 +407,7 @@
     }
 
     const validateCrates = () => {
+        console.log('validating crates')
         let total_crates = $("#total_crates").val();
         let full_crates = $("#full_crates").val();
 
@@ -437,7 +438,7 @@
         let weight = pieces * unit_measure
 
         $('#pieces').val(pieces)
-        $('#weight').val(weight)
+        $('#weight').val(weight.toFixed(2))
     }
 
     const setCratesValidity = (status) => {

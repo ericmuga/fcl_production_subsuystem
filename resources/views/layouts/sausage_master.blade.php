@@ -42,6 +42,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="{{asset('assets/plugins/daterangepicker/daterangepicker.css')}}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{asset('assets/plugins/summernote/summernote-bs4.min.css')}}">
+    <!-- toastr -->
+    <link rel="stylesheet" href="{{ asset('assets/toastr.min.css') }}">
 </head>
 
 <body class="hold-transition layout-top-nav">
@@ -124,7 +126,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <script src="{{asset('assets/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js')}}"></script>
     <!-- axios -->
     <script src="{{ asset('assets/axios.min.js') }}"></script>
-
+    <!-- toastr -->
+    <script src="{{ asset('assets/toastr.min.js') }}"></script>
+    {!! Toastr::message() !!}
     <script>
         $(function () {
             $("#example1").DataTable({
