@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Helpers;
 use App\Models\SausageEntry;
 use Faker\Core\Barcode;
 use Illuminate\Http\Request;
@@ -178,9 +179,12 @@ class SausageController extends Controller
                 ->get();
         });
 
-        // $transfer_lines = DB::table('idt_transfers')
-        //     ->orderBy('created_at', 'DESC')
-        //     ->get();
+        // $chillers = Cache::remember('chillers', now()->addHours(10), function () {
+        //     return DB::table('chillers')
+        //         ->select('chiller_code', 'description')
+        //         ->get();
+        // });
+
         $transfer_lines = '';
 
         return view('sausage.idt', compact('title', 'filter', 'transfer_lines', 'items'));
@@ -194,5 +198,49 @@ class SausageController extends Controller
             ->first();
 
         return response()->json($item);
+    }
+
+    public function getTransferToLocations(Request $request)
+    {
+        $data = DB::table('chillers')
+            ->leftJoin('item_location_combinations', 'item_location_combinations.location', '=', 'chillers.location_code')
+            ->where('item_location_combinations.item_code', $request->product_code)
+            ->select('chillers.chiller_code', 'chillers.location_code', 'chillers.description')
+            ->get();
+
+        return response()->json($data);
+    }
+
+    public function validateUser(Request $request, Helpers $helpers)
+    {
+        $request_data = [
+            "username" => $request->username,
+            "password" => $request->password,
+        ];
+
+        // return response()->json($request->all());
+
+        $post_data = json_encode($request_data);
+
+        $result = $helpers->validateLogin($post_data);
+
+        return response()->json($result);
+    }
+
+    public function checkUserRights(Request $request)
+    {
+        $status = 0;
+
+        $result = DB::table('transfer_user_rights')
+            ->where('username', $request->username)
+            ->where('location_code', $request->location_code)
+            ->first();
+
+        if ($result != null) {
+            #exists
+            $status = 1;
+        }
+
+        return response()->json($status);
     }
 }

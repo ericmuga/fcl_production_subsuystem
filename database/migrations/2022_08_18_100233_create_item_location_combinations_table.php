@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateIdtTransfersTable extends Migration
+class CreateItemLocationCombinationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateIdtTransfersTable extends Migration
      */
     public function up()
     {
-        Schema::create('idt_transfers', function (Blueprint $table) {
+        Schema::create('item_location_combinations', function (Blueprint $table) {
             $table->id();
+            $table->string('item_code');
+            $table->string('location');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -27,6 +29,6 @@ class CreateIdtTransfersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('idt_transfers');
+        Schema::dropIfExists('item_location_combinations');
     }
 }
