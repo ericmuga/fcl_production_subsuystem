@@ -145,7 +145,8 @@ class SausageController extends Controller
     {
         try {
             //saving...
-            foreach ($request->request_data as $el) {
+            // foreach ($request->request_data as $el) {
+            foreach (array_column($request->request_data, 500) as $el) {
                 $el2 = explode(" ", $el);
 
                 $entries = SausageEntry::upsert([
