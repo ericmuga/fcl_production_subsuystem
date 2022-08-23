@@ -255,11 +255,6 @@
             validateCrates()
         })
 
-        // $('.input_params').change(function () {
-        //     console.log('params changed')
-        //     validateCrates()
-        // })
-
         $("#validate").on("click", function () {
             validateUser()
         });
@@ -272,6 +267,9 @@
         let full_crates = $("#full_crates").val();
         let incomplete_pieces = $('#incomplete_pieces').val();
 
+        let pieces = $('#pieces').val();
+        let weight = $('#weight').val();
+
         let crates_validity = $("#crates_valid").val();
         let user_validity = $("#user_valid").val();
 
@@ -281,11 +279,14 @@
 
         } else if(user_validity == 0){
             status = false
-            alert("please ensure you have validated user before submitting")
+            alert("please ensure you have validated receiver before submitting")
 
         } else if (parseInt(full_crates) < parseInt(total_crates) && (parseInt(incomplete_pieces) < 1) ){
             status = false
             alert("please enter incomplete pieces")
+        } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
+            status = false
+            alert("please ensure the pieces and weight have a value of more than zero")
         }
 
         return status
@@ -418,9 +419,7 @@
             setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
             $('#pieces').val(0)
             $('#weight').val(0)
-            // alert(
-            //     "Please ensure there can only be maximum one incomplete crate & the full crates cannot exceed total crates")
-                
+            
         } else {
             setCratesValidity(1)
             setCratesValidityMessage('succ1', 'err1', '', '')
@@ -468,7 +467,7 @@
                 if (res) {
                     const obj = JSON.parse(res.data)
                     if (obj.success == true) {
-                        setUserMessage('succ', 'err', 'validated user', '')
+                        setUserMessage('succ', 'err', 'validated receiver', '')
                         setUserValidity(1)
                     } else {
                         setUserMessage('succ', 'err', '', 'Wrong credentials')
