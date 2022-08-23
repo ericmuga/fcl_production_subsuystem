@@ -113,15 +113,15 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Dispatch Receiver</label>
                         <div class="col-sm-9">
                             <div class="row form-group">
-                                <div class="col-md-4">
+                                <div class="col-md-4" style="margin-top: 2%">
                                     <input type="text" class="form-control" value="" id="username" name="username"
                                         placeholder="username">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" style="margin-top: 2%">
                                     <input type="password" class="form-control" value="" id="password"
                                         placeholder="Password">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" style="margin-top: 2%">
                                     <button type="button" id="validate" class="btn btn-success"><i
                                             class="fa fa-paper-plane" aria-hidden="true"></i>
                                         Validate</button>
@@ -419,7 +419,7 @@
             setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
             $('#pieces').val(0)
             $('#weight').val(0)
-            
+
         } else {
             setCratesValidity(1)
             setCratesValidityMessage('succ1', 'err1', '', '')

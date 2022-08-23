@@ -17,6 +17,7 @@ class CreateChillersTable extends Migration
             $table->id();
             $table->string('chiller_code')->unique();
             $table->string('location_code');
+            $table->string('description');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
