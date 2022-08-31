@@ -287,7 +287,7 @@
         } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
             status = false
             alert("please ensure the pieces and weight have a value of more than zero")
-        }
+        } 
 
         return status
     }
@@ -409,23 +409,34 @@
 
     const validateCrates = () => {
         console.log('validating crates')
+        let crate_unit_count = $('#unit_crate_count').val()
+        let incomplete_pieces = $('#incomplete_pieces').val()
+
         let total_crates = $("#total_crates").val();
         let full_crates = $("#full_crates").val();
 
         let diff = parseInt(total_crates) - parseInt(full_crates)
 
-        if (diff < 0 || diff > 1) {
+        if (parseInt(incomplete_pieces) >= parseInt(crate_unit_count)) {
             setCratesValidity(0)
-            setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
+            setCratesValidityMessage('succ1', 'err1', '', 'invalid incomplete crate pieces')
             $('#pieces').val(0)
             $('#weight').val(0)
-
+            
         } else {
-            setCratesValidity(1)
-            setCratesValidityMessage('succ1', 'err1', '', '')
-            calculatePiecesAndWeight(full_crates)
-
+            if (diff < 0 || diff > 1) {
+                setCratesValidity(0)
+                setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
+                $('#pieces').val(0)
+                $('#weight').val(0)
+    
+            } else {
+                setCratesValidity(1)
+                setCratesValidityMessage('succ1', 'err1', '', '')
+                calculatePiecesAndWeight(full_crates)
+            }
         }
+
     }
 
     const calculatePiecesAndWeight = (full_crates) => {
