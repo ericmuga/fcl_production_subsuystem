@@ -123,6 +123,8 @@ class SausageController extends Controller
 
     public function lastInsert()
     {
+        $res = '';
+
         $last = DB::table('sausage_entries')
             ->whereDate('created_at', today())
             ->select('origin_timestamp', 'scanner_ip', 'barcode')
@@ -130,7 +132,6 @@ class SausageController extends Controller
             ->limit(1)
             ->get()->toArray();
 
-        $res = '';
         if (!empty($last)) {
             $origin = $last[0]->origin_timestamp;
             $scanner = $last[0]->scanner_ip;
@@ -145,8 +146,8 @@ class SausageController extends Controller
     {
         try {
             //saving...
-            // foreach ($request->request_data as $el) {
-            foreach (array_column($request->request_data, 500) as $el) {
+            foreach ($request->request_data as $el) {
+                // foreach (array_column($request->request_data, 500) as $el) {
                 $el2 = explode(" ", $el);
 
                 $entries = SausageEntry::upsert([
