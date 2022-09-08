@@ -19,8 +19,7 @@
 
 @section('content')
 <div id="toggle_collapse" class="collapse">
-    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('save_idt') }}"
-        method="post">
+    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('save_idt') }}" method="post">
         @csrf
         <div class="card-group">
             <div class="card">
@@ -42,15 +41,16 @@
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control input_params" value="0" id="unit_crate_count"
-                                    name="unit_crate_count" placeholder="" name="unit_crate_count">
+                                <input type="number" readonly class="form-control input_params" value="0"
+                                    id="unit_crate_count" name="unit_crate_count" placeholder=""
+                                    name="unit_crate_count">
                             </div>
                         </div>
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control input_params" value="0" id="unit_measure"
-                                    name="unit_measure" placeholder="" name="unit_measure">
+                                <input type="number" readonly class="form-control input_params" value="0"
+                                    id="unit_measure" name="unit_measure" placeholder="" name="unit_measure">
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,8 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
-                            <select class="form-control select2 locations" name="chiller_code" id="chiller_code" required>
+                            <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
+                                required>
                                 <option value="">Select chiller</option>
                             </select>
                         </div>
@@ -69,15 +70,15 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Total Crates</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control crates" id="total_crates" name="total_crates" value=""
-                                required onkeyup="handleChange()" placeholder="">
+                            <input type="number" class="form-control crates" id="total_crates" name="total_crates"
+                                value="" required onkeyup="handleChange()" placeholder="">
                         </div>
                     </div><br>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">No. of full Crates</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control crates" value="" id="full_crates" name="full_crates"
-                                required onkeyup="handleChange()" placeholder="">
+                            <input type="number" class="form-control crates" value="" id="full_crates"
+                                name="full_crates" required onkeyup="handleChange()" placeholder="">
                         </div>
                     </div><br>
                     <div class="row incomplete_pieces">
@@ -88,8 +89,8 @@
                         </div>
                     </div>
                     <span class="text-danger" id="err1"></span>
-                     <span class="text-success" id="succ1"></span>
-                    <input type="hidden" name="crates_valid" id="crates_valid" value="0">                    
+                    <span class="text-success" id="succ1"></span>
+                    <input type="hidden" name="crates_valid" id="crates_valid" value="0">
                 </div>
             </div>
             <div class="card">
@@ -105,11 +106,10 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
                         <div class="col-sm-9">
                             <input type="number" step=".01" class="form-control" value="0" id="weight" name="weight"
-                                placeholder="" >
+                                placeholder="">
                         </div>
-                    </div>
-                    <hr>
-                    <div class="row form-group">
+                    </div><br>
+                    {{-- <div class="row form-group">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Dispatch Receiver</label>
                         <div class="col-sm-9">
                             <div class="row form-group">
@@ -130,17 +130,17 @@
                                 <span class="text-success" id="succ"></span>
                             </div>
                             <input type="hidden" name="user_valid" id="user_valid" value="0">
-                            <input type="hidden" name="location_code" id="location_code" value="3535">
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="div" style="padding-top: ">
                         <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
                             onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
-                                aria-hidden="true"></i> Post</button>
+                                aria-hidden="true"></i> Save</button>
                     </div>
                 </div>
             </div>
         </div>
+        <input type="hidden" name="location_code" id="location_code" value="3535">
     </form>
     <div id="loading" class="collapse">
         <div class="row d-flex justify-content-center">
@@ -166,7 +166,7 @@
                     <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
                         <thead>
                             <tr>
-                               <th>#</th>
+                                <th>#</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
@@ -277,17 +277,17 @@
             status = false
             alert("please ensure you have valid crates before submitting")
 
-        } else if(user_validity == 0){
+        } else if (user_validity == 0) {
             status = false
             alert("please ensure you have validated receiver before submitting")
 
-        } else if (parseInt(full_crates) < parseInt(total_crates) && (parseInt(incomplete_pieces) < 1) ){
+        } else if (parseInt(full_crates) < parseInt(total_crates) && (parseInt(incomplete_pieces) < 1)) {
             status = false
             alert("please enter incomplete pieces")
         } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
             status = false
             alert("please ensure the pieces and weight have a value of more than zero")
-        } 
+        }
 
         return status
     }
@@ -318,7 +318,7 @@
         return axios.post(url, request_data)
             .then((response) => {
                 $('#loading').collapse('hide');
-                
+
                 $('#unit_crate_count').val(response.data.unit_count_per_crate)
                 $('#unit_measure').val(parseFloat(response.data.qty_per_unit_of_measure).toFixed(2))
                 validateCrates()
@@ -422,14 +422,14 @@
             setCratesValidityMessage('succ1', 'err1', '', 'invalid incomplete crate pieces')
             $('#pieces').val(0)
             $('#weight').val(0)
-            
+
         } else {
             if (diff < 0 || diff > 1) {
                 setCratesValidity(0)
                 setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
                 $('#pieces').val(0)
                 $('#weight').val(0)
-    
+
             } else {
                 setCratesValidity(1)
                 setCratesValidityMessage('succ1', 'err1', '', '')

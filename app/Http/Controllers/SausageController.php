@@ -248,13 +248,11 @@ class SausageController extends Controller
         return response()->json($status);
     }
 
-    public function saveIdTransfer(Request $request, Helpers $helpers)
+    public function saveTransfer(Request $request, Helpers $helpers)
     {
         // dd($request->all());
         $validator = Validator::make($request->all(), [
             'crates_valid' => 'required|boolean',
-            'user_valid' => 'required|boolean',
-
         ]);
 
         if ($validator->fails()) {
@@ -277,7 +275,7 @@ class SausageController extends Controller
                 'incomplete_crate_pieces' => $request->incomplete_pieces,
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
-                'received_by' => $request->username,
+                // 'received_by' => $request->username,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 

@@ -24,7 +24,7 @@ class CreateIdtTransfersTable extends Migration
             $table->integer('total_pieces');
             $table->decimal('total_weight');
             $table->foreignId('user_id')->constrained('users');
-            $table->string('received_by');
+            $table->string('received_by')->nullable();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
