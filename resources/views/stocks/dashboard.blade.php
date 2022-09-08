@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="col-md-12">
-            <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> showing today's numbers | <strong>{{ today()->format('l jS \\of F Y') }}</strong></small>
+            <h1 class="card-title"> Butchery Stocks| Dashboard | <span id="subtext-h1-title"><small> showing today's numbers | <strong>{{ today()->format('l jS \\of F Y') }}</strong></small>
                 </span></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->

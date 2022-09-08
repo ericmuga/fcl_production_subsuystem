@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
+use App\Http\Controllers\Despatch;
+use App\Http\Controllers\DespatchController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SausageController;
@@ -141,3 +143,7 @@ Route::get('production/lines/{batch_no}', [SpicesController::class, 'productionL
 Route::post('production/batch/update', [SpicesController::class, 'updateBatchItems'])->name('update_batch');
 Route::post('production/batch/close', [SpicesController::class, 'closeOrPostBatch'])->name('close_post_batch');
 /*-------------End Spices------------------ */
+
+/*-------------Start Despatch------------------ */
+Route::get('/despatch/dashboard', [DespatchController::class, 'index'])->name('despatch_dashboard');
+/*-------------End Despatch------------------ */

@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="col-sm-12">
-            <h1 class="card-title"> Dashboard | <span id="subtext-h1-title"><small> Today's numbers | Slaughter Date:
+            <h1 class="card-title"> Butchery | Dashboard | <span id="subtext-h1-title"><small> Today's numbers | Slaughter Date:
                         <code> {{ $helpers->dateToHumanFormat($helpers->getButcheryDate()) }}</code></small>
                 </span></h1>
         </div><!-- /.col -->
