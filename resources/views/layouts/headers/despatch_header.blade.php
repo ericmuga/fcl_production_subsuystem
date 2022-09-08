@@ -18,7 +18,7 @@
                     <a href="{{ route('despatch_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ route('sausage_idt') }}" class="nav-link">IDT</a>
+                    <a href="{{ route('despatch_idt') }}" class="nav-link">IDT</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
