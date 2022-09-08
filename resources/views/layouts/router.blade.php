@@ -97,7 +97,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <div class="container-fluid">
                         <div class="card-deck-wrapper">
                             <div class="card-deck">
-                                {{-- <div class="card p-2 bg-success" style="height: 200px">
+                                <div class="card p-2 bg-success" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                                         href="{{ route('stock_dashboard') }}">
                                         <h4 class="card-title">Butchery Stocks</h4>
@@ -107,7 +107,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                     <div class="icon text-center">
                                         <i class="fa fa-share-alt fa-4x" aria-hidden="true"></i>
                                     </div>
-                                </div> --}}
+                                </div>
                                 <div class="card p-2 bg-dark" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('sausage_dashboard') }}">
@@ -130,7 +130,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         <i class="fa fa-check-circle fa-4x" aria-hidden="true"></i>
                                     </div>
                                 </div>
-                                <div class="card p-2 bg-success" style="height: 200px">
+                                <div class="card p-2 bg-danger" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                                         href="{{ route('despatch_dashboard') }}">
                                         <h4 class="card-title">Despatch Stocks</h4>
@@ -138,7 +138,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                         </p>
                                     </a>
                                     <div class="icon text-center">
-                                        <i class="fa fa-share-alt fa-4x" aria-hidden="true"></i>
+                                        <i class="fa fa-truck fa-4x" aria-hidden="true"></i>
                                     </div>
                                 </div>
                             </div>
