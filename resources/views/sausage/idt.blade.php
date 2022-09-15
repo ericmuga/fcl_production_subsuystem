@@ -178,7 +178,6 @@
                                 <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
-                                <th>Created By</th>
                                 <th>Received By</th>
                                 <th>Date</th>
                             </tr>
@@ -197,7 +196,6 @@
                                 <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
-                                <th>Created By</th>
                                 <th>Received By</th>
                                 <th>Date</th>
                             </tr>
@@ -218,7 +216,6 @@
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->username }}</td>
-                                <td>{{ $data->received_by }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
