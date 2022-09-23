@@ -550,9 +550,15 @@
         var carcass_type = $('#carcass_type').val();
         var total_by_vendor = $('#total_by_vendor').val();
         var total_per_slap = $('#total_per_slap').val();
+        var class_code = $('#classification_code').val();
 
         if (carcass_type != 'G0113' && !(net > 10 && net <= 250)) {
             alert("Please ensure you have valid netweight of range 10-250kgs .");
+            return false;
+        }
+
+        if (class_code == '') {
+            alert("Please ensure classification code has picked before saving.");
             return false;
         }
 
