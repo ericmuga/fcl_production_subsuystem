@@ -16,6 +16,7 @@ class CreateSalesTable extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id();
             $table->string('item_code', 20);
+            $table->integer('no_of_pieces');
             $table->integer('no_of_carcass');
             $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);

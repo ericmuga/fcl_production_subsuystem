@@ -216,6 +216,7 @@
                                     <th>Net Weight(kgs)</th>
                                     <th>No. of Crates</th>
                                     <th>No. of Pieces</th>
+                                    <th>Edited</th>
                                     <th>Date </th>
                                 </tr>
                             </thead>
@@ -230,8 +231,8 @@
                                     <th>Net Weight(kgs)</th>
                                     <th>No. of Crates</th>
                                     <th>No. of Pieces</th>
+                                    <th>Edited</th>
                                     <th>Date </th>
-
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -252,6 +253,15 @@
                                     <td> {{ number_format($data->net_weight, 2) }}</td>
                                     <td> {{ $data->no_of_crates }}</td>
                                     <td> {{ $data->no_of_pieces }}</td>
+                                    @if ($data->edited == 1)
+                                    <td>
+                                        <span class="badge badge-warning">Yes</span>
+                                    </td>
+                                    @else
+                                    <td>
+                                        <span class="badge badge-success">No</span>
+                                    </td>
+                                    @endif
                                     <td> {{ $data->created_at }}</td>
                                 </tr>
                                 @endforeach

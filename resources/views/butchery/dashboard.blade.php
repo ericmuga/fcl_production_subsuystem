@@ -60,7 +60,7 @@
             <div class="inner">
                 <h3>{{ $sales[0]->count?? "0" }} | <sup style="font-size: 20px">{{ number_format($sales[0]->total_net, 2) }} kgs</sup></h3>
 
-                <p>Sales Baconers & Total Weight </p>
+                <p>Full carcasses & Total Weight </p>
             </div>
             <div class="icon">                
                 <i class="fa fa-shopping-cart" aria-hidden="true"></i>

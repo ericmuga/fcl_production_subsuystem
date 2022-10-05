@@ -277,9 +277,11 @@ class ButcheryController extends Controller
 
                 DB::table('sales')->insert([
                     'item_code' => $item_code,
-                    'no_of_carcass' => $helpers->numberOfSalesCarcassesCalculation(
-                        $request->no_of_items
-                    ),
+                    'no_of_pieces' => $request->no_of_items,
+                    // 'no_of_carcass' => $helpers->numberOfSalesCarcassesCalculation(
+                    //     $request->no_of_items
+                    // ),
+                    'no_of_carcass' => 0,
                     'actual_weight' => $request->reading2,
                     'net_weight' => $request->net2,
                     'process_code' => 0, //process behead pig by default
@@ -366,7 +368,7 @@ class ButcheryController extends Controller
                     ->where('id', $request->item_id)
                     ->update([
                         'item_code' => $request->edit_carcass,
-                        'no_of_carcass' => $request->edit_no_carcass,
+                        'no_of_pieces' => $request->edit_no_carcass,
                         'actual_weight' => $request->edit_weight,
                         'net_weight' => $request->edit_weight - (2.4 * $request->edit_no_carcass),
                         'updated_at' => Carbon::now(),
@@ -426,7 +428,8 @@ class ButcheryController extends Controller
                 // insert negative sales
                 DB::table('sales')->insert([
                     'item_code' => $request->return_item_code,
-                    'no_of_carcass' => -1 * abs($request->return_no_carcass),
+                    'no_of_pieces' => -1 * abs($request->return_no_carcass),
+                    'no_of_carcass' => 0,
                     'actual_weight' => -1 * abs($request->return_weight),
                     'process_code' => 0, //process behead pig by default
                     'returned' => 2,
@@ -625,6 +628,7 @@ class ButcheryController extends Controller
                         'actual_weight' => $request->edit_weight,
                         'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
                         'no_of_pieces' => $request->edit_no_pieces,
+                        'edited' => 1,
                         'updated_at' => Carbon::now(),
                     ]);
 

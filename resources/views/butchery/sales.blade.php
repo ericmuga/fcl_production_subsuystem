@@ -19,6 +19,7 @@
                                 <th>#</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
+                                <th>No. of Pieces</th>
                                 <th>No. of Carcasses</th>
                                 <th> weight(kgs) </th>
                                 <th>Net Weight(kgs)</th>
@@ -31,6 +32,7 @@
                                 <th>#</th>
                                 <th>Product Code</th>
                                 <th>Product Name</th>
+                                <th>No. of Pieces</th>
                                 <th>No. of Carcasses</th>
                                 <th> weight(kgs) </th>
                                 <th>Net Weight(kgs)</th>
@@ -43,10 +45,11 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td id="editModalShow" data-id="{{$data->id}}" data-product_code="{{$data->item_code}}"
-                                    data-item="{{$data->description}}" data-no_carcass="{{ $data->no_of_carcass }}"
+                                    data-item="{{$data->description}}" data-no_carcass="{{ $data->no_of_pieces }}"
                                     data-weight="{{number_format($data->actual_weight, 2)}}"><a
                                         href="#">{{ $data->item_code }}</a> </td>
                                 <td>{{ $data->description }}</td>
+                                <td>{{ number_format($data->no_of_pieces, 0) }}</td>
                                 <td>{{ $data->no_of_carcass }}</td>
                                 <td>{{ number_format($data->actual_weight, 2) }}</td>
                                 <td>{{ number_format($data->net_weight, 2) }}</td>
@@ -55,7 +58,7 @@
                                 <td>
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
-                                        data-no_carcass="{{ $data->no_of_carcass }}"
+                                        data-no_carcass="{{ $data->no_of_pieces }}"
                                         data-weight="{{number_format($data->actual_weight, 2)}}" data-timestamp="{{ $data->created_at }}"
                                         class="btn btn-info btn-xs" title="Return Sale" id="returnSaleModalShow"><i
                                             class="fa fa-undo"></i>
@@ -111,7 +114,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label>No. of Carcasses</label>
+                        <label>No. of Pieces</label>
                         <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value=""
                             name="edit_no_carcass" placeholder="">
                     </div>
@@ -124,7 +127,7 @@
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button class="btn btn-warning btn-prevent-multiple-submits">
                             <i class="fa fa-save"></i> Update
                         </button>
