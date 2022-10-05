@@ -112,14 +112,14 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of Crates</label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
-                        value="4" name="no_of_crates" placeholder="" required>
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4"
+                        name="no_of_crates" placeholder="" required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces"
-                        value="0" name="no_of_pieces" placeholder="" required>
-                </div>        
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
+                        name="no_of_pieces" placeholder="" required>
+                </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
                     <label class="form-check-label" for="for_transfer"><strong> For Transfer?</strong></label>
@@ -140,7 +140,17 @@
             </div>
         </div>
     </div>
+    <input type="hidden" class="input_checks" id="loading_value" value="0">
+
+    <div id="loading" class="collapse">
+        <div class="row d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+    </div>
 </form>
+
 
 <!-- product type modal -->
 <div class="modal fade" id="productTypesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -348,13 +358,23 @@
                         </select>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
+                    <input type="hidden" id="loading_val_edit" value="0">
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits" type="submit">
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
+                            onclick="return validateOnEditSubmit()" type="submit">
                             <i class="fa fa-save"></i> Update
                         </button>
+                    </div>
+                </div>
+
+                <div id="loading2" class="collapse">
+                    <div class="row d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -413,6 +433,7 @@
 
 
         $('#edit_product').change(function () {
+            $('#loading_val_edit').val(0)
             var code = $('#edit_product').val();
 
             var crates_no = $('#edit_crates').val();
@@ -462,6 +483,8 @@
         });
 
         $('#product').change(function () {
+            $('#loading').collapse('show');
+            $('#loading_value').val(0)
             var code = $('#product').val();
             var shortcode = code.split('-')[0];
             var product_code = code.split('-')[1];
@@ -515,6 +538,9 @@
                                 $('#no_of_pieces').select();
                             }
 
+                            //update loading value
+                            $('#loading_value').val(1)
+                            $('#loading').collapse('hide');
                         }
                     },
                     error: function (data) {
@@ -576,6 +602,9 @@
     });
 
     function loadEditProductionProcesses(code) {
+        $('#loading2').collapse('show');
+        $('#loading_val_edit').val(0)
+
         $.ajax({
             type: "GET",
             headers: {
@@ -621,6 +650,10 @@
                     $('#no_of_pieces').val(0);
                     $('#no_of_pieces').select();
                 }
+
+                // completed loading process code
+                $('#loading_val_edit').val(1)
+                $('#loading2').collapse('hide');
 
             },
             error: function (data) {
@@ -797,13 +830,20 @@
     }
 
     function validateOnSubmit() {
+        $valid = true;
+
         var net = $('#net').val();
         var product_type = $('#product_type').val();
         var no_of_pieces = $('#no_of_pieces').val();
         var process = $('#production_process').val();
         var process_substring = process.substr(0, process.indexOf(' '));
+        let loading_val = $('#loading_value').val()
 
-        $valid = true;
+        if (loading_val != 1) {
+            alert('please wait for loading process code to complete')
+            $valid = false;
+        }
+
         if (net == "" || net <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
@@ -813,6 +853,18 @@
         if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone') {
             $valid = false;
             alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product in deboning process");
+        }
+        return $valid;
+    }
+
+    function validateOnEditSubmit() {
+        $valid = true;
+
+        let loading_val = $('#loading_val_edit').val()
+
+        if (loading_val != 1) {
+            alert('please wait for loading process code to complete')
+            $valid = false;
         }
         return $valid;
     }
