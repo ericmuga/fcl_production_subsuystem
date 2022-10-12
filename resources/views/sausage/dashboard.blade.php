@@ -93,7 +93,7 @@
         <!-- small box -->
         <div class="small-box bg-secondary">
             <div class="inner">
-                <h3>{{ $transfers[0]->total_pieces }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($transfers[0]->total_weight, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ number_format($transfers[0]->total_pieces, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($transfers[0]->total_weight, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
 
                 <p>Sausage Total Transfers</p>
             </div>
