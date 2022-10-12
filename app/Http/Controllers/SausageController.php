@@ -59,7 +59,12 @@ class SausageController extends Controller
             ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
             ->count('sausage_entries.barcode');
 
-        return view('sausage.dashboard', compact('title', 'total_tonnage', 'total_entries', 'highest_product', 'lowest_product', 'wrong_entries'));
+        $transfers = DB::table('idt_transfers')
+            ->whereDate('idt_transfers.created_at', today())
+            ->select(DB::raw('SUM(idt_transfers.total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'))
+            ->get();
+
+        return view('sausage.dashboard', compact('title', 'total_tonnage', 'total_entries', 'highest_product', 'lowest_product', 'wrong_entries', 'transfers'));
     }
 
     public function productionEntries($filter = null)
