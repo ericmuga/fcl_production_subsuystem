@@ -20,6 +20,7 @@ class CreateBeheadingDataTable extends Migration
             $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
+            $table->tinyInteger('return_entry')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

@@ -125,7 +125,8 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ $lowest_product[0]->total_count?? "0" }}<sup style="font-size: 15px"> Pkts</sup>| <sup style="font-size: 15px">{{ $lowest_product[0]->description?? "not available" }}</sup></h3>
+                <h3>{{ number_format($transfers[0]->total_pieces - $transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->total_weight - $transfers[0]->received_weight, 2) }} <sup
+                        style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance</p>
             </div>
@@ -141,9 +142,10 @@
         <!-- small box -->
         <div class="small-box bg-primary">
             <div class="inner">
-                <h3>{{ number_format($transfers[0]->received_weight, 2)  }}</h3>
+                <h3>{{ number_format($transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->received_weight, 2) }} <sup
+                        style="font-size: 15px">Kgs</sup></h3>
 
-                <p>Chillers Stocks</p>
+                <p>Received Stocks Per Chiller</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>

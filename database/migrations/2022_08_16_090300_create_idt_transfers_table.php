@@ -24,10 +24,10 @@ class CreateIdtTransfersTable extends Migration
             $table->integer('total_pieces');
             $table->decimal('total_weight');
             $table->foreignId('user_id')->constrained('users');
-            $table->integer('receiver_total_crates')->nullable();
-            $table->integer('receiver_full_crates')->nullable();
-            $table->integer('receiver_incomplete_crate_pieces')->nullable();
-            $table->integer('receiver_total_pieces')->nullable();
+            $table->float('receiver_total_crates')->nullable();
+            $table->float('receiver_full_crates')->nullable();
+            $table->float('receiver_incomplete_crate_pieces')->nullable();
+            $table->float('receiver_total_pieces')->nullable();
             $table->decimal('receiver_total_weight')->nullable();
             $table->integer('received_by')->nullable();
             $table->timestamp('created_at')->useCurrent();
