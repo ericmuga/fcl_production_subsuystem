@@ -83,7 +83,7 @@
     <!-- ./col -->
 </div>
 <!-- /.row -->
-
+<hr>
 <!-- IDT Transfers  -->
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers: </strong>

@@ -37,4 +37,12 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function report(Throwable $e)
+    {
+        if ($e instanceof \Illuminate\Session\TokenMismatchException) {
+            Toastr::warning('Sorry, Seems the page has expired. Please login again', 'Warning');
+            return redirect()->route('login');
+        }
+    }
 }
