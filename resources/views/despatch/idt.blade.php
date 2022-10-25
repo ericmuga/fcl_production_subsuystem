@@ -162,6 +162,7 @@
                                 <th>Total Weight</th>
                                 <th>Status</th>
                                 <th>Created By</th>
+                                <th>Description</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -182,6 +183,7 @@
                                 <th>Total Weight</th>
                                 <th>Status</th>
                                 <th>Issued By</th>
+                                <th>Description</th>
                                 <th>Date</th>
                                 <th>Action</th>
                             </tr>
@@ -191,7 +193,7 @@
                             <tr>
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->product }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->location_code }}</td>
@@ -207,9 +209,10 @@
                                 <td><span class="badge badge-success">received</span></td>
                                 @endif
                                 <td>{{ $data->username }}</td>
+                                <td>{{ $data->description }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 @if ($data->received_by == null)
-                                <td><button type="button" data-id="{{$data->id}}" data-product="{{ $data->product_code }}" data-unit_count="{{ $data->unit_count_per_crate }}" data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}" data-item="{{ $data->description }}" class="btn btn-warning btn-xs"
+                                <td><button type="button" data-id="{{$data->id}}" data-product="{{ $data->product_code }}" data-unit_count="{{ $data->unit_count_per_crate }}" data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}" data-item="{{ $data->product }}" class="btn btn-warning btn-xs"
                                         title="Receive transfer" id="despatchReceiveModalShow"><i
                                             class="fa fa-check"></i>
                                     </button>

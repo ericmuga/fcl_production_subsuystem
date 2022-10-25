@@ -293,4 +293,30 @@ class SausageController extends Controller
                 ->withInput();
         }
     }
+
+    public function idtReport(Helpers $helpers, $filter=null)
+    {
+        $title = "IDT-Report";
+
+        $items = Cache::remember('items_list', now()->addHours(10), function () {
+            return DB::table('items')
+                ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
+                ->get();
+        });
+
+        $transfer_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->when($filter == 'today', function ($q) {
+                $q->whereDate('idt_transfers.created_at', today()); // today only
+            })
+            ->when($filter == 'history', function ($q) {
+                $q->whereDate('idt_transfers.created_at', '>=', now()->subDays(7)); // today plus last 7 days
+            })
+            ->get();
+
+        return view('sausage.idt-report', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
+    }
 }

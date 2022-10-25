@@ -27,10 +27,10 @@
                         <li><a href="#" class="dropdown-item"> Today's Entries
                             </a>
                         </li>
-                        {{-- <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('items_list') }}" class="dropdown-item"> Items List
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('items_list') }}" class="dropdown-item"> IDT History
                             </a>
-                        </li> --}}
+                        </li>
                     </ul>
                 </li>
             </ul>

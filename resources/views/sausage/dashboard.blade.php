@@ -1,11 +1,11 @@
 @extends('layouts.sausage_master')
 
 @section('content-header')
-<div class="container-fluid">
+<div class="container">
     <div class="row">
         <div class="col-sm-12">
             {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
-            <h1 class="card-title"> Sausage | Dashboard | <span id="subtext-h1-title"><small> showing today's numbers</small>
+            <h1 class="card-title"> Sausage | Dashboard | <span id="subtext-h1-title"><small> Showing today's numbers</small>
                 </span></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -103,7 +103,7 @@
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="{{ route('sausage_entries') }}" class="small-box-footer">More info <i
+            <a href="{{ route('sausage_idt_report', 'today') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
@@ -120,7 +120,7 @@
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
             </div>
-            <a href="{{ route('sausage_entries', 'highest-product') }}" class="small-box-footer">More info <i
+            <a href="#" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
@@ -136,7 +136,7 @@
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="{{ route('sausage_entries', 'lowest-product') }}" class="small-box-footer">More info <i
+            <a href="#" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
@@ -153,7 +153,7 @@
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="{{ route('sausage_entries', 'probable-wrong-entries') }}" class="small-box-footer">More info <i
+            <a href="#" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>

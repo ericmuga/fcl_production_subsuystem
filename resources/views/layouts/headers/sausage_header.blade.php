@@ -31,6 +31,10 @@
                         <li><a href="{{ route('items_list') }}" class="dropdown-item"> Items List
                             </a>
                         </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('sausage_idt_report', 'history') }}" class="dropdown-item"> IDT History
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>
