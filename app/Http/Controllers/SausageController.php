@@ -280,7 +280,7 @@ class SausageController extends Controller
                 'incomplete_crate_pieces' => $request->incomplete_pieces,
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
-                // 'received_by' => $request->username,
+                'description' => $request->desc,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 

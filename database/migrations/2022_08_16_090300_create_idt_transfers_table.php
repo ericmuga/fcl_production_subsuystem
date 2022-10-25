@@ -23,6 +23,7 @@ class CreateIdtTransfersTable extends Migration
             $table->integer('incomplete_crate_pieces');
             $table->integer('total_pieces');
             $table->decimal('total_weight');
+            $table->string('description');
             $table->foreignId('user_id')->constrained('users');
             $table->float('receiver_total_crates')->nullable();
             $table->float('receiver_full_crates')->nullable();

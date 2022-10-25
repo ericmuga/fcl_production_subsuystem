@@ -108,31 +108,15 @@
                             <input type="number" step=".01" class="form-control" value="0" id="weight" name="weight"
                                 placeholder="">
                         </div>
-                    </div><br>
-                    {{-- <div class="row form-group">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Dispatch Receiver</label>
+                    </div>
+                    <div class="row">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Description <i>(optional)</i></label>
                         <div class="col-sm-9">
-                            <div class="row form-group">
-                                <div class="col-md-4" style="margin-top: 2%">
-                                    <input type="text" class="form-control" value="" id="username" name="username"
-                                        placeholder="username">
-                                </div>
-                                <div class="col-md-4" style="margin-top: 2%">
-                                    <input type="password" class="form-control" value="" id="password"
-                                        placeholder="Password">
-                                </div>
-                                <div class="col-md-4" style="margin-top: 2%">
-                                    <button type="button" id="validate" class="btn btn-success"><i
-                                            class="fa fa-paper-plane" aria-hidden="true"></i>
-                                        Validate</button>
-                                </div>
-                                <span class="text-danger" id="err"></span>
-                                <span class="text-success" id="succ"></span>
-                            </div>
-                            <input type="hidden" name="user_valid" id="user_valid" value="0">
+                            <input type="text" class="form-control" value="" id="desc" name="desc"
+                                placeholder="">
                         </div>
-                    </div> --}}
-                    <div class="div" style="padding-top: ">
+                    </div>
+                    <div class="div" style="padding-top: 5%">
                         <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
                             onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
                                 aria-hidden="true"></i> Save</button>
