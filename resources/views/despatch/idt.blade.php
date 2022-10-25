@@ -148,7 +148,7 @@
                     <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
                         <thead>
                             <tr>
-                                <th>#</th>
+                                <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
@@ -168,7 +168,7 @@
                         </thead>
                         <tfoot>
                             <tr>
-                                <th>#</th>
+                                <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
@@ -189,7 +189,7 @@
                         <tbody>
                             @foreach($transfer_lines as $data)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
