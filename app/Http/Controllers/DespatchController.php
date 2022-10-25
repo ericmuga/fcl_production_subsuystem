@@ -20,7 +20,12 @@ class DespatchController extends Controller
     {
         $title = "dashboard";
 
-        return view('despatch.dashboard', compact('title'));
+        $transfers = DB::table('idt_transfers')
+            ->whereDate('idt_transfers.created_at', today())
+            ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as total_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
+            ->get();
+
+        return view('despatch.dashboard', compact('title', 'transfers'));
     }
 
     public function getIdt(Helpers $helpers)

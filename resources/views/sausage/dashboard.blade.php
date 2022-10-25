@@ -15,6 +15,9 @@
 
 @section('content')
 <!-- Scanners -->
+<p class="row mb-2 ml-2">
+    <strong> Automatic Scanners Readings: </strong>
+</p>
 <div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
