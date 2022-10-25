@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-5">
-            <h1 class="m-0"> {{ $title }} |<small>Create & View <strong></strong> Transfers Lines </small></h1>
+            <h1 class="m-0"> Sausage | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small></h1>
         </div><!-- /.col -->
         <div class="col-sm-7">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
@@ -163,6 +163,7 @@
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
                                 <th>Received By</th>
+                                <th>Export No</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -181,6 +182,7 @@
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
                                 <th>Received By</th>
+                                <th>Export No</th>
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -189,7 +191,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->product }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->location_code }}</td>
@@ -200,6 +202,7 @@
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->username }}</td>
+                                <td>{{ $data->description }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
