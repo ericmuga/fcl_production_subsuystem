@@ -46,6 +46,7 @@ class DespatchController extends Controller
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
             ->orderBy('idt_transfers.created_at', 'DESC')
+            ->where('received_by', '=', null)
             ->get();
 
         return view('despatch.idt', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
