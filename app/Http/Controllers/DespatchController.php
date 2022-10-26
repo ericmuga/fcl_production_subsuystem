@@ -97,12 +97,6 @@ class DespatchController extends Controller
     {
         $title = "IDT-Report";
 
-        $items = Cache::remember('items_list', now()->addHours(10), function () {
-            return DB::table('items')
-                ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
-                ->get();
-        });
-
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
@@ -116,6 +110,22 @@ class DespatchController extends Controller
             })
             ->get();
 
-        return view('despatch.idt-report', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
+        return view('despatch.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers'));
+    }
+
+    public function idtVarianceReport()
+    {
+        $title = "IDT-Variance Report";
+
+        $variance_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->select('idt_transfers.product_code', DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), 'items.description as product')
+            ->orderBy('idt_transfers.product_code', 'ASC')
+            ->whereDate('idt_transfers.created_at', today())
+            ->having(DB::raw('SUM(idt_transfers.total_weight)'), '!=', DB::raw('SUM(idt_transfers.receiver_total_weight)'))
+            ->groupBy('idt_transfers.product_code', 'items.description')
+            ->get();
+
+        return view('despatch.idt-variance', compact('title', 'variance_lines'));
     }
 }
