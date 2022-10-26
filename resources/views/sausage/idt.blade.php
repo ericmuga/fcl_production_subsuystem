@@ -32,7 +32,7 @@
                                     <option value="">Select Product</option>
                                     @foreach($items as $tm)
                                     <option value="{{ $tm->code }}">
-                                        {{ $tm->barcode.' '.$tm->description }}
+                                        {{ $tm->code. ' ' .$tm->barcode.' '.$tm->description }}
                                     </option>
                                     @endforeach
                                 </select>
