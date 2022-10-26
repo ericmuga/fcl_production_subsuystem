@@ -149,4 +149,5 @@ Route::post('production/batch/close', [SpicesController::class, 'closeOrPostBatc
 Route::get('/despatch/dashboard', [DespatchController::class, 'index'])->name('despatch_dashboard');
 Route::get('/despatch/idt', [DespatchController::class, 'getIdt'])->name('despatch_idt');
 Route::post('/receive/idt', [DespatchController::class, 'receiveTransfer'])->name('receive_idt');
+Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtReport'])->name('despatch_idt_report');
 /*-------------End Despatch------------------ */
