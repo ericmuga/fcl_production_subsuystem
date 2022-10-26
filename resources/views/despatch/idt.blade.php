@@ -145,7 +145,7 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover" width="100%">
                         <thead>
                             <tr>
                                 <th>IDT No</th>
@@ -155,13 +155,8 @@
                                 <th>Std Unit Measure</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
-                                <th>Total Crates</th>
-                                <th>Full Crates</th>
-                                <th>Incomplete Crate Pieces</th>
-                                <th>Total Pieces</th>
-                                <th>Total Weight</th>
                                 <th>Status</th>
-                                <th>Created By</th>
+                                <th>Issued By</th>
                                 <th>Description</th>
                                 <th>Date</th>
                                 <th>Action</th>
@@ -176,11 +171,6 @@
                                 <th>Std Unit Measure</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
-                                <th>Total Crates</th>
-                                <th>Full Crates</th>
-                                <th>Incomplete Crate Pieces</th>
-                                <th>Total Pieces</th>
-                                <th>Total Weight</th>
                                 <th>Status</th>
                                 <th>Issued By</th>
                                 <th>Description</th>
@@ -198,11 +188,6 @@
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
-                                <td>{{ number_format($data->receiver_total_crates, 2) }}</td>
-                                <td>{{ number_format($data->receiver_full_crates, 2) }}</td>
-                                <td>{{ number_format($data->receiver_incomplete_crate_pieces,2) }}</td>
-                                <td>{{ number_format($data->receiver_total_pieces,2) }}</td>
-                                <td>{{ number_format($data->receiver_total_weight,2) }}</td>
                                 @if ($data->received_by == null)
                                 <td><span class="badge badge-secondary">pending</span></td>
                                 @elseif ($data->received_by != null)

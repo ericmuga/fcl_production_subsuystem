@@ -147,7 +147,7 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover" width="100%">
                         <thead>
                             <tr>
                                 <th>IDT No</th>
