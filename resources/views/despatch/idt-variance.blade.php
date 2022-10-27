@@ -22,7 +22,6 @@
                                 <th>Issued Total Weight</th>
                                 <th>Received Total Pieces</th>
                                 <th>Received Total Weight</th>
-                                <th>Date</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -34,20 +33,18 @@
                                 <th>Issued Total Weight</th>
                                 <th>Received Total Pieces</th>
                                 <th>Received Total Weight</th>
-                                <th>Date</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($variance_lines as $data)
                             <tr>
-                                <td>{{ $data->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
-                                <td>{{ $data->total_pieces }}</td>
-                                <td>{{ $data->total_weight }}</td>
+                                <td>{{ $data->issued_pieces }}</td>
+                                <td>{{ $data->issued_weight }}</td>
                                 <td>{{ number_format($data->received_pieces, 1) }}</td>
                                 <td>{{ number_format($data->received_weight, 1) }}</td>
-                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
                         </tbody>

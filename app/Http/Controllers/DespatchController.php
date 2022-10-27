@@ -122,7 +122,7 @@ class DespatchController extends Controller
             ->select('idt_transfers.product_code', DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), 'items.description as product')
             ->orderBy('idt_transfers.product_code', 'ASC')
             ->whereDate('idt_transfers.created_at', today())
-            ->having(DB::raw('SUM(idt_transfers.total_weight)'), '!=', DB::raw('SUM(idt_transfers.receiver_total_weight)'))
+            ->having(DB::raw('COALESCE(SUM(idt_transfers.total_weight), 0)'), '!=', DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0)'))
             ->groupBy('idt_transfers.product_code', 'items.description')
             ->get();
 
