@@ -128,4 +128,19 @@ class DespatchController extends Controller
 
         return view('despatch.idt-variance', compact('title', 'variance_lines'));
     }
+
+    public function idtStocksPerChiller()
+    {
+        $title = "IDT-Variance Report";
+
+        $items = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->select('idt_transfers.product_code', 'idt_transfers.location_code', DB::raw('COALESCE(SUM(idt_transfers.receiver_total_pieces), 0) as received_pieces'), DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0) as received_weight'), 'items.description as product')
+            ->orderBy('idt_transfers.product_code', 'ASC')
+            ->whereDate('idt_transfers.created_at', today())
+            ->groupBy('idt_transfers.product_code', 'items.description', 'idt_transfers.location_code')
+            ->get();
+
+        return view('despatch.idt-per-chiller', compact('title', 'items'));
+    }
 }
