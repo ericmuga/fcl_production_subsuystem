@@ -4,7 +4,8 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-5">
-            <h1 class="m-0"> Sausage | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small></h1>
+            <h1 class="m-0"> Sausage | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small>
+            </h1>
         </div><!-- /.col -->
         <div class="col-sm-7">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
@@ -96,24 +97,39 @@
             <div class="card">
                 <div class="card-body text-center form-group">
                     <div class="row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces</label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces | Weight(Kgs)</label>
                         <div class="col-sm-9">
-                            <input type="number" class="form-control" value="0" id="pieces" name="pieces"
-                                placeholder="">
-                        </div>
-                    </div><br>
-                    <div class="row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
-                        <div class="col-sm-9">
-                            <input type="number" step=".01" class="form-control" value="0" id="weight" name="weight"
-                                placeholder="">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control" value="0" id="pieces" name="pieces"
+                                        placeholder="" readonly>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="number" step=".01" class="form-control" value="0" id="weight"
+                                        name="weight" placeholder="" readonly>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Description <i>(optional)</i></label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" value="" id="desc" name="desc"
-                                placeholder="">
+                            <input type="text" class="form-control" value="" id="desc" name="desc" placeholder="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}" id="batch" name="batch" required
+                                        readonly>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control" value="" id="batch_no" name="batch_no"
+                                        required placeholder="">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="div" style="padding-top: 5%">
@@ -147,7 +163,8 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover" width="100%">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                        width="100%">
                         <thead>
                             <tr>
                                 <th>IDT No</th>
@@ -164,6 +181,7 @@
                                 <th>Total Weight</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
+                                <th>Batch No</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -183,6 +201,7 @@
                                 <th>Total Weight</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
+                                <th>Batch No</th>
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -203,6 +222,7 @@
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $data->description }}</td>
+                                <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach

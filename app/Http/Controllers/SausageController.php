@@ -282,6 +282,7 @@ class SausageController extends Controller
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
                 'description' => $request->desc,
+                'batch_no' => $request->batch. $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 

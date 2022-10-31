@@ -34,6 +34,7 @@
                                 <th>Received Total Weight</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
+                                <th>Batch No</th>
                                 <th>Date</th>
                         </thead>
                         <tfoot>
@@ -57,6 +58,7 @@
                                 <th>Received Total Weight</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
+                                <th>Batch No</th>
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -82,6 +84,7 @@
                                 <td>{{ number_format($data->receiver_total_weight, 1) }}</td>
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $data->description }}</td>
+                                <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach

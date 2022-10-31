@@ -282,4 +282,12 @@ class Helpers
         $optimize = Artisan::call('optimize');
         $view = Artisan::call('view:cache');
     }
+
+    public function generateIdtBatch()
+    {
+        $alphas = 'abcdefghijklmnopqrstuvwxyz';
+        $batch_month = (int)date('m');
+        
+        return date('d'). strtoupper(mb_substr($alphas, $batch_month, 1));
+    }
 }
