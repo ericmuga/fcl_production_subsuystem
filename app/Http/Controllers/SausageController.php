@@ -274,7 +274,7 @@ class SausageController extends Controller
             // try save
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product,
-                'location_code' => $request->location_code,
+                'location_code' => $request->for_export? :$request->location_code,
                 'chiller_code' => $request->chiller_code,
                 'total_crates' => $request->total_crates,
                 'full_crates' => $request->full_crates,

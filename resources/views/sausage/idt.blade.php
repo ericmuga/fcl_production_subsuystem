@@ -62,10 +62,20 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
-                            <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
-                                required>
-                                <option value="">Select chiller</option>
-                            </select>
+                            <div class="row form-group">
+                                <div class="col-md-7">
+                                    <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
+                                        required>
+                                        <option value="">Select chiller</option>
+                                    </select>
+                                </div>
+                                <div class="mt-2 col-md-5">
+                                    <div class="custom-control custom-switch">
+                                        <input type="checkbox" class="custom-control-input" id="for_export" name="for_export" value="3600">
+                                        <label class="custom-control-label" for="for_export">For Export?</label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div><br>
                     <div class="row">
@@ -122,8 +132,8 @@
                         <div class="col-sm-9">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}" id="batch" name="batch" required
-                                        readonly>
+                                    <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}"
+                                        id="batch" name="batch" required readonly>
                                 </div>
                                 <div class="col-sm-6">
                                     <input type="number" class="form-control" value="" id="batch_no" name="batch_no"
@@ -349,7 +359,7 @@
                     $.each(res.data, function (key, value) {
                         $(".locations").append($("<option></option>").attr("value", value
                                 .chiller_code)
-                            .text(value.description));
+                            .text(value.location_code + ' ' + value.description));
                     });
                 }
             })
