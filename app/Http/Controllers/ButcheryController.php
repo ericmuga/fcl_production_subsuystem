@@ -391,7 +391,7 @@ class ButcheryController extends Controller
         try {
             // update
             DB::transaction(function () use ($request, $helpers) {
-                DB::table('transfers')
+                DB::table('butchery_transfers')
                     ->where('id', $request->item_id)
                     ->update([
                         'item_code' => $request->edit_carcass,
@@ -400,7 +400,7 @@ class ButcheryController extends Controller
                         'updated_at' => Carbon::now(),
                     ]);
 
-                $helpers->insertChangeDataLogs('transfers', $request->item_id, '3');
+                $helpers->insertChangeDataLogs('butchery_transfers', $request->item_id, '3');
             });
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
@@ -570,7 +570,7 @@ class ButcheryController extends Controller
 
             if ($request->for_transfer == 'on') {
                 # transfers
-                DB::table('transfers')->insert([
+                DB::table('butchery_transfers')->insert([
                     'item_code' => $item_code,
                     'actual_weight' => $request->reading,
                     'net_weight' => $request->net,
@@ -1073,7 +1073,7 @@ class ButcheryController extends Controller
             ->select('id', 'code', 'description')
             ->get();
 
-        $transfers_data = DB::table('transfers')
+        $transfers_data = DB::table('butchery_transfers')
             ->leftJoin('products', 'transfers.item_code', '=', 'products.code')
             ->select('transfers.*', 'products.description')
             ->orderBy('created_at', 'DESC')

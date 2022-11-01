@@ -6,13 +6,15 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Despatch Production Registry | showing <strong>{{ $filter }}</strong> Entries</h3>
+                <h3 class="card-title">Despatch Production Registry | showing <strong>{{ $filter }}</strong> of all
+                    <strong>last 7</strong> Days Entries</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="hidden" hidden>{{ $i = 1 }}</div>
                 <div class="table-responsive">
-                    <table id="example1" class="table table-striped table-bordered table-hover" style="scroll-behavior: smooth;">
+                    <table id="example1" class="table table-striped table-bordered table-hover"
+                        style="scroll-behavior: smooth;">
                         <thead>
                             <tr>
                                 <th>IDT No</th>
@@ -36,6 +38,7 @@
                                 <th>Export No</th>
                                 <th>Batch No</th>
                                 <th>Date</th>
+                                <th>Action</th>
                         </thead>
                         <tfoot>
                             <tr>
@@ -60,6 +63,7 @@
                                 <th>Export No</th>
                                 <th>Batch No</th>
                                 <th>Date</th>
+                                <th>Action</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -86,6 +90,16 @@
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>
+                                    <button type="button" data-id="{{$data->id}}"
+                                        data-product="{{ $data->product_code }}"
+                                        data-unit_count="{{ $data->unit_count_per_crate }}"
+                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}"
+                                        data-item="{{ $data->product }}" class="btn btn-warning btn-xs"
+                                        title="Receive transfer" id="despatchReceiveModalShow"><i
+                                            class="fa fa-check"></i>
+                                    </button>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -99,4 +113,3 @@
     <!-- /.col -->
 </div>
 @endsection
-
