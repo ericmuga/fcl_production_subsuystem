@@ -95,14 +95,14 @@
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces</label>
                                     <div class="col-sm-9">
-                                        <input type="number" class="form-control" value="0" id="pieces" name="pieces"
+                                        <input type="number" readonly class="form-control" value="0" id="pieces" name="pieces"
                                             placeholder="">
                                     </div>
                                 </div><br>
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
                                     <div class="col-sm-9">
-                                        <input type="number" step=".01" class="form-control" value="0" id="weight"
+                                        <input type="number" readonly step=".01" class="form-control" value="0" id="weight"
                                             name="weight" placeholder="">
                                     </div>
                                 </div>
@@ -159,7 +159,7 @@
                                 <th>Issued By</th>
                                 <th>Description</th>
                                 <th>Batch No</th>
-                                <th>Date</th>
+                                <th>Issue Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -176,7 +176,7 @@
                                 <th>Issued By</th>
                                 <th>Description</th>
                                 <th>Batch No</th>
-                                <th>Date</th>
+                                <th>Issue Date</th>
                                 <th>Action</th>
                             </tr>
                         </tfoot>

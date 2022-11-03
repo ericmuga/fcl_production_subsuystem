@@ -422,7 +422,6 @@
     }
 
     const validateCrates = () => {
-        console.log('validating crates')
         let crate_unit_count = $('#unit_crate_count').val()
         let incomplete_pieces = $('#incomplete_pieces').val()
 

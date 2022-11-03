@@ -6,7 +6,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Despatch vs Sausage Variance Report | showing <strong>All</strong> Entries</h3> 
+                <h3 class="card-title">Despatch vs Sausage Variance Report | showing <strong>All</strong> Entries <strong>Grouped per Product</strong></h3> 
             </div>
             <!-- /.card-header -->
             <div class="card-body">
