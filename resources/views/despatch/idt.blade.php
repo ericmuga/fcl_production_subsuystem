@@ -22,9 +22,8 @@
                                     <div class="row">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control" value=""
-                                                id="item" placeholder=""
-                                                name="item" readonly>
+                                            <input type="text" readonly class="form-control" value="" id="item"
+                                                placeholder="" name="item" readonly>
                                             <input type="hidden" name="product" id="product" value="">
                                             <input type="hidden" name="item_id" id="item_id" value="">
                                         </div>
@@ -88,6 +87,9 @@
                                 <span class="text-danger" id="err1"></span>
                                 <span class="text-success" id="succ1"></span>
                                 <input type="hidden" name="crates_valid" id="crates_valid" value="0">
+                                <input type="hidden" id="issued_pieces" value="0">
+                                <input type="hidden" id="issued_weight" value="0">
+                                <input type="hidden" id="valid_match" name="valid_match" value="1">
                             </div>
                         </div>
                         <div class="card">
@@ -95,22 +97,17 @@
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces</label>
                                     <div class="col-sm-9">
-                                        <input type="number" readonly class="form-control" value="0" id="pieces" name="pieces"
-                                            placeholder="">
+                                        <input type="number" readonly class="form-control" value="0" id="pieces"
+                                            name="pieces" placeholder="">
                                     </div>
                                 </div><br>
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
                                     <div class="col-sm-9">
-                                        <input type="number" readonly step=".01" class="form-control" value="0" id="weight"
-                                            name="weight" placeholder="">
+                                        <input type="number" readonly step=".01" class="form-control" value="0"
+                                            id="weight" name="weight" placeholder="">
                                     </div>
                                 </div>
-                                {{-- <div class="div" style="padding-top: ">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
-                                        onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
-                                            aria-hidden="true"></i> Save</button>
-                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -121,15 +118,15 @@
                         onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
                             aria-hidden="true"></i> Save</button>
                 </div>
-            </div>
-        </form>
-        <div id="loading" class="collapse">
-            <div class="row d-flex justify-content-center">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
+                <div id="loading" class="collapse">
+                    <div class="row d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
     </div>
 </div>
 
@@ -145,7 +142,8 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover" width="100%">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                        width="100%">
                         <thead>
                             <tr>
                                 <th>IDT No</th>
@@ -196,11 +194,16 @@
                                 <td><span class="badge badge-success">received</span></td>
                                 @endif
                                 <td>{{ $data->username }}</td>
-                                <td>{{ $data->description }}</td>                                
+                                <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 @if ($data->received_by == null)
-                                <td><button type="button" data-id="{{$data->id}}" data-product="{{ $data->product_code }}" data-unit_count="{{ $data->unit_count_per_crate }}" data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}" data-item="{{ $data->product }}" class="btn btn-warning btn-xs"
+                                <td><button type="button" data-id="{{$data->id}}"
+                                        data-product="{{ $data->product_code }}"
+                                        data-unit_count="{{ $data->unit_count_per_crate }}"
+                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}"
+                                        data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
+                                        data-total_weight="{{ $data->total_weight }}" class="btn btn-warning btn-xs"
                                         title="Receive transfer" id="despatchReceiveModalShow"><i
                                             class="fa fa-check"></i>
                                     </button>
@@ -251,12 +254,16 @@
             let item = $(this).data('item');
             let unit_count = $(this).data('unit_count');
             let unit_measure = $(this).data('unit_measure');
+            let issued_pieces = $(this).data('total_pieces');
+            let issued_weight = $(this).data('total_weight');
 
             $('#item_id').val(id);
-            $('#product').val(code);//item_code
-            $('#item').val(item);//item
+            $('#product').val(code); //item_code
+            $('#item').val(item); //item
             $('#unit_crate_count').val(unit_count);
             $('#unit_measure').val(unit_measure);
+            $('#issued_pieces').val(issued_pieces);
+            $('#issued_weight').val(issued_weight);
 
             $('#despatchReceiveModal').modal('show');
         });
@@ -272,6 +279,9 @@
         let pieces = $('#pieces').val();
         let weight = $('#weight').val();
 
+        let issued_pieces = $('#issued_pieces').val();
+        let issued_weight = $('#issued_weight').val();
+
         let crates_validity = $("#crates_valid").val();
 
         if (crates_validity == 0) {
@@ -284,6 +294,16 @@
         } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
             status = false
             alert("please ensure the pieces and weight have a value of more than zero")
+        } else if (parseInt(issued_pieces) != parseInt(pieces) || parseFloat(issued_weight) != parseFloat(weight)) {
+            const response = confirm("Issued does not match Receiving Qty. Are you sure you want to continue?");
+
+            if (response) {
+                setMatchValidity(0)
+                alert("Thanks for confirming");
+            } else {
+                status = false
+                alert("You have cancelled this process");
+            }
         }
 
         return status
@@ -387,6 +407,10 @@
 
     const setCratesValidity = (status) => {
         $("#crates_valid").val(status);
+    }
+
+    const setMatchValidity = (status) => {
+        $("#valid_match").val(status);
     }
 
 </script>

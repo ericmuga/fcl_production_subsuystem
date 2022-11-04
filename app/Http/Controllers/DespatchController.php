@@ -80,6 +80,7 @@ class DespatchController extends Controller
                     'receiver_total_pieces' => $request->pieces,
                     'receiver_total_weight' => $request->weight,
                     'received_by' => $helpers->authenticatedUserId(),
+                    'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
 

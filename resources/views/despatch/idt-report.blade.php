@@ -13,8 +13,8 @@
             <div class="card-body">
                 <div class="hidden" hidden>{{ $i = 1 }}</div>
                 <div class="table-responsive">
-                    <table id="example1" class="table table-striped table-bordered table-hover"
-                        style="scroll-behavior: smooth;">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                        width="100%">
                         <thead>
                             <tr>
                                 <th>IDT No</th>
@@ -34,6 +34,7 @@
                                 <th>Received Incomplete Crate Pieces</th> --}}
                                 <th>Received Total Pieces</th>
                                 <th>Received Total Weight</th>
+                                <th>Flagged Variance?</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
@@ -60,6 +61,7 @@
                                 <th>Received Incomplete Crate Pieces</th> --}}
                                 <th>Received Total Pieces</th>
                                 <th>Received Total Weight</th>
+                                <th>Flagged Variance?</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
@@ -88,6 +90,13 @@
                                 <td>{{ number_format($data->receiver_incomplete_crate_pieces, 1) }}</td> --}}
                                 <td>{{ number_format($data->receiver_total_pieces, 1) }}</td>
                                 <td>{{ number_format($data->receiver_total_weight, 1) }}</td>
+
+                                @if ($data->with_variance == false)
+                                <td><span class="badge badge-warning">Yes</span></td>
+                                @else
+                                <td></td>
+                                @endif
+
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
@@ -256,8 +265,8 @@
             let unit_measure = $(this).data('unit_measure');
 
             $('#item_id').val(id);
-            $('#product').val(code);//item_code
-            $('#item').val(item);//item
+            $('#product').val(code); //item_code
+            $('#item').val(item); //item
             $('#unit_crate_count').val(unit_count);
             $('#unit_measure').val(unit_measure);
 
