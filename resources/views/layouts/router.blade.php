@@ -111,7 +111,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                                 <div class="card p-2 bg-dark" style="height: 200px">
                                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                                         href="{{ route('sausage_dashboard') }}">
-                                        <h4 class="card-title">Sausage Scanners</h4>
+                                        <h4 class="card-title">Sausage</h4>
                                         <p class="card-text">Select this option to switch to Sausage Section.
                                         </p>
                                     </a>

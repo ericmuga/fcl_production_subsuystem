@@ -92,9 +92,9 @@
                                 <td>{{ number_format($data->receiver_total_weight, 1) }}</td>
 
                                 @if ($data->with_variance == false)
-                                <td><span class="badge badge-warning">Yes</span></td>
+                                <td><span class="badge badge-success">No</span></td>
                                 @else
-                                <td></td>
+                                <td><td><span class="badge badge-warning">Yes</span></td></td>
                                 @endif
 
                                 <td>{{ $data->username }}</td>
