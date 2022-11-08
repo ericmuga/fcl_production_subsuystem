@@ -54,6 +54,7 @@ class DespatchController extends Controller
 
     public function receiveTransfer(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'crates_valid' => 'required|boolean',
             'item_id' => 'required'
