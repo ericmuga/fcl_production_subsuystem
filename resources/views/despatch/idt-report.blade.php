@@ -94,7 +94,7 @@
                                 @if ($data->with_variance == false)
                                 <td><span class="badge badge-success">No</span></td>
                                 @else
-                                <td><td><span class="badge badge-warning">Yes</span></td></td>
+                                <td><span class="badge badge-warning">Yes</span></td>
                                 @endif
 
                                 <td>{{ $data->username }}</td>
