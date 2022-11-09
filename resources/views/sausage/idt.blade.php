@@ -189,7 +189,6 @@
                                 <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
-                                <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
                                 <th>Date</th>
@@ -209,7 +208,6 @@
                                 <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
-                                <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
                                 <th>Date</th>
@@ -230,7 +228,6 @@
                                 <td>{{ $data->incomplete_crate_pieces }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
-                                <td>{{ $data->username }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>

@@ -7,7 +7,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Despatch Production Registry | showing <strong>{{ $filter }}</strong> of all
-                    <strong>last 7</strong> Days Entries</h3>
+                    <strong>last 30</strong> Days Entries</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">

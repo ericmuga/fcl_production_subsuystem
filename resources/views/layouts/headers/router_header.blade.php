@@ -20,10 +20,27 @@
                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-user-circle"></i> {{ Session::get('session_userName') }}
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
-                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i
+                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                     <li>
+                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i> Switch
+                            Interphase
+                        </a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    @if (Session::get('session_role') == 'admin')                        
+                        <li>
+                            <a href="{{ route('users') }}" class="dropdown-item"><i class="fas fa-cog"></i> User Setup
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                    @else
+                        
+                    @endif                    
+                    <li>
+                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i
                             class="fas fa-sign-out-alt"></i> Logout</a>
-                </div>
+                    </li>
+                </ul>
             </li>
         </ul>
     </div>

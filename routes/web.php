@@ -34,9 +34,8 @@ Route::get('/', [LoginController::class, 'getLogin'])->name('login');
 Route::post('/', [LoginController::class, 'processlogin'])->name('process_login');
 Route::get('/redirecting', [LoginController::class, 'getSectionRedirect'])->name('redirect_page');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
-
+Route::get('/users', [LoginController::class, 'users'])->name('users');
 /*-------------End auth------------------ */
-
 
 /*-------------Slaughter------------------ */
 Route::get('/slaughter/dashboard', [SlaughterController::class, 'index'])->name('slaughter_dashboard');
@@ -153,3 +152,4 @@ Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtRep
 Route::get('/despatch/idt-variance', [DespatchController::class, 'idtVarianceReport'])->name('despatch_idt_variance');
 Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPerChiller'])->name('despatch_idt_per_chiller');
 /*-------------End Despatch------------------ */
+

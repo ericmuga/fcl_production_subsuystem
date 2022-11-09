@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -115,5 +116,14 @@ class LoginController extends Controller
         Session::flush();
         Toastr::success('Successful logout', 'Success');
         return redirect()->route('login');
+    }
+
+    public function users(Helpers $helpers)
+    {
+        $title = "Users";
+
+        $users = DB::table('users')->get();
+
+        return view('users.users', compact('title', 'users', 'helpers'));
     }
 }
