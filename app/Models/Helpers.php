@@ -215,7 +215,7 @@ class Helpers
             DB::table('users')->insert([
                 'username' => $username,
                 'email' => strtolower($username) . "@farmerschoice.co.ke",
-                'section' => 'user',
+                'role' => 'user',
             ]);
             return 1;
         } catch (\Exception $e) {

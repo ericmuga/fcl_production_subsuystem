@@ -17,7 +17,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check', ['only' => ['getSectionRedirect', 'getLogout']]);
+        $this->middleware('session_check', ['only' => ['getSectionRedirect', 'getLogout', 'users', 'updateUser']]);
     }
 
     public function getLogin()
@@ -124,6 +124,39 @@ class LoginController extends Controller
 
         $users = DB::table('users')->get();
 
-        return view('users.users', compact('title', 'users', 'helpers'));
+        $permissions = Cache::remember('permissions', now()->addHours(10), function () {
+            return DB::table('permissions')
+                ->select('code', 'permission')
+                ->get();
+        });
+
+        return view('users.users', compact('title', 'users', 'helpers', 'permissions'));
+    }
+
+    public function updateUser(Request $request)
+    {
+        // dd($request->all());
+        try {
+            //update
+            DB::transaction(function () use ($request) {
+                // delete existing permissions of same user
+                DB::table('user_permissions')
+                    ->where('id', $request->user_id)
+                    ->delete();
+                
+                foreach ($request->permission_code as $code) {
+                    DB::table('user_permissions')->insert(
+                        [
+                            'user_id' => $request->user_id,
+                            'permission_code' => $code
+                        ]);
+                }
+            });
+            Toastr::success('User permissions for '.$request->editname.' updated successfully', 'Success');
+            return back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
     }
 }

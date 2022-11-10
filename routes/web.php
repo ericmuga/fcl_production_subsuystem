@@ -35,6 +35,7 @@ Route::post('/', [LoginController::class, 'processlogin'])->name('process_login'
 Route::get('/redirecting', [LoginController::class, 'getSectionRedirect'])->name('redirect_page');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
 Route::get('/users', [LoginController::class, 'users'])->name('users');
+Route::post('/user/update', [LoginController::class, 'updateUser'])->name('update_user');
 /*-------------End auth------------------ */
 
 /*-------------Slaughter------------------ */

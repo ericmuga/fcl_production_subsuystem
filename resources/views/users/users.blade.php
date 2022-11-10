@@ -34,11 +34,10 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ ucwords($data->username) }}</td>
                                 <td>{{ $data->email }}</td>
-                                <td>{{ $data->role }}</td>
+                                <td>{{ $data->role? :"user" }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 <td>
-                                    <button type="button" data-id="{{$data->id}}" data-name="{{$data->username}}"
-                                        data-role="{{ $data->role }}" class="btn btn-info btn-xs" id="editUserModalShow"
+                                    <button type="button" data-id="{{$data->id}}" data-name="{{$data->username}}" class="btn btn-info btn-xs" id="editUserModalShow"
                                         data-toggle="tooltip" title="edit"><i class="fas fa-edit"></i>
                                     </button>
                                 </td>
@@ -58,24 +57,43 @@
 <div id="editUserModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <form id="form-user-update" class="form-horizontal form-prevent-multiple-submits"
-            action="" method="post">
+            action="{{ route('update_user') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="card">
                     <div class="modal-header">
-                        <h5 class="login-box-msg">Edit User: <strong><input style="border:none" type="text"
-                                    id="item_name" name="item_name" value="" readonly></strong></h5>
+                        <h5 class="login-box-msg">User Permissions Setup</h5>
                     </div>
                     <div class="card-body register-card-body">
                         <div class="modal-body">
                             <div class="form-group row">
                                 <label for="email" class="col-form-label">Username</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control input_checks" name="editname" id="editname"
+                                    <input type="text" class="form-control input_checks" name="editname" id="editname" readonly
                                         required>
                                 </div>
                             </div>
                             <input type="hidden" name="user_id" id="user_id" value="">
+                        </div>
+                        <div class="form-group">
+                            <h5>User Permissions: <code>**select section permissions for access</code></h5><hr>
+                            <div id="loading" class="collapse">
+                                <div class="row d-flex justify-content-center">
+                                    <div class="spinner-border" role="status">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                @foreach($permissions as $p)
+                                <div class="col-md-4">
+                                    <label class="checkbox-inline">
+                                        <input class="check_group" type="checkbox" id="permission_code"
+                                            name="permission_code[]" value="{{ $p->code }}"> {{ $p->permission }}
+                                    </label>
+                                </div>
+                                @endforeach                              
+                            </div>
                         </div>
                         <div class="modal-footer">
                             <div class="form-group">
