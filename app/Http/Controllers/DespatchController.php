@@ -45,6 +45,7 @@ class DespatchController extends Controller
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
+            ->orWhereDate('idt_transfers.created_at', '2022-11-07')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('received_by', '=', null)
             ->get();

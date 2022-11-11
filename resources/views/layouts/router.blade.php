@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-{{-- <div class="row">
+<div class="row">
     <div class="container-fluid">
         <div class="card-deck-wrapper">
             <div class="card-deck">
@@ -93,9 +93,9 @@
             </div>
         </div>
     </div>
-</div> --}}
+</div>
 
-<div class="container-fluid">
+{{-- <div class="container-fluid">
     @foreach ($user_permissions as $p )
 
     <a href="{{ route($p->route) }}">
@@ -115,5 +115,5 @@
     </a>
 
     @endforeach
-</div>
+</div> --}}
 @endsection
