@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-<div class="row">
+{{-- <div class="row">
     <div class="container-fluid">
         <div class="card-deck-wrapper">
             <div class="card-deck">
@@ -93,9 +93,13 @@
             </div>
         </div>
     </div>
-</div>
+</div> --}}
 
-{{-- <div class="container-fluid">
+<div class="container-fluid">
+    @empty($user_permissions)  
+        <h1 class="bg-info text-white p-1 text-center">Please Note you do not have Any permission set..Please call IT for setup</h1>  
+        
+    @else
     @foreach ($user_permissions as $p )
 
     <a href="{{ route($p->route) }}">
@@ -115,5 +119,7 @@
     </a>
 
     @endforeach
-</div> --}}
+        
+    @endif
+</div>
 @endsection
