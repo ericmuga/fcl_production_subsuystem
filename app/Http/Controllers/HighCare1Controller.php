@@ -13,6 +13,6 @@ class HighCare1Controller extends Controller
 
     public function index()
     {
-        return "This Section is still in development Mode";
+        return "<h1>This Section is still in development Mode</h1>";
     }
 }
