@@ -4,6 +4,8 @@ use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
 use App\Http\Controllers\Despatch;
 use App\Http\Controllers\DespatchController;
+use App\Http\Controllers\HighCare1Controller;
+use App\Http\Controllers\HighCare2Controller;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\SausageController;
@@ -154,3 +156,10 @@ Route::get('/despatch/idt-variance', [DespatchController::class, 'idtVarianceRep
 Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPerChiller'])->name('despatch_idt_per_chiller');
 /*-------------End Despatch------------------ */
 
+/*-------------Start HighCare1------------------ */
+Route::get('/highcare1/dashboard', [HighCare1Controller::class, 'index'])->name('highcare1_dashboard');
+/*-------------End HighCare1------------------ */
+
+/*-------------Start HighCare2------------------ */
+Route::get('/highcare2/dashboard', [HighCare2Controller::class, 'index'])->name('highcare2_dashboard');
+/*-------------End HighCare2------------------ */

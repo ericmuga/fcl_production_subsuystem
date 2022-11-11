@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class HighCare1Controller extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('session_check')->except([]);
+    }
+
+    public function index()
+    {
+        return "This Section is still in development Mode";
+    }
+}

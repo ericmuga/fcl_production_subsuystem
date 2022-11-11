@@ -17,6 +17,10 @@ class CreatePermissionsTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->string('permission');
+            $table->string('route');
+            $table->string('bg_color');
+            $table->string('icon_tag');
+            $table->tinyInteger('active');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

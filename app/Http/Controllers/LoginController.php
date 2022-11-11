@@ -102,13 +102,20 @@ class LoginController extends Controller
 
         # Redirecting
         Toastr::success('Successful login', 'Success');
-        return redirect()->route('redirect_page');
+        return $this->getSectionRedirect();
     }
 
     public function getSectionRedirect()
     {
         $title = "Redirecting";
-        return view('layouts.router', compact('title'));
+
+        $user_permissions = DB::table('user_permissions')
+            ->join('permissions', 'user_permissions.permission_code', '=', 'permissions.code')
+            ->where('user_permissions.user_id', Session::get('session_userId'))
+            ->select('permissions.*')
+            ->get();
+
+        return view('layouts.router', compact('title', 'user_permissions'));
     }
 
     public function getLogout()
@@ -124,7 +131,7 @@ class LoginController extends Controller
 
         $users = DB::table('users')->get();
 
-        $permissions = Cache::remember('permissions', now()->addHours(10), function () {
+        $permissions = Cache::remember('permissions_list', now()->addHours(10), function () {
             return DB::table('permissions')
                 ->select('code', 'permission')
                 ->get();
