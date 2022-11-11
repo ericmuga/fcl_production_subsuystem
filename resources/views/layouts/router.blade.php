@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('content')
-{{-- <div class="row">
+<div class="row">
     <div class="container-fluid">
         <div class="card-deck-wrapper">
             <div class="card-deck">
@@ -93,33 +93,34 @@
             </div>
         </div>
     </div>
-</div> --}}
+</div>
 
-<div class="container-fluid">
-    @empty($user_permissions)  
-        <h1 class="bg-info text-white p-1 text-center">Please Note you do not have Any permission set..Please call IT for setup</h1>  
-        
+{{-- <div class="container-fluid">
+    @empty($user_permissions)
+    <h1 class="bg-info text-white p-1 text-center">Please Note you do not have Any permission set..Please call IT for
+        setup</h1>
+
     @else
     @foreach ($user_permissions as $p )
 
     <a href="{{ route($p->route) }}">
-        <div class=" card-deck-wrapper">
-            <div class="card-deck" style="width: 50%; margin-left: 25%">
-                <!-- Info Boxes Style 2 -->
-                <div class="info-box mb-3 {{ $p->bg_color }}">
-                    <span class="info-box-icon"><i class="{{ $p->icon_tag }}" aria-hidden="true"></i></span>
+<div class=" card-deck-wrapper">
+    <div class="card-deck" style="width: 50%; margin-left: 25%">
+        <!-- Info Boxes Style 2 -->
+        <div class="info-box mb-3 {{ $p->bg_color }}">
+            <span class="info-box-icon"><i class="{{ $p->icon_tag }}" aria-hidden="true"></i></span>
 
-                    <div class="info-box-content">
-                        <span class="info-box-text">{{ $p->permission }} Section</span>
-                    </div>
-                    <!-- /.info-box-content -->
-                </div>
+            <div class="info-box-content">
+                <span class="info-box-text">{{ $p->permission }} Section</span>
             </div>
+            <!-- /.info-box-content -->
         </div>
-    </a>
-
-    @endforeach
-        
-    @endif
+    </div>
 </div>
-@endsection
+</a>
+
+@endforeach
+
+@endif
+</div>
+@endsection --}}
