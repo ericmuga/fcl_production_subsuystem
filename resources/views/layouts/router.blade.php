@@ -104,23 +104,25 @@
     @foreach ($user_permissions as $p )
 
     <a href="{{ route($p->route) }}">
-<div class=" card-deck-wrapper">
-    <div class="card-deck" style="width: 50%; margin-left: 25%">
-        <!-- Info Boxes Style 2 -->
-        <div class="info-box mb-3 {{ $p->bg_color }}">
-            <span class="info-box-icon"><i class="{{ $p->icon_tag }}" aria-hidden="true"></i></span>
+        <div class=" card-deck-wrapper">
+            <div class="card-deck" style="width: 50%; margin-left: 25%">
+                <!-- Info Boxes Style 2 -->
+                <div class="info-box mb-3 {{ $p->bg_color }}">
+                    <span class="info-box-icon"><i class="{{ $p->icon_tag }}" aria-hidden="true"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">{{ $p->permission }} Section</span>
+                    <div class="info-box-content">
+                        <span class="info-box-text">{{ $p->permission }} Section</span>
+                    </div>
+                    <!-- /.info-box-content -->
+                </div>
             </div>
-            <!-- /.info-box-content -->
         </div>
-    </div>
-</div>
-</a>
+    </a>
 
-@endforeach
+    @endforeach
 
-@endif
-</div>
-@endsection --}}
+    @endif
+</div> --}}
+
+
+@endsection
