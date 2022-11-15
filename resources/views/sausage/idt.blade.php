@@ -42,7 +42,7 @@
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control input_params" value="0"
+                                <input type="number" readonly class="form-control input_params crates" value="0"
                                     id="unit_crate_count" name="unit_crate_count" placeholder=""
                                     name="unit_crate_count">
                             </div>
@@ -63,17 +63,22 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
                             <div class="row form-group">
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
                                         required>
                                         <option value="">Select chiller</option>
                                     </select>
                                 </div>
-                                <div class="mt-2 col-md-5">
-                                    <div class="custom-control custom-switch">
+                                <div class=" col-md-6">
+                                    {{-- <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="for_export" name="for_export" value="3600">
                                         <label class="custom-control-label" for="for_export">For Export?</label>
-                                    </div>
+                                    </div> --}}
+                                    <select class="form-control select2" name="for_export" id="for_export" required>
+                                        <option value="" selected disabled>Transfer Type </option>
+                                        <option value="0"> Local</option>
+                                        <option value="1"> Export</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -262,7 +267,11 @@
             loadProductDetails(product_code);
         });
 
-        $('.crates').keyup(function () {
+        $('#for_export').on("change", function () {
+            validateExportUnitCount()
+        })
+
+        $('.crates').on("keyup change", function () {
             validateCrates()
         })
 
@@ -270,6 +279,20 @@
             validateUser()
         });
     });
+
+    const validateExportUnitCount = () => {
+        let transfer_type = $('#for_export').val()
+        let product_code = $('#product').val()
+
+        if(product_code !='' && transfer_type == 1 && product_code == 'J31015601') {
+            //safari beef sausage 500gms
+            $('#unit_crate_count').val(40) 
+        } else if (transfer_type == 0 && product_code == 'J31015601') {
+            $('#unit_crate_count').val(45) 
+        }
+
+        calculatePiecesAndWeight()  
+    }
 
     const validateOnSubmit = () => {
         let status = true
@@ -443,13 +466,14 @@
             } else {
                 setCratesValidity(1)
                 setCratesValidityMessage('succ1', 'err1', '', '')
-                calculatePiecesAndWeight(full_crates)
+                calculatePiecesAndWeight()
             }
         }
 
     }
 
-    const calculatePiecesAndWeight = (full_crates) => {
+    const calculatePiecesAndWeight = () => {
+        let full_crates = $('#full_crates').val()
         let crate_unit_count = $('#unit_crate_count').val()
         let incomplete_pieces = $('#incomplete_pieces').val()
         let unit_measure = $('#unit_measure').val()

@@ -254,6 +254,16 @@ class SausageController extends Controller
         return response()->json($status);
     }
 
+    private function getLocationCode($export_status, $location_code)
+    {
+        $location = $location_code;
+
+        if($export_status == 1){
+             $location = 3600;
+        }
+        return $location;
+    } 
+
     public function saveTransfer(Request $request, Helpers $helpers)
     {
         // dd($request->all());
@@ -274,7 +284,7 @@ class SausageController extends Controller
             // try save
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product,
-                'location_code' => $request->for_export? :$request->location_code,
+                'location_code' => $this->getLocationCode($request->for_export, $request->location_code),
                 'chiller_code' => $request->chiller_code,
                 'total_crates' => $request->total_crates,
                 'full_crates' => $request->full_crates,
