@@ -1074,10 +1074,10 @@ class ButcheryController extends Controller
             ->get();
 
         $transfers_data = DB::table('butchery_transfers')
-            ->leftJoin('products', 'transfers.item_code', '=', 'products.code')
-            ->select('transfers.*', 'products.description')
+            ->leftJoin('products', 'butchery_transfers.item_code', '=', 'products.code')
+            ->select('butchery_transfers.*', 'products.description')
             ->orderBy('created_at', 'DESC')
-            ->where('transfers.created_at', '>=', today()->subDays(7))
+            ->where('butchery_transfers.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.transfers', compact('title', 'transfers_data', 'products_list', 'helpers'));

@@ -70,7 +70,7 @@
                     </div>
                 </div>
                 <div class="card p-2 bg-primary" style="height: 200px">
-                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link" href="#">
+                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link" href="{{ route('highcare1_dashboard') }}">
                         <h4 class="card-title">High Care</h4>
                         <p class="card-text">Select this option to switch to High Care interface.
                         </p>
