@@ -253,6 +253,8 @@ Session::get('session_userName') == 'EMuga')
     }
 
     const loadProductProcesses = (prod_id, prod_type) => {
+        $(".check_group").prop("checked", false);
+
         $('#loading').collapse('show'); 
 
         const url = '/products/processes_ajax/edit'
@@ -267,7 +269,7 @@ Session::get('session_userName') == 'EMuga')
                 $('#loading').collapse('hide'); 
 
                 let data = response.data
-                $(".check_group").prop("checked", false);
+                
                 data.forEach(element => {
 
                     $("input[type=checkbox][value=" + element.process_code + "]").prop("checked", true);

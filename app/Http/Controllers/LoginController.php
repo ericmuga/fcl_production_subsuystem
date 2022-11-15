@@ -17,7 +17,7 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check', ['only' => ['getSectionRedirect', 'getLogout', 'users', 'updateUser']]);
+        $this->middleware('session_check', ['only' => ['getSectionRedirect', 'getLogout', 'users', 'updateUser', 'getUserPermissionsAxios']]);
     }
 
     public function getLogin()
@@ -138,6 +138,16 @@ class LoginController extends Controller
         });
 
         return view('users.users', compact('title', 'users', 'helpers', 'permissions'));
+    }
+
+    public function getUserPermissionsAxios(Request $request)
+    {
+        $permissions = DB::table('user_permissions')
+            ->select('permission_code')
+            ->where('user_id', $request->user_id)
+            ->get()->toArray();
+
+        return response()->json($permissions);
     }
 
     public function updateUser(Request $request)

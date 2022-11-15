@@ -135,7 +135,40 @@
             $('#editUserModal').modal('show');
         });
 
+        $('#editUserModal').on('shown.bs.modal', function () {
+            let user_id = $('#user_id').val()
+            loadUserPermissions(user_id)
+        });
+
     });
+
+    const loadUserPermissions = (user_id) => {
+        $(".check_group").prop("checked", false);
+        
+        $('#loading').collapse('show'); 
+
+        const url = '/user/permissions_axios/edit'
+
+        const request_data = {
+            user_id: user_id,
+        }
+
+        return axios.post(url, request_data)
+            .then((response) => {
+                $('#loading').collapse('hide'); 
+
+                let data = response.data
+                
+                data.forEach(element => {
+
+                    $("input[type=checkbox][value=" + element.permission_code + "]").prop("checked", true);
+
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
 
 </script>
 @endsection
