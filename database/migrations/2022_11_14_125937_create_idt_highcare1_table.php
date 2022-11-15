@@ -15,7 +15,7 @@ class CreateIdtHighcare1Table extends Migration
     {
         Schema::create('idt_highcare1', function (Blueprint $table) {
             $table->id();
-            $$table->string('product_code');
+            $table->string('product_code');
             $table->string('location_code');
             $table->string('chiller_code');
             $table->integer('total_crates');
