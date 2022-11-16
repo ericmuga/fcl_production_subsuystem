@@ -268,7 +268,14 @@
         });
 
         $('#for_export').on("change", function () {
-            validateExportUnitCount()
+            // updateExportUnitCount()
+            let transfer_type = $('#for_export').val()
+            
+            if (transfer_type == 1) {
+                $("#unit_crate_count").prop('readonly', false);
+            } else {
+                $("#unit_crate_count").prop('readonly', true);
+            }
         })
 
         $('.crates').on("keyup change", function () {
@@ -280,18 +287,34 @@
         });
     });
 
-    const validateExportUnitCount = () => {
-        let transfer_type = $('#for_export').val()
-        let product_code = $('#product').val()
-
-        if(product_code !='' && transfer_type == 1 && product_code == 'J31015601') {
-            //safari beef sausage 500gms
-            $('#unit_crate_count').val(40) 
-        } else if (transfer_type == 0 && product_code == 'J31015601') {
-            $('#unit_crate_count').val(45) 
+    const defaultCrateCounts = (product_code) => {
+        const list = {
+            'J31015601': 45, //safari beef sausage 500gms
+            'J31011301': 45, //Pork Catering Xpt-500gms
+            'J31011302': 45, //Pork Catering 1Kg Xpt
         }
 
-        calculatePiecesAndWeight()  
+        return list[product_code]
+    }
+
+    const updateExportUnitCount = () => {
+        let product_code = $('#product').val()
+        let transfer_type = $('#for_export').val()
+
+        const list = {
+            'J31015601': 45, //safari beef sausage 500gms
+            'J31011301': 45, //Pork Catering Xpt-500gms
+            'J31011302': 45, //Pork Catering 1Kg Xpt
+        }
+
+        if (product_code in list && transfer_type == 1) {
+
+            if (product_code == 'J31015601') {
+                //safari beef sausage 500gms
+                $('#unit_crate_count').val(40)
+            } 
+            calculatePiecesAndWeight()
+        }      
     }
 
     const validateOnSubmit = () => {
