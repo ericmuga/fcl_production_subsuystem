@@ -291,6 +291,7 @@ class SausageController extends Controller
                 'incomplete_crate_pieces' => $request->incomplete_pieces,
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
+                'transfer_type' => $request->for_export,
                 'description' => $request->desc,
                 'batch_no' => $request->batch. $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
@@ -303,6 +304,40 @@ class SausageController extends Controller
             Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
+        }
+    }
+
+    public function editIdtIssue(Request $request, Helpers $helpers)
+    {
+        try {
+            DB::transaction(function () use ($request, $helpers) {
+                //update idt issue
+                DB::table('idt_transfers')->where('id', $request->item_id)
+                ->update([
+                    'description' => $request->product,
+                    'transfer_type' => $request->for_export_edit,
+                    'batch_no' => $request->batch. $request->batch_no_edit,
+                    'total_pieces' => $request->pieces_edit,
+                    'total_weight' => $request->weight_edit,
+                    'edited' => 1,
+                ]);
+
+                //insert change logs
+                DB::table('idt_changelogs')->insert([
+                    'table_name' => 'idt_transfers',
+                    'item_id' => $request->item_id,
+                    'changed_by' => $helpers->authenticatedUserId(),
+                    'total_pieces' => $request->pieces_edit,
+                    'total_weight' => $request->weight_edit,
+                ]);
+            });
+
+            Toastr::success('IDT Transfer Updated successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
         }
     }
 

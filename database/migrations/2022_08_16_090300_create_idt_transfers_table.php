@@ -26,6 +26,7 @@ class CreateIdtTransfersTable extends Migration
             $table->string('description');
             $table->string('batch_no');
             $table->string('with_variance');
+            $table->smallInteger('transfer_type');
             $table->foreignId('user_id')->constrained('users');
             $table->float('receiver_total_crates')->nullable();
             $table->float('receiver_full_crates')->nullable();
@@ -33,6 +34,7 @@ class CreateIdtTransfersTable extends Migration
             $table->float('receiver_total_pieces')->nullable();
             $table->decimal('receiver_total_weight')->nullable();
             $table->integer('received_by')->nullable();
+            $table->tinyInteger('edited')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
