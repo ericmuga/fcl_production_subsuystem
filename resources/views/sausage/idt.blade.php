@@ -321,7 +321,7 @@
                                 <input type="hidden" class="form-control" value="0" id="unit_measure_edit"
                                             placeholder="">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Calc Pieces</label>
+                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Total Pieces</label>
                                     <div class="col-sm-6">
                                         <input type="number" class="form-control" value="0" id="pieces_edit"
                                             name="pieces_edit" placeholder="">
