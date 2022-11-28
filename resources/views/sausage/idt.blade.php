@@ -320,6 +320,10 @@
                             <div class="card-body text-center form-group">
                                 <input type="hidden" class="form-control" value="0" id="unit_measure_edit"
                                             placeholder="">
+                                <input type="hidden" class="form-control" value="0" id="old_pieces" name="old_pieces"
+                                            placeholder="">
+                                <input type="hidden" class="form-control" value="0" id="old_weight" name="old_weight"
+                                            placeholder="">
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-6 col-form-label">Total Pieces</label>
                                     <div class="col-sm-6">
@@ -370,7 +374,7 @@
             loadProductDetails(product_code);
         });
 
-        $("#pieces_edit").on("keyup change", function(e) {
+        $("#pieces_edit").on("keyup", function(e) {
             calculateWeightEdit()
         });
 
@@ -401,6 +405,8 @@
             $('#edit_product').val(product);
             $('#weight_edit').val(weight);
             $('#pieces_edit').val(pieces)
+            $('#old_weight').val(weight);
+            $('#old_pieces').val(pieces)
             $('#for_export_edit').val(transfer_type);
             $('#batch_no_edit').val(batch_no);
             $('#desc_edit').val(desc);

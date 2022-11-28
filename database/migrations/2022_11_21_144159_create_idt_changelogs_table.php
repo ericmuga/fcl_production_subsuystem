@@ -21,6 +21,8 @@ class CreateIdtChangelogsTable extends Migration
             $table->tinyInteger('is_processed')->default(0);
             $table->integer('total_pieces');
             $table->decimal('total_weight');
+            $table->integer('previous_pieces');
+            $table->decimal('previous_weight');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });

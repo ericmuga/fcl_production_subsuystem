@@ -329,6 +329,8 @@ class SausageController extends Controller
                     'changed_by' => $helpers->authenticatedUserId(),
                     'total_pieces' => $request->pieces_edit,
                     'total_weight' => $request->weight_edit,
+                    'previous_pieces' => (int)$request->old_pieces,
+                    'previous_weight' => $request->old_weight,
                 ]);
             });
 
