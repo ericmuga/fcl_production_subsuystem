@@ -7,6 +7,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 
 class DespatchController extends Controller
@@ -40,15 +41,22 @@ class DespatchController extends Controller
                 ->get();
         });
 
-        $transfer_lines = DB::table('idt_transfers')
+        $user_id = Session::get('session_userId');
+
+        $query = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
-            ->whereDate('idt_transfers.created_at', today())
-            ->orWhereDate('idt_transfers.created_at', '2022-11-07')
             ->orderBy('idt_transfers.created_at', 'DESC')
-            ->where('received_by', '=', null)
-            ->get();
+            ->where('received_by', '=', null);
+
+        if ($user_id != 17)
+            $query->whereDate('idt_transfers.created_at', today());
+
+        if ($user_id == 17)
+            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(4)); //last 4 days for okonda
+
+        $transfer_lines = $query->get();
 
         return view('despatch.idt', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
     }
