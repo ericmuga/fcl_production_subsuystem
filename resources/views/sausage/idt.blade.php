@@ -382,10 +382,13 @@
             // updateExportUnitCount()
             let transfer_type = $('#for_export').val()
 
-            if (transfer_type == 1) {
+            if (transfer_type == 1) { 
+                //export
                 $("#unit_crate_count").prop('readonly', false);
+                $("#desc").prop('required', true);
             } else {
                 $("#unit_crate_count").prop('readonly', true);
+                $("#desc").prop('required', false);
             }
         })
 
