@@ -295,6 +295,7 @@ class SausageController extends Controller
                 'transfer_type' => $request->for_export,
                 'section' => 1,
                 'description' => $request->desc,
+                'order_no' => $request->order_no,
                 'batch_no' => $request->batch. $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);

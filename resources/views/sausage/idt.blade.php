@@ -126,11 +126,18 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Description <i>(optional)</i></label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Description </label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" value="" id="desc" name="desc" placeholder="">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="" id="desc" name="desc" placeholder="customer code">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="" id="order_no" name="order_no" placeholder="order number">
+                                </div>
+                            </div>                            
                         </div>
-                    </div>
+                    </div><br>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
                         <div class="col-sm-9">
@@ -184,7 +191,6 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
@@ -203,7 +209,6 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
@@ -230,7 +235,6 @@
                                 </td>
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
-                                <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
@@ -386,9 +390,11 @@
                 //export
                 $("#unit_crate_count").prop('readonly', false);
                 $("#desc").prop('required', true);
+                $("#order_no").prop('required', true);
             } else {
                 $("#unit_crate_count").prop('readonly', true);
                 $("#desc").prop('required', false);
+                $("#order_no").prop('required', false);
             }
         })
 
