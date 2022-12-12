@@ -190,6 +190,7 @@ class SausageController extends Controller
         });
 
         $transfer_lines = DB::table('idt_transfers')
+            ->where('idt_transfers.section', 1)
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
@@ -292,6 +293,7 @@ class SausageController extends Controller
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
                 'transfer_type' => $request->for_export,
+                'section' => 1,
                 'description' => $request->desc,
                 'batch_no' => $request->batch. $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
@@ -317,7 +319,7 @@ class SausageController extends Controller
                     'description' => $request->product,
                     'transfer_type' => $request->for_export_edit,
                     'batch_no' => $request->batch. $request->batch_no_edit,
-                    'total_pieces' => $request->pieces_edit,
+                    'total_pieces' => (int)$request->pieces_edit,
                     'total_weight' => $request->weight_edit,
                     'edited' => 1,
                 ]);
@@ -327,7 +329,7 @@ class SausageController extends Controller
                     'table_name' => 'idt_transfers',
                     'item_id' => $request->item_id,
                     'changed_by' => $helpers->authenticatedUserId(),
-                    'total_pieces' => $request->pieces_edit,
+                    'total_pieces' => (int)$request->pieces_edit,
                     'total_weight' => $request->weight_edit,
                     'previous_pieces' => (int)$request->old_pieces,
                     'previous_weight' => $request->old_weight,
@@ -354,6 +356,7 @@ class SausageController extends Controller
         });
 
         $transfer_lines = DB::table('idt_transfers')
+            ->where('idt_transfers.section', 1)
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')

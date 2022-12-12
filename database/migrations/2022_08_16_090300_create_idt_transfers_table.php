@@ -27,6 +27,7 @@ class CreateIdtTransfersTable extends Migration
             $table->string('batch_no');
             $table->string('with_variance');
             $table->smallInteger('transfer_type');
+            $table->smallInteger('section');
             $table->foreignId('user_id')->constrained('users');
             $table->float('receiver_total_crates')->nullable();
             $table->float('receiver_full_crates')->nullable();
