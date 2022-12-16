@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-5">
-            <h1 class="m-0"> HighCare  1 | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small>
+            <h1 class="m-0"> HighCare 1 | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small>
             </h1>
         </div><!-- /.col -->
         <div class="col-sm-7">
@@ -20,7 +20,8 @@
 
 @section('content')
 <div id="toggle_collapse" class="collapse">
-    <form id="form-save-batch" class="form-prevent-multiple-submits" action="" method="post">
+    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('save_idt_high_care') }}"
+        method="post">
         @csrf
         <div class="card-group">
             <div class="card">
@@ -42,16 +43,15 @@
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control input_params" value="0"
-                                    id="unit_crate_count" name="unit_crate_count" placeholder=""
-                                    name="unit_crate_count">
+                                <input type="number" readonly class="form-control input_params crates" value="0"
+                                    id="unit_crate_count" name="unit_crate_count" placeholder="">
                             </div>
                         </div>
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure </label>
                             <div class="col-sm-9">
                                 <input type="number" readonly class="form-control input_params" value="0"
-                                    id="unit_measure" name="unit_measure" placeholder="" name="unit_measure">
+                                    id="unit_measure" name="unit_measure" placeholder="">
                             </div>
                         </div>
                     </div>
@@ -63,17 +63,22 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
                             <div class="row form-group">
-                                <div class="col-md-7">
+                                <div class="col-md-6">
                                     <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
                                         required>
                                         <option value="">Select chiller</option>
                                     </select>
                                 </div>
-                                <div class="mt-2 col-md-5">
-                                    <div class="custom-control custom-switch">
+                                <div class=" col-md-6">
+                                    {{-- <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="for_export" name="for_export" value="3600">
                                         <label class="custom-control-label" for="for_export">For Export?</label>
-                                    </div>
+                                    </div> --}}
+                                    <select class="form-control select2" name="for_export" id="for_export" required>
+                                        <option value="" selected disabled>Transfer Type </option>
+                                        <option value="0"> Local</option>
+                                        <option value="1"> Export</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -122,11 +127,20 @@
                         </div>
                     </div>
                     <div class="row">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Description <i>(optional)</i></label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Description </label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" value="" id="desc" name="desc" placeholder="">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="" id="desc" name="desc"
+                                        placeholder="customer code">
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" value="" id="order_no" name="order_no"
+                                        placeholder="order number">
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </div><br>
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
                         <div class="col-sm-9">
@@ -180,7 +194,6 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
@@ -199,7 +212,6 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
@@ -216,10 +228,16 @@
                         <tbody>
                             @foreach($transfer_lines as $data)
                             <tr>
-                                <td>{{ $data->id }}</td>
+                                <td id="editIdtModalShow" data-id="{{$data->id}}" data-product="{{ $data->product}}"
+                                    data-unit_measure="{{ $data->qty_per_unit_of_measure }}"
+                                    data-total_pieces="{{ $data->total_pieces }}"
+                                    data-total_weight="{{ $data->total_weight }}"
+                                    data-transfer_type="{{ $data->transfer_type }}"
+                                    data-description="{{ $data->description }}" data-batch_no="{{ $data->batch_no }}"><a
+                                        href="#">{{ $data->id }}</a>
+                                </td>
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
-                                <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
@@ -245,6 +263,107 @@
 </div>
 <!-- slicing ouput data show -->
 
+<!-- Edit Modal -->
+<div id="editIdtModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <!--Start create user modal-->
+        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('edit_idt_issue')}}"
+            method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Idt No: <strong><input style="border:none"
+                                type="text" id="item_id" name="item_id" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-group">
+                        <div class="card">
+                            <div class="card-body" style="">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control" value="" id="edit_product"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Description
+                                            <i>(optional)</i></label>
+                                        <div class="col-sm-9">
+                                            <input type="text" class="form-control" value="" id="desc_edit"
+                                                name="desc_edit" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body form-group">
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer Type </label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control select2" name="for_export_edit" id="for_export_edit"
+                                            selected="selected" required>
+                                            <option value="" selected disabled>Transfer Type </option>
+                                            <option value="0"> Local</option>
+                                            <option value="1"> Export</option>
+                                        </select>
+                                    </div>
+                                </div><br>
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" value="" id="batch_no_edit"
+                                            name="batch_no_edit" required placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body text-center form-group">
+                                <input type="hidden" class="form-control" value="0" id="unit_measure_edit"
+                                    placeholder="">
+                                <input type="hidden" class="form-control" value="0" id="old_pieces" name="old_pieces"
+                                    placeholder="">
+                                <input type="hidden" class="form-control" value="0" id="old_weight" name="old_weight"
+                                    placeholder="">
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Total Pieces</label>
+                                    <div class="col-sm-6">
+                                        <input type="number" class="form-control" value="0" id="pieces_edit"
+                                            name="pieces_edit" placeholder="">
+                                    </div>
+                                </div><br>
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Calc
+                                        Weight(Kgs)</label>
+                                    <div class="col-sm-6">
+                                        <input type="number" step="0.1" class="form-control" value="0" id="weight_edit"
+                                            readonly name="weight_edit" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
+                            onclick="return validateOnEditSubmit()" type="submit">
+                            <i class="fa fa-save"></i> Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--End Edit scale1 modal-->
 @endsection
 
 @section('scripts')
@@ -262,7 +381,56 @@
             loadProductDetails(product_code);
         });
 
-        $('.crates').keyup(function () {
+        $("#pieces_edit").on("keyup", function (e) {
+            calculateWeightEdit()
+        });
+
+        $('#for_export').on("change", function () {
+            // updateExportUnitCount()
+            let transfer_type = $('#for_export').val()
+
+            if (transfer_type == 1) {
+                //export
+                $("#unit_crate_count").prop('readonly', false);
+                $("#desc").prop('required', true);
+                $("#order_no").prop('required', true);
+            } else {
+                $("#unit_crate_count").prop('readonly', true);
+                $("#desc").prop('required', false);
+                $("#order_no").prop('required', false);
+            }
+        })
+
+        $("body").on("click", "#editIdtModalShow", function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('id');
+            let product = $(this).data('product');
+            let weight = $(this).data('total_weight');
+            let pieces = $(this).data('total_pieces');
+            let transfer_type = $(this).data('transfer_type');
+            let batch_no = $(this).data('batch_no');
+            let desc = $(this).data('description');
+            let unit_measure = $(this).data('unit_measure');
+
+            $('#item_id').val(id);
+            $('#edit_product').val(product);
+            $('#weight_edit').val(weight);
+            $('#pieces_edit').val(pieces)
+            $('#old_weight').val(weight);
+            $('#old_pieces').val(pieces)
+            $('#for_export_edit').val(transfer_type);
+            $('#batch_no_edit').val(batch_no);
+            $('#desc_edit').val(desc);
+            $('#unit_measure_edit').val(unit_measure);
+
+            $('#for_export_edit').select2('destroy').select2();
+
+            $('#editIdtModal').modal('show');
+        });
+
+
+        $('.crates').on("keyup change", function () {
             validateCrates()
         })
 
@@ -270,6 +438,36 @@
             validateUser()
         });
     });
+
+    const defaultCrateCounts = (product_code) => {
+        const list = {
+            'J31015601': 45, //safari beef sausage 500gms
+            'J31011301': 45, //Pork Catering Xpt-500gms
+            'J31011302': 45, //Pork Catering 1Kg Xpt
+        }
+
+        return list[product_code]
+    }
+
+    const updateExportUnitCount = () => {
+        let product_code = $('#product').val()
+        let transfer_type = $('#for_export').val()
+
+        const list = {
+            'J31015601': 45, //safari beef sausage 500gms
+            'J31011301': 45, //Pork Catering Xpt-500gms
+            'J31011302': 45, //Pork Catering 1Kg Xpt
+        }
+
+        if (product_code in list && transfer_type == 1) {
+
+            if (product_code == 'J31015601') {
+                //safari beef sausage 500gms
+                $('#unit_crate_count').val(40)
+            }
+            calculatePiecesAndWeight()
+        }
+    }
 
     const validateOnSubmit = () => {
         let status = true
@@ -443,13 +641,14 @@
             } else {
                 setCratesValidity(1)
                 setCratesValidityMessage('succ1', 'err1', '', '')
-                calculatePiecesAndWeight(full_crates)
+                calculatePiecesAndWeight()
             }
         }
 
     }
 
-    const calculatePiecesAndWeight = (full_crates) => {
+    const calculatePiecesAndWeight = () => {
+        let full_crates = $('#full_crates').val()
         let crate_unit_count = $('#unit_crate_count').val()
         let incomplete_pieces = $('#incomplete_pieces').val()
         let unit_measure = $('#unit_measure').val()
@@ -459,6 +658,15 @@
 
         $('#pieces').val(pieces)
         $('#weight').val(weight.toFixed(2))
+    }
+
+    const calculateWeightEdit = () => {
+        let unit_measure = $('#unit_measure_edit').val()
+
+        let pieces = $('#pieces_edit').val()
+        let weight = pieces * unit_measure
+
+        $('#weight_edit').val(weight.toFixed(2))
     }
 
     const setCratesValidity = (status) => {

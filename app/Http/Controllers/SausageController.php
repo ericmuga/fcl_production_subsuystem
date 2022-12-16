@@ -190,7 +190,7 @@ class SausageController extends Controller
         });
 
         $transfer_lines = DB::table('idt_transfers')
-            ->where('idt_transfers.section', 1)
+            ->where('idt_transfers.transfer_from', '2055')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
@@ -293,7 +293,7 @@ class SausageController extends Controller
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
                 'transfer_type' => $request->for_export,
-                'section' => 1,
+                'transfer_from' => '2055',
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch. $request->batch_no,
@@ -357,7 +357,7 @@ class SausageController extends Controller
         });
 
         $transfer_lines = DB::table('idt_transfers')
-            ->where('idt_transfers.section', 1)
+            ->where('idt_transfers.transfer_from', '2055')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
