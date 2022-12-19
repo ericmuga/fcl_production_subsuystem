@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SausageEntriesExport;
 use App\Models\Helpers;
 use App\Models\SausageEntry;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Faker\Core\Barcode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 use Mockery\Matcher\Type;
 
 class SausageController extends Controller
@@ -112,6 +116,25 @@ class SausageController extends Controller
         }
 
         return view('sausage.entries', compact('entries', 'title', 'filter'));
+    }
+
+    public function exportSausageEntries(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
+        $entries = DB::table('sausage_entries')
+                ->whereDate('sausage_entries.created_at', '>=', $from_date)
+                ->whereDate('sausage_entries.created_at', '<=', $to_date)
+                ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
+                ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure', DB::raw('COUNT(sausage_entries.barcode) * items.qty_per_unit_of_measure  as total_tonnage'))
+                ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
+                ->orderBy('total_count', 'DESC')
+                ->get();
+
+        $exports = Session::put('session_export_data', $entries);
+
+        return Excel::download(new SausageEntriesExport, 'SausageScannersEntriesHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function itemsList()
