@@ -22,18 +22,17 @@ class DespatchController extends Controller
         $title = "dashboard";
 
         $transfers = DB::table('idt_transfers')
-            ->whereDate('idt_transfers.created_at', today())
+            ->whereDate('idt_transfers.created_at', today())            
+            ->where('idt_transfers.transfer_from', '=', '2055')
             ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as total_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->get();
 
         return view('despatch.dashboard', compact('title', 'transfers'));
     }
 
-    public function getIdt(Helpers $helpers)
+    public function getIdt(Helpers $helpers, $filter = null)
     {
         $title = "IDT";
-
-        $filter = '';
 
         $items = Cache::remember('items_list', now()->addHours(10), function () {
             return DB::table('items')
@@ -48,7 +47,13 @@ class DespatchController extends Controller
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
-            ->where('received_by', '=', null);
+            ->where('idt_transfers.received_by', '=', null)
+            ->when($filter == 'sausage', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '2055'); // from sausage only
+            })
+            ->when($filter == 'highcare', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '2595'); // from highcare only
+            });
 
         if ($user_id != 17)
             $query->whereDate('idt_transfers.created_at', today());
@@ -58,7 +63,7 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.idt', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
+        return view('despatch.idt', compact('title', 'transfer_lines', 'items', 'helpers'));
     }
 
     public function receiveTransfer(Request $request, Helpers $helpers)

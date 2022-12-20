@@ -64,7 +64,8 @@ class SausageController extends Controller
             ->count('sausage_entries.barcode');
 
         $transfers = DB::table('idt_transfers')
-            ->whereDate('idt_transfers.created_at', today())
+            ->whereDate('idt_transfers.created_at', today())            
+            ->where('idt_transfers.transfer_from', '=', '2055')
             ->select(DB::raw('SUM(idt_transfers.total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'))
             ->get();
 

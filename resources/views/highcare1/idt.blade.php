@@ -43,7 +43,7 @@
                         <div class="row">
                             <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate </label>
                             <div class="col-sm-9">
-                                <input type="number" readonly class="form-control input_params crates" value="0"
+                                <input type="number" class="form-control input_params crates" value="0"
                                     id="unit_crate_count" name="unit_crate_count" placeholder="">
                             </div>
                         </div>
