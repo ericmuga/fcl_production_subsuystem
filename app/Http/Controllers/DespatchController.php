@@ -154,7 +154,7 @@ class DespatchController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
-            ->get()->dd();
+            ->get();
 
         $exports = Session::put('session_export_data', $entries);
 
