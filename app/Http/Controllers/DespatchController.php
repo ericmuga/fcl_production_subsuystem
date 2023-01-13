@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\DespatchIdtHistoryExport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class DespatchController extends Controller
 {
@@ -127,6 +130,26 @@ class DespatchController extends Controller
             ->get();
 
         return view('despatch.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers'));
+    }
+
+    public function exportIdtHistory(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
+        $entries = DB::table('idt_transfers')
+            ->whereDate('idt_transfers.created_at', '>=', $from_date)
+            ->whereDate('idt_transfers.created_at', '<=', $to_date)
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->select('idt_transfers.product_code', 'items.description as product', DB::raw('SUM(idt_transfers.total_pieces) as total_issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_issued_weight'), DB::raw('COALESCE(SUM(idt_transfers.receiver_total_pieces), 0) as total_received_pieces'), DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0) as total_received_weight'))
+            ->orderBy('idt_transfers.product_code', 'ASC') 
+            ->groupBy('idt_transfers.product_code', 'items.description')           
+            ->get();
+
+        $exports = Session::put('session_export_data', $entries);
+
+        return Excel::download(new DespatchIdtHistoryExport, 'DespatchIdtHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function idtVarianceReport()
