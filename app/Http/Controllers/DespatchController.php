@@ -150,11 +150,11 @@ class DespatchController extends Controller
         $entries = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.description as customer_code', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', 'idt_transfers.batch_no','users.username as received_by', 'idt_transfers.created_at')
+            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', 'idt_transfers.batch_no','users.username as received_by', 'idt_transfers.created_at')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
-            ->get();
+            ->get()->dd();
 
         $exports = Session::put('session_export_data', $entries);
 
