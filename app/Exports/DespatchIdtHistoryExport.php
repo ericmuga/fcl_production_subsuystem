@@ -21,7 +21,7 @@ class DespatchIdtHistoryExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Product Code', 'Product ', 'Total Issued pieces', 'Total Issued Weight', 'Total Received Pieces', 'Total Received Weight'
+                'Product Code', 'Product ', 'Qty Unit Measure', 'Location', 'Customer', 'Total Issued pieces', 'Total Issued Weight', 'Total Received Pieces', 'Total Received Weight', 'Batch No', 'Received By', 'Date'
             ];
     }
 }
