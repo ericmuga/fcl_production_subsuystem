@@ -147,7 +147,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}"
-                                        id="batch" name="batch" required readonly>
+                                        id="batch" name="batch" required >
                                 </div>
                                 <div class="col-sm-6">
                                     <input type="number" class="form-control" value="" id="batch_no" name="batch_no"
