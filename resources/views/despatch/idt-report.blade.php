@@ -64,6 +64,7 @@
                                 <th>Product</th>
                                 {{-- <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th> --}}
+                                <th>Location</th>
                                 <th>Transfer From </th>
                                 {{-- <th>Chiller</th> 
                                 <th>Issued Total Crates</th>
@@ -91,6 +92,7 @@
                                 <th>Product</th>
                                 {{-- <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th> --}}
+                                <th>Location</th>
                                 <th>Transfer From </th>
                                 {{-- <th>Chiller</th> 
                                 <th>Issued Total Crates</th>
@@ -120,6 +122,7 @@
                                 <td>{{ $data->product }}</td>
                                 {{-- <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td> --}}
+                                <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->transfer_from }}</td>
                                 {{-- <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates }}</td>
