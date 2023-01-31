@@ -58,9 +58,9 @@ class DespatchController extends Controller
                 $q->where('idt_transfers.transfer_from', '=', '2595'); // from highcare only
             });
 
-        if ($user_id == 17 || $user_id == 34) {
+        if ($user_id == 34) {
             # supervisors
-            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(4)); //last 4 days for okonda or peter njuguna
+            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(4)); //last 4 days for peter njuguna
         } else {
             # others
             $query->whereDate('idt_transfers.created_at', today());
