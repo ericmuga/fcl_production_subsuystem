@@ -63,13 +63,13 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
                             <div class="row form-group">
-                                <div class="col-md-6">
+                                <div class="col-md-7">
                                     <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
                                         required>
                                         <option value="">Select chiller</option>
                                     </select>
                                 </div>
-                                <div class=" col-md-6">
+                                <div class=" col-md-5">
                                     {{-- <div class="custom-control custom-switch">
                                         <input type="checkbox" class="custom-control-input" id="for_export" name="for_export" value="3600">
                                         <label class="custom-control-label" for="for_export">For Export?</label>

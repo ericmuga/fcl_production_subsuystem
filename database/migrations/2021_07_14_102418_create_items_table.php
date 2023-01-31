@@ -16,7 +16,7 @@ class CreateItemsTable extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique(); // stands for both unique and indexable
-            $table->string('barcode')->unique();
+            $table->string('barcode');
             $table->string('description', 50);
             $table->string('category', 50)->nullable();
             $table->string('unit_of_measure', 10)->nullable();
