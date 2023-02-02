@@ -63,7 +63,7 @@ class DespatchController extends Controller
             $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(4)); //last 4 days for peter njuguna
         } else {
             # others
-            $query->whereDate('idt_transfers.created_at', now()->subDays(1));
+            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(1));
         }        
 
         $transfer_lines = $query->get();
