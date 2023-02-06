@@ -526,7 +526,7 @@
                 $('#loading').collapse('hide');
 
                 $('#unit_crate_count').val(response.data.unit_count_per_crate)
-                $('#unit_measure').val(parseFloat(response.data.qty_per_unit_of_measure).toFixed(2))
+                $('#unit_measure').val(parseFloat(response.data.qty_per_unit_of_measure))
                 validateCrates()
             })
             .catch((error) => {
