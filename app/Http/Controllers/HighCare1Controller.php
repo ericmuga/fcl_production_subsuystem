@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Helpers;
+use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -20,7 +21,16 @@ class HighCare1Controller extends Controller
     {
         $title = "Todays-Entries";
 
-        return view('highcare1.dashboard', compact('title'));
+        // $current_week = DB::table('idt_transfers')->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->get();
+
+        $transfers = DB::table('idt_transfers')
+            ->whereDate('idt_transfers.created_at', today())            
+            ->whereIn('idt_transfers.transfer_from', ['2595'])
+            ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
+            ->groupBy('idt_transfers.transfer_from')
+            ->get();
+
+        return view('highcare1.dashboard', compact('title', 'transfers'));
     }
 
     public function getIdt(Helpers $helpers)
@@ -44,6 +54,27 @@ class HighCare1Controller extends Controller
             ->get();
 
         return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers'));
+    }
+
+    public function idtReport(Helpers $helpers, $filter=null)
+    {
+        $title = "IDT-Report";
+
+        $transfer_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->when($filter == 'today', function ($q) {
+                $q->whereDate('idt_transfers.created_at', today()); // today only
+            })
+            ->when($filter == '', function ($q) {
+                $q->whereDate('idt_transfers.created_at', '>=', now()->subDays(7)); // today plus last 7 days
+            })
+            ->where('idt_transfers.transfer_from', '=', '2595')
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->get();
+
+        return view('highcare1.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers'));
     }
 
     private function getLocationCode($export_status, $location_code)

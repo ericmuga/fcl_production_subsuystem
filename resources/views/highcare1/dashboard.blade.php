@@ -18,27 +18,27 @@
     <strong> Idt Transfers: </strong>
 </p>
 <div class="row">
-    <div class="col-md-3 col-6">
+    <div class="col-md-4 col-6">
         <!-- small box -->
         <div class="small-box bg-secondary">
             <div class="inner">
-                <h3>0993 <sup style="font-size: 20px">pkts</sup> | 894 <sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ number_format($transfers[0]->issued_pieces, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($transfers[0]->issued_weight, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
 
-                <p>HighCare 1 Total Transfers</p>
+                <p>HighCare Total Issues</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="{{ route('sausage_idt_report', 'today') }}" class="small-box-footer">More info <i
+            <a href="{{ route('highcare1_idt_report', 'today') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->
-    <div class="col-md-3 col-6">
+    <div class="col-md-4 col-6">
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>234<sup style="font-size: 15px"> Pkts</sup>| 544 <sup
+                <h3>{{ number_format($transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->received_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Despatch Total Received</p>
@@ -50,14 +50,14 @@
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <div class="col-md-3 col-6">
+    <div class="col-md-4 col-6">
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>343<sup style="font-size: 15px"> Pkts</sup>| 322 <sup
+                <h3>{{ number_format($transfers[0]->issued_pieces - $transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->issued_weight - $transfers[0]->received_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
-                <p>Variance</p>
+                <p>Variance of Highcare Issues Vs Despatch Receipts</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -66,24 +66,6 @@
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-    <!-- ./col -->
-    <div class="col-md-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-primary">
-            <div class="inner">
-                <h3>32<sup style="font-size: 15px"> Pkts</sup>| 554 <sup
-                        style="font-size: 15px">Kgs</sup></h3>
-
-                <p>Received Stocks Per Chiller</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i
-                    class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    <!-- ./col -->
 </div>
 <!-- /.row -->
 

@@ -24,7 +24,7 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
-                        <li><a href="#" class="dropdown-item"> IDT History
+                        <li><a href="{{ route('highcare1_idt_report') }}" class="dropdown-item"> IDT History
                             </a>
                         </li>
                     </ul>

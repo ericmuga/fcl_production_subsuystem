@@ -98,7 +98,7 @@
             <div class="inner">
                 <h3>{{ number_format($transfers[0]->total_pieces, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($transfers[0]->total_weight, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
 
-                <p>Sausage Total Transfers</p>
+                <p>Sausage Total Issues</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -131,7 +131,7 @@
                 <h3>{{ number_format($transfers[0]->total_pieces - $transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->total_weight - $transfers[0]->received_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
-                <p>Variance</p>
+                <p>Variance of Sausage Issues Vs Despatch Receipts</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>

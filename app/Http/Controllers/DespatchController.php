@@ -140,16 +140,6 @@ class DespatchController extends Controller
         $from_date = Carbon::parse($request->from_date);
         $to_date = Carbon::parse($request->to_date);
 
-        // $entries = DB::table('idt_transfers')
-        //     ->whereDate('idt_transfers.created_at', '>=', $from_date)
-        //     ->whereDate('idt_transfers.created_at', '<=', $to_date)
-        //     ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
-        //     ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-        //     ->select('idt_transfers.product_code', 'items.description as product', DB::raw('SUM(idt_transfers.total_pieces) as total_issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_issued_weight'), DB::raw('COALESCE(SUM(idt_transfers.receiver_total_pieces), 0) as total_received_pieces'), DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0) as total_received_weight'), 'idt_transfers.description as customer_code')
-        //     ->orderBy('idt_transfers.product_code', 'ASC') 
-        //     ->groupBy('idt_transfers.product_code', 'items.description', 'idt_transfers.description')           
-        //     ->get();
-
         $entries = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')

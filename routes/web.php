@@ -163,6 +163,7 @@ Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPe
 /*-------------Start HighCare1------------------ */
 Route::get('/highcare1/dashboard', [HighCare1Controller::class, 'index'])->name('highcare1_dashboard');
 Route::get('/highcare1/idt', [HighCare1Controller::class, 'getIdt'])->name('highcare1_idt');
+Route::get('/highcare1/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
 Route::post('/save/high-care-idt', [HighCare1Controller::class, 'saveTransfer'])->name('save_idt_high_care');
 /*-------------End HighCare1------------------ */
 
