@@ -185,7 +185,7 @@
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
-                                <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
+                                <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 @if ($data->received_by == null)
@@ -201,7 +201,7 @@
                                 <td><button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
                                         data-unit_count="{{ $data->unit_count_per_crate }}"
-                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}"
+                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
                                         data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
                                         data-total_weight="{{ $data->total_weight }}" class="btn btn-warning btn-xs"
                                         title="Receive transfer" id="despatchReceiveModalShow"><i
@@ -294,7 +294,7 @@
         } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
             status = false
             alert("please ensure the pieces and weight have a value of more than zero")
-        } else if (parseInt(issued_pieces) != parseInt(pieces) || parseFloat(issued_weight) != parseFloat(weight)) {
+        } else if (parseInt(issued_pieces) != parseInt(pieces) ) {
             const response = confirm("Issued does not match Receiving Qty. Are you sure you want to continue?");
 
             if (response) {
@@ -402,7 +402,7 @@
         let weight = pieces * unit_measure
 
         $('#pieces').val(pieces)
-        $('#weight').val(weight.toFixed(2))
+        $('#weight').val(weight)
     }
 
     const setCratesValidity = (status) => {
