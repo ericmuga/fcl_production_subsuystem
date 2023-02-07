@@ -145,14 +145,8 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
                         <div class="col-sm-9">
                             <div class="row">
-                                <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}"
-                                        id="batch" name="batch" required >
-                                </div>
-                                <div class="col-sm-6">
-                                    <input type="number" class="form-control" value="" id="batch_no" name="batch_no"
-                                        required placeholder="">
-                                </div>
+                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no"
+                                    required placeholder="">
                             </div>
                         </div>
                     </div>

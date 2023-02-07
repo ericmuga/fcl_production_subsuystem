@@ -87,7 +87,7 @@ class HighCare1Controller extends Controller
                 'transfer_from' => '2595',
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
-                'batch_no' => $request->batch. $request->batch_no,
+                'batch_no' => $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 
