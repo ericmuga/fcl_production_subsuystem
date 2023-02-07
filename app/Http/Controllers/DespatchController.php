@@ -154,7 +154,7 @@ class DespatchController extends Controller
         return Excel::download(new DespatchIdtHistoryExport, 'DespatchIdtHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
-    public function idtVarianceReport()
+    public function idtVarianceReport($filter=null)
     {
         $title = "IDT-Variance Report";
 
@@ -163,6 +163,12 @@ class DespatchController extends Controller
             ->select('idt_transfers.product_code', DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), 'items.description as product')
             ->orderBy('idt_transfers.product_code', 'ASC')
             ->whereDate('idt_transfers.created_at', today())
+            ->when($filter == 'sausage', function ($q) {
+                $q->where('idt_transfers.transfer_from', '2055');
+            })
+            ->when($filter == 'highcare', function ($q) {
+                $q->where('idt_transfers.transfer_from', '2595');
+            })
             ->having(DB::raw('COALESCE(SUM(idt_transfers.total_weight), 0)'), '!=', DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0)'))
             ->groupBy('idt_transfers.product_code', 'items.description')
             ->get();

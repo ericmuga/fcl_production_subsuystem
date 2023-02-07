@@ -156,7 +156,7 @@ Route::get('/despatch/idt/{filter?}', [DespatchController::class, 'getIdt'])->na
 Route::post('/receive/idt', [DespatchController::class, 'receiveTransfer'])->name('receive_idt');
 Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtReport'])->name('despatch_idt_report');
 Route::post('/despatch/idt-export', [DespatchController::class, 'exportIdtHistory'])->name('despatch_export_idt');
-Route::get('/despatch/idt-variance', [DespatchController::class, 'idtVarianceReport'])->name('despatch_idt_variance');
+Route::get('/despatch/idt-variance/{filter?}', [DespatchController::class, 'idtVarianceReport'])->name('despatch_idt_variance');
 Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPerChiller'])->name('despatch_idt_per_chiller');
 /*-------------End Despatch------------------ */
 

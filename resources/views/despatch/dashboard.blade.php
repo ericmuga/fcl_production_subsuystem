@@ -62,7 +62,7 @@
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="{{ route('despatch_idt_variance') }}" class="small-box-footer">More info <i
+            <a href="{{ route('despatch_idt_variance', 'sausage') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
@@ -134,7 +134,7 @@
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="{{ route('despatch_idt_variance') }}" class="small-box-footer">More info <i
+            <a href="{{ route('despatch_idt', 'highcare') }}" class="small-box-footer">More info <i
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
