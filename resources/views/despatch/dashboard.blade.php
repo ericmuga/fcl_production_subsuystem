@@ -17,7 +17,7 @@
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers Sausage: </strong>
 </p>
-{{-- <div class="row">
+<div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
         <div class="small-box bg-secondary">
@@ -54,7 +54,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ number_format($transfers[0]->total_pieces ?? 0, 0) - number_format($transfers[0]->issued_pieces ?? 0, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->total_weight ?? 0, 2) - number_format($transfers[0]->issued_weight ?? 0, 2) }} <sup
+                <h3>{{ (int)$transfers[0]->total_pieces ?? 0 - (int)$transfers[0]->issued_pieces ?? 0 }}<sup style="font-size: 15px"> Pkts</sup>| {{ (float)$transfers[0]->total_weight ?? 0 - (float)$transfers[0]->issued_weight ?? 0 }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Sausage</p>
@@ -84,12 +84,12 @@
         </div>
     </div>
     <!-- ./col -->
-</div> --}}
+</div>
 <!-- /.row -->
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers High Care: </strong>
 </p>
-{{-- <div class="row">
+<div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
         <div class="small-box bg-success">
@@ -126,7 +126,7 @@
         <!-- small box -->
         <div class="small-box bg-dark">
             <div class="inner">
-                <h3>{{ number_format($transfers[1]->total_pieces ?? 0, 0) - number_format($transfers[1]->issued_pieces ?? 0, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[1]->total_weight ?? 0, 2) - number_format($transfers[1]->issued_weight ?? 0, 2) }} <sup
+                <h3>{{ (int)$transfers[1]->total_pieces ?? 0 - (int)$transfers[1]->issued_pieces ?? 0 }}<sup style="font-size: 15px"> Pkts</sup>| {{ (float)$transfers[1]->total_weight ?? 0 - (float)$transfers[1]->issued_weight ?? 0 }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Highcare</p>
@@ -156,7 +156,7 @@
         </div>
     </div>
     <!-- ./col -->
-</div> --}}
+</div>
 <!-- /.row -->
 
 @endsection
