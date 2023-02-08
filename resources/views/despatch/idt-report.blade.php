@@ -133,8 +133,8 @@
                                 {{-- <td>{{ number_format($data->receiver_total_crates, 1) }}</td>
                                 <td>{{ number_format($data->receiver_full_crates, 1) }}</td>
                                 <td>{{ number_format($data->receiver_incomplete_crate_pieces, 1) }}</td> --}}
-                                <td>{{ number_format($data->receiver_total_pieces, 1) }}</td>
-                                <td>{{ number_format($data->receiver_total_weight, 1) }}</td>
+                                <td>{{ $data->receiver_total_pieces ?? 0 }}</td>
+                                <td>{{ $data->receiver_total_weight ?? 0 }}</td>
 
                                 @if ($data->with_variance == 0)
                                 <td><span class="badge badge-warning">Yes</span></td>
