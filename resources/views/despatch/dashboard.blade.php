@@ -17,7 +17,7 @@
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers Sausage: </strong>
 </p>
-<div class="row">
+{{-- <div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
         <div class="small-box bg-secondary">
@@ -84,12 +84,12 @@
         </div>
     </div>
     <!-- ./col -->
-</div>
+</div> --}}
 <!-- /.row -->
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers High Care: </strong>
 </p>
-<div class="row">
+{{-- <div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
         <div class="small-box bg-success">
@@ -156,7 +156,7 @@
         </div>
     </div>
     <!-- ./col -->
-</div>
+</div> --}}
 <!-- /.row -->
 
 @endsection
