@@ -18,7 +18,6 @@
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers: </strong>
 </p>
-@if (Session::get('session_userName') == 'EKaranja')
     
 <div class="row">
     <div class="col-md-4 col-6">
@@ -74,8 +73,5 @@
     </div>
 </div>
 <!-- /.row -->
-@else
-    
-@endif
 
 @endsection
