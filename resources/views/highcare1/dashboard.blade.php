@@ -18,7 +18,9 @@
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers: </strong>
 </p>
-{{-- <div class="row">
+@if (Session::get('session_userName') == 'EKaranja')
+    
+<div class="row">
     <div class="col-md-4 col-6">
         <!-- small box -->
         <div class="small-box bg-secondary">
@@ -70,7 +72,10 @@
             <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-</div> --}}
+</div>
 <!-- /.row -->
+@else
+    
+@endif
 
 @endsection
