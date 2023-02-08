@@ -17,12 +17,12 @@
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers: </strong>
 </p>
-<div class="row">
+{{-- <div class="row">
     <div class="col-md-4 col-6">
         <!-- small box -->
         <div class="small-box bg-secondary">
             <div class="inner">
-                <h3>{{ number_format($transfers[0]->issued_pieces, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($transfers[0]->issued_weight, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ number_format($transfers->issued_pieces, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($transfers->issued_weight, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
 
                 <p>HighCare Total Issues</p>
             </div>
@@ -38,7 +38,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ number_format($transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->received_weight, 2) }} <sup
+                <h3>{{ number_format($transfers->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers->received_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Despatch Total Received</p>
@@ -54,7 +54,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ number_format($transfers[0]->issued_pieces - $transfers[0]->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->issued_weight - $transfers[0]->received_weight, 2) }} <sup
+                <h3>{{ number_format($transfers->issued_pieces - $transfers->received_pieces, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($transfers[0]->issued_weight - $transfers->received_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Highcare Issues Vs Despatch Receipts</p>
@@ -66,7 +66,9 @@
                     class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
-</div>
+</div> --}}
+
+<p>Please continue this is being sorted</p>
 <!-- /.row -->
 
 @endsection
