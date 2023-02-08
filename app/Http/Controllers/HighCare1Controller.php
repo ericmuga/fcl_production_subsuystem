@@ -21,10 +21,6 @@ class HighCare1Controller extends Controller
     {
         $title = "Todays-Entries";
 
-        // $current_week = DB::table('idt_transfers')->whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->get();
-
-        // DB::raw('COALESCE(SUM(idt_transfers.receiver_total_pieces), 0) as received_pieces')
-
         $transfers = DB::table('idt_transfers')
             ->whereDate('idt_transfers.created_at', today())            
             ->whereIn('idt_transfers.transfer_from', ['2595'])
