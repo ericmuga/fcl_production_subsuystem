@@ -58,9 +58,9 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ ((int)$transfers[0]->issued_pieces ?? 0) - ((int)$transfers[0]->received_pieces ?? 0) }}
+                {{-- <h3>{{ ((int)$transfers[0]->issued_pieces ?? 0) - ((int)$transfers[0]->received_pieces ?? 0) }}
                     <sup style="font-size: 15px"> Pkts</sup>|
-                    {{ ((float)$transfers[0]->issued_weight ?? 0) - ((float)$transfers[0]->received_weight ?? 0) }}
+                    {{ ((float)$transfers[0]->issued_weight ?? 0) - ((float)$transfers[0]->received_weight ?? 0) }} --}}
                     <sup style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Highcare Issues Vs Despatch Receipts</p>

@@ -54,8 +54,8 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ ((int)$transfers[0]->total_pieces ?? 0) - ((int)$transfers[0]->issued_pieces ?? 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ ((float)$transfers[0]->total_weight ?? 0) - ((float)$transfers[0]->issued_weight ?? 0) }} <sup
-                        style="font-size: 15px">Kgs</sup></h3>
+                {{-- <h3>{{ ((int)$transfers[0]->total_pieces ?? 0) - ((int)$transfers[0]->issued_pieces ?? 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ ((float)$transfers[0]->total_weight ?? 0) - ((float)$transfers[0]->issued_weight ?? 0) }} <sup
+                        style="font-size: 15px">Kgs</sup></h3> --}}
 
                 <p>Variance of Despatch Against Sausage</p>
             </div>
@@ -126,8 +126,8 @@
         <!-- small box -->
         <div class="small-box bg-dark">
             <div class="inner">
-                <h3>{{ ((int)$transfers[1]->total_pieces ?? 0) - ((int)$transfers[1]->issued_pieces ?? 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ ((float)$transfers[1]->total_weight ?? 0 - (float)$transfers[1]->issued_weight ?? 0) }} <sup
-                        style="font-size: 15px">Kgs</sup></h3>
+                {{-- <h3>{{ ((int)$transfers[1]->total_pieces ?? 0) - ((int)$transfers[1]->issued_pieces ?? 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ ((float)$transfers[1]->total_weight ?? 0 - (float)$transfers[1]->issued_weight ?? 0) }} <sup
+                        style="font-size: 15px">Kgs</sup></h3> --}}
 
                 <p>Variance of Despatch Against Highcare</p>
             </div>
