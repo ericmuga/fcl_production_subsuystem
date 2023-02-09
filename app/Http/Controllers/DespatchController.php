@@ -25,7 +25,7 @@ class DespatchController extends Controller
         $title = "dashboard";
 
         $transfers = DB::table('idt_transfers')
-            // ->whereDate('idt_transfers.created_at', today())            
+            ->whereDate('idt_transfers.created_at', today())            
             ->whereIn('idt_transfers.transfer_from', ['2055', '2595'])
             ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as total_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->groupBy('idt_transfers.transfer_from')
