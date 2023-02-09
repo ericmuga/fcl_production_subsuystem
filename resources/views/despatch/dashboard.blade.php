@@ -68,7 +68,7 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ (int)$total_pieces - (int)$issued_pieces }}<sup style="font-size: 15px"> Pkts</sup>| {{ (float)$total_weight - (float)$issued_weight }} <sup
+                <h3>{{ (int)$total_pieces - (int)$issued_pieces }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format((float)$total_weight - (float)$issued_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Sausage</p>
@@ -140,7 +140,7 @@
         <!-- small box -->
         <div class="small-box bg-dark">
             <div class="inner">
-                <h3>{{ (int)$total_pieces_h - (int)$issued_pieces_h }}<sup style="font-size: 15px"> Pkts</sup>| {{ (float)$total_weight_h - (float)$issued_weight_h }} <sup
+                <h3>{{ (int)$total_pieces_h - (int)$issued_pieces_h }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format((float)$total_weight_h - (float)$issued_weight_h, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Highcare</p>

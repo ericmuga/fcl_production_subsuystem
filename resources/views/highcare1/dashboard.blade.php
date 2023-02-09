@@ -67,7 +67,7 @@
             <div class="inner">
                 <h3>{{ (int)$issued_pieces - (int)$received_pieces }}
                     <sup style="font-size: 15px"> Pkts</sup>|
-                    {{ (float)$issued_weight - (float)$received_weight }}
+                    {{ number_format((float)$issued_weight - (float)$received_weight, 2) }}
                     <sup style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Highcare Issues Vs Despatch Receipts</p>
