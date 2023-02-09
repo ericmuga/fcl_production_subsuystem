@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
