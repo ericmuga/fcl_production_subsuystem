@@ -31,6 +31,13 @@ class HighCare1Controller extends Controller
         return view('highcare1.dashboard', compact('title', 'transfers'));
     }
 
+    private function getPiecesVariance($issued, $received)
+    {
+        if (isset($issued)) {
+            dd('not null');
+        }
+    }
+
     public function getIdt(Helpers $helpers)
     {
         $title = "Todays-Entries";

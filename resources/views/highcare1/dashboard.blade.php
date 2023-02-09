@@ -13,6 +13,13 @@
 
 @endsection
 
+@php
+    $issued_pieces = isset($transfers[0]->issued_pieces)? $transfers[0]->issued_pieces : 0;
+    $received_pieces = isset($transfers[0]->received_pieces)? $transfers[0]->received_pieces : 0;
+    $issued_weight = isset($transfers[0]->issued_weight)? $transfers[0]->issued_weight : 0;
+    $received_weight = isset($transfers[0]->received_weight)? $transfers[0]->received_weight : 0;
+@endphp
+
 @section('content')
 <!-- IDT Transfers  -->
 <p class="row mb-2 ml-2">
@@ -58,9 +65,9 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                {{-- <h3>{{ ((int)$transfers[0]->issued_pieces ?? 0) - ((int)$transfers[0]->received_pieces ?? 0) }}
+                <h3>{{ $issued_pieces - $received_pieces }}
                     <sup style="font-size: 15px"> Pkts</sup>|
-                    {{ ((float)$transfers[0]->issued_weight ?? 0) - ((float)$transfers[0]->received_weight ?? 0) }} --}}
+                    {{ $issued_weight - $received_weight }}
                     <sup style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Highcare Issues Vs Despatch Receipts</p>
