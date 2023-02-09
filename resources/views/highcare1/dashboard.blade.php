@@ -65,9 +65,9 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>{{ $issued_pieces - $received_pieces }}
+                <h3>{{ (int)$issued_pieces - (int)$received_pieces }}
                     <sup style="font-size: 15px"> Pkts</sup>|
-                    {{ $issued_weight - $received_weight }}
+                    {{ (float)$issued_weight - (float)$received_weight }}
                     <sup style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Highcare Issues Vs Despatch Receipts</p>

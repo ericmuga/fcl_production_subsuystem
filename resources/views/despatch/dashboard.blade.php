@@ -12,6 +12,20 @@
 
 @endsection
 
+@php
+    // sausage
+    $total_pieces = isset($transfers[0]->total_pieces)? $transfers[0]->total_pieces : 0;
+    $issued_pieces = isset($transfers[0]->issued_pieces)? $transfers[0]->issued_pieces : 0;
+    $total_weight = isset($transfers[0]->total_weight)? $transfers[0]->total_weight : 0;
+    $issued_weight = isset($transfers[0]->issued_weight)? $transfers[0]->issued_weight : 0;
+
+    // highcare
+    $total_pieces_h = isset($transfers[1]->total_pieces)? $transfers[1]->total_pieces : 0;
+    $issued_pieces_h = isset($transfers[1]->issued_pieces)? $transfers[1]->issued_pieces : 0;
+    $total_weight_h = isset($transfers[1]->total_weight)? $transfers[1]->total_weight : 0;
+    $issued_weight_h = isset($transfers[1]->issued_weight)? $transfers[1]->issued_weight : 0;
+@endphp
+
 @section('content')
 
 <p class="row mb-2 ml-2">
@@ -54,8 +68,8 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                {{-- <h3>{{ ((int)$transfers[0]->total_pieces ?? 0) - ((int)$transfers[0]->issued_pieces ?? 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ ((float)$transfers[0]->total_weight ?? 0) - ((float)$transfers[0]->issued_weight ?? 0) }} <sup
-                        style="font-size: 15px">Kgs</sup></h3> --}}
+                <h3>{{ (int)$total_pieces - (int)$issued_pieces }}<sup style="font-size: 15px"> Pkts</sup>| {{ (float)$total_weight - (float)$issued_weight }} <sup
+                        style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Sausage</p>
             </div>
@@ -126,8 +140,8 @@
         <!-- small box -->
         <div class="small-box bg-dark">
             <div class="inner">
-                {{-- <h3>{{ ((int)$transfers[1]->total_pieces ?? 0) - ((int)$transfers[1]->issued_pieces ?? 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ ((float)$transfers[1]->total_weight ?? 0 - (float)$transfers[1]->issued_weight ?? 0) }} <sup
-                        style="font-size: 15px">Kgs</sup></h3> --}}
+                <h3>{{ (int)$total_pieces_h - (int)$issued_pieces_h }}<sup style="font-size: 15px"> Pkts</sup>| {{ (float)$total_weight_h - (float)$issued_weight_h }} <sup
+                        style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Highcare</p>
             </div>
