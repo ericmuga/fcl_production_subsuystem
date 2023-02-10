@@ -61,10 +61,10 @@ class DespatchController extends Controller
 
         if ($user_id == 34) {
             # supervisors
-            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(4)); //last 4 days for peter njuguna
+            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(10)); //last 4 days for peter njuguna
         } else {
             # others
-            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(1));
+            $query->whereDate('idt_transfers.created_at', '>=', now()->subDays(10));
         }        
 
         $transfer_lines = $query->get();
