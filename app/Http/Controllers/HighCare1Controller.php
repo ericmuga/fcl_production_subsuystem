@@ -31,16 +31,9 @@ class HighCare1Controller extends Controller
         return view('highcare1.dashboard', compact('title', 'transfers'));
     }
 
-    private function getPiecesVariance($issued, $received)
-    {
-        if (isset($issued)) {
-            dd('not null');
-        }
-    }
-
     public function getIdt(Helpers $helpers)
     {
-        $title = "Todays-Entries";
+        $title = "IDT";
 
         $items = Cache::remember('items_list_sausage', now()->addHours(10), function () {
             return DB::table('items')

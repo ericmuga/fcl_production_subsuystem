@@ -1,10 +1,10 @@
-@extends('layouts.highcare_master')
+@extends('layouts.freshcuts-bulk_master')
 
 @section('content-header')
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <h1 class="card-title"> HighCare 1 | Dashboard | <span id="subtext-h1-title"><small> Showing today's
+            <h1 class="card-title"> Fresh Cuts & Bulk Products | Dashboard | <span id="subtext-h1-title"><small> Showing today's
                         numbers</small>
                 </span></h1>
         </div><!-- /.col -->
@@ -23,7 +23,7 @@
 @section('content')
 <!-- IDT Transfers  -->
 <p class="row mb-2 ml-2">
-    <strong> Idt Transfers: </strong>
+    <strong> Fresh Cuts Transfers: </strong>
 </p>
     
 <div class="row">
@@ -35,7 +35,7 @@
                     {{ number_format($transfers[0]->issued_weight ?? 0, 2) }} <sup style="font-size: 20px">Kgs</sup>
                 </h3>
 
-                <p>HighCare Total Issues</p>
+                <p>Fresh Cuts Total Issues</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -70,7 +70,7 @@
                     {{ number_format((float)$issued_weight - (float)$received_weight, 2) }}
                     <sup style="font-size: 15px">Kgs</sup></h3>
 
-                <p>Variance of Highcare Issues Vs Despatch Receipts</p>
+                <p>Variance of Fresh Cuts Vs Despatch Receipts</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>

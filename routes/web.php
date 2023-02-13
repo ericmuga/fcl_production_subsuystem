@@ -4,6 +4,7 @@ use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
 use App\Http\Controllers\Despatch;
 use App\Http\Controllers\DespatchController;
+use App\Http\Controllers\FreshcutsBulkController;
 use App\Http\Controllers\HighCare1Controller;
 use App\Http\Controllers\HighCare2Controller;
 use App\Http\Controllers\ItemController;
@@ -114,7 +115,13 @@ Route::post('butchery-marination/update', [ButcheryController::class, 'updateMar
 /*-------------stocks------------------ */
 Route::get('/stocks/dashboard', [ButcheryStockController::class, 'index'])->name('stock_dashboard');
 Route::get('/stocks/transactions', [ButcheryStockController::class, 'stocksTransactions'])->name('stocks_transactions');
-/*-------------End Admin------------------ */
+/*-------------End stocks ------------------ */
+
+/*-------------Fresh cuts and bulk------------------ */
+Route::get('/freshcuts_bulk/dashboard', [FreshcutsBulkController::class, 'index'])->name('freshcuts_bulk_dashboard');
+Route::get('/freshcuts_bulk/idt', [FreshcutsBulkController::class, 'getIdt'])->name('freshcuts_bulk_idt');
+Route::get('/freshcuts_bulk/idt-report', [FreshcutsBulkController::class, 'idtReport'])->name('freshcuts_bulk_report');
+/*-------------End fresh cuts and bulk ------------------ */
 
 
 /*-------------Sausage------------------ */

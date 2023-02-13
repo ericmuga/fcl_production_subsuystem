@@ -49,9 +49,9 @@
             <div class="card-deck">
                 <div class="card p-2 bg-success" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
-                        href="{{ route('stock_dashboard') }}">
-                        <h4 class="card-title">Butchery Stocks</h4>
-                        <p class="card-text">Select this option to switch to Butchery Stocks section.
+                        href="{{ route('freshcuts_bulk_dashboard') }}">
+                        <h4 class="card-title">Fresh Cuts & Bulk</h4>
+                        <p class="card-text">Select this option to switch to Fresh Cuts & Bulk section.
                         </p>
                     </a>
                     <div class="icon text-center">

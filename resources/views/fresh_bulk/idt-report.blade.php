@@ -1,4 +1,4 @@
-@extends('layouts.highcare_master')
+@extends('layouts.freshcuts-bulk_master')
 
 @section('content')
 <div class="row">
