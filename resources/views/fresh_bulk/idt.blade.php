@@ -43,18 +43,27 @@
                     </div>
                 </div>
                 <div class="row">
-                    <label for="exampleInputPassword1">Carriage Type</label>
-                    <select class="form-control select2" name="carriage_type" id="carriage_type" required>
-                        <option disabled selected value> -- select an option -- </option>
-                        <option value="1">Crate</option>
-                        <option value="2">Van</option>
-                    </select>
+                    <div class="col-md-8">
+                        <label for="exampleInputPassword1">Carriage Type</label>
+                        <select class="form-control select2" name="carriage_type" id="carriage_type" required>
+                            <option disabled selected value> -- select an option -- </option>
+                            <option value="1.8">Crate</option>
+                            <option value="24">Van</option>
+                        </select>
+                    </div>
+                    <div hidden id="crates_div" class="col-md-4">
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">No. of Crates </label>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
+                                value="" name="no_of_crates" min="1" placeholder="" required>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%; padding-top: 5%">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
-                        class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
-                    {{-- <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport }}"
-                    style="border:none" disabled></small> --}}
+                        class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br>
+                    <small>Reading from : <input style="font-weight: bold; border: none" type="text" id="comport_value"
+                            value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                 </div>
 
             </div>
@@ -74,13 +83,12 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Tare-Weight</label>
                     <input type="number" class="form-control" id="tareweight" name="tareweight" value="" readonly>
-                    <input type="hidden" class="form-control " id="default_tareweight" value="">
                 </div>
                 <div class="row form-group">
                     <div class="col-md-6">
-                        <label for="exampleInputPassword1">Total Net Weight</label>
-                        <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
-                            placeholder="" readonly>
+                        <label for="exampleInputPassword1">Total Tare-Weight</label>
+                        <input type="number" class="form-control" id="total_tare" name="total_tare" value="0.00"
+                            step=".01" placeholder="" readonly>
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Net Weight</label>
@@ -94,12 +102,12 @@
             <div class="card-body text-center">
                 <div class="form-group">
                     <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value=""
                         name="no_of_pieces" placeholder="" required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Batch No </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
+                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value=""
                         name="no_of_pieces" placeholder="" required>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
@@ -119,49 +127,7 @@
             </div>
         </div>
     </div>
-</form>
-
-
-<!-- product type modal -->
-<div class="modal fade" id="productTypesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <form id="form-product-type" class="form-prevent-multiple-submits" action="#" method="post">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Product Type</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class=" form-group">
-                        <select name="edit_product_type" id="edit_product_type" class="form-control" required>
-                            <option value="1">
-                                Main Product
-                            </option>
-                            <option value="2">
-                                By Product
-                            </option>
-                            <option value="3">
-                                Intake
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-primary btn-prevent-multiple-submits" type="submit"
-                        onclick="setProductCode()">
-                        <i class="fa fa-save"></i> Edit
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<hr>
-<!-- end product code modal -->
+</form><br>
 
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#slicing_output_show"><i
@@ -258,101 +224,6 @@
 </div>
 <!-- slicing ouput data show -->
 
-<!-- Edit Modal -->
-<div id="itemCodeModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('butchery_scale3_update')}}"
-            method="post">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale3 Item: <strong><input style="border:none"
-                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Product</label>
-                        <select class="form-control select2" name="edit_product" id="edit_product" required>
-                            {{-- @foreach($products as $product)
-                            <option value="{{ trim($product->code) }}" selected="selected">
-                            {{ ucwords($product->description) }} - {{ $product->code }}
-                            </option>
-                            @endforeach --}}
-                        </select>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-6">
-                            <label for="exampleInputPassword1">No. of Crates</label>
-                            <select class="form-control" name="edit_crates" id="edit_crates" required>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option selected>4</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="exampleInputPassword1">Product Type</label>
-                            <select class="form-control" name="edit_product_type2" id="edit_product_type2"
-                                selected="selected" required>
-                                <option value="1">
-                                    Main Product
-                                </option>
-                                <option value="2">
-                                    By Product
-                                </option>
-                                <option value="3">
-                                    Intake
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
-                            id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
-                    </div>
-                    <div class="form-group">
-                        <label>No. of Pieces</label>
-                        <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control"
-                            id="edit_no_pieces" value="" name="edit_no_pieces" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Production Process</label>
-                        <select selected="selected" class="form-control" name="edit_production_process"
-                            id="edit_production_process">
-
-                        </select>
-                    </div>
-                    <input type="hidden" name="item_id" id="item_id" value="">
-                    <input type="hidden" id="loading_val_edit" value="0">
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
-                            onclick="return validateOnEditSubmit()" type="submit">
-                            <i class="fa fa-save"></i> Update
-                        </button>
-                    </div>
-                </div>
-
-                <div id="loading2" class="collapse">
-                    <div class="row d-flex justify-content-center">
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<!--End Edit scale1 modal-->
-
 @endsection
 
 @section('scripts')
@@ -364,6 +235,7 @@
         });
 
         let reading = document.getElementById('reading');
+
         if (($('#old_manual').val()) == "on") {
             $('#manual_weight').prop('checked', true);
             reading.readOnly = false;
@@ -388,9 +260,73 @@
             }
 
         });
+
+        $('#carriage_type').on('select2:select', function (e) {
+            let carriage = $(this).val()
+            let element = document.getElementById("crates_div")
+                        
+            if (carriage == '1.8') {
+                element.removeAttribute("hidden")
+                $('#carriage_type').select2('destroy').select2();
+                $('#no_of_crates').focus()
+            } else {
+                element.setAttribute("hidden", "hidden");
+                getNet()
+            }
+            $('#tareweight').val(carriage)
+        });
+
+        $('#no_of_crates').on("input",function () {
+            getNet()
+        });
+
+        $('#reading').on("input", function () {
+            getNet()
+        });
     });
 
-    function validateOnSubmit() {
+    const getTotalTareweight = () => {
+        let total_tare = 0
+
+        let tare = $('#carriage_type').val()
+        let no_of_crates = $('#no_of_crates').val()
+
+        if(tare == 1.8 && no_of_crates == '') {
+            alert('please enter no of crates')
+
+        } else {
+            if(parseFloat(tare) == 24) {
+                // meat van
+                $('#total_tare').val(tare)
+                total_tare += parseFloat(tare)
+            } else {
+                let total = 0;
+                total = parseFloat(tare) * parseFloat(no_of_crates)
+                $('#total_tare').val(total)
+                total_tare += total
+            }
+        }
+
+        return total_tare
+    }
+
+    const getNet = () => {
+        let total_tare = 0
+        let tare = $('#carriage_type').val()
+        let reading = $('#reading').val()
+
+        if(tare == '') {
+            alert('Please select carriage type first')
+        } else {
+            // proceed
+            total_tare = getTotalTareweight()
+        }
+
+        net = parseFloat(reading) - parseFloat(total_tare)
+        $('#net').val(net)
+    }
+
+    const validateOnSubmit = () => {
         $valid = true;
 
         var net = $('#net').val();
@@ -419,7 +355,7 @@
     }
 
     //read scale
-    function getScaleReading() {
+    const getScaleReading = () => {
         var comport = $('#comport_value').val();
 
         if (comport != null) {

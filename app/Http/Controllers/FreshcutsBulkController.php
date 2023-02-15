@@ -23,6 +23,13 @@ class FreshcutsBulkController extends Controller
     {
         $title = "IDT";
 
+        $configs = Cache::remember('freshcuts_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'freshcuts')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
+
         $items = Cache::remember('items_list_sausage', now()->addHours(10), function () {
             return DB::table('items')
                 ->where('blocked', '!=', 1)
@@ -39,6 +46,6 @@ class FreshcutsBulkController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines'));
+        return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs'));
     }
 }
