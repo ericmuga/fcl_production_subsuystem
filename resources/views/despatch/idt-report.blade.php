@@ -2,6 +2,7 @@
 
 @section('content')
 
+<!-- Start export -->
 <div class="col-md-12 text-left" style="margin-bottom: 1%">
     <button class="btn btn-success btn-lg" data-toggle="collapse" data-target="#export_data"><i
             class="fas fa-file-excel"></i> Export History Data</button>
@@ -43,6 +44,7 @@
         </div>
     </div>
 </div>
+<!-- End export -->
 
 <div class="row">
     <div class="col-md-12">
@@ -83,7 +85,7 @@
                                 <th>Batch No</th>
                                 <th>Issue Date</th>
                                 <th>Receipt Date</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                         </thead>
                         <tfoot>
                             <tr>
@@ -111,7 +113,7 @@
                                 <th>Batch No</th>
                                 <th>Issue Date</th>
                                 <th>Receipt Date</th>
-                                <th>Action</th>
+                                {{-- <th>Action</th> --}}
                             </tr>
                         </tfoot>
                         <tbody>
@@ -147,7 +149,7 @@
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 <td>{{ $helpers->amPmDate($data->updated_at) }}</td>
-                                <td>
+                                {{-- <td>
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
                                         data-unit_count="{{ $data->unit_count_per_crate }}"
@@ -156,7 +158,7 @@
                                         title="Correct Received transfer" id="despatchCorrectionModalShow"><i
                                             class="fas fa-edit"></i>
                                     </button>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -169,6 +171,7 @@
     </div>
     <!-- /.col -->
 </div>
+
 
 <div class="modal fade" id="despatchCorrectionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
@@ -221,7 +224,7 @@
                         <div class="card">
                             <div class="card-body form-group">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To uu</label>
                                     <div class="col-sm-9">
                                         <select class="form-control select2 locations" name="chiller_code"
                                             id="chiller_code" required>
@@ -300,6 +303,12 @@
             calculateWeight()
         })
 
+        $('#despatchCorrectionModal').on('shown.bs.modal', function (e) {
+            e.preventDefault()
+            let product_code = $('#product').val()
+            fetchTransferToLocations(product_code)
+        })
+
         $("body").on("click", "#despatchCorrectionModalShow", function (e) {
             e.preventDefault();
 
@@ -319,6 +328,20 @@
         });
     });
 
+    const handleChange = () => {
+        let total_crates = $("#total_crates").val();
+        let full_crates = $("#full_crates").val();
+
+        if (total_crates != '' && full_crates != '') {
+            if (total_crates > full_crates) {
+                $('.incomplete_pieces').show();
+            } else {
+                $('.incomplete_pieces').hide();
+                $('#incomplete_pieces').val(0)
+            }
+        }
+    }
+
     const validateOnSubmit = () => {
         let status = true
 
@@ -334,6 +357,34 @@
         let weight = parseInt(pieces) * parseFloat(unit_measure)
 
         $('#weight').val(weight.toFixed(2))
+    }
+
+    const fetchTransferToLocations = (prod_code) => {
+        $('#loading').collapse('show');
+
+        const url = '/fetch-transferToLocations-axios'
+
+        const request_data = {
+            product_code: prod_code
+        }
+
+        return axios.post(url, request_data)
+            .then((res) => {
+                if (res) {
+                    $('#loading').collapse('hide');
+                    //empty the select list first
+                    $(".locations").empty();
+
+                    $.each(res.data, function (key, value) {
+                        $(".locations").append($("<option></option>").attr("value", value
+                                .chiller_code)
+                            .text(value.description));
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
     }
 
 </script>
