@@ -18,11 +18,40 @@
 <div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>{{ $todays[0]->incoming_stocks }} <sup style="font-size: 20px"> Kgs</sup></h3>
+
+                <p>Todays Total Weight Received</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="{{ route('spices_stock_lines', 'incoming') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>    
+    <div class="col-md-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{ abs($todays[0]->consumed_stocks) }}<sup style="font-size: 20px"> Kgs</sup></h3>
+
+                <p>Todays Total Weight Consumption</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="{{ route('spices_stock_lines', 'consumed') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-md-3 col-6">
+        <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>22,150<sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ $todays[0]->incoming_stocks - abs($todays[0]->consumed_stocks) }}<sup style="font-size: 20px"> Kgs</sup></h3>
 
-                <p>Today's Total Received</p>
+                <p>Today's Total Remaining Weight</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
@@ -33,45 +62,16 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-info">
-            <div class="inner">
-                <h3>200 |<sup style="font-size: 20px"> 20,456 Kgs</sup></h3>
-
-                <p>Total Products Received</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-bag"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>    
-    <div class="col-md-3 col-6">
-        <!-- small box -->
-        <div class="small-box bg-success">
-            <div class="inner">
-                <h3>5,323<sup style="font-size: 20px">Kgs</sup></h3>
-
-                <p>Total Consumption</p>
-            </div>
-            <div class="icon">
-                <i class="ion ion-stats-bars"></i>
-            </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-        </div>
-    </div>
-    <!-- ./col -->
-    <div class="col-md-3 col-6">
-        <!-- small box -->
         <div class="small-box bg-secondary">
             <div class="inner">
-                <h3>23,150<sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ number_format($stocks, 2) }}<sup style="font-size: 20px"> Kgs</sup></h3>
 
-                <p>Stock Levels</p>
+                <p>Current Stock Levels</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            <a href="{{ route('spices_stock') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
     <!-- ./col -->    

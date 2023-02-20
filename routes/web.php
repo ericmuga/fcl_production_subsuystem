@@ -144,7 +144,7 @@ Route::get('/spices/dashboard', [SpicesController::class, 'index'])->name('spice
 Route::get('/spices/template-list', [SpicesController::class, 'templateList'])->name('template_list');
 Route::get('/spices/items-list', [SpicesController::class, 'itemsList'])->name('spices_items');
 Route::get('/spices/stock-list', [SpicesController::class, 'stockList'])->name('spices_stock');
-Route::get('/spices/stock-lines', [SpicesController::class, 'stockLines'])->name('spices_stock_lines');
+Route::get('/spices/stock-lines/{filter?}', [SpicesController::class, 'stockLines'])->name('spices_stock_lines');
 Route::get('/spices/stock-lines-info', [SpicesController::class, 'stockLineInfo'])->name('spices_stock_line_info');
 Route::get('/spices/physical-stock', [SpicesController::class, 'physicalStock'])->name('spices_physical_stock');
 Route::post('/spices/physical-stock/create', [SpicesController::class, 'addPhysicalStock'])->name('add_physical_stock');

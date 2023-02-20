@@ -562,7 +562,7 @@ class ButcheryController extends Controller
 
             $prod_date = now();
             if ($request->prod_date == "yesterday") {
-                $prod_date = now()->subDays(1);
+                $prod_date = today()->subDays(1);
             }
 
             $item = explode('-', $request->product);
@@ -960,7 +960,7 @@ class ButcheryController extends Controller
             ->leftJoin('processes', 'beheading_data.process_code', '=', 'processes.process_code')
             ->select('beheading_data.*', 'products.description AS product_type', 'processes.process')
             ->orderBy('beheading_data.created_at', 'DESC')
-            ->where('beheading_data.created_at', '>=', today()->subDays(7))
+            ->whereDate('beheading_data.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.beheading', compact('title', 'beheading_data', 'helpers'));
@@ -992,7 +992,7 @@ class ButcheryController extends Controller
             ->leftJoin('processes', 'butchery_data.process_code', '=', 'processes.process_code')
             ->select('butchery_data.*', 'products.description AS product_type', 'processes.process')
             ->orderBy('butchery_data.created_at', 'DESC')
-            ->where('butchery_data.created_at', '>=', today()->subDays(7))
+            ->whereDate('butchery_data.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.breaking', compact('title', 'butchery_data', 'helpers'));
@@ -1026,7 +1026,7 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
             ->select('deboned_data.*', 'product_types.description AS product_type', 'processes.process', 'products.description')
             ->orderBy('deboned_data.created_at', 'DESC')
-            ->where('deboned_data.created_at', '>=', today()->subDays(7))
+            ->whereDate('deboned_data.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.deboned', compact('title', 'deboning_data', 'helpers'));
@@ -1059,7 +1059,7 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
             ->select('sales.*', 'products.description')
             ->orderBy('created_at', 'DESC')
-            ->where('sales.created_at', '>=', today()->subDays(7))
+            ->whereDate('sales.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.sales', compact('title', 'sales_data', 'helpers'));
@@ -1077,7 +1077,7 @@ class ButcheryController extends Controller
             ->leftJoin('products', 'butchery_transfers.item_code', '=', 'products.code')
             ->select('butchery_transfers.*', 'products.description')
             ->orderBy('created_at', 'DESC')
-            ->where('butchery_transfers.created_at', '>=', today()->subDays(7))
+            ->whereDate('butchery_transfers.created_at', '>=', today()->subDays(7))
             ->get();
 
         return view('butchery.transfers', compact('title', 'transfers_data', 'products_list', 'helpers'));

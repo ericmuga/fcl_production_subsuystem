@@ -3,10 +3,10 @@
 @section('content-header')
 <div class="container-fluid">
     <div class="row mb-2">
-        <div class="col-sm-5">
-            <h1 class="m-0"> {{ $title }} |<small>Showing <strong>{{ $filter? : 'open' }}</strong> Batches </small></h1>
-        </div><!-- /.col -->
         <div class="col-sm-7">
+            <h1 class="m-0"> {{ $title }} |<small>Showing <strong>{{ $filter? : 'open' }}</strong> Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
+        </div><!-- /.col -->
+        <div class="col-sm-5">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
                     class="fas fa-plus"></i>
                 Create

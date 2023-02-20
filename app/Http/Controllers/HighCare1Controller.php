@@ -66,7 +66,7 @@ class HighCare1Controller extends Controller
                 $q->whereDate('idt_transfers.created_at', today()); // today only
             })
             ->when($filter == '', function ($q) {
-                $q->whereDate('idt_transfers.created_at', '>=', now()->subDays(7)); // today plus last 7 days
+                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays(7)); // today plus last 7 days
             })
             ->where('idt_transfers.transfer_from', '=', '2595')
             ->orderBy('idt_transfers.created_at', 'DESC')

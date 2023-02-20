@@ -21,7 +21,22 @@ class SpicesController extends Controller
     {
         $title = "dashboard";
 
-        return view('spices.dashboard', compact('title'));
+        $stocks = DB::table('spices_stock')
+            ->sum('spices_stock.quantity');
+
+        $todays = DB::table('spices_stock')
+            ->select(
+                DB::raw(" (SELECT COALESCE(SUM(spices_stock.quantity),0) FROM spices_stock
+                    WHERE entry_type=1 and convert(varchar(10), created_at, 102) 
+                                = convert(varchar(10), getdate(), 102)) as incoming_stocks"),
+                DB::raw(" (SELECT COALESCE(SUM(spices_stock.quantity),0) FROM spices_stock
+                    WHERE entry_type=2 and convert(varchar(10), created_at, 102) 
+                                = convert(varchar(10), getdate(), 102)) as consumed_stocks")
+            )
+            ->limit(1)                                
+            ->get();
+
+        return view('spices.dashboard', compact('title', 'stocks', 'todays'));
     }
 
     public function templateList()
@@ -55,14 +70,14 @@ class SpicesController extends Controller
                 'spices_items.unit_measure',
                 DB::raw('SUM(spices_stock.quantity)  as book_stock')
             )
-            ->groupBy('spices_stock.item_code', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure')
+            ->groupBy('spices_stock.item_code', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure',)
             ->orderBy('spices_stock.item_code')
             ->get();
 
         return view('spices.stocks', compact('title', 'stock'));
     }
 
-    public function stockLines(Helpers $helpers)
+    public function stockLines(Helpers $helpers, $filter = null)
     {
         $title = "Stock Lines";
 
@@ -70,6 +85,17 @@ class SpicesController extends Controller
             ->leftJoin('users', 'spices_stock.user_id', '=', 'users.id')
             ->leftJoin('spices_items', 'spices_stock.item_code', '=', 'spices_items.code')
             ->select('spices_stock.*', 'users.username as user', 'spices_items.code', 'spices_items.description', 'spices_items.unit_measure')
+            ->when($filter == '', function ($q) {
+                $q->where('spices_stock.entry_type', '!=', null); // all
+            })
+            ->when($filter == 'incoming', function ($q) {
+                $q->where('spices_stock.entry_type', '=', 1)
+                and $q->whereDate('spices_stock.created_at', today()); // incoming
+            })
+            ->when($filter == 'consumed', function ($q) {
+                $q->where('spices_stock.entry_type', '=', 2)
+                and $q->whereDate('spices_stock.created_at', today()); // consumed
+            })
             ->get();
 
         return view('spices.stock-lines', compact('title', 'lines', 'helpers'));
@@ -238,7 +264,7 @@ class SpicesController extends Controller
                 }
             });
 
-            Toastr::success('Template Header and Lines uploaded successfully', 'Success');
+            Toastr::success('Incoming Dry goods stocks uploaded successfully', 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error Occurred. Wrong Data format!. Records not saved!');
@@ -289,6 +315,8 @@ class SpicesController extends Controller
     {
         $title = "Batches";
 
+        $date_filter = today()->subDays(7);
+
         $templates = DB::table('template_header')
             ->where('template_lines.main_product', 'Yes')
             ->leftJoin('template_lines', 'template_header.template_no', '=', 'template_lines.template_no')
@@ -297,6 +325,7 @@ class SpicesController extends Controller
 
         $batches = DB::table('batches')
             ->where('template_lines.main_product', 'Yes')
+            // ->whereDate('template_lines.created_at', $date_filter) //last 7 days
             ->leftJoin('users', 'batches.user_id', '=', 'users.id')
             ->leftJoin('template_header', 'batches.template_no', '=', 'template_header.template_no')
             ->leftJoin('template_lines', 'batches.template_no', '=', 'template_lines.template_no')
@@ -313,7 +342,7 @@ class SpicesController extends Controller
             ->orderBy('batches.created_at', 'DESC')
             ->get();
 
-        return view('spices.batches', compact('title', 'filter', 'templates', 'batches', 'helpers'));
+        return view('spices.batches', compact('title', 'filter', 'templates', 'batches', 'helpers', 'date_filter'));
     }
 
     public function productionLines($batch_no, Helpers $helpers)
