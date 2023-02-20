@@ -4,7 +4,7 @@
 
 <div class="row">
     <div class="col-md-7">
-        <h3>Stocks Lines Registry </h3>
+        <h3>Stocks Lines Registry | Showing <strong> {{ $range_filter }}</strong> Entries </h3>
     </div>
 </div><br>
 

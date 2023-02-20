@@ -81,6 +81,21 @@ class SpicesController extends Controller
     {
         $title = "Stock Lines";
 
+        switch ($filter) {
+            case 'incoming':
+                $range_filter= 'Todays incoming';
+                break;
+
+            case 'consumed':
+                $range_filter= 'Todays consumed';
+                break;
+            
+            default:
+                # code...
+                $range_filter= 'All';
+                break;
+        }
+
         $lines = DB::table('spices_stock')
             ->leftJoin('users', 'spices_stock.user_id', '=', 'users.id')
             ->leftJoin('spices_items', 'spices_stock.item_code', '=', 'spices_items.code')
@@ -98,7 +113,7 @@ class SpicesController extends Controller
             })
             ->get();
 
-        return view('spices.stock-lines', compact('title', 'lines', 'helpers'));
+        return view('spices.stock-lines', compact('title', 'lines', 'helpers', 'range_filter'));
     }
 
     public function physicalStock(Helpers $helpers)
