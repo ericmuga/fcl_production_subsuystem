@@ -33,8 +33,8 @@ class SpicesController extends Controller
                     WHERE entry_type=2 and convert(varchar(10), created_at, 102) 
                                 = convert(varchar(10), getdate(), 102)) as consumed_stocks")
             )
-            ->limit(1)                                
-            ->get();
+            ->limit(1)
+            ->get()->dd();
 
         return view('spices.dashboard', compact('title', 'stocks', 'todays'));
     }
@@ -83,16 +83,16 @@ class SpicesController extends Controller
 
         switch ($filter) {
             case 'incoming':
-                $range_filter= 'Todays incoming';
+                $range_filter = 'Todays incoming';
                 break;
 
             case 'consumed':
-                $range_filter= 'Todays consumed';
+                $range_filter = 'Todays consumed';
                 break;
-            
+
             default:
                 # code...
-                $range_filter= 'All';
+                $range_filter = 'All';
                 break;
         }
 
@@ -105,11 +105,11 @@ class SpicesController extends Controller
             })
             ->when($filter == 'incoming', function ($q) {
                 $q->where('spices_stock.entry_type', '=', 1)
-                and $q->whereDate('spices_stock.created_at', today()); // incoming
+                    and $q->whereDate('spices_stock.created_at', today()); // incoming
             })
             ->when($filter == 'consumed', function ($q) {
                 $q->where('spices_stock.entry_type', '=', 2)
-                and $q->whereDate('spices_stock.created_at', today()); // consumed
+                    and $q->whereDate('spices_stock.created_at', today()); // consumed
             })
             ->get();
 
