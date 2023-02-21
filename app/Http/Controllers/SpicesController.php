@@ -34,7 +34,7 @@ class SpicesController extends Controller
                                 = convert(varchar(10), getdate(), 102)) as consumed_stocks")
             )
             ->limit(1)
-            ->get()->dd();
+            ->get();
 
         return view('spices.dashboard', compact('title', 'stocks', 'todays'));
     }

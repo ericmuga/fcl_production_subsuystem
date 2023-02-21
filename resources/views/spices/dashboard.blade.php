@@ -12,6 +12,12 @@
 
 @endsection
 
+@php
+    $incoming_stocks = isset($todays[0]->incoming_stocks)? $todays[0]->incoming_stocks: 0;
+    $consumed_stocks = isset($todays[0]->consumed_stocks)? $todays[0]->consumed_stocks: 0;
+    $diff = abs($incoming_stocks) - abs($consumed_stocks);
+@endphp
+
 @section('content')
 <!-- Small boxes (Stat box) -->
 <h5 class="mb-2">Received Items from DGS</h5>
@@ -20,7 +26,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $todays[0]->incoming_stocks }} <sup style="font-size: 20px"> Kgs</sup></h3>
+                <h3>{{ number_format($incoming_stocks, 2) }} <sup style="font-size: 20px"> Kgs</sup></h3>
 
                 <p>Todays Total Weight Received</p>
             </div>
@@ -34,7 +40,7 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ abs($todays[0]->consumed_stocks) }}<sup style="font-size: 20px"> Kgs</sup></h3>
+                <h3>{{ number_format($consumed_stocks,2) }}<sup style="font-size: 20px"> Kgs</sup></h3>
 
                 <p>Todays Total Weight Consumption</p>
             </div>
@@ -49,7 +55,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ $todays[0]->incoming_stocks - abs($todays[0]->consumed_stocks) }}<sup style="font-size: 20px"> Kgs</sup></h3>
+                <h3>{{ number_format($diff, 2) }}<sup style="font-size: 20px"> Kgs</sup></h3>
 
                 <p>Today's Total Remaining Weight</p>
             </div>
