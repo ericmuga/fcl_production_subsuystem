@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Helpers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -47,5 +48,36 @@ class FreshcutsBulkController extends Controller
             ->get();
 
         return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs'));
+    }
+
+    public function idtReport(Helpers $helpers, $filter = null)
+    {
+        $title = "IDT Report";
+
+        switch ($filter) {
+            case 'incoming':
+                $range_filter = 'Todays Transfers';
+                break;
+
+            default:
+                # code...
+                $range_filter = 'Last 7 days';
+                break;
+        }
+
+        $transfer_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->when($filter == 'today', function ($q) {
+                $q->whereDate('idt_transfers.created_at', today()); // today only
+            })
+            ->when($filter == '', function ($q) {
+                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays(7)); // today plus last 7 days
+            })
+            ->get();
+
+        return view('fresh_bulk.idt-report', compact('title', 'transfer_lines', 'helpers', 'range_filter'));
     }
 }
