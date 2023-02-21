@@ -1,7 +1,7 @@
 @extends('layouts.freshcuts-bulk_master')
 
 @section('content')
-<form id="form-save-scale3" class="form-prevent-multiple-submits" action="{{ route('butchery_scale3_save') }}"
+<form id="form-save-freshcuts" class="form-prevent-multiple-submits" action="{{ route('freshcuts_create_idt') }}"
     method="post">
     @csrf
     <div class="card-group">
@@ -48,7 +48,7 @@
                         <select class="form-control select2" name="carriage_type" id="carriage_type" required>
                             <option disabled selected value> -- select an option -- </option>
                             <option value="1.8">Crate</option>
-                            <option value="24">Van</option>
+                            <option value="40">Van</option>
                         </select>
                     </div>
                     <div hidden id="crates_div" class="col-md-4">
@@ -141,81 +141,74 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"> Scale 3 Deboned output data | <span id="subtext-h1-title"><small> entries
-                                ordered by
-                                latest</small> </span></h3>
-                </div>
-                <!-- /.card-header -->
-                <div class="card-body">
-                    <div class="hidden" hidden>{{ $i = 1 }}</div>
-                    <div class="table-responsive">
-                        <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Code </th>
-                                    <th>product </th>
-                                    <th>Product Type</th>
-                                    <th>Production Process</th>
-                                    <th>Scale Weight(kgs)</th>
-                                    <th>Net Weight(kgs)</th>
-                                    <th>No. of Crates</th>
-                                    <th>No. of Pieces</th>
-                                    <th>Edited</th>
-                                    <th>Date </th>
-                                </tr>
-                            </thead>
-                            <tfoot>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Code </th>
-                                    <th>product </th>
-                                    <th>Product Type</th>
-                                    <th>Production Process</th>
-                                    <th>Scale Weight(kgs)</th>
-                                    <th>Net Weight(kgs)</th>
-                                    <th>No. of Crates</th>
-                                    <th>No. of Pieces</th>
-                                    <th>Edited</th>
-                                    <th>Date </th>
-                                </tr>
-                            </tfoot>
-                            <tbody>
-                                {{-- @foreach($deboning_data as $data)
-                                <tr>
-                                    <td>{{ $i++ }}</td>
-                                <td id="itemCodeModalShow" data-id="{{$data->id}}"
-                                    data-weight="{{ number_format($data->actual_weight, 2) }}"
-                                    data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}"
-                                    data-type_id="{{ $data->type_id }}"
-                                    data-production_process="{{ $data->process_code }}"
-                                    data-item="{{ $data->description }}"><a href="#">{{ $data->item_code }}</a>
+                <div class="table-responsive">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                        width="100%">
+                        <thead>
+                            <tr>
+                                <th>IDT No</th>
+                                <th>Product Code</th>
+                                <th>Product</th>
+                                <th>Std Unit Measure</th>
+                                <th>Location </th>
+                                <th>Chiller</th>
+                                <th>Total Crates</th>
+                                <th>Full Crates</th>
+                                <th>Incomplete Crate Pieces</th>
+                                <th>Total Pieces</th>
+                                <th>Total Weight</th>
+                                <th>Export No</th>
+                                <th>Batch No</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>IDT No</th>
+                                <th>Product Code</th>
+                                <th>Product</th>
+                                <th>Std Unit Measure</th>
+                                <th>Location </th>
+                                <th>Chiller</th>
+                                <th>Total Crates</th>
+                                <th>Full Crates</th>
+                                <th>Incomplete Crate Pieces</th>
+                                <th>Total Pieces</th>
+                                <th>Total Weight</th>
+                                <th>Export No</th>
+                                <th>Batch No</th>
+                                <th>Date</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($transfer_lines as $data)
+                            <tr>
+                                <td id="editIdtModalShow" data-id="{{$data->id}}" data-product="{{ $data->product}}"
+                                    data-unit_measure="{{ $data->qty_per_unit_of_measure }}"
+                                    data-total_pieces="{{ $data->total_pieces }}"
+                                    data-total_weight="{{ $data->total_weight }}"
+                                    data-transfer_type="{{ $data->transfer_type }}"
+                                    data-description="{{ $data->description }}" data-batch_no="{{ $data->batch_no }}"><a
+                                        href="#">{{ $data->id }}</a>
                                 </td>
+                                <td>{{ $data->product_code }}</td>
+                                <td>{{ $data->product }}</td>
+                                <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
+                                <td>{{ $data->location_code }}</td>
+                                <td>{{ $data->chiller_code }}</td>
+                                <td>{{ $data->total_crates }}</td>
+                                <td>{{ $data->full_crates }}</td>
+                                <td>{{ $data->incomplete_crate_pieces }}</td>
+                                <td>{{ $data->total_pieces }}</td>
+                                <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->description }}</td>
-                                <td> {{ $data->product_type }}</td>
-                                <td> {{ $data->process }}</td>
-                                <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                <td> {{ number_format($data->net_weight, 2) }}</td>
-                                <td> {{ $data->no_of_crates }}</td>
-                                <td> {{ $data->no_of_pieces }}</td>
-                                @if ($data->edited == 1)
-                                <td>
-                                    <span class="badge badge-warning">Yes</span>
-                                </td>
-                                @else
-                                <td>
-                                    <span class="badge badge-success">No</span>
-                                </td>
-                                @endif
-                                <td> {{ $data->created_at }}</td>
-                                </tr>
-                                @endforeach --}}
-                            </tbody>
-                        </table>
-                    </div>
+                                <td>{{ $data->batch_no }}</td>
+                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.card-body -->
             </div>
             <!-- /.card -->
             <!-- /.col -->
@@ -295,7 +288,7 @@
             alert('please enter no of crates')
 
         } else {
-            if(parseFloat(tare) == 24) {
+            if(parseFloat(tare) == 40) {
                 // meat van
                 $('#total_tare').val(tare)
                 total_tare += parseFloat(tare)

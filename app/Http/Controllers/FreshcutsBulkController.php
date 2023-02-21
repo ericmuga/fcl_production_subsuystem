@@ -55,7 +55,7 @@ class FreshcutsBulkController extends Controller
         $title = "IDT Report";
 
         switch ($filter) {
-            case 'incoming':
+            case 'today':
                 $range_filter = 'Todays Transfers';
                 break;
 
