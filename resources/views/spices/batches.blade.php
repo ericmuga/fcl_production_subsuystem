@@ -33,7 +33,7 @@
                                     <option value="">Select template</option>
                                     @foreach($templates as $tm)
                                     <option value="{{ $tm->template_no.'-'.$tm->template_output }}">
-                                        {{ $tm->template_name }}
+                                        {{ $tm->template_no.'-'.$tm->template_name }}
                                     </option>
                                     @endforeach
                                 </select>
