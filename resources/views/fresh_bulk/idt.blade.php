@@ -13,12 +13,9 @@
                             <label for="exampleInputPassword1"> Product</label>
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
-                                {{-- @foreach($products as $product)
-                                <option
-                                    value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
-                                {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->description.'-'.$product->product_type_name }}
-                                </option>
-                                @endforeach --}}
+                                @foreach($items as $t)
+                                <option value="{{ $t->code }}">{{ $t->code.'-'.$t->description.'-'.$t->barcode }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </div>
@@ -28,9 +25,9 @@
                         <label for="exampleInputPassword1">Transfer To</label>
                         <select class="form-control select2" name="transfer_to" id="transfer_to" required>
                             <option disabled selected value> -- select an option -- </option>
-                            <option value="1">Sausage</option>
-                            <option value="2">High Care</option>
-                            <option value="3">Despatch</option>
+                            <option value="2055">Sausage</option>
+                            <option value="2500">High Care</option>
+                            <option value="3535">Despatch</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -107,8 +104,8 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Batch No </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value=""
-                        name="no_of_pieces" placeholder="" required>
+                    <input type="text" class="form-control" onClick="this.select();" id="batch_no" value=""
+                        name="batch_no" placeholder="" required>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()"

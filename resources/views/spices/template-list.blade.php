@@ -73,7 +73,7 @@
                             @foreach($templates as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td><a href="{{ route('template_lines', $data->template_no) }}">{{ $data->template_name }}</a></td>
+                                <td><a href="{{ route('template_lines', $data->template_no) }}">{{ $data->template_no }}</a></td>
                                 <td>{{ $data->template_name }}</td>
                                 @if ($data->blocked == 0)
                                 <td><span class="badge badge-success">No</span></td>

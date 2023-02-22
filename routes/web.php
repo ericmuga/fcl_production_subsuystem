@@ -121,7 +121,7 @@ Route::get('/stocks/transactions', [ButcheryStockController::class, 'stocksTrans
 Route::prefix('freshcuts_bulk')->group(function () {
     Route::get('/dashboard', [FreshcutsBulkController::class, 'index'])->name('freshcuts_bulk_dashboard');
     Route::get('/idt', [FreshcutsBulkController::class, 'getIdt'])->name('freshcuts_bulk_idt');
-    Route::get('/idt/create', [FreshcutsBulkController::class, 'createIdt'])->name('freshcuts_create_idt');
+    Route::post('/idt/create', [FreshcutsBulkController::class, 'createIdt'])->name('freshcuts_create_idt');
     Route::get('/idt-report/{filter?}', [FreshcutsBulkController::class, 'idtReport'])->name('freshcuts_bulk_report');
 });
 

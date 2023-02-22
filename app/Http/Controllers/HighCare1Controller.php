@@ -22,7 +22,7 @@ class HighCare1Controller extends Controller
         $title = "Todays-Entries";
 
         $transfers = DB::table('idt_transfers')
-            ->whereDate('idt_transfers.created_at', today())            
+            ->whereDate('idt_transfers.created_at', today())
             ->whereIn('idt_transfers.transfer_from', ['2595'])
             ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->groupBy('idt_transfers.transfer_from')
@@ -54,7 +54,7 @@ class HighCare1Controller extends Controller
         return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers'));
     }
 
-    public function idtReport(Helpers $helpers, $filter=null)
+    public function idtReport(Helpers $helpers, $filter = null)
     {
         $title = "IDT-Report";
 
@@ -73,16 +73,6 @@ class HighCare1Controller extends Controller
             ->get();
 
         return view('highcare1.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers'));
-    }
-
-    private function getLocationCode($export_status, $location_code)
-    {
-        $location = $location_code;
-
-        if($export_status == 1){
-             $location = 3600;
-        }
-        return $location;
     }
 
     public function saveTransfer(Request $request, Helpers $helpers)
@@ -105,7 +95,7 @@ class HighCare1Controller extends Controller
             // try save
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product,
-                'location_code' => $this->getLocationCode($request->for_export, $request->location_code),
+                'location_code' => $helpers->getLocationCode($request->for_export, $request->location_code),
                 'chiller_code' => $request->chiller_code,
                 'total_crates' => $request->total_crates,
                 'full_crates' => $request->full_crates,

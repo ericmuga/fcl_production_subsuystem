@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Helpers;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -43,11 +44,52 @@ class FreshcutsBulkController extends Controller
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
-            ->where('idt_transfers.transfer_from', '2595')
+            ->where('idt_transfers.transfer_from', '1570')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
         return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs'));
+    }
+
+    public function createIdt(Request $request, Helpers $helpers)
+    {
+        dd($request->all());
+
+        switch ($request->transfer_type) {
+            case '1':
+                $transfer_from = '';
+                break;
+
+            default:
+                # code...
+                $range_filter = '35';
+                break;
+        }
+
+        try {
+            // try save
+            DB::table('idt_transfers')->insert([
+                'product_code' => $request->product,
+                'location_code' => $request->transfer_to, //transfer to location
+                'chiller_code' => $request->chiller_code,
+                'total_pieces' => $request->no_of_pieces,
+                'total_weight' => $request->net,
+                'transfer_type' => $request->transfer_type,
+                // 'transfer_from' => $transfer_from,
+                'description' => $request->desc,
+                'order_no' => $request->order_no,
+                'batch_no' => $request->batch_no,
+                'user_id' => $helpers->authenticatedUserId(),
+            ]);
+
+            Toastr::success('IDT Transfer recorded successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
     }
 
     public function idtReport(Helpers $helpers, $filter = null)
@@ -66,6 +108,7 @@ class FreshcutsBulkController extends Controller
         }
 
         $transfer_lines = DB::table('idt_transfers')
+            ->where('idt_transfers.transfer_from', '1570')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')

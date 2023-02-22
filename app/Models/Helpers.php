@@ -286,8 +286,18 @@ class Helpers
     public function generateIdtBatch()
     {
         $alphas = 'abcdefghijklmnopqrstuvwxyz';
-        $batch_month = (int)date('m') - 1 ;
-        
-        return date('d'). strtoupper(mb_substr($alphas, $batch_month, 1));
+        $batch_month = (int)date('m') - 1;
+
+        return date('d') . strtoupper(mb_substr($alphas, $batch_month, 1));
+    }
+
+    public function getLocationCode($export_status, $location_code)
+    {
+        $location = $location_code;
+
+        if ($export_status == 1) {
+            $location = 3600;
+        }
+        return $location;
     }
 }
