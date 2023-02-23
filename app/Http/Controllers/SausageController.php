@@ -64,7 +64,7 @@ class SausageController extends Controller
             ->count('sausage_entries.barcode');
 
         $transfers = DB::table('idt_transfers')
-            ->whereDate('idt_transfers.created_at', today())            
+            ->whereDate('idt_transfers.created_at', today())
             ->where('idt_transfers.transfer_from', '=', '2055')
             ->select(DB::raw('SUM(idt_transfers.total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'))
             ->get();
@@ -125,13 +125,13 @@ class SausageController extends Controller
         $to_date = Carbon::parse($request->to_date);
 
         $entries = DB::table('sausage_entries')
-                ->whereDate('sausage_entries.created_at', '>=', $from_date)
-                ->whereDate('sausage_entries.created_at', '<=', $to_date)
-                ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
-                ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure', DB::raw('COUNT(sausage_entries.barcode) * items.qty_per_unit_of_measure  as total_tonnage'))
-                ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
-                ->orderBy('total_count', 'DESC')
-                ->get();
+            ->whereDate('sausage_entries.created_at', '>=', $from_date)
+            ->whereDate('sausage_entries.created_at', '<=', $to_date)
+            ->leftJoin('items', 'sausage_entries.barcode', '=', 'items.barcode')
+            ->select('sausage_entries.barcode', 'items.code', 'items.description', DB::raw('COUNT(sausage_entries.barcode) as total_count'), 'items.qty_per_unit_of_measure', DB::raw('COUNT(sausage_entries.barcode) * items.qty_per_unit_of_measure  as total_tonnage'))
+            ->groupBy('sausage_entries.barcode', 'items.code', 'items.description', 'items.qty_per_unit_of_measure')
+            ->orderBy('total_count', 'DESC')
+            ->get();
 
         $exports = Session::put('session_export_data', $entries);
 
@@ -283,11 +283,11 @@ class SausageController extends Controller
     {
         $location = $location_code;
 
-        if($export_status == 1){
-             $location = 3600;
+        if ($export_status == 1) {
+            $location = 3600;
         }
         return $location;
-    } 
+    }
 
     public function saveTransfer(Request $request, Helpers $helpers)
     {
@@ -320,7 +320,7 @@ class SausageController extends Controller
                 'transfer_from' => '2055',
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
-                'batch_no' => $request->batch. $request->batch_no,
+                'batch_no' => $request->batch . $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 
@@ -337,17 +337,25 @@ class SausageController extends Controller
     public function editIdtIssue(Request $request, Helpers $helpers)
     {
         try {
-            DB::transaction(function () use ($request, $helpers) {
+            $location_code = '3535';
+
+            if ($request->for_export_edit == 1) {
+                # export...
+                $location_code = '3600';
+            }
+
+            DB::transaction(function () use ($request, $helpers, $location_code) {
                 //update idt issue
                 DB::table('idt_transfers')->where('id', $request->item_id)
-                ->update([
-                    'description' => $request->product,
-                    'transfer_type' => $request->for_export_edit,
-                    'batch_no' => $request->batch. $request->batch_no_edit,
-                    'total_pieces' => (int)$request->pieces_edit,
-                    'total_weight' => $request->weight_edit,
-                    'edited' => 1,
-                ]);
+                    ->update([
+                        'description' => $request->product,
+                        'transfer_type' => $request->for_export_edit,
+                        'location_code' => $location_code,
+                        'batch_no' => $request->batch . $request->batch_no_edit,
+                        'total_pieces' => (int)$request->pieces_edit,
+                        'total_weight' => $request->weight_edit,
+                        'edited' => 1,
+                    ]);
 
                 //insert change logs
                 DB::table('idt_changelogs')->insert([
@@ -370,7 +378,7 @@ class SausageController extends Controller
         }
     }
 
-    public function idtReport(Helpers $helpers, $filter=null)
+    public function idtReport(Helpers $helpers, $filter = null)
     {
         $title = "IDT-Report";
 
