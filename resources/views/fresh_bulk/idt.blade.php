@@ -129,7 +129,7 @@
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#slicing_output_show"><i
             class="fa fa-plus"></i>
-        Output
+        Entries
     </button>
 </div>
 

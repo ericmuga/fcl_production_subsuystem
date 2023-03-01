@@ -53,7 +53,12 @@ class FreshcutsBulkController extends Controller
 
     public function createIdt(Request $request, Helpers $helpers)
     {
-        dd($request->all());
+        if (config('env') != 'local') {
+            # code...
+            dd("Under development ..please wait");
+        } else {
+            dd($request->all());
+        }
 
         switch ($request->transfer_type) {
             case '1':
