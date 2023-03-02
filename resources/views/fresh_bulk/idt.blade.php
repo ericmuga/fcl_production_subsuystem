@@ -14,7 +14,8 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($items as $t)
-                                <option value="{{ $t->code }}">{{ $t->code.'-'.$t->description.'-'.$t->barcode }}</option>
+                                <option value="{{ $t->code }}">{{ $t->code.'-'.$t->description.'-'.$t->barcode }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -24,10 +25,10 @@
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Transfer To</label>
                         <select class="form-control select2" name="transfer_to" id="transfer_to" required>
-                            <option disabled selected value> -- select an option -- </option>
+                            {{-- <option disabled selected value> -- select an option -- </option>
                             <option value="2055">Sausage</option>
-                            <option value="2500">High Care</option>
-                            <option value="3535">Despatch</option>
+                            <option value="2500">High Care</option> --}}
+                            <option selected value="3535">Despatch</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -51,8 +52,8 @@
                     <div hidden id="crates_div" class="col-md-4">
                         <div class="form-group">
                             <label for="exampleInputPassword1">No. of Crates </label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
-                                value="" name="no_of_crates" min="1" placeholder="" required>
+                            <input type="number" class="form-control" id="no_of_crates"
+                                value="" name="no_of_crates" min="1" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -98,14 +99,34 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value=""
-                        name="no_of_pieces" placeholder="" required>
+                    <label for="exampleInputPassword1">Transfer To Chiller </label>
+                    <select class="form-control select2 locations" name="chiller_code" id="chiller_code" required>
+                        <option value="">Select chiller</option>
+                    </select>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Batch No </label>
-                    <input type="text" class="form-control" onClick="this.select();" id="batch_no" value=""
-                        name="batch_no" placeholder="" required>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">No. of pieces </label>
+                        <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value=""
+                            name="no_of_pieces" placeholder="" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Batch No </label>
+                        <input type="text" class="form-control" onClick="this.select();" id="batch_no" value=""
+                            name="batch_no" placeholder="" required>
+                    </div>
+                </div>
+                <div hidden id="export_desc_div" class="row form-group">
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Description </label>
+                        <input type="text" class="form-control" id="desc" value=""
+                            name="desc" placeholder="">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Order No </label>
+                        <input type="text" class="form-control" id="order_no" value=""
+                            name="order_no" placeholder="">
+                    </div>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()"
@@ -237,6 +258,11 @@
 
         }
 
+        $(document).on('change', '#product', function () {
+            let product_code = $(this).val()
+            fetchTransferToLocations(product_code);
+        });
+
         $('#manual_weight').change(function () {
             var manual_weight = document.getElementById('manual_weight');
             var reading = document.getElementById('reading');
@@ -254,7 +280,7 @@
         $('#carriage_type').on('select2:select', function (e) {
             let carriage = $(this).val()
             let element = document.getElementById("crates_div")
-                        
+
             if (carriage == '1.8') {
                 element.removeAttribute("hidden")
                 $('#carriage_type').select2('destroy').select2();
@@ -266,7 +292,18 @@
             $('#tareweight').val(carriage)
         });
 
-        $('#no_of_crates').on("input",function () {
+        $('#transfer_type').on('select2:select', function (e) {
+            let selected_type = $(this).val()
+            let element = document.getElementById("export_desc_div")
+
+            if (selected_type == '2') {
+                element.removeAttribute("hidden")
+            } else {
+                element.setAttribute("hidden", "hidden");
+            }
+        });
+
+        $('#no_of_crates').on("input", function () {
             getNet()
         });
 
@@ -275,17 +312,43 @@
         });
     });
 
+    const fetchTransferToLocations = (prod_code) => {
+
+        const url = '/fetch-transferToLocations-axios'
+
+        const request_data = {
+            product_code: prod_code
+        }
+
+        return axios.post(url, request_data)
+            .then((res) => {
+                if (res) {
+                    //empty the select list first
+                    $(".locations").empty();
+
+                    $.each(res.data, function (key, value) {
+                        $(".locations").append($("<option></option>").attr("value", value
+                                .chiller_code)
+                            .text(value.location_code + ' ' + value.description));
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
+
     const getTotalTareweight = () => {
         let total_tare = 0
 
         let tare = $('#carriage_type').val()
         let no_of_crates = $('#no_of_crates').val()
 
-        if(tare == 1.8 && no_of_crates == '') {
+        if (tare == 1.8 && no_of_crates == '') {
             alert('please enter no of crates')
 
         } else {
-            if(parseFloat(tare) == 40) {
+            if (parseFloat(tare) == 40) {
                 // meat van
                 $('#total_tare').val(tare)
                 total_tare += parseFloat(tare)
@@ -305,14 +368,14 @@
         let tare = $('#carriage_type').val()
         let reading = $('#reading').val()
 
-        if(tare == '') {
+        if (tare == '') {
             alert('Please select carriage type first')
         } else {
             // proceed
             total_tare = getTotalTareweight()
         }
 
-        net = parseFloat(reading) - parseFloat(total_tare)
+        net = (parseFloat(reading) - parseFloat(total_tare)).toFixed(2)
         $('#net').val(net)
     }
 
@@ -322,24 +385,19 @@
         var net = $('#net').val();
         var product_type = $('#product_type').val();
         var no_of_pieces = $('#no_of_pieces').val();
-        var process = $('#production_process').val();
-        var process_substring = process.substr(0, process.indexOf(' '));
-        let loading_val = $('#loading_value').val()
+        var transfer_type = $('#transfer_type').val();
+        var desc = $('#desc').val();
+        var order_no = $('#order_no').val();
 
-        if (loading_val != 1) {
-            alert('please wait for loading process code to complete')
-            $valid = false;
-        }
-
-        if (net == "" || net <= 0.00) {
+        if (net == "" || parseFloat(net) <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
         }
 
         //check main product pieces
-        if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone') {
+        if (transfer_type == '2' && (desc == '' || order_no == '')) {
             $valid = false;
-            alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product in deboning process");
+            alert("Please ensure you have description set,\nand order no. for exports");
         }
         return $valid;
     }

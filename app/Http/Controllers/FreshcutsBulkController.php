@@ -21,7 +21,7 @@ class FreshcutsBulkController extends Controller
         return view('fresh_bulk.dashboard', compact('title'));
     }
 
-    public function getIdt()
+    public function getIdt(Helpers $helpers)
     {
         $title = "IDT";
 
@@ -48,26 +48,19 @@ class FreshcutsBulkController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs'));
+        return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs', 'helpers'));
     }
 
     public function createIdt(Request $request, Helpers $helpers)
     {
-        if (config('env') != 'local') {
-            # code...
-            dd("Under development ..please wait");
-        } else {
-            dd($request->all());
-        }
-
         switch ($request->transfer_type) {
             case '1':
-                $transfer_from = '';
+                $transfer_from = '1570';
                 break;
 
             default:
                 # code...
-                $range_filter = '35';
+                $transfer_from = '1570';
                 break;
         }
 
@@ -79,8 +72,11 @@ class FreshcutsBulkController extends Controller
                 'chiller_code' => $request->chiller_code,
                 'total_pieces' => $request->no_of_pieces,
                 'total_weight' => $request->net,
+                'total_crates' => $request->no_of_crates ?: 0,
+                'full_crates' => $request->no_of_crates ?: 0,
+                'incomplete_crate_pieces' => $request->no_of_crates ?: 0,
                 'transfer_type' => $request->transfer_type,
-                // 'transfer_from' => $transfer_from,
+                'transfer_from' => $transfer_from,
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
