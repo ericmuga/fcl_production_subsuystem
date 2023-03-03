@@ -109,6 +109,8 @@ Route::get('butchery-marination', [ButcheryController::class, 'weighMarination']
 Route::post('butchery-marination/save', [ButcheryController::class, 'saveMarinationData'])->name('save_marination');
 Route::post('butchery-marination/update', [ButcheryController::class, 'updateMarinationData'])->name('update_marination');
 
+Route::get('/insert', [ButcheryController::class, 'insertItemLocations']);
+
 /*-------------End Butchery------------------ */
 
 
@@ -122,6 +124,7 @@ Route::prefix('freshcuts_bulk')->group(function () {
     Route::get('/dashboard', [FreshcutsBulkController::class, 'index'])->name('freshcuts_bulk_dashboard');
     Route::get('/idt', [FreshcutsBulkController::class, 'getIdt'])->name('freshcuts_bulk_idt');
     Route::post('/idt/create', [FreshcutsBulkController::class, 'createIdt'])->name('freshcuts_create_idt');
+    Route::post('/edit/idt-issue', [FreshcutsBulkController::class, 'editIdtIssue'])->name('freshcuts_edit_idt');
     Route::get('/idt-report/{filter?}', [FreshcutsBulkController::class, 'idtReport'])->name('freshcuts_bulk_report');
 });
 

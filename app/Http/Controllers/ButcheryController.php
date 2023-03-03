@@ -1194,4 +1194,9 @@ class ButcheryController extends Controller
                 ->withInput();
         }
     }
+
+    public function insertItemLocations(Helpers $helpers)
+    {
+        return $helpers->insertItemLocations();
+    }
 }

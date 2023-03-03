@@ -24,7 +24,7 @@
                 <div class="row form-group">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Transfer To</label>
-                        <select class="form-control select2" name="transfer_to" id="transfer_to" required>
+                        <select class="form-control select2" disabled name="transfer_to" id="transfer_to" required>
                             {{-- <option disabled selected value> -- select an option -- </option>
                             <option value="2055">Sausage</option>
                             <option value="2500">High Care</option> --}}
@@ -52,8 +52,8 @@
                     <div hidden id="crates_div" class="col-md-4">
                         <div class="form-group">
                             <label for="exampleInputPassword1">No. of Crates </label>
-                            <input type="number" class="form-control" id="no_of_crates"
-                                value="" name="no_of_crates" min="1" placeholder="">
+                            <input type="number" class="form-control" id="no_of_crates" value="" name="no_of_crates"
+                                min="1" placeholder="">
                         </div>
                     </div>
                 </div>
@@ -103,29 +103,35 @@
                     <select class="form-control select2 locations" name="chiller_code" id="chiller_code" required>
                         <option value="">Select chiller</option>
                     </select>
-                </div>
+                </div> <br>
                 <div class="row form-group">
-                    <div class="col-md-6">
-                        <label for="exampleInputPassword1">No. of pieces </label>
-                        <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value=""
-                            name="no_of_pieces" placeholder="" required>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="exampleInputPassword1">Batch No </label>
-                        <input type="text" class="form-control" onClick="this.select();" id="batch_no" value=""
-                            name="batch_no" placeholder="" required>
+                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
+                    <div class="col-sm-9">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}"
+                                    id="batch" name="batch" required readonly>
+                            </div>
+                            <div class="col-sm-6">
+                                <select class="form-control select2" name="vendor" id="vendor" required>
+                                    <option value="">Select vendor No</option>
+                                    @foreach($tags as $t)
+                                    <option value="{{ $t->vendor_tag }}">{{ $t->vendor_tag }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div hidden id="export_desc_div" class="row form-group">
                     <div class="col-md-6">
-                        <label for="exampleInputPassword1">Description </label>
-                        <input type="text" class="form-control" id="desc" value=""
-                            name="desc" placeholder="">
+                        <label for="exampleInputPassword1">Export Customer </label>
+                        <input type="text" class="form-control" id="desc" value="" name="desc" placeholder="">
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Order No </label>
-                        <input type="text" class="form-control" id="order_no" value=""
-                            name="order_no" placeholder="">
+                        <input type="text" class="form-control" id="order_no" value="" name="order_no" placeholder="">
                     </div>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
@@ -158,7 +164,7 @@
     <hr>
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
+            <div class="card-body">
                 <div class="table-responsive">
                     <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
                         width="100%">
@@ -235,6 +241,87 @@
 </div>
 <!-- slicing ouput data show -->
 
+<!-- Edit Modal -->
+<div id="editIdtModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <!--Start create user modal-->
+        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('freshcuts_edit_idt')}}"
+            method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Idt No: <strong><input style="border:none"
+                                type="text" id="item_id" name="item_id" value="" readonly></strong></h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-group">
+                        <div class="card">
+                            <div class="card-body" style="">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control" value=""
+                                                id="edit_product" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body form-group">
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer Type </label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control select2" name="for_export_edit" id="for_export_edit"
+                                            selected="selected" readonly>
+                                            <option value="" selected disabled>Transfer Type </option>
+                                            <option value="0"> Local</option>
+                                            <option value="1"> Export</option>
+                                        </select>
+                                    </div>
+                                </div><br>
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" value="" id="batch_no_edit"
+                                            name="batch_no_edit" required placeholder="" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body text-center form-group">                                
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Net
+                                        Weight(Kgs)</label>
+                                    <div class="col-sm-6">
+                                        <input type="number" step="0.1" class="form-control" value="0" id="weight_edit" readonly
+                                            name="weight_edit" placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
+                            onclick="return validateOnEditSubmit()" type="submit">
+                            <i class="fa fa-save"></i> Cancel Transfer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--End Edit scale1 modal-->
+
 @endsection
 
 @section('scripts')
@@ -309,6 +396,26 @@
 
         $('#reading').on("input", function () {
             getNet()
+        });
+
+        $("body").on("click", "#editIdtModalShow", function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('id');
+            let product = $(this).data('product');
+            let weight = $(this).data('total_weight');
+            let transfer_type = $(this).data('transfer_type');
+            let batch_no = $(this).data('batch_no');
+
+            $('#item_id').val(id);
+            $('#edit_product').val(product);
+            $('#weight_edit').val(weight);
+            $('#for_export_edit').val(transfer_type);
+            $('#batch_no_edit').val(batch_no);
+
+            $('#for_export_edit').select2('destroy').select2();
+
+            $('#editIdtModal').modal('show');
         });
     });
 

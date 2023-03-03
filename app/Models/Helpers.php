@@ -300,4 +300,24 @@ class Helpers
         }
         return $location;
     }
+
+    public function insertItemLocations()
+    {
+        $item_codes = DB::table('items')
+            ->select('code')
+            ->get();
+
+        $location_codes = DB::table('items')
+            ->select('code')
+            ->distinct()
+            ->get()->toArray();
+
+        foreach ($item_codes as $code) {
+            # code...
+            if (!in_array($code, $location_codes)) {
+                dd($code);
+            }
+        }
+        return 1;
+    }
 }
