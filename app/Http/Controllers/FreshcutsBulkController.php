@@ -53,17 +53,6 @@ class FreshcutsBulkController extends Controller
 
     public function createIdt(Request $request, Helpers $helpers)
     {
-        switch ($request->transfer_type) {
-            case '1':
-                $transfer_from = '1570';
-                break;
-
-            default:
-                # code...
-                $transfer_from = '1570';
-                break;
-        }
-
         try {
             // try save
             DB::table('idt_transfers')->insert([
@@ -76,7 +65,7 @@ class FreshcutsBulkController extends Controller
                 'full_crates' => $request->no_of_crates ?: 0,
                 'incomplete_crate_pieces' => $request->no_of_crates ?: 0,
                 'transfer_type' => $request->transfer_type,
-                'transfer_from' => $transfer_from,
+                'transfer_from' => '1570',
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,

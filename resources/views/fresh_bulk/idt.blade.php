@@ -14,7 +14,7 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($items as $t)
-                                <option value="{{ $t->code }}">{{ $t->code.'-'.$t->description.'-'.$t->barcode }}
+                                <option value="{{ $t->code }}">{{ $t->code.' - '.$t->description.'- '.$t->barcode }}
                                 </option>
                                 @endforeach
                             </select>
