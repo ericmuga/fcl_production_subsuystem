@@ -124,7 +124,7 @@ Route::prefix('freshcuts_bulk')->group(function () {
     Route::get('/dashboard', [FreshcutsBulkController::class, 'index'])->name('freshcuts_bulk_dashboard');
     Route::get('/idt', [FreshcutsBulkController::class, 'getIdt'])->name('freshcuts_bulk_idt');
     Route::post('/idt/create', [FreshcutsBulkController::class, 'createIdt'])->name('freshcuts_create_idt');
-    Route::post('/edit/idt-issue', [FreshcutsBulkController::class, 'editIdtIssue'])->name('freshcuts_edit_idt');
+    Route::post('/cancel/idt-issue', [FreshcutsBulkController::class, 'cancelIdtIssue'])->name('freshcuts_cancel_idt');
     Route::get('/idt-report/{filter?}', [FreshcutsBulkController::class, 'idtReport'])->name('freshcuts_bulk_report');
 });
 

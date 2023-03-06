@@ -183,6 +183,7 @@
                                 <th>Total Weight</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
+                                <th>Status</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -201,6 +202,7 @@
                                 <th>Total Weight</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
+                                <th>Status</th>
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -227,6 +229,13 @@
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
+                                @if ($data->total_weight == 0 )
+                                <td><span class="badge badge-danger">cancelled</span></td>
+                                @elseif($data->total_weight > 0 && $data->received_by != null)
+                                <td><span class="badge badge-success">received</span></td>
+                                @elseif($data->total_weight > 0 && $data->received_by == null)
+                                <td><span class="badge badge-info">waiting receipt</span></td>
+                                @endif
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
@@ -245,12 +254,12 @@
 <div id="editIdtModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-xl">
         <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('freshcuts_edit_idt')}}"
+        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('freshcuts_cancel_idt')}}"
             method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Idt No: <strong><input style="border:none"
+                    <h5 class="modal-title" id="exampleModalLabel">Cancel Transfer for Idt No: <strong><input style="border:none"
                                 type="text" id="item_id" name="item_id" value="" readonly></strong></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
@@ -264,8 +273,8 @@
                                     <div class="row">
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
                                         <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control" value=""
-                                                id="edit_product" placeholder="">
+                                            <input type="text" readonly class="form-control" value="" id="edit_product"
+                                                placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -294,13 +303,13 @@
                             </div>
                         </div>
                         <div class="card">
-                            <div class="card-body text-center form-group">                                
+                            <div class="card-body text-center form-group">
                                 <div class="row">
                                     <label for="inputEmail3" class="col-sm-6 col-form-label">Net
                                         Weight(Kgs)</label>
                                     <div class="col-sm-6">
-                                        <input type="number" step="0.1" class="form-control" value="0" id="weight_edit" readonly
-                                            name="weight_edit" placeholder="">
+                                        <input type="number" step="0.1" class="form-control" value="0" id="weight_edit"
+                                            readonly name="weight_edit" placeholder="">
                                     </div>
                                 </div>
                             </div>

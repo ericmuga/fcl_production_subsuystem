@@ -25,7 +25,7 @@ class DespatchController extends Controller
         $title = "dashboard";
 
         $transfers = DB::table('idt_transfers')
-            ->whereDate('idt_transfers.created_at', today())            
+            ->whereDate('idt_transfers.created_at', today())
             ->whereIn('idt_transfers.transfer_from', ['2055', '2595'])
             ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as total_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->groupBy('idt_transfers.transfer_from')
@@ -52,11 +52,15 @@ class DespatchController extends Controller
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('idt_transfers.received_by', '=', null)
+            ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
             ->when($filter == 'sausage', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '2055'); // from sausage only
             })
             ->when($filter == 'highcare', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '2595'); // from highcare only
+            })
+            ->when($filter == 'fresh_cuts', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '1570'); // from butchery only
             });
 
         if ($user_id == 34) {
@@ -65,7 +69,7 @@ class DespatchController extends Controller
         } else {
             # others
             $query->whereDate('idt_transfers.created_at', '>=', today()->subDays(1));
-        }        
+        }
 
         $transfer_lines = $query->get();
 
@@ -114,7 +118,7 @@ class DespatchController extends Controller
         }
     }
 
-    public function idtReport(Helpers $helpers, $filter=null)
+    public function idtReport(Helpers $helpers, $filter = null)
     {
         $title = "IDT-Report";
 
@@ -143,7 +147,7 @@ class DespatchController extends Controller
         $entries = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from','idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', DB::raw('(CASE WHEN idt_transfers.with_variance = ' . $has_variance . ' THEN 1 ELSE 0 END) AS with_variance'), 'idt_transfers.batch_no','users.username as received_by', 'idt_transfers.created_at')
+            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from', 'idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', DB::raw('(CASE WHEN idt_transfers.with_variance = ' . $has_variance . ' THEN 1 ELSE 0 END) AS with_variance'), 'idt_transfers.batch_no', 'users.username as received_by', 'idt_transfers.created_at')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
@@ -154,7 +158,7 @@ class DespatchController extends Controller
         return Excel::download(new DespatchIdtHistoryExport, 'DespatchIdtHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
-    public function idtVarianceReport($filter=null)
+    public function idtVarianceReport($filter = null)
     {
         $title = "IDT-Variance Report";
 

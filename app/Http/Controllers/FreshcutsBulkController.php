@@ -53,7 +53,7 @@ class FreshcutsBulkController extends Controller
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
             ->where('idt_transfers.transfer_from', '1570')
-            ->orderBy('idt_transfers.created_at', 'ASC')
+            ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
         return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs', 'helpers', 'tags'));
@@ -90,26 +90,25 @@ class FreshcutsBulkController extends Controller
         }
     }
 
-    public function editIdtIssue(Request $request, Helpers $helpers)
+    public function cancelIdtIssue(Request $request, Helpers $helpers)
     {
+        $received = DB::table('idt_transfers')->where('id', $request->item_id)->where('received_by', '!=', null)->exists();
+
+        // check if transfer has been accepted first
+        if ($received) {
+            // Record has already been received
+            Toastr::warning("failed cancel transfer because Transfer id: {$request->item_id} has already been received at despatch", "Warning!");
+            return back();
+        }
+
         try {
-            $location_code = '3535';
 
-            if ($request->for_export_edit == 1) {
-                # export...
-                $location_code = '3600';
-            }
-
-            DB::transaction(function () use ($request, $helpers, $location_code) {
+            DB::transaction(function () use ($request, $helpers,) {
                 //update idt issue
                 DB::table('idt_transfers')->where('id', $request->item_id)
                     ->update([
-                        'description' => $request->product,
-                        'transfer_type' => $request->for_export_edit,
-                        'location_code' => $location_code,
-                        'batch_no' => $request->batch . $request->batch_no_edit,
-                        'total_pieces' => (int)$request->pieces_edit,
-                        'total_weight' => $request->weight_edit,
+                        'total_pieces' => 0,
+                        'total_weight' => 0,
                         'edited' => 1,
                     ]);
 
@@ -118,14 +117,14 @@ class FreshcutsBulkController extends Controller
                     'table_name' => 'idt_transfers',
                     'item_id' => $request->item_id,
                     'changed_by' => $helpers->authenticatedUserId(),
-                    'total_pieces' => (int)$request->pieces_edit,
-                    'total_weight' => $request->weight_edit,
-                    'previous_pieces' => (int)$request->old_pieces,
-                    'previous_weight' => $request->old_weight,
+                    'total_pieces' => 0,
+                    'total_weight' => 0,
+                    'previous_pieces' => 0,
+                    'previous_weight' => $request->weight_edit,
                 ]);
             });
 
-            Toastr::success('IDT Transfer Updated successfully', 'Success');
+            Toastr::success("IDT Transfer id: {$request->item_id} Cancelled successfully", 'Success');
             return redirect()
                 ->back();
         } catch (\Exception $e) {
