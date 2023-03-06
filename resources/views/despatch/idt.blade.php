@@ -130,6 +130,90 @@
     </div>
 </div>
 
+<!--freshCuts-->
+<div class="modal fade" id="despatchReceiveFreshModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('receive_idt_fresh') }}"
+            method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Receive Fresh Cuts Dispatch Transfer</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-group">
+                        <div class="card">
+                            <div class="card-body" style="">
+                                <div class="form-group">
+                                    <div class="row">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
+                                        <div class="col-sm-9">
+                                            <input type="text" readonly class="form-control" value="" id="f_item"
+                                                placeholder="" name="item" readonly>
+                                            <input type="hidden" name="product" id="f_product" value="">
+                                            <input type="hidden" name="item_id" id="f_item_id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure
+                                        </label>
+                                        <div class="col-sm-9">
+                                            <input type="number" readonly class="form-control input_params" value="0"
+                                                id="f_unit_measure" name="unit_measure" placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body form-group">
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control select2 locations_f" name="chiller_code"
+                                            id="f_chiller_code" required>
+                                            <option value="">Select chiller</option>
+                                        </select>
+                                    </div>
+                                </div><br>
+                                <input type="hidden" id="f_issued_weight" value="0">
+                                <input type="hidden" id="f_valid_match" name="valid_match" value="1">
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body row">
+                                <label for="inputEmail3" class="col-sm-4 col-form-label"> Weight(Kgs)</label>
+                                <div class="col-sm-8">
+                                    <input type="number" step=".01" class="form-control" value="0" id="f_weight"
+                                        name="weight" placeholder="" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="location_code" id="location_code" value="3535">
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
+                        onclick="return validateOnSubmitFresh()"><i class="fa fa-paper-plane single-click"
+                            aria-hidden="true"></i> Save</button>
+                </div>
+                <div id="loading_f" class="collapse">
+                    <div class="row d-flex justify-content-center">
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--freshCuts-->
+
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -198,7 +282,20 @@
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 @if ($data->received_by == null)
-                                <td><button type="button" data-id="{{$data->id}}"
+                                <td>
+                                    @if ($data->transfer_from == '1570')
+                                    <button type="button" data-id="{{$data->id}}"
+                                        data-product="{{ $data->product_code }}"
+                                        data-unit_count="{{ $data->unit_count_per_crate }}"
+                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
+                                        data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
+                                        data-total_weight="{{ $data->total_weight }}" class="btn btn-warning btn-xs"
+                                        title="Receive transfer" id="despatchReceiveFreshModalShow"><i
+                                            class="fa fa-check"></i>
+                                    </button>
+
+                                    @else
+                                    <button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
                                         data-unit_count="{{ $data->unit_count_per_crate }}"
                                         data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
@@ -207,6 +304,8 @@
                                         title="Receive transfer" id="despatchReceiveModalShow"><i
                                             class="fa fa-check"></i>
                                     </button>
+
+                                    @endif
                                 </td>
                                 @else
                                 <td><span class="badge badge-warning">no action</span></td>
@@ -242,9 +341,33 @@
             fetchTransferToLocations(product_code)
         })
 
+        $('#despatchReceiveFreshModal').on('shown.bs.modal', function (e) {
+            e.preventDefault()
+            let product_code = $('#f_product').val()
+            fetchTransferToLocationsFresh(product_code)
+        })
+
         $('.crates').keyup(function () {
             validateCrates()
         })
+
+        $("body").on("click", "#despatchReceiveFreshModalShow", function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('id');
+            let code = $(this).data('product');
+            let item = $(this).data('item');
+            let unit_measure = $(this).data('unit_measure');
+            let issued_weight = $(this).data('total_weight');
+
+            $('#f_item_id').val(id);
+            $('#f_product').val(code); //item_code
+            $('#f_item').val(item); //item
+            $('#f_unit_measure').val(unit_measure);
+            $('#f_issued_weight').val(issued_weight);
+
+            $('#despatchReceiveFreshModal').modal('show');
+        });
 
         $("body").on("click", "#despatchReceiveModalShow", function (e) {
             e.preventDefault();
@@ -269,6 +392,30 @@
         });
     });
 
+    const validateOnSubmitFresh = () => {
+        let status = true
+
+        let weight = $('#f_weight').val();
+        let issued_weight = $('#f_issued_weight').val();
+
+        if (parseFloat(weight) <= 0) {
+            status = false
+            alert("please ensure the weight has a value of more than zero")
+        } else if (parseFloat(weight) != parseFloat(issued_weight)) {
+            const response = confirm(
+                "Issued weight does not match Receiving Weight. Are you sure you want to continue?");
+
+            if (response) {
+                setMatchValidityFresh(0)
+                alert("Thanks for confirming");
+            } else {
+                status = false
+                alert("You have cancelled this process");
+            }
+        }
+
+        return status
+    }
     const validateOnSubmit = () => {
         let status = true
 
@@ -294,7 +441,7 @@
         } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
             status = false
             alert("please ensure the pieces and weight have a value of more than zero")
-        } else if (parseInt(issued_pieces) != parseInt(pieces) ) {
+        } else if (parseInt(issued_pieces) != parseInt(pieces)) {
             const response = confirm("Issued does not match Receiving Qty. Are you sure you want to continue?");
 
             if (response) {
@@ -341,6 +488,34 @@
 
                     $.each(res.data, function (key, value) {
                         $(".locations").append($("<option></option>").attr("value", value
+                                .chiller_code)
+                            .text(value.description));
+                    });
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
+
+    const fetchTransferToLocationsFresh = (prod_code) => {
+        $('#loading_f').collapse('show');
+
+        const url = '/fetch-transferToLocations-axios'
+
+        const request_data = {
+            product_code: prod_code
+        }
+
+        return axios.post(url, request_data)
+            .then((res) => {
+                if (res) {
+                    $('#loading_f').collapse('hide');
+                    //empty the select list first
+                    $(".locations_f").empty();
+
+                    $.each(res.data, function (key, value) {
+                        $(".locations_f").append($("<option></option>").attr("value", value
                                 .chiller_code)
                             .text(value.description));
                     });
@@ -411,6 +586,10 @@
 
     const setMatchValidity = (status) => {
         $("#valid_match").val(status);
+    }
+
+    const setMatchValidityFresh = (status) => {
+        $("#f_valid_match").val(status);
     }
 
 </script>

@@ -168,6 +168,7 @@ Route::post('production/batch/close', [SpicesController::class, 'closeOrPostBatc
 Route::get('/despatch/dashboard', [DespatchController::class, 'index'])->name('despatch_dashboard');
 Route::get('/despatch/idt/{filter?}', [DespatchController::class, 'getIdt'])->name('despatch_idt');
 Route::post('/receive/idt', [DespatchController::class, 'receiveTransfer'])->name('receive_idt');
+Route::post('/receive/idt-freshcuts', [DespatchController::class, 'receiveTransferFreshcuts'])->name('receive_idt_fresh');
 Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtReport'])->name('despatch_idt_report');
 Route::post('/despatch/idt-export', [DespatchController::class, 'exportIdtHistory'])->name('despatch_export_idt');
 Route::get('/despatch/idt-variance/{filter?}', [DespatchController::class, 'idtVarianceReport'])->name('despatch_idt_variance');

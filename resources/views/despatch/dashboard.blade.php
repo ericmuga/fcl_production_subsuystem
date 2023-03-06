@@ -218,7 +218,7 @@
         <!-- small box -->
         <div class="small-box bg-warning">
             <div class="inner">
-                <h3> {{ number_format((float)$total_weight_h - (float)$issued_weight_h, 2) }} <sup
+                <h3> {{ number_format((float)$total_weight_f - (float)$issued_weight_f, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Freshcuts</p>

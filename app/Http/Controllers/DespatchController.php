@@ -118,6 +118,31 @@ class DespatchController extends Controller
         }
     }
 
+    public function receiveTransferFreshcuts(Request $request, Helpers $helpers)
+    {
+        dd($request->all());
+        try {
+            // try update
+            DB::table('idt_transfers')
+                ->where('id', $request->item_id)
+                ->update([
+                    'chiller_code' => $request->chiller_code,
+                    'receiver_total_weight' => $request->weight,
+                    'received_by' => $helpers->authenticatedUserId(),
+                    'with_variance' => $request->valid_match,
+                    'updated_at' => now(),
+                ]);
+
+            Toastr::success('IDT Transfer received successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
     public function idtReport(Helpers $helpers, $filter = null)
     {
         $title = "IDT-Report";
