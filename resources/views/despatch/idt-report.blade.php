@@ -138,7 +138,9 @@
                                 <td>{{ $data->receiver_total_pieces ?? 0 }}</td>
                                 <td>{{ $data->receiver_total_weight ?? 0 }}</td>
 
-                                @if ($data->with_variance == 0)
+                                @if ($data->received_by == null )
+                                <td><span class="badge badge-info">pending receipt</span></td>
+                                @elseif ($data->received_by != null && $data->with_variance == 0)
                                 <td><span class="badge badge-warning">Yes</span></td>
                                 @else
                                 <td><span class="badge badge-success">No</span></td>
