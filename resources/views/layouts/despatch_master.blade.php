@@ -134,7 +134,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $("#example1").DataTable({
                 "responsive": false,
                 "autoWidth": false,
-                "lengthChange": true,
+                "lengthChange": true,                
+                "order": [],
                 "lengthMenu": [
                     [3, 5, 10, 25, 50, -1],
                     [3, 5, 10, 25, 50, "All"]

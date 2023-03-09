@@ -120,7 +120,6 @@ class DespatchController extends Controller
 
     public function receiveTransferFreshcuts(Request $request, Helpers $helpers)
     {
-        dd($request->all());
         try {
             // try update
             DB::table('idt_transfers')

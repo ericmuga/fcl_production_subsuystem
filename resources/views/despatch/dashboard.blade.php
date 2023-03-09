@@ -72,7 +72,7 @@
     </div>
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-secondary">
+        <div class="small-box bg-danger">
             <div class="inner">
                 <h3>{{ (int)$total_pieces - (int)$issued_pieces }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format((float)$total_weight - (float)$issued_weight, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
@@ -161,7 +161,7 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-secondary">
+        <div class="small-box bg-danger">
             <div class="inner">
                 <h3>{{ number_format($total_pieces_h, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($total_weight_h, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
