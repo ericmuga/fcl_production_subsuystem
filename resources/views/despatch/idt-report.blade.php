@@ -15,21 +15,30 @@
                             <i class="fa fa-user-secret"></i>
                             Export data</div>
                         <div class="card-body">
-                            <form action="{{ route('despatch_export_idt') }}" method="post"
-                                id="export-logs-form">
+                            <form action="{{ route('despatch_export_idt') }}" method="post" id="export-logs-form">
                                 @csrf
 
                                 <h6>*Filter by date range</h6>
                                 <div class="row form-group">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="stemplate_date_created_from_flagged">From: (dd/mm/yyyy)</label>
                                         <input type="date" class="form-control" name="from_date"
                                             id="stemplate_date_created_from_flagged" required>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <label for="stemplate_date_created_from_flagged">To: (dd/mm/yyyy)</label>
                                         <input type="date" class="form-control" name="to_date"
                                             id="stemplate_date_created_from_flagged" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="stemplate_date_created_from_flagged">Transfer From</label>
+                                        <select class="form-control select2" name="transfer_from"
+                                            id="transfer_from" required>
+                                            <option disabled selected value> -- select an option -- </option>
+                                            <option value="1570">Butchery</option>
+                                            <option value="2055">Sausage</option>
+                                            <option value="2595">Bacon & Ham</option>
+                                        </select>
                                     </div>
                                 </div> <br>
                                 <div class="div" align="center">
@@ -153,13 +162,13 @@
                                 <td>{{ $helpers->amPmDate($data->updated_at) }}</td>
                                 {{-- <td>
                                     <button type="button" data-id="{{$data->id}}"
-                                        data-product="{{ $data->product_code }}"
-                                        data-unit_count="{{ $data->unit_count_per_crate }}"
-                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}"
-                                        data-item="{{ $data->product }}" class="btn btn-primary btn-xs"
-                                        title="Correct Received transfer" id="despatchCorrectionModalShow"><i
-                                            class="fas fa-edit"></i>
-                                    </button>
+                                data-product="{{ $data->product_code }}"
+                                data-unit_count="{{ $data->unit_count_per_crate }}"
+                                data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}"
+                                data-item="{{ $data->product }}" class="btn btn-primary btn-xs"
+                                title="Correct Received transfer" id="despatchCorrectionModalShow"><i
+                                    class="fas fa-edit"></i>
+                                </button>
                                 </td> --}}
                             </tr>
                             @endforeach

@@ -167,19 +167,21 @@ class DespatchController extends Controller
         $from_date = Carbon::parse($request->from_date);
         $to_date = Carbon::parse($request->to_date);
         $has_variance = 0;
+        $ext = '.xlsx';
 
         $entries = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from', 'idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', DB::raw('(CASE WHEN idt_transfers.with_variance = ' . $has_variance . ' THEN 1 ELSE 0 END) AS with_variance'), 'idt_transfers.batch_no', 'users.username as received_by', 'idt_transfers.created_at')
-            ->orderBy('idt_transfers.created_at', 'DESC')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
+            ->where('idt_transfers.transfer_from', $request->transfer_from)
+            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from', 'idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', DB::raw('(CASE WHEN idt_transfers.with_variance = ' . $has_variance . ' THEN 1 ELSE 0 END) AS with_variance'), 'idt_transfers.batch_no', 'users.username as received_by', 'idt_transfers.created_at')
+            ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
         $exports = Session::put('session_export_data', $entries);
 
-        return Excel::download(new DespatchIdtHistoryExport, 'DespatchIdtHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new DespatchIdtHistoryExport, "IdtHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function idtVarianceReport($filter = null)
