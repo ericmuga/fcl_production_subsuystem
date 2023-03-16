@@ -38,6 +38,13 @@ class DespatchController extends Controller
     {
         $title = "IDT";
 
+        $configs = Cache::remember('despatch_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'despatch')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
+
         $items = Cache::remember('items_list', now()->addHours(10), function () {
             return DB::table('items')
                 ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
@@ -73,7 +80,7 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.idt', compact('title', 'transfer_lines', 'items', 'helpers'));
+        return view('despatch.idt', compact('title', 'transfer_lines', 'items', 'configs', 'helpers'));
     }
 
     public function receiveTransfer(Request $request, Helpers $helpers)
@@ -126,7 +133,7 @@ class DespatchController extends Controller
                 ->where('id', $request->item_id)
                 ->update([
                     'chiller_code' => $request->chiller_code,
-                    'receiver_total_weight' => $request->weight,
+                    'receiver_total_weight' => $request->net,
                     'received_by' => $helpers->authenticatedUserId(),
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),

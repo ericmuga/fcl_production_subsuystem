@@ -23,7 +23,7 @@
                                         <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
                                         <div class="col-sm-9">
                                             <input type="text" readonly class="form-control" value="" id="item"
-                                                placeholder="" name="item" readonly>
+                                                placeholder="" name="item">
                                             <input type="hidden" name="product" id="product" value="">
                                             <input type="hidden" name="item_id" id="item_id" value="">
                                         </div>
@@ -114,6 +114,7 @@
                     <input type="hidden" name="location_code" id="location_code" value="3535">
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
                         onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
                             aria-hidden="true"></i> Save</button>
@@ -150,30 +151,78 @@
                             <div class="card-body" style="">
                                 <div class="form-group">
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
-                                        <div class="col-sm-9">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Product Name </label>
+                                        <div class="col-sm-8">
                                             <input type="text" readonly class="form-control" value="" id="f_item"
-                                                placeholder="" name="item" readonly>
+                                                placeholder="" name="item">
                                             <input type="hidden" name="product" id="f_product" value="">
                                             <input type="hidden" name="item_id" id="f_item_id" value="">
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Item Unit Measure
                                         </label>
-                                        <div class="col-sm-9">
+                                        <div class="col-sm-8">
                                             <input type="number" readonly class="form-control input_params" value="0"
                                                 id="f_unit_measure" name="unit_measure" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Total Tareweight(kgs)
+                                        </label>
+                                        <div class="col-sm-8">
+                                            <input type="number" readonly class="form-control input_params" value="0"
+                                                id="f_tareweight" name="f_tareweight" placeholder="">
+                                        </div>
+                                    </div>
+                                    <div hidden class="row">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Total Crates
+                                        </label>
+                                        <div class="col-sm-8">
+                                            <input type="number"  class="form-control input_params" value="0"
+                                                id="f_no_of_crates" placeholder="">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="card">
+                            <div class="card-body row">
+                                <label for="inputEmail3" class="col-sm-4 col-form-label"> Scale Reading(Kgs)</label>
+                                <div class="col-sm-8">
+                                    <input type="number" step=".01" class="form-control" value="0" id="f_weight"
+                                        name="weight" placeholder="" readonly required>
+                                </div>
+                            </div>
+                            <div class="card-body row">
+                                <label for="inputEmail3" class="col-sm-4 col-form-label"> Net Weight(Kgs)</label>
+                                <div class="col-sm-8">
+                                    <input type="number" step=".01" class="form-control" value="0" id="net" name="net"
+                                        placeholder="" readonly required>
+                                </div>
+                            </div>
+
+                            @if (config('app.show_manual_weight') == 1)
+                            <div class="form-check" style="text-align: center">
+                                <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
+                                <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
+                            </div>
+                            @endif
+
+                            <div class="form-group" style="padding-left: 30%; padding-top: 5%">
+                                <button type="button" onclick="getScaleReading()" id="weigh" value=""
+                                    class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button>
+                                <br>
+                                <small>Reading from : <input style="font-weight: bold; border: none" type="text"
+                                        id="comport_value" value="{{ $configs[0]->comport }}" style="border:none"
+                                        disabled></small>
+                            </div>
+                        </div>
+                        <div class="card">
                             <div class="card-body form-group">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
-                                    <div class="col-sm-9">
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Transfer To </label>
+                                    <div class="col-sm-8">
                                         <select class="form-control select2 locations_f" name="chiller_code"
                                             id="f_chiller_code" required>
                                             <option value="">Select chiller</option>
@@ -184,19 +233,11 @@
                                 <input type="hidden" id="f_valid_match" name="valid_match" value="1">
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-body row">
-                                <label for="inputEmail3" class="col-sm-4 col-form-label"> Weight(Kgs)</label>
-                                <div class="col-sm-8">
-                                    <input type="number" step=".01" class="form-control" value="0" id="f_weight"
-                                        name="weight" placeholder="" required>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <input type="hidden" name="location_code" id="location_code" value="3535">
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
                         onclick="return validateOnSubmitFresh()"><i class="fa fa-paper-plane single-click"
                             aria-hidden="true"></i> Save</button>
@@ -289,7 +330,9 @@
                                         data-unit_count="{{ $data->unit_count_per_crate }}"
                                         data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
                                         data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
-                                        data-total_weight="{{ $data->total_weight }}" class="btn btn-warning btn-xs"
+                                        data-total_weight="{{ $data->total_weight }}"
+                                        data-carriage="{{ $data->total_weight }}"
+                                        data-crates="{{ $data->total_crates }}" class="btn btn-warning btn-xs"
                                         title="Receive transfer" id="despatchReceiveFreshModalShow"><i
                                             class="fa fa-check"></i>
                                     </button>
@@ -343,6 +386,9 @@
 
         $('#despatchReceiveFreshModal').on('shown.bs.modal', function (e) {
             e.preventDefault()
+            // calculate total tare..
+            getIssuedTareweight()
+
             let product_code = $('#f_product').val()
             fetchTransferToLocationsFresh(product_code)
         })
@@ -350,6 +396,23 @@
         $('.crates').keyup(function () {
             validateCrates()
         })
+
+        $('#f_weight').on("input", function () {
+            getNet()
+        });
+
+        $('#manual_weight').change(function () {
+            let manual_weight = document.getElementById('manual_weight');
+            let reading = document.getElementById('f_weight');
+            if (manual_weight.checked == true) {
+                reading.readOnly = false;
+                reading.focus();
+                $('#f_weight').val("");
+
+            } else {
+                reading.readOnly = true;
+            }
+        });
 
         $("body").on("click", "#despatchReceiveFreshModalShow", function (e) {
             e.preventDefault();
@@ -359,12 +422,14 @@
             let item = $(this).data('item');
             let unit_measure = $(this).data('unit_measure');
             let issued_weight = $(this).data('total_weight');
+            let crates = $(this).data('crates');
 
             $('#f_item_id').val(id);
             $('#f_product').val(code); //item_code
             $('#f_item').val(item); //item
             $('#f_unit_measure').val(unit_measure);
             $('#f_issued_weight').val(issued_weight);
+            $('#f_no_of_crates').val(crates);
 
             $('#despatchReceiveFreshModal').modal('show');
         });
@@ -392,10 +457,21 @@
         });
     });
 
+    const getIssuedTareweight = () => {
+        let tare = 40
+        let no_of_crates = $('#f_no_of_crates').val();
+
+        if (no_of_crates != 0) {
+            tare = parseInt(no_of_crates) * 1.8
+        }
+
+        $('#f_tareweight').val(tare)
+    }
+
     const validateOnSubmitFresh = () => {
         let status = true
 
-        let weight = $('#f_weight').val();
+        let weight = $('#net').val();
         let issued_weight = $('#f_issued_weight').val();
 
         if (parseFloat(weight) <= 0) {
@@ -581,15 +657,73 @@
     }
 
     const setCratesValidity = (status) => {
-        $("#crates_valid").val(status);
+        $("#crates_valid").val(status)
     }
 
     const setMatchValidity = (status) => {
-        $("#valid_match").val(status);
+        $("#valid_match").val(status)
     }
 
     const setMatchValidityFresh = (status) => {
-        $("#f_valid_match").val(status);
+        $("#f_valid_match").val(status)
+    }
+
+    const getNet = () => {
+        let issued_tareweight = $('#f_tareweight').val()
+        let scale_reading = $('#f_weight').val()
+
+        let net = parseFloat(scale_reading) - parseFloat(issued_tareweight)
+        $('#net').val(net.toFixed(2));
+    }
+
+    //read scale
+    const getScaleReading = () => {
+        var comport = $('#comport_value').val();
+
+        if (comport != null) {
+            $.ajax({
+                type: "GET",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                        .attr('content')
+                },
+                url: "{{ url('butchery/read-scale-api-service') }}",
+
+                data: {
+                    'comport': comport,
+
+                },
+                dataType: 'JSON',
+                success: function (data) {
+                    // console.log(data);
+
+                    var obj = JSON.parse(data);
+                    // console.log(obj.success);
+
+                    if (obj.success == true) {
+                        var reading = document.getElementById('f_weight');
+                        // console.log('weight: ' + obj.response);
+                        reading.value = obj.response;
+                        getNet();
+
+                    } else if (obj.success == false) {
+                        alert('error occured in response: ' + obj.response);
+
+                    } else {
+                        alert('No response from service');
+
+                    }
+
+                },
+                error: function (data) {
+                    var errors = data.responseJSON;
+                    // console.log(errors);
+                    alert('error occured when sending request');
+                }
+            });
+        } else {
+            alert("Please set comport value first");
+        }
     }
 
 </script>

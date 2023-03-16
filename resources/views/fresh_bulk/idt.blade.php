@@ -63,7 +63,6 @@
                     <small>Reading from : <input style="font-weight: bold; border: none" type="text" id="comport_value"
                             value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                 </div>
-
             </div>
         </div>
         <div class="card ">
@@ -544,7 +543,7 @@
 
                     if (obj.success == true) {
                         var reading = document.getElementById('reading');
-                        console.log('weight: ' + obj.response);
+                        // console.log('weight: ' + obj.response);
                         reading.value = obj.response;
                         getNet();
 

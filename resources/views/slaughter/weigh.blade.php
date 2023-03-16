@@ -408,7 +408,6 @@
 
             } else {
                 reading.readOnly = true;
-
             }
 
         });
