@@ -13,23 +13,21 @@
 @endsection
 
 @php
-    // sausage
-    $total_pieces = isset($transfers[0]->total_pieces)? $transfers[0]->total_pieces : 0;
-    $issued_pieces = isset($transfers[0]->issued_pieces)? $transfers[0]->issued_pieces : 0;
-    $total_weight = isset($transfers[0]->total_weight)? $transfers[0]->total_weight : 0;
-    $issued_weight = isset($transfers[0]->issued_weight)? $transfers[0]->issued_weight : 0;
+    // highcare 2595
+    $total_pieces_h = isset($transfers['2595'][0]->total_pieces)? $transfers['2595'][0]->total_pieces : 0;
+    $issued_pieces_h = isset($transfers['2595'][0]->issued_pieces)? $transfers['2595'][0]->issued_pieces : 0;
+    $total_weight_h = isset($transfers['2595'][0]->total_weight)? $transfers['2595'][0]->total_weight : 0;
+    $issued_weight_h = isset($transfers['2595'][0]->issued_weight)? $transfers['2595'][0]->issued_weight : 0;
 
-    // highcare
-    $total_pieces_h = isset($transfers[1]->total_pieces)? $transfers[1]->total_pieces : 0;
-    $issued_pieces_h = isset($transfers[1]->issued_pieces)? $transfers[1]->issued_pieces : 0;
-    $total_weight_h = isset($transfers[1]->total_weight)? $transfers[1]->total_weight : 0;
-    $issued_weight_h = isset($transfers[1]->issued_weight)? $transfers[1]->issued_weight : 0;
+    // sausage 2055
+    $total_pieces = isset($transfers['2055'][0]->total_pieces)? $transfers['2055'][0]->total_pieces : 0;
+    $issued_pieces = isset($transfers['2055'][0]->issued_pieces)? $transfers['2055'][0]->issued_pieces : 0;
+    $total_weight = isset($transfers['2055'][0]->total_weight)? $transfers['2055'][0]->total_weight : 0;
+    $issued_weight = isset($transfers['2055'][0]->issued_weight)? $transfers['2055'][0]->issued_weight : 0;
 
-    // freshcuts
-    // $total_pieces_f = isset($transfers[2]->total_pieces)? $transfers[1]->total_pieces : 0;
-    // $issued_pieces_f = isset($transfers[2]->issued_pieces)? $transfers[1]->issued_pieces : 0;
-    $total_weight_f = isset($transfers[2]->total_weight)? $transfers[1]->total_weight : 0;
-    $issued_weight_f = isset($transfers[2]->issued_weight)? $transfers[1]->issued_weight : 0;
+    // freshcuts 1570
+    $total_weight_f = isset($transfers['1570'][0]->total_weight)? $transfers['1570'][0]->total_weight : 0;
+    $issued_weight_f = isset($transfers['1570'][0]->issued_weight)? $transfers['1570'][0]->issued_weight : 0;
 @endphp
 
 @section('content')

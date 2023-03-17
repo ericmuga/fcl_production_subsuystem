@@ -18,7 +18,14 @@ class FreshcutsBulkController extends Controller
     {
         $title = "dashboard";
 
-        return view('fresh_bulk.dashboard', compact('title'));
+        $transfers = DB::table('idt_transfers')
+            ->whereDate('idt_transfers.created_at', today())
+            ->whereIn('idt_transfers.transfer_from', ['1570'])
+            ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
+            ->groupBy('idt_transfers.transfer_from')
+            ->get();
+
+        return view('fresh_bulk.dashboard', compact('title', 'transfers'));
     }
 
     public function getIdt(Helpers $helpers)
