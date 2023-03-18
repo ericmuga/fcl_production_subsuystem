@@ -112,9 +112,9 @@ $arr_products = $products->toArray();
                         <div class="form-group">
                             <label for="exampleInputPassword1">Tare-Weight</label>
                             <input type="number" class="form-control" id="tareweight" step="0.01" name="tareweight"
-                                value="{{ number_format($configs[0]->tareweight, 2) }}" readonly>
+                                value="{{ number_format($configs['Beheading'][0]->tareweight, 2) }}" readonly>
                             <input type="hidden" class="form-control " id="default_tareweight"
-                                value="{{ number_format($configs[0]->tareweight, 2) }}">
+                                value="{{ number_format($configs['Beheading'][0]->tareweight, 2) }}">
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>
@@ -129,7 +129,7 @@ $arr_products = $products->toArray();
                             <button type="button" onclick="getScale1Reading()" class="btn btn-primary btn-lg"><i
                                     class="fas fa-balance-scale"></i> Weigh 1</button> <br>
                             <small>Reading from COM: <input type="text" id="comport_value"
-                                    value="{{ $configs[0]->comport }}" style="border:none; text-align: center"
+                                    value="{{ $configs['Beheading'][0]->comport }}" style="border:none; text-align: center"
                                     disabled></small>
                         </div><br>
                         <div class="form-group" style="padding-top: 20%">
@@ -198,7 +198,7 @@ $arr_products = $products->toArray();
                             <button type="button" onclick="getScale2Reading()" class="btn btn-primary btn-lg"><i
                                     class="fas fa-balance-scale"></i> Weigh 2</button> <br>
                             <small>Reading from COM: <input type="text" id="comport_value2"
-                                    value="{{ $configs[1]->comport }}" style="border:none; text-align: center"
+                                    value="{{ $configs['Breaking'][0]->comport }}" style="border:none; text-align: center"
                                     disabled></small>
                         </div>
                     </div>
@@ -217,7 +217,7 @@ $arr_products = $products->toArray();
                         <div class="form-group">
                             <label for="exampleInputPassword1">Tare-Weight</label>
                             <input type="number" class="form-control" id="tareweight2" name="tareweight2"
-                                value="{{ number_format($configs[1]->tareweight, 2) }}" readonly>
+                                value="{{ number_format($configs['Breaking'][0]->tareweight, 2) }}" readonly>
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Net</label>

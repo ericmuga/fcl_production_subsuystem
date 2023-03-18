@@ -76,7 +76,6 @@ class SlaughterController extends Controller
 
         $configs = Cache::remember('weigh_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
-                ->where('scale', 'Scale 1')
                 ->where('section', 'slaughter')
                 ->select('tareweight', 'comport')
                 ->get()->toArray();

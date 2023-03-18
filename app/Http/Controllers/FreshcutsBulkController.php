@@ -34,7 +34,8 @@ class FreshcutsBulkController extends Controller
 
         $configs = Cache::remember('freshcuts_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
-                ->where('section', 'freshcuts')
+                ->where('section', 'fresh_bulk')
+                ->where('scale', 'Fresh&bulk issue')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });

@@ -162,8 +162,10 @@ class ButcheryController extends Controller
         $configs = Cache::remember('scale12_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
+                ->where('scale', 'Beheading')
+                ->orWhere('scale', 'Breaking')
                 ->select('scale', 'tareweight', 'comport')
-                ->get()->toArray();
+                ->get()->groupBy('scale');
         });
 
         $products = Cache::remember('products_scale12', now()->addMinutes(120), function () {
@@ -513,7 +515,7 @@ class ButcheryController extends Controller
         $configs = Cache::remember('scale3_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
-                ->where('scale', 'scale 3')
+                ->where('scale', 'deboning')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });
