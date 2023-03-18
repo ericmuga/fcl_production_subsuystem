@@ -908,15 +908,15 @@ class ButcheryController extends Controller
         return redirect()->back();
     }
 
-    public function scaleSettings(Helpers $helpers)
+    public function scaleSettings(Helpers $helpers, $filter)
     {
         $title = "Scale";
 
         $scale_settings = DB::table('scale_configs')
-            ->where('section', 'butchery')
+            ->where('section', $filter)
             ->get();
 
-        return view('butchery.scale_settings', compact('title', 'scale_settings', 'helpers'));
+        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers'));
     }
 
     public function UpdateScalesettings(Request $request, Helpers $helpers)

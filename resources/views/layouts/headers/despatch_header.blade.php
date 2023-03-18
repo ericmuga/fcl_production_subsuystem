@@ -1,8 +1,7 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container-fluid">
         <a href="{{ route('sausage_dashboard') }}" class="navbar-brand">
-            <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
-                class="brand-image" style="">
+            <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo" class="brand-image" style="">
             <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
         </a>
 
@@ -54,6 +53,16 @@
                         </li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle">Settings</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="{{ route('butchery_scale_settings', 'despatch') }}" class="dropdown-item">Scale
+                                settings 
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
 
             <!-- SEARCH FORM -->
@@ -79,14 +88,15 @@
                 </a>
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                     <li>
-                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i> Switch
+                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i>
+                            Switch
                             Interphase
                         </a>
                     </li>
                     <li class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i
-                            class="fas fa-sign-out-alt"></i> Logout</a>
+                                class="fas fa-sign-out-alt"></i> Logout</a>
                     </li>
                 </ul>
             </li>
@@ -108,8 +118,8 @@
             <div class="modal-body">Please confirm if you are ready to end your current session.</div>
             <div class="modal-footer">
                 <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
-                <a href="{{ route('logout') }}" type="submit"
-                    class="btn btn-warning btn-lg  float-right"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                <a href="{{ route('logout') }}" type="submit" class="btn btn-warning btn-lg  float-right"><i
+                        class="fas fa-sign-out-alt"></i> Logout</a>
             </div>
         </div>
     </div>

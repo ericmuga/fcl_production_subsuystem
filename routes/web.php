@@ -100,7 +100,7 @@ Route::post('export-deboned-combined-report', [ButcheryController::class, 'combi
 Route::get('/butchery/sales-report', [ButcheryController::class, 'getSalesReport'])->name('butchery_sales_report');
 Route::get('/butchery/transfers-report', [ButcheryController::class, 'getTransfersReport'])->name('butchery_transfers_report');
 Route::get('/butchery/scale3-products', [ButcheryController::class, 'getDeboningProductsList'])->name('butchery_scale3_list');
-Route::get('/butchery/scale-settings', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
+Route::get('/butchery/scale-settings/{filter?}', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
 
