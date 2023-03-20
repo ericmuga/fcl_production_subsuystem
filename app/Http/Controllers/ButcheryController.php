@@ -925,8 +925,7 @@ class ButcheryController extends Controller
     {
         try {
             // forget configs cache
-            $helpers->forgetCache('scale12_configs');
-            $helpers->forgetCache('scale3_configs');
+            $helpers->optimizeCache();
 
             //update
             DB::table('scale_configs')
