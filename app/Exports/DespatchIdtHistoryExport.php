@@ -9,8 +9,8 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 class DespatchIdtHistoryExport implements FromCollection, WithHeadings
 {
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $export = Session::get('session_export_data');
@@ -21,7 +21,7 @@ class DespatchIdtHistoryExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Product Code', 'Product ', 'Qty Unit Measure', 'Location', 'Transfer From', 'Customer Code', 'Order No','Total Issued pieces', 'Total Issued Weight', 'Total Received Pieces', 'Total Received Weight', 'Has Variance?', 'Batch No', 'Received By', 'Date'
+                'IDT No', 'Product Code', 'Product ', 'Qty Unit Measure', 'Location', 'Transfer From', 'Customer Code', 'Order No', 'Total Issued pieces', 'Total Issued Weight', 'Total Received Pieces', 'Total Received Weight', 'Has Variance?', 'Batch No', 'Received By', 'Date'
             ];
     }
 }
