@@ -19,7 +19,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">Production</a>
+                        class="nav-link dropdown-toggle">Spices</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
                         <li><a href="{{ route('batches_list', 'open') }}" class="dropdown-item"> Open Batches
                             </a>
@@ -30,6 +30,15 @@
                         </li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{{ route('batches_list', 'posted') }}" class="dropdown-item"> Posted Batches
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle">Chopping</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
+                        <li><a href="{{ route('chopping_batch_create', 'open') }}" class="dropdown-item"> Batches
                             </a>
                         </li>
                     </ul>

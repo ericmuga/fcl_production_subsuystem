@@ -503,7 +503,7 @@
         let full_crates = $("#full_crates").val();
 
         if (total_crates != '' && full_crates != '') {
-            if (total_crates > full_crates) {
+            if (parseInt(total_crates) > parseInt(full_crates)) {
                 $('.incomplete_pieces').show();
             } else {
                 $('.incomplete_pieces').hide();

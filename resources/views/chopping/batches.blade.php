@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-7">
-            <h1 class="m-0"> {{ $title }} |<small>Showing all <strong>{{ $filter? : 'open' }}</strong> Spices Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
+            <h1 class="m-0"> {{ $title }} |<small>Showing all <strong>{{ $filter? : 'open' }}</strong> Chopping Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
         </div><!-- /.col -->
         <div class="col-sm-5">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
@@ -19,7 +19,7 @@
 
 @section('content')
 <div id="toggle_collapse" class="collapse">
-    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('batches_create') }}"
+    <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('chopping_batch_save') }}"
         method="post">
         @csrf
         <div class="card-group">
@@ -142,7 +142,7 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            @foreach($batches as $data)
+                            {{-- @foreach($batches as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
@@ -163,7 +163,7 @@
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
-                            @endforeach
+                            @endforeach --}}
                         </tbody>
                     </table>
                 </div>
