@@ -127,22 +127,27 @@
                 <div class="modal-body">
                     @foreach ($lines as $l)
                     <div class="row">
-                        <div class="col-md-3">
+                        <div hidden class="col-md-3">
                             <label>Item Code</label>
                             <input type="text" class="form-control" id="item_code" value="{{ $l->item_code }}"
                                 name="item_code[]" placeholder="" readonly>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label>Item </label>
-                            <input type="text" class="form-control" id="item" value="{{ $l->description }}"
+                            <input type="text" class="form-control" id="item" value="{{ $l->item_code.' - '.$l->description }}"
                                 name="item" placeholder="" readonly>
                         </div>
-                        <div class="col-md-3">
-                            <label>Qty</label>
+                        <div class="col-md-2">
+                            <label>Std Qty</label>
+                            <input type="number" class="form-control" id="std_qty" value="{{ $l->quantity }}" name="std_qty[]"
+                                step="0.01" readonly placeholder="">
+                        </div>
+                        <div class="col-md-2">
+                            <label>Used Qty</label>
                             <input type="number" class="form-control" id="qty" value="{{ $l->quantity }}" name="qty[]"
                                 step="0.01" onClick="this.select();" placeholder="">
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <label>Type</label>
                             <input type="text" class="form-control" id="type" value="{{ $l->type }}" name="type"
                                 placeholder="" readonly>

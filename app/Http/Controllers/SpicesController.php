@@ -328,7 +328,7 @@ class SpicesController extends Controller
 
     public function batchLists(Helpers $helpers, $filter = null)
     {
-        $title = "Batches";
+        $title = "Spices-Batches";
 
         $date_filter = today()->subDays(7);
 
@@ -451,25 +451,5 @@ class SpicesController extends Controller
             Toastr::error($e->getMessage(), 'Error!');
             return back();
         }
-    }
-
-    public function choppingCreateBatch(Request $request, Helpers $helpers, $filter = null)
-    {
-        $title = "Batches";
-
-        $date_filter = today()->subDays(7);
-
-        $templates = DB::table('template_header')
-            ->where('template_lines.main_product', 'Yes')
-            ->leftJoin('template_lines', 'template_header.template_no', '=', 'template_lines.template_no')
-            ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
-            ->get();
-
-        return view('chopping.batches', compact('title', 'date_filter', 'templates', 'filter', 'helpers'));
-    }
-
-    public function choppingSaveBatch(Request $request)
-    {
-        dd($request->all());
     }
 }

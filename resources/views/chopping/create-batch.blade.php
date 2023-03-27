@@ -4,7 +4,8 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-7">
-            <h1 class="m-0"> {{ $title }} |<small>Showing all <strong>{{ $filter? : 'open' }}</strong> Chopping Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
+            <h1 class="m-0"> {{ $title }} |<small>Showing all Chopping Batches </small> from date <strong>
+                    {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
         </div><!-- /.col -->
         <div class="col-sm-5">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
@@ -39,11 +40,21 @@
                                 </select>
                             </div>
                         </div><br>
-                        <div class="row">
-                            <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No</label>
-                            <div class="col-sm-9">
-                                <input type="number" value="{{ time() }}" class="form-control" id="batch_no"
-                                    name="batch_no" placeholder="" readonly>
+                        <div class="row form-group">
+                            <div class="col-md-4">
+                                <label for="exampleInputPassword1">From Batch No:</label>
+                                <input type="number" class="form-control" id="total_tare" name="total_tare" value="0.00"
+                                    step=".01" placeholder="" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="exampleInputPassword1">To Batch No:</label>
+                                <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
+                                    placeholder="" readonly>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="exampleInputPassword1">Batch Size</label>
+                                <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
+                                    placeholder="" readonly>
                             </div>
                         </div>
                     </div>
@@ -92,7 +103,7 @@
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title"> Production Lines Entries | <span id="subtext-h1-title"><small> showing all
-                            <strong>{{ $filter }}</strong> entries
+                            entries
                             ordered by
                             latest</small> </span></h3>
             </div>
@@ -109,15 +120,15 @@
                                 <th>Status</th>
                                 <th>Output Product</th>
                                 <th>Output Quantity</th>
-                                @if ($filter == 'open' || $filter == '')
+                                {{-- @if ($filter == 'open' || $filter == '')
                                     <th>created By</th>
                                     
                                 @elseif ($filter == 'closed')
                                     <th>closed By</th>
                                 @elseif ($filter == 'posted')
                                     <th>posted By</th>
-                                @endif
-                                
+                                @endif --}}
+
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -130,14 +141,14 @@
                                 <th>Status</th>
                                 <th>Output Product</th>
                                 <th>Output Quantity</th>
-                                @if ($filter == 'open' || $filter == '')
+                                {{-- @if ($filter == 'open' || $filter == '')
                                     <th>created By</th>
                                     
                                 @elseif ($filter == 'closed')
                                     <th>closed By</th>
                                 @elseif ($filter == 'posted')
                                     <th>posted By</th>
-                                @endif
+                                @endif --}}
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -145,23 +156,23 @@
                             {{-- @foreach($batches as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
-                                </td>
-                                <td>{{ $data->template_no }}</td>
-                                <td>{{ $data->template_name }}</td>
+                            <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
+                            </td>
+                            <td>{{ $data->template_no }}</td>
+                            <td>{{ $data->template_name }}</td>
 
-                                @if ($data->status == 'open')
-                                <td><span class="badge badge-success">Open</span></td>
-                                @elseif ($data->status == 'closed')
-                                <td><span class="badge badge-warning">Closed</span></td>
-                                @else
-                                <td><span class="badge badge-danger">Posted</span></td>
-                                @endif
+                            @if ($data->status == 'open')
+                            <td><span class="badge badge-success">Open</span></td>
+                            @elseif ($data->status == 'closed')
+                            <td><span class="badge badge-warning">Closed</span></td>
+                            @else
+                            <td><span class="badge badge-danger">Posted</span></td>
+                            @endif
 
-                                <td>{{ $data->template_output }}</td>
-                                <td>{{ $data->output_quantity }}</td>
-                                <td>{{ $data->username }}</td>
-                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                            <td>{{ $data->template_output }}</td>
+                            <td>{{ $data->output_quantity }}</td>
+                            <td>{{ $data->username }}</td>
+                            <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach --}}
                         </tbody>

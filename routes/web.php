@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
+use App\Http\Controllers\ChoppingController;
 use App\Http\Controllers\Despatch;
 use App\Http\Controllers\DespatchController;
 use App\Http\Controllers\FreshcutsBulkController;
@@ -164,8 +165,8 @@ Route::post('production/batch/update', [SpicesController::class, 'updateBatchIte
 Route::post('production/batch/close', [SpicesController::class, 'closeOrPostBatch'])->name('close_post_batch');
 
 #chopping
-Route::get('chopping/create/batch/{filter?}', [SpicesController::class, 'choppingCreateBatch'])->name('chopping_batch_create');
-Route::post('chopping/create/batch', [SpicesController::class, 'choppingSaveBatch'])->name('chopping_batch_save');
+Route::get('chopping/create/batch', [ChoppingController::class, 'choppingCreateBatch'])->name('chopping_batch_create');
+Route::post('chopping/create/batch', [ChoppingController::class, 'choppingSaveBatch'])->name('chopping_batch_save');
 
 /*-------------End Spices------------------ */
 
