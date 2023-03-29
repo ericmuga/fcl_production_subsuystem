@@ -9,7 +9,7 @@
         <!-- Fonts -->
         {{-- <link rel="preconnect" href="https://fonts.gstatic.com"> --}}
         <link rel="stylesheet"
-        href="{{ asset('assets/googlefont.min.css') }}">
+        href="{{ asset('assets/googlefonts.css') }}">
 
         <!-- Styles -->
         <style>

@@ -2,9 +2,10 @@
 @font-face {
     font-family: "Source Sans Pro";
     font-style: italic;
-    font-weight: 400;
+    font-weight: 300;
     font-display: fallback;
-    src: url() format("woff2");
+    src: url(/public/assets/fonts-woffs/6xK1dSBYKcSV-LCoeQqfX1RYOo3qPZ7qsDJT9g.woff2)
+        format("woff2");
     unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F,
         U+FE2E-FE2F;
 }
