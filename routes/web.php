@@ -167,6 +167,7 @@ Route::post('production/batch/close', [SpicesController::class, 'closeOrPostBatc
 #chopping
 Route::get('chopping/create/batch', [ChoppingController::class, 'choppingCreateBatch'])->name('chopping_batch_create');
 Route::post('chopping/create/batch', [ChoppingController::class, 'choppingSaveBatch'])->name('chopping_batch_save');
+Route::get('chopping/batches/{filter?}', [ChoppingController::class, 'batchLists'])->name('chopping_batches_list');
 
 /*-------------End Spices------------------ */
 
