@@ -512,7 +512,7 @@ class ButcheryController extends Controller
 
         $filter = Session::get('session_role');
 
-        $configs = Cache::remember('scale3_configs', now()->addMinutes(120), function () {
+        $configs = Cache::remember('deboning_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
                 ->where('scale', 'deboning')
@@ -1112,10 +1112,10 @@ class ButcheryController extends Controller
     {
         $title = "Scale-4";
 
-        $configs = Cache::remember('scale3_configs', now()->addMinutes(120), function () {
+        $configs = Cache::remember('marination_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
-                ->where('scale', 'scale 3')
+                ->where('scale', 'marination')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });
