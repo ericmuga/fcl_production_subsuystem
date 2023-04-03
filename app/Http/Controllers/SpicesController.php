@@ -290,11 +290,12 @@ class SpicesController extends Controller
     public function createBatchLines(Request $request, Helpers $helpers)
     {
         $temp_no = strtok($request->temp_no,  '-');
+        $batch_no = 'sp-' . $request->batch_no;
 
         try {
             //insert batch
             DB::table('batches')->insert([
-                'batch_no' => $request->batch_no,
+                'batch_no' => $batch_no,
                 'template_no' => $temp_no,
                 'output_quantity' => $request->output_qty,
                 'status' => $request->status,
@@ -309,7 +310,7 @@ class SpicesController extends Controller
             if (!empty($temp_lines)) {
                 foreach ($temp_lines as $tl) {
                     DB::table('production_lines')->insert([
-                        'batch_no' => $request->batch_no,
+                        'batch_no' => $batch_no,
                         'item_code' => $tl->item_code,
                         'template_no' => $temp_no,
                         'quantity' => ($tl->percentage / 100) * $request->output_qty,
@@ -339,8 +340,9 @@ class SpicesController extends Controller
             ->get();
 
         $batches = DB::table('batches')
+            ->where('batch_no', 'LIKE', 'sp-%')
             ->where('template_lines.main_product', 'Yes')
-            // ->whereDate('template_lines.created_at', $date_filter) //last 7 days
+            ->whereDate('batches.created_at', '>=', $date_filter) //last 7 days
             ->leftJoin('users', 'batches.user_id', '=', 'users.id')
             ->leftJoin('template_header', 'batches.template_no', '=', 'template_header.template_no')
             ->leftJoin('template_lines', 'batches.template_no', '=', 'template_lines.template_no')

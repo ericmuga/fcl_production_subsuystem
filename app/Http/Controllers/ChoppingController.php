@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Helpers;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,7 +14,7 @@ class ChoppingController extends Controller
         $this->middleware('session_check');
     }
 
-    public function choppingCreateBatch(Request $request, Helpers $helpers)
+    public function choppingBatches(Request $request, Helpers $helpers)
     {
         $title = "Chopping-Batch";
 
@@ -30,16 +31,18 @@ class ChoppingController extends Controller
 
     public function choppingSaveBatch(Request $request, Helpers $helpers)
     {
-        dd($request->all());
         $temp_no = strtok($request->temp_no,  '-');
+        $batch_no = 'ch-' . $request->batch_no;
 
         try {
             //insert batch
             DB::table('batches')->insert([
-                'batch_no' => $request->batch_no,
+                'batch_no' => $batch_no,
                 'template_no' => $temp_no,
-                'output_quantity' => $request->output_qty,
+                'output_quantity' => 0,
                 'status' => $request->status,
+                'from_batch' => $request->from_batch,
+                'to_batch' => $request->to_batch,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 
@@ -51,10 +54,10 @@ class ChoppingController extends Controller
             if (!empty($temp_lines)) {
                 foreach ($temp_lines as $tl) {
                     DB::table('production_lines')->insert([
-                        'batch_no' => $request->batch_no,
+                        'batch_no' => $batch_no,
                         'item_code' => $tl->item_code,
                         'template_no' => $temp_no,
-                        // 'quantity' => ($tl->percentage / 100) * $request->output_qty,
+                        'quantity' => ($tl->percentage / 100) * $request->batch_size,
                     ]);
                 }
             }
@@ -70,9 +73,7 @@ class ChoppingController extends Controller
 
     public function batchLists(Helpers $helpers, $filter = null)
     {
-        dd('here');
-
-        $title = "Spices-Batches";
+        $title = "Chopping-Batches";
 
         $date_filter = today()->subDays(7);
 
@@ -83,8 +84,9 @@ class ChoppingController extends Controller
             ->get();
 
         $batches = DB::table('batches')
+            ->where('batch_no', 'LIKE', 'ch-%')
             ->where('template_lines.main_product', 'Yes')
-            // ->whereDate('template_lines.created_at', $date_filter) //last 7 days
+            ->whereDate('batches.created_at', '>=', $date_filter) //last 7 days
             ->leftJoin('users', 'batches.user_id', '=', 'users.id')
             ->leftJoin('template_header', 'batches.template_no', '=', 'template_header.template_no')
             ->leftJoin('template_lines', 'batches.template_no', '=', 'template_lines.template_no')
@@ -101,6 +103,6 @@ class ChoppingController extends Controller
             ->orderBy('batches.created_at', 'DESC')
             ->get();
 
-        return view('spices.batches', compact('title', 'filter', 'templates', 'batches', 'helpers', 'date_filter'));
+        return view('chopping.batches', compact('title', 'filter', 'templates', 'batches', 'helpers', 'date_filter'));
     }
 }

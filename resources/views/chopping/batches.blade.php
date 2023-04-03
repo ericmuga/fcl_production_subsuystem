@@ -4,8 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-7">
-            <h1 class="m-0"> {{ $title }} |<small>Showing all Chopping Batches </small> from date <strong>
-                    {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
+            <h1 class="m-0"> {{ $title }} |<small> Showing all <strong>{{ $filter? : 'open' }}</strong> Chopping Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
         </div><!-- /.col -->
         <div class="col-sm-5">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
@@ -49,12 +48,12 @@
                     <div class="row form-group">
                         <div class="col-md-4">
                             <label for="exampleInputPassword1">From Batch No:</label>
-                            <input type="number" class="form-control batch" id="from_batch" value="" placeholder=""
+                            <input type="number" class="form-control batch" id="from_batch" name="from_batch" value="" placeholder=""
                                 required>
                         </div>
                         <div class="col-md-4">
                             <label for="exampleInputPassword1">To Batch No:</label>
-                            <input type="number" class="form-control batch" id="to_batch" value="" placeholder=""
+                            <input type="number" class="form-control batch" id="to_batch" name="to_batch" value="" placeholder=""
                                 required>
                         </div>
                         <div class="col-md-4">
@@ -92,13 +91,12 @@
         </div>
     </form>
 </div><br>
-
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Chopping Production Lines Entries | <span id="subtext-h1-title"><small> showing all
-                            entries
+                <h3 class="card-title"> Production Lines Entries | <span id="subtext-h1-title"><small> showing all
+                            <strong>{{ $filter }}</strong> entries
                             ordered by
                             latest</small> </span></h3>
             </div>
@@ -113,6 +111,8 @@
                                 <th>Template No</th>
                                 <th>Template</th>
                                 <th>Status</th>
+                                <th>From Batch</th>
+                                <th>To Batch</th>
                                 <th>Output Product</th>
                                 {{-- <th>Output Quantity</th> --}}
                                 @if ($filter == 'open' || $filter == '')
@@ -123,7 +123,7 @@
                                 @elseif ($filter == 'posted')
                                     <th>posted By</th>
                                 @endif
-
+                                
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -134,6 +134,8 @@
                                 <th>Template No</th>
                                 <th>Template</th>
                                 <th>Status</th>
+                                <th>From Batch</th>
+                                <th>To Batch</th>
                                 <th>Output Product</th>
                                 {{-- <th>Output Quantity</th> --}}
                                 @if ($filter == 'open' || $filter == '')
@@ -151,23 +153,25 @@
                             @foreach($batches as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                            <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
-                            </td>
-                            <td>{{ $data->template_no }}</td>
-                            <td>{{ $data->template_name }}</td>
+                                <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
+                                </td>
+                                <td>{{ $data->template_no }}</td>
+                                <td>{{ $data->template_name }}</td>
 
-                            @if ($data->status == 'open')
-                            <td><span class="badge badge-success">Open</span></td>
-                            @elseif ($data->status == 'closed')
-                            <td><span class="badge badge-warning">Closed</span></td>
-                            @else
-                            <td><span class="badge badge-danger">Posted</span></td>
-                            @endif
+                                @if ($data->status == 'open')
+                                <td><span class="badge badge-success">Open</span></td>
+                                @elseif ($data->status == 'closed')
+                                <td><span class="badge badge-warning">Closed</span></td>
+                                @else
+                                <td><span class="badge badge-danger">Posted</span></td>
+                                @endif
+                                <td>{{ $data->from_batch }}</td>
+                                <td>{{ $data->to_batch }}</td>
 
-                            <td>{{ $data->template_output }}</td>
-                            <td>{{ $data->output_quantity }}</td>
-                            <td>{{ $data->username }}</td>
-                            <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>{{ $data->template_output }}</td>
+                                {{-- <td>{{ $data->output_quantity }}</td> --}}
+                                <td>{{ $data->username }}</td>
+                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -200,7 +204,7 @@
             var temp_no = $(this).val();
             var output = $('#output_product').val(temp_no.substring(temp_no.indexOf('-') + 1));
             $('#temp_no').select2('destroy').select2();
-            $('#output_qty').focus()
+            $('#from_batch').focus()
         });
     });
 
