@@ -153,7 +153,7 @@
                             @foreach($batches as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td><a href="{{ route('production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
+                                <td><a href="{{ route('chopping_production_lines', $data->batch_no) }}">{{ $data->batch_no }}</a>
                                 </td>
                                 <td>{{ $data->template_no }}</td>
                                 <td>{{ $data->template_name }}</td>

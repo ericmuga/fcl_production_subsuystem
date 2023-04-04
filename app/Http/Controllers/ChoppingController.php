@@ -105,4 +105,97 @@ class ChoppingController extends Controller
 
         return view('chopping.batches', compact('title', 'filter', 'templates', 'batches', 'helpers', 'date_filter'));
     }
+
+    public function productionLines($batch_no, Helpers $helpers)
+    {
+        $title = "Chopping Production Lines";
+
+        $table = 'production_lines';
+
+        $lines = DB::table('production_lines')
+            ->where('production_lines.batch_no', $batch_no)
+            ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
+            ->join('template_lines', function ($join) use ($table) {
+                $join->on($table . '.item_code', '=',  'template_lines.item_code');
+                $join->on($table . '.template_no', '=', 'template_lines.template_no');
+            })
+            ->orderBy('template_lines.type', 'ASC')
+            ->get();
+
+        return view('chopping.production-lines', compact('title', 'lines', 'helpers', 'batch_no'));
+    }
+
+    public function updateBatchItems(Request $request)
+    {
+        try {
+            //update
+            foreach ($request->item_code as $key => $value) {
+
+                DB::table('production_lines')
+                    ->where('batch_no', $request->item_name)
+                    ->where('item_code', $value)
+                    ->update([
+                        'quantity' => $request->qty[$key],
+                        'updated_at' => now(),
+                    ]);
+            }
+
+            Toastr::success("Update items on batch no: {$request->item_name} completed successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
+    }
+
+    public function closeOrPostBatch(Request $request, Helpers $helpers)
+    {
+        try {
+            $route_filter = 'closed';
+
+            if ($request->filter == 'close') {
+                //close batch
+                DB::table('batches')
+                    ->where('batch_no', $request->batch_no)
+                    ->update([
+                        'status' => 'closed',
+                        'closed_by' => $helpers->authenticatedUserId(),
+                        'updated_at' => now(),
+                    ]);
+            } elseif ($request->filter == 'post') {
+                $route_filter = 'posted';
+                //post batch
+                DB::transaction(
+                    function () use ($request, $helpers) {
+                        //update batch to posted
+                        DB::table('batches')
+                            ->where('batch_no', $request->batch_no)
+                            ->update([
+                                'status' => 'posted',
+                                'posted_by' => $helpers->authenticatedUserId(),
+                                'updated_at' => now(),
+                            ]);
+
+                        //insert into Negative adjustments in stock entries
+                        foreach ($request->item_array as $item) {
+                            # code...
+
+                            DB::table('spices_stock')->insert([
+                                'item_code' => strtok($item, ':'),
+                                'quantity' => -1 * abs((float)substr($item, strpos($item, ":") + 1)), // negative adjustment
+                                'entry_type' => '2', //consumption
+                                'user_id' => $helpers->authenticatedUserId(),
+                            ]);
+                        }
+                    }
+                );
+            }
+
+            Toastr::success("Action {$request->filter} batch no: {$request->item_name} completed successfully", 'Success');
+            return redirect()->route('batches_list', $route_filter);
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back();
+        }
+    }
 }
