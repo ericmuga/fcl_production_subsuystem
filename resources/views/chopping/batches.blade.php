@@ -111,10 +111,10 @@
                                 <th>Template No</th>
                                 <th>Template</th>
                                 <th>Status</th>
+                                <th>Output Product</th>
                                 <th>From Batch</th>
                                 <th>To Batch</th>
-                                <th>Output Product</th>
-                                {{-- <th>Output Quantity</th> --}}
+                                <th>Output Quantity</th>
                                 @if ($filter == 'open' || $filter == '')
                                     <th>created By</th>
                                     
@@ -122,8 +122,7 @@
                                     <th>closed By</th>
                                 @elseif ($filter == 'posted')
                                     <th>posted By</th>
-                                @endif
-                                
+                                @endif                                
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -134,10 +133,10 @@
                                 <th>Template No</th>
                                 <th>Template</th>
                                 <th>Status</th>
+                                <th>Output Product</th>
                                 <th>From Batch</th>
                                 <th>To Batch</th>
-                                <th>Output Product</th>
-                                {{-- <th>Output Quantity</th> --}}
+                                <th>Output Quantity</th>
                                 @if ($filter == 'open' || $filter == '')
                                     <th>created By</th>
                                     
@@ -145,7 +144,7 @@
                                     <th>closed By</th>
                                 @elseif ($filter == 'posted')
                                     <th>posted By</th>
-                                @endif
+                                @endif                                
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -164,12 +163,11 @@
                                 <td><span class="badge badge-warning">Closed</span></td>
                                 @else
                                 <td><span class="badge badge-danger">Posted</span></td>
-                                @endif
+                                @endif                                
+                                <td>{{ $data->template_output }}</td>
                                 <td>{{ $data->from_batch }}</td>
                                 <td>{{ $data->to_batch }}</td>
-
-                                <td>{{ $data->template_output }}</td>
-                                {{-- <td>{{ $data->output_quantity }}</td> --}}
+                                <td>{{ $data->output_quantity }}</td>
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>

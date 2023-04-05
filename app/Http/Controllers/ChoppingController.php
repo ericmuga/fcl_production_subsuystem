@@ -39,7 +39,7 @@ class ChoppingController extends Controller
             DB::table('batches')->insert([
                 'batch_no' => $batch_no,
                 'template_no' => $temp_no,
-                'output_quantity' => 0,
+                'output_quantity' => $request->batch_size,
                 'status' => $request->status,
                 'from_batch' => $request->from_batch,
                 'to_batch' => $request->to_batch,
@@ -175,24 +175,12 @@ class ChoppingController extends Controller
                                 'posted_by' => $helpers->authenticatedUserId(),
                                 'updated_at' => now(),
                             ]);
-
-                        //insert into Negative adjustments in stock entries
-                        foreach ($request->item_array as $item) {
-                            # code...
-
-                            DB::table('spices_stock')->insert([
-                                'item_code' => strtok($item, ':'),
-                                'quantity' => -1 * abs((float)substr($item, strpos($item, ":") + 1)), // negative adjustment
-                                'entry_type' => '2', //consumption
-                                'user_id' => $helpers->authenticatedUserId(),
-                            ]);
-                        }
                     }
                 );
             }
 
             Toastr::success("Action {$request->filter} batch no: {$request->item_name} completed successfully", 'Success');
-            return redirect()->route('batches_list', $route_filter);
+            return redirect()->route('chopping_batches_list', $route_filter);
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back();

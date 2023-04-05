@@ -111,7 +111,7 @@
 <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('update_batch') }}"
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('chopping_update_batch') }}"
             method="post">
             @csrf
             <div class="modal-content">
@@ -188,7 +188,7 @@
 <div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
-        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('close_post_batch') }}"
+        <form id="form-close-post" class="form-prevent-multiple-submits" action="{{ route('chopping_close_batch') }}"
             method="post">
             @csrf
             <div class="modal-content">
