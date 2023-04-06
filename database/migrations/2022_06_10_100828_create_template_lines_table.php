@@ -20,6 +20,7 @@ class CreateTemplateLinesTable extends Migration
             $table->index(['template_no', 'item_code']);
             $table->string('description');
             $table->decimal('percentage');
+            $table->decimal('units_per_100');
             $table->string('type');
             $table->string('main_product');
             $table->string('shortcode');

@@ -72,12 +72,12 @@
                     <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
                         oninput="getNet()" placeholder="" readonly>
                 </div>
-                @if (config('app.show_manual_weight') == 1)
+                {{-- @if (config('app.show_manual_weight') == 1) --}}
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div> <br>
-                @endif
+                {{-- @endif --}}
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-group">
                     <label for="exampleInputPassword1">Tare-Weight</label>

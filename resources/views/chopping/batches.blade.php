@@ -3,10 +3,10 @@
 @section('content-header')
 <div class="container-fluid">
     <div class="row mb-2">
-        <div class="col-sm-7">
-            <h1 class="m-0"> {{ $title }} |<small> Showing all <strong>{{ $filter? : 'open' }}</strong> Chopping Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
+        <div class="col-sm-8">
+            <h1 class="m-0"> {{ $title }} |<small> Showing all <strong>{{ $filter? : 'open' }}</strong> Batches </small> from date <strong> {{ $helpers->formatTodateOnly($date_filter) }}</strong></h1>
         </div><!-- /.col -->
-        <div class="col-sm-5">
+        <div class="col-sm-4">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i
                     class="fas fa-plus"></i>
                 Create
@@ -46,7 +46,12 @@
             <div class="card">
                 <div class="card-body form-group">
                     <div class="row form-group">
-                        <div class="col-md-4">
+                        <label for="inputEmail3" class="col-sm-4 col-form-label">From Batch No:</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="from_batch" value="" name="from_batch"
+                                placeholder="" required>
+                        </div>
+                        {{-- <div class="col-md-4">
                             <label for="exampleInputPassword1">From Batch No:</label>
                             <input type="number" class="form-control batch" id="from_batch" name="from_batch" value="" placeholder=""
                                 required>
@@ -62,7 +67,7 @@
                                 readonly placeholder="">
                             <span class="text-danger" id="err"></span>
                             <span class="text-success" id="succ"></span>
-                        </div>
+                        </div> --}}
 
                         <input type="number" value="{{ time() }}" class="form-control" id="batch_no" name="batch_no"
                             placeholder="" hidden>
@@ -194,9 +199,9 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        $('.batch').on("input", function () {
-            getBatchSize()
-        })
+        // $('.batch').on("input", function () {
+        //     getBatchSize()
+        // })
 
         $('#temp_no').change(function () {
             var temp_no = $(this).val();
@@ -206,47 +211,47 @@
         });
     });
 
-    const getBatchSize = () => {
-        let from_batch = $('#from_batch').val()
-        let to_batch = $('#to_batch').val()
-        let batch_size = 0
+    // const getBatchSize = () => {
+    //     let from_batch = $('#from_batch').val()
+    //     let to_batch = $('#to_batch').val()
+    //     let batch_size = 0
 
-        if (from_batch != '' && to_batch != '') {
-            batch_size = (parseInt(to_batch) - parseInt(from_batch)) + 1
-        }
+    //     if (from_batch != '' && to_batch != '') {
+    //         batch_size = (parseInt(to_batch) - parseInt(from_batch)) + 1
+    //     }
 
-        $('#batch_size').val(batch_size)
+    //     $('#batch_size').val(batch_size)
 
-        validateBatchSize(batch_size)
-    }
+    //     validateBatchSize(batch_size)
+    // }
 
-    const validateBatchSize = (batch_size) => {
+    // const validateBatchSize = (batch_size) => {
 
-        if (batch_size < 1) {
-            // batch is not valid, set message
-            setBatchValidityMessage('succ', 'err', '', 'invalid batch')
-        } else {
-            setBatchValidityMessage('succ', 'err', '', '')
-        }
-    }
+    //     if (batch_size < 1) {
+    //         // batch is not valid, set message
+    //         setBatchValidityMessage('succ', 'err', '', 'invalid batch')
+    //     } else {
+    //         setBatchValidityMessage('succ', 'err', '', '')
+    //     }
+    // }
 
-    const setBatchValidityMessage = (field_succ, field_err, message_succ, message_err) => {
-        document.getElementById(field_succ).innerHTML = message_succ
-        document.getElementById(field_err).innerHTML = message_err
-    }
+    // const setBatchValidityMessage = (field_succ, field_err, message_succ, message_err) => {
+    //     document.getElementById(field_succ).innerHTML = message_succ
+    //     document.getElementById(field_err).innerHTML = message_err
+    // }
 
-    const validateOnSubmit = () => {
-        let status = true
+    // const validateOnSubmit = () => {
+    //     let status = true
 
-        let batch_size = $("#batch_size").val();
+    //     let batch_size = $("#batch_size").val();
 
-        if (batch_size == '' || batch_size < 1) {
-            status = false
-            alert("please ensure you have valid batch size before submitting")
-        }
+    //     if (batch_size == '' || batch_size < 1) {
+    //         status = false
+    //         alert("please ensure you have valid batch size before submitting")
+    //     }
 
-        return status
-    }
+    //     return status
+    // }
 
 </script>
 @endsection
