@@ -202,12 +202,12 @@
                                 </div>
                             </div>
 
-                            @if (config('app.show_manual_weight') == 1)
+                            {{-- @if (config('app.show_manual_weight') == 1) --}}
                             <div class="form-check" style="text-align: center">
                                 <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                                 <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                             </div>
-                            @endif
+                            {{-- @endif --}}
 
                             <div class="form-group" style="padding-left: 30%; padding-top: 5%">
                                 <button type="button" onclick="getScaleReading()" id="weigh" value=""
