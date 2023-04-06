@@ -59,7 +59,7 @@
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
                                         data-no_carcass="{{ $data->no_of_pieces }}"
-                                        data-weight="{{number_format($data->actual_weight, 2)}}" data-timestamp="{{ $data->created_at }}"
+                                        data-weight="{{number_format($data->actual_weight, 2, '.', '')}}" data-timestamp="{{ $data->created_at }}"
                                         class="btn btn-info btn-xs" title="Return Sale" id="returnSaleModalShow"><i
                                             class="fa fa-undo"></i>
                                     </button>
@@ -215,14 +215,13 @@
             var created_date = $(this).data('timestamp');
             var weight = $(this).data('weight');
 
-
             $('#return_item_id').val(id);
             $('#return_item_code').val(product);
             $('#item_name2').val(item);
             $('#return_no_carcass').val(no_carcass);
-            $('#return_weight').val(weight);            
+            $('#return_weight').val(weight)          
             $('#item_created_date').val(created_date);
-            $('#weight').val(weight);
+            $('#weight').val(weight)
 
             $('#returnSaleModal').modal('show');
         });
