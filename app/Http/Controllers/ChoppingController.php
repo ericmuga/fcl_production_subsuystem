@@ -22,7 +22,7 @@ class ChoppingController extends Controller
 
         $templates = DB::table('template_header')
             ->where('template_lines.main_product', 'Yes')
-            ->leftJoin('template_lines', 'template_header.template_no', '=', 'template_lines.template_no')
+            ->Join('template_lines', 'template_header.template_no', '=', 'template_lines.template_no')
             ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
             ->get();
 
@@ -56,7 +56,6 @@ class ChoppingController extends Controller
 
     public function choppingSaveBatch(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         $temp_no = strtok($request->temp_no,  '-');
         $batch_no = 'ch-' . $request->batch_no;
 
@@ -89,7 +88,7 @@ class ChoppingController extends Controller
 
             Toastr::success("Chopping Batch {$request->batch_no} created successfully", "Success");
             return redirect()
-                ->route('chopping_batches_list');
+                ->route('chopping_batches_list', $request->status);
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back();
