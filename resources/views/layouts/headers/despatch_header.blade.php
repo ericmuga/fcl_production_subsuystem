@@ -33,10 +33,10 @@
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('despatch_idt', 'highcare') }}" class="nav-link">Highcare-IDT</a>
+                        <li><a href="{{ route('despatch_idt', 'highcare') }}" class="dropdown-item">Highcare-IDT</a>
                         </li>
                         <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('despatch_idt', 'fresh_cuts') }}" class="nav-link">FreshCuts-IDT</a>
+                        <li><a href="{{ route('despatch_idt', 'fresh_cuts') }}" class="dropdown-item">Fresh&Bulk-IDT</a>
                         </li>
                     </ul>
                 </li>
