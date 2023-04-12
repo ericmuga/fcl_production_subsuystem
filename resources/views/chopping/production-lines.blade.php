@@ -7,7 +7,8 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-7">
-                        <h3 class="card-title"> Chopping Production Lines Entries | <span id="subtext-h1-title">showing batch No:
+                        <h3 class="card-title"> Chopping Production Lines Entries | <span id="subtext-h1-title">showing
+                                batch No:
                                 <strong>{{ $batch_no }}</strong> entries
                                 ordered by
                                 latest</span></h3>
@@ -60,12 +61,12 @@
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <<th>std Qty </th>
-                                <th>Used Qty</th>
-                                <th>Main Product</th>
-                                <th>Type</th>
-                                <th>Unit Measure</th>
-                                <th>Location</th>
-                                <th>Date</th>
+                                    <th>Used Qty</th>
+                                    <th>Main Product</th>
+                                    <th>Type</th>
+                                    <th>Unit Measure</th>
+                                    <th>Location</th>
+                                    <th>Date</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -116,7 +117,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Items for @foreach ($lines as $l )
-                        @if ($loop->last) <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
+                        @if ($loop->last) <input type="text" value="{{ $l->item_code }}" name="main_item">
+                        <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
                             style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
                             value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
@@ -125,6 +127,7 @@
                 </div>
                 <div class="modal-body">
                     @foreach ($lines as $l)
+                    @if($l->type != 'Output' )
                     <div class="row">
                         <div hidden class="col-md-3">
                             <label>Item Code</label>
@@ -133,18 +136,18 @@
                         </div>
                         <div class="col-md-4">
                             <label>Item </label>
-                            <input type="text" class="form-control" id="item" value="{{ $l->item_code.' - '.$l->description }}"
-                                name="item" placeholder="" readonly>
+                            <input type="text" class="form-control" id="item"
+                                value="{{ $l->item_code.' - '.$l->description }}" name="item" placeholder="" readonly>
                         </div>
                         <div class="col-md-2">
                             <label>Std Qty</label>
-                            <input type="number" class="form-control" id="std_qty" value="{{ $l->quantity }}" name="std_qty[]"
-                                step="0.01" readonly placeholder="">
+                            <input type="number" class="form-control" id="std_qty" value="{{ $l->quantity }}"
+                                name="std_qty[]" step="0.01" readonly placeholder="">
                         </div>
                         <div class="col-md-2">
                             <label>Used Qty</label>
-                            <input type="number" class="form-control" id="qty" value="{{ $l->quantity }}" name="qty[]"
-                                step="0.01" onClick="this.select();" placeholder="">
+                            <input type="number" class="form-control qty_used" id="qty" value="{{ $l->quantity }}"
+                                name="qty[]" step="0.01" onClick="this.select();" placeholder="">
                         </div>
                         <div class="col-md-4">
                             <label>Type</label>
@@ -152,29 +155,30 @@
                                 placeholder="" readonly>
                         </div>
                     </div>
+                    @endif
+                    @endforeach
                     <hr>
-                    {{-- <div class="form-group">
-                        @if ($l->type == 'Output')
-                        <div class="row">
-                            <div class="col-md-6">
-                                <label>Total Intake Qty</label>
-                                <input type="number" class="form-control" id="total_intake" value="{{ $l->quantity }}"
-                                    name="total_intake" placeholder="" readonly>
-                            </div>
-                            <div class="col-md-6">
-                                <label>Total Output Qty</label>
-                                <input type="number" class="form-control" id="total_output" value="{{ $l->quantity }}"
-                                    name="total_output" placeholder="">
-
+                    <div class="row form-group">
+                        {{-- <div class="col-md-4">
+                            <button type="button" onclick="calculateTotal()" id="calculate-btn" value=""
+                                class="btn btn-primary btn-lg"><i class="fas fa-calculator"></i> Calculate
+                                Total</button>
+                        </div> --}}
+                        <div class="col-md-8">
+                            <div class="row">
+                                <label for="inputEmail3" class="col-sm-3 col-form-label">Total Output Qty</label>
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control" id="total_output" name="total_output"
+                                        value="" placeholder="" required readonly>
+                                </div>
                             </div>
                         </div>
-                        @endif
-                    </div> --}}
-                    @endforeach
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                    <button type="submit" onclick="return validateOnSubmit()"
+                        class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Update</button>
                 </div>
             </div>
@@ -246,10 +250,11 @@
                     <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
                     <input type="hidden" value="post" name="filter" id="filter">
                     @foreach($lines as $data)
-                        @if (str_starts_with($data->item_code, 'H'))
-                            <input type="" value="{{ $data->item_code.':' }} {{ $data->quantity }}" name="item_array[]" id="item_array">  
-                        @else                          
-                        @endif
+                    @if (str_starts_with($data->item_code, 'H'))
+                    <input type="" value="{{ $data->item_code.':' }} {{ $data->quantity }}" name="item_array[]"
+                        id="item_array">
+                    @else
+                    @endif
                     @endforeach
                 </div>
                 <div class="modal-footer">
@@ -273,6 +278,10 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
+        $('.qty_used').on("input", function () {
+            calculateTotal()
+        });
+
     });
 
     const editModal = () => {
@@ -282,7 +291,36 @@
         $('#item_name3').val(item);
 
         $('#editModal').modal('show');
+        calculateTotal()
+    }
 
+    const calculateTotal = () => {
+        let inputs = document.getElementsByClassName('qty_used');
+        let total = 0;
+
+        for (let i = 0; i < inputs.length; i++) {
+            total += parseFloat(inputs[i].value);
+        }
+
+        $('#total_output').val(total)
+    }
+
+    const validateOnSubmit = () => {
+        let valid = false
+
+        // Get the input value
+        let inputVal = $('#total_output').val();
+
+        // Check if it's a number
+        if (!inputVal == '') {
+            // It's a number
+            valid = true
+        } else {
+            // It's not a number
+            alert('The output total value must be valid');
+        }
+
+        return valid;
     }
 
 </script>

@@ -103,6 +103,7 @@ class ChoppingController extends Controller
 
         $lines = DB::table('production_lines')
             ->where('production_lines.batch_no', $batch_no)
+            // ->where('template_lines.type', '!=', 'Output')
             ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
             ->join('template_lines', function ($join) use ($table) {
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
@@ -128,6 +129,14 @@ class ChoppingController extends Controller
                         'updated_at' => now(),
                     ]);
             }
+
+            DB::table('production_lines')
+                ->where('batch_no', $request->item_name)
+                ->where('item_code', $request->main_item)
+                ->update([
+                    'quantity' => $request->total_output,
+                    'updated_at' => now(),
+                ]);
 
             Toastr::success("Update items on batch no: {$request->item_name} completed successfully", 'Success');
             return redirect()->back();

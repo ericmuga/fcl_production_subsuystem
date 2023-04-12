@@ -30,8 +30,8 @@
                 <div class="card p-2 bg-secondary" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('spices_dashboard') }}">
-                        <h4 class="card-title">Spices Section</h4>
-                        <p class="card-text">Select this option to switch to Spices interface.
+                        <h4 class="card-title">Spices & Chopping Section</h4>
+                        <p class="card-text">Select this option to switch to Spices&Chopping interface.
                         </p>
                     </a>
                     <div class="icon text-center">
