@@ -163,7 +163,7 @@ class ChoppingController extends Controller
                     ->update([
                         'to_batch' => $request->to_batch,
                         'status' => 'closed',
-                        'output_quantity' => $this->getQuantityTotal($request->batch_no, $batch_size),
+                        'output_quantity' => $this->getQuantityTotal($request->batch_no, $batch_size, $request->main_item),
                         'closed_by' => $helpers->authenticatedUserId(),
                         'updated_at' => now(),
                     ]);
@@ -192,10 +192,11 @@ class ChoppingController extends Controller
         }
     }
 
-    private function getQuantityTotal($batch_no, $batch_size)
+    private function getQuantityTotal($batch_no, $batch_size, $main_item)
     {
         $sum_qty = DB::table('production_lines')
             ->where('batch_no', $batch_no)
+            ->where('item_code', '!=', $main_item)
             ->select(DB::raw('SUM(quantity * ' . (int)$batch_size . ') as total_qty'))
             ->value('total_qty');
 

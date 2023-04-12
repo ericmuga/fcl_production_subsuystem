@@ -117,7 +117,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Items for @foreach ($lines as $l )
-                        @if ($loop->last) <input type="text" value="{{ $l->item_code }}" name="main_item">
+                        @if ($loop->last) <input type="text" hidden value="{{ $l->item_code }}" name="main_item">
                         <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
                             style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
                             value="{{ $batch_no }}" readonly></h5>
@@ -197,7 +197,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Close batch for @foreach ($lines as $l )
-                        @if ($loop->last) <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
+                        @if ($loop->last) <input type="text" hidden value="{{ $l->item_code }}" name="main_item"> <strong>{{ $l->description }} </strong>@endif @endforeach in Batch No: <input
                             style="border:none; font-weight: bold;" type="text" id="item_name1" name="item_name"
                             value="{{ $batch_no }}" readonly></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
@@ -215,7 +215,7 @@
                     </div>
                     <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
                     <input type="hidden" value="close" name="filter" id="filter">
-                    <input type="" value="{{ $from_batch }}" name="from_batch" id="from_batch">
+                    <input type="hidden" value="{{ $from_batch }}" name="from_batch" id="from_batch">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
