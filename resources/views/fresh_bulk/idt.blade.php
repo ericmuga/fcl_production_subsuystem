@@ -100,10 +100,20 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Transfer To Chiller </label>
-                    <select class="form-control select2 locations" name="chiller_code" id="chiller_code" required>
-                        <option value="">Select chiller</option>
-                    </select>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">Transfer To Chiller </label>
+                            <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
+                                required>
+                                <option value="">Select chiller</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">No. of pieces </label>
+                            <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
+                                required>
+                        </div>
+                    </div>
                 </div> <br>
                 <div class="row form-group">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
@@ -178,8 +188,6 @@
                                 <th>Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
-                                <th>Full Crates</th>
-                                <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
                                 <th>Export No</th>
@@ -197,8 +205,6 @@
                                 <th>Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
-                                <th>Full Crates</th>
-                                <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
                                 <th>Export No</th>
@@ -224,8 +230,6 @@
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates }}</td>
-                                <td>{{ $data->full_crates }}</td>
-                                <td>{{ $data->incomplete_crate_pieces }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->description }}</td>
@@ -260,8 +264,9 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Cancel Transfer for Idt No: <strong><input style="border:none"
-                                type="text" id="item_id" name="item_id" value="" readonly></strong></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Cancel Transfer for Idt No: <strong><input
+                                style="border:none" type="text" id="item_id" name="item_id" value="" readonly></strong>
+                    </h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
