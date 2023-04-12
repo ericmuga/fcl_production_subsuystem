@@ -41,7 +41,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Batch No</th>
+                                {{-- <th>Batch No</th> --}}
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
@@ -56,7 +56,7 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Batch No</th>
+                                {{-- <th>Batch No</th> --}}
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <<th>std Qty </th>
@@ -72,7 +72,7 @@
                             @foreach($lines as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->batch_no }}</td>
+                                {{-- <td>{{ $data->batch_no }}</td> --}}
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ number_format($data->units_per_100, 2) }}</td>
@@ -201,9 +201,17 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <strong><em> Please Confirm you want to close this Batch</em></strong>
+                    <p><i> Close Batch by entering end of batch no below</i></p>
+                    <div class="row">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">To Batch No: </label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control" id="to_batch" name="to_batch" value=""
+                                placeholder="" min="1" step="1" required>
+                        </div>
+                    </div>
                     <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
                     <input type="hidden" value="close" name="filter" id="filter">
+                    <input type="" value="{{ $from_batch }}" name="from_batch" id="from_batch">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

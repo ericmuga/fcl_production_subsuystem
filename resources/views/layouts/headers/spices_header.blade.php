@@ -38,7 +38,15 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Chopping</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
-                        <li><a href="{{ route('chopping_batches_list', 'open') }}" class="dropdown-item"> Batches
+                        <li><a href="{{ route('chopping_batches_list', 'open') }}" class="dropdown-item"> Open Batches
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('chopping_batches_list', 'closed') }}" class="dropdown-item"> Closed Batches
+                            </a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('chopping_batches_list', 'posted') }}" class="dropdown-item"> Posted Batches
                             </a>
                         </li>
                     </ul>

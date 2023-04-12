@@ -95,7 +95,7 @@ class ChoppingController extends Controller
         }
     }
 
-    public function productionLines($batch_no, Helpers $helpers)
+    public function productionLines($batch_no, Helpers $helpers, $from_batch)
     {
         $title = "Chopping Production Lines";
 
@@ -111,7 +111,7 @@ class ChoppingController extends Controller
             ->orderBy('template_lines.type', 'ASC')
             ->get();
 
-        return view('chopping.production-lines', compact('title', 'lines', 'helpers', 'batch_no'));
+        return view('chopping.production-lines', compact('title', 'lines', 'helpers', 'batch_no', 'from_batch'));
     }
 
     public function updateBatchItems(Request $request)
@@ -142,12 +142,19 @@ class ChoppingController extends Controller
         try {
             $route_filter = 'closed';
 
+            $to_batch = (int)$request->to_batch;
+            $from_batch = (int)$request->from_batch;
+
+            $batch_size = ($to_batch - $from_batch) + 1;
+
             if ($request->filter == 'close') {
                 //close batch
                 DB::table('batches')
                     ->where('batch_no', $request->batch_no)
                     ->update([
+                        'to_batch' => $request->to_batch,
                         'status' => 'closed',
+                        'output_quantity' => $this->getQuantityTotal($request->batch_no, $batch_size),
                         'closed_by' => $helpers->authenticatedUserId(),
                         'updated_at' => now(),
                     ]);
@@ -174,5 +181,15 @@ class ChoppingController extends Controller
             Toastr::error($e->getMessage(), 'Error!');
             return back();
         }
+    }
+
+    private function getQuantityTotal($batch_no, $batch_size)
+    {
+        $sum_qty = DB::table('production_lines')
+            ->where('batch_no', $batch_no)
+            ->select(DB::raw('SUM(quantity * ' . (int)$batch_size . ') as total_qty'))
+            ->value('total_qty');
+
+        return $sum_qty;
     }
 }

@@ -41,7 +41,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Batch No</th>
+                                {{-- <th>Batch No</th> --}}
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>Percentage </th>
@@ -56,7 +56,7 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                <th>Batch No</th>
+                                {{-- <th>Batch No</th> --}}
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>Percentage </th>
@@ -72,7 +72,7 @@
                             @foreach($lines as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->batch_no }}</td>
+                                {{-- <td>{{ $data->batch_no }}</td> --}}
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ number_format($data->percentage, 2) }}</td>
