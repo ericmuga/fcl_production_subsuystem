@@ -186,10 +186,15 @@ Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPe
 /*-------------End Despatch------------------ */
 
 /*-------------Start HighCare1------------------ */
-Route::get('/highcare1/dashboard', [HighCare1Controller::class, 'index'])->name('highcare1_dashboard');
-Route::get('/highcare1/idt', [HighCare1Controller::class, 'getIdt'])->name('highcare1_idt');
-Route::get('/highcare1/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
-Route::post('/save/high-care-idt', [HighCare1Controller::class, 'saveTransfer'])->name('save_idt_high_care');
+Route::prefix('highcare1')->group(function () {
+    Route::get('/dashboard', [HighCare1Controller::class, 'index'])->name('highcare1_dashboard');
+    Route::get('/idt', [HighCare1Controller::class, 'getIdt'])->name('highcare1_idt');
+    Route::get('/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
+    Route::post('/save/high-care-idt', [HighCare1Controller::class, 'saveTransfer'])->name('save_idt_high_care');
+
+    Route::get('/idt-bulk', [HighCare1Controller::class, 'getIdtBulk'])->name('highcare1_idt_bulk');
+    Route::post('/idt-bulk/save', [HighCare1Controller::class, 'saveIdtBulk'])->name('highcare1_idt_save_bulk');
+});
 /*-------------End HighCare1------------------ */
 
 /*-------------Start HighCare2------------------ */

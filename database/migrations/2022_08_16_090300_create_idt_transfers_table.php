@@ -18,10 +18,10 @@ class CreateIdtTransfersTable extends Migration
             $table->string('product_code');
             $table->string('location_code');
             $table->string('chiller_code');
-            $table->integer('total_crates');
-            $table->integer('full_crates');
-            $table->integer('incomplete_crate_pieces');
-            $table->integer('total_pieces');
+            $table->integer('total_crates')->default(0);
+            $table->integer('full_crates')->default(0);
+            $table->integer('incomplete_crate_pieces')->default(0);
+            $table->integer('total_pieces')->default(0);
             $table->decimal('total_weight');
             $table->string('description')->nullable();
             $table->string('order_no')->nullable();
@@ -37,6 +37,7 @@ class CreateIdtTransfersTable extends Migration
             $table->decimal('receiver_total_weight')->nullable();
             $table->integer('received_by')->nullable();
             $table->tinyInteger('edited')->default(0);
+            $table->string('filter1')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
