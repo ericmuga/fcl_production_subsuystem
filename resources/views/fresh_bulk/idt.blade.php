@@ -41,7 +41,7 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-5">
                         <label for="exampleInputPassword1">Carriage Type</label>
                         <select class="form-control select2" name="carriage_type" id="carriage_type" required>
                             <option disabled selected value> -- select an option -- </option>
@@ -49,11 +49,22 @@
                             <option value="40">Van</option>
                         </select>
                     </div>
-                    <div hidden id="crates_div" class="col-md-4">
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">No. of Crates </label>
-                            <input type="number" class="form-control" id="no_of_crates" value="" name="no_of_crates"
-                                min="1" placeholder="">
+                    <div hidden id="crates_div" class="col-md-7">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Total Crates </label>
+                                    <input type="number" class="form-control" id="no_of_crates" value=""
+                                        name="no_of_crates" min="1" placeholder="">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Black Crates </label>
+                                    <input type="number" class="form-control" id="black_crates" value=""
+                                        name="black_crates" min="1" placeholder="">
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -405,7 +416,7 @@
             }
         });
 
-        $('#no_of_crates').on("input", function () {
+        $('#black_crates').on("input", function () {
             getNet()
         });
 
@@ -465,9 +476,10 @@
 
         let tare = $('#carriage_type').val()
         let no_of_crates = $('#no_of_crates').val()
+        let black_crates = $('#black_crates').val()
 
-        if (tare == 1.8 && no_of_crates == '') {
-            alert('please enter no of crates')
+        if (tare == 1.8 && (no_of_crates == '' || black_crates == '' )) {
+            alert('please enter total crates and black crates count')
 
         } else {
             if (parseFloat(tare) == 40) {
@@ -475,12 +487,13 @@
                 $('#total_tare').val(tare)
                 total_tare += parseFloat(tare)
             } else {
-                let total = 0;
-                total = parseFloat(tare) * parseFloat(no_of_crates)
-                $('#total_tare').val(total)
+                let total = 0
+                let black_tare_add = parseFloat(black_crates) * 0.2
+                total = (parseFloat(tare) * parseFloat(no_of_crates)) + black_tare_add
                 total_tare += total
             }
         }
+        $('#total_tare').val(total_tare.toFixed(2))
 
         return total_tare
     }
