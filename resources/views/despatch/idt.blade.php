@@ -151,35 +151,35 @@
                             <div class="card-body" style="">
                                 <div class="form-group">
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Product Name </label>
-                                        <div class="col-sm-8">
+                                        <label for="inputEmail3" class="col-sm-5 col-form-label">Product Name </label>
+                                        <div class="col-sm-7">
                                             <input type="text" readonly class="form-control" value="" id="f_item"
                                                 placeholder="" name="item">
                                             <input type="hidden" name="product" id="f_product" value="">
                                             <input type="hidden" name="item_id" id="f_item_id" value="">
                                         </div>
-                                    </div>
+                                    </div> <br>
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Item Unit Measure
+                                        <label for="inputEmail3" class="col-sm-5 col-form-label">Item Unit Measure
                                         </label>
-                                        <div class="col-sm-8">
+                                        <div class="col-sm-7">
                                             <input type="number" readonly class="form-control input_params" value="0"
                                                 id="f_unit_measure" name="unit_measure" placeholder="">
                                         </div>
-                                    </div>
+                                    </div> <br>
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Total Tareweight(kgs)
+                                        <label for="inputEmail3" class="col-sm-5 col-form-label">Total Tareweight(kgs)
                                         </label>
-                                        <div class="col-sm-8">
+                                        <div class="col-sm-7">
                                             <input type="number" readonly class="form-control input_params" value="0"
                                                 id="f_tareweight" name="f_tareweight" placeholder="">
                                         </div>
-                                    </div>
+                                    </div> <br>
                                     <div hidden class="row">
-                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Total Crates
+                                        <label for="inputEmail3" class="col-sm-6 col-form-label">Total Crates
                                         </label>
-                                        <div class="col-sm-8">
-                                            <input type="number"  class="form-control input_params" value="0"
+                                        <div class="col-sm-6">
+                                            <input type="number" class="form-control input_params" value="0"
                                                 id="f_no_of_crates" placeholder="">
                                         </div>
                                     </div>
@@ -188,27 +188,25 @@
                         </div>
                         <div class="card">
                             <div class="card-body row">
-                                <label for="inputEmail3" class="col-sm-4 col-form-label"> Scale Reading(Kgs)</label>
-                                <div class="col-sm-8">
+                                <label for="inputEmail3" class="col-sm-5 col-form-label"> Scale Reading(Kgs)</label>
+                                <div class="col-sm-7">
                                     <input type="number" step=".01" class="form-control" value="0" id="f_weight"
                                         name="weight" placeholder="" readonly required>
                                 </div>
                             </div>
-                            <div class="card-body row">
-                                <label for="inputEmail3" class="col-sm-4 col-form-label"> Net Weight(Kgs)</label>
-                                <div class="col-sm-8">
-                                    <input type="number" step=".01" class="form-control" value="0" id="net" name="net"
-                                        placeholder="" readonly required>
-                                </div>
-                            </div>
-
                             {{-- @if (config('app.show_manual_weight') == 1) --}}
                             <div class="form-check" style="text-align: center">
                                 <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                                 <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                             </div>
                             {{-- @endif --}}
-
+                            <div class="card-body row">
+                                <label for="inputEmail3" class="col-sm-5 col-form-label"> Net Weight(Kgs)</label>
+                                <div class="col-sm-7">
+                                    <input type="number" step=".01" class="form-control" value="0" id="net" name="net"
+                                        placeholder="" readonly required>
+                                </div>
+                            </div>
                             <div class="form-group" style="padding-left: 30%; padding-top: 5%">
                                 <button type="button" onclick="getScaleReading()" id="weigh" value=""
                                     class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button>
@@ -228,19 +226,18 @@
                                             <option value="">Select chiller</option>
                                         </select>
                                     </div>
-                                </div><br>
-                                <input type="hidden" id="f_issued_weight" value="0">
-                                <input type="hidden" id="f_valid_match" name="valid_match" value="1">
+                                </div>
+                                <div class="form-group" style="padding-left: 30%; padding-top: 15%">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
+                                        onclick="return validateOnSubmitFresh()"><i
+                                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
+                                </div>
                             </div>
                         </div>
+                        <input type="hidden" id="f_issued_weight" value="0">
+                        <input type="hidden" id="f_valid_match" name="valid_match" value="1">
                     </div>
                     <input type="hidden" name="location_code" id="location_code" value="3535">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
-                        onclick="return validateOnSubmitFresh()"><i class="fa fa-paper-plane single-click"
-                            aria-hidden="true"></i> Save</button>
                 </div>
                 <div id="loading_f" class="collapse">
                     <div class="row d-flex justify-content-center">
