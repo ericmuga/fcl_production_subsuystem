@@ -115,10 +115,16 @@
                         </div>
                     </div>
                 </div> <br>
-                <div class="row form-group">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder="" required>
+                <div class="form-group">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">Batch No </label>
+                                <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder="" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">Description</label>
+                                <input type="text" class="form-control" id="desc_all" value="" name="desc_all" placeholder="">
+                        </div>
                     </div>
                 </div>
                 <div hidden id="export_desc_div" class="row form-group">

@@ -114,6 +114,7 @@ class HighCare1Controller extends Controller
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
+                'description' => $request->desc_all,
                 'user_id' => $helpers->authenticatedUserId(),
                 'filter1' => 'bulk',
             ]);
