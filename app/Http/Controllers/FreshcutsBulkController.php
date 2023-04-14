@@ -84,7 +84,7 @@ class FreshcutsBulkController extends Controller
                 'transfer_from' => '1570',
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
-                'batch_no' => $request->batch . $request->vendor,
+                'batch_no' => $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 

@@ -129,20 +129,8 @@
                 <div class="row form-group">
                     <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
                     <div class="col-sm-9">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}"
-                                    id="batch" name="batch" required readonly>
-                            </div>
-                            <div class="col-sm-6">
-                                <select class="form-control select2" name="vendor" id="vendor" required>
-                                    <option value="">Select vendor No</option>
-                                    @foreach($tags as $t)
-                                    <option value="{{ $t->vendor_tag }}">{{ $t->vendor_tag }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder="" required>
                         </div>
                     </div>
                 </div>
