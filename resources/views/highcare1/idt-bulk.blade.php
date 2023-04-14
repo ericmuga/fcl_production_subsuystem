@@ -35,8 +35,8 @@
                         <label for="exampleInputPassword1">Transfer Type</label>
                         <select class="form-control select2" name="transfer_type" id="transfer_type" required>
                             <option disabled selected value> -- select an option -- </option>
-                            <option value="0"> Local</option>
-                            <option value="1"> Export</option>
+                            <option value="1"> Local</option>
+                            <option value="2"> Export</option>
                         </select>
                     </div>
                 </div>
@@ -280,8 +280,8 @@
                                         <select class="form-control select2" name="for_export_edit" id="edit_for_export_edit"
                                             selected="selected" readonly>
                                             <option value="" selected disabled>Transfer Type </option>
-                                            <option value="0"> Local</option>
-                                            <option value="1"> Export</option>
+                                            <option value="1"> Local</option>
+                                            <option value="2"> Export</option>
                                         </select>
                                     </div>
                                 </div><br>
