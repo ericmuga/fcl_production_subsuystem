@@ -166,19 +166,27 @@
                                             <input type="number" readonly class="form-control input_params" value="0"
                                                 id="f_unit_measure" name="unit_measure" placeholder="">
                                         </div>
-                                    </div> <br>
+                                    </div>
                                     <div class="row">
                                         <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-sm-6 col-form-label">Total Crates
-                                            </label>
-                                            <input type="number" class="form-control tareweight" value="0"
-                                                id="f_no_of_crates" placeholder="">
+                                            <div class="row">
+                                                <label for="inputEmail3" class="col-sm-5 col-form-label">Total Crates
+                                                </label>
+                                                <div class="col-sm-7">
+                                                    <input type="number" class="form-control tareweight" value="0"
+                                                        id="f_no_of_crates" placeholder="">
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="col-sm-6">
-                                            <label for="inputEmail3" class="col-sm-6 col-form-label">Black Crates
-                                            </label>
-                                            <input type="number" class="form-control tareweight" value="0"
-                                                id="f_black_crates" placeholder="">
+                                            <div class="row">
+                                                <label for="inputEmail3" class="col-sm-5 col-form-label">Black Crates
+                                                </label>
+                                                <div class="col-sm-7">
+                                                    <input type="number" class="form-control tareweight" value="0"
+                                                        id="f_black_crates" placeholder="">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div> <br>
                                     <div class="row">
