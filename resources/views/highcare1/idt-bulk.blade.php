@@ -49,13 +49,6 @@
                             <option value="40">Van</option>
                         </select>
                     </div>
-                    {{-- <div hidden id="crates_div" class="col-md-4">
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">No. of Crates </label>
-                            <input type="number" class="form-control" id="no_of_crates" value="" name="no_of_crates"
-                                min="1" placeholder="">
-                        </div>
-                    </div> --}}
                     <div hidden id="crates_div" class="col-md-7">
                         <div class="row">
                             <div class="col-md-6">
