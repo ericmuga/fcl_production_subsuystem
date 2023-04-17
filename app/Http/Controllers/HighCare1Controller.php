@@ -97,12 +97,22 @@ class HighCare1Controller extends Controller
 
     public function saveIdtBulk(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
+        switch ($request->transfer_type) {
+            case '2':
+                $location = '3636';
+                break;
+
+            default:
+                # code...
+                $location = '3535';
+                break;
+        }
+
         try {
             // try save
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product,
-                'location_code' => '3535', //transfer to dispatch default
+                'location_code' => $location, //transfer to dispatch default
                 'chiller_code' => $request->chiller_code,
                 'total_pieces' => $request->no_of_pieces ?: 0,
                 'total_weight' => $request->net,
