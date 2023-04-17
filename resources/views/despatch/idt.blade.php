@@ -168,21 +168,25 @@
                                         </div>
                                     </div> <br>
                                     <div class="row">
+                                        <div class="col-sm-6">
+                                            <label for="inputEmail3" class="col-sm-6 col-form-label">Total Crates
+                                            </label>
+                                            <input type="number" class="form-control tareweight" value="0"
+                                                id="f_no_of_crates" placeholder="">
+                                        </div>
+                                        <div class="col-sm-6">
+                                            <label for="inputEmail3" class="col-sm-6 col-form-label">Black Crates
+                                            </label>
+                                            <input type="number" class="form-control tareweight" value="0"
+                                                id="f_black_crates" placeholder="">
+                                        </div>
+                                    </div> <br>
+                                    <div class="row">
                                         <label for="inputEmail3" class="col-sm-5 col-form-label">Total Tareweight(kgs)
                                         </label>
                                         <div class="col-sm-7">
                                             <input type="number" readonly class="form-control input_params" value="0"
                                                 id="f_tareweight" name="f_tareweight" placeholder="">
-                                        </div>
-                                    </div> <br>
-                                    <div class="row">
-                                        <label for="inputEmail3" class="col-sm-6 col-form-label">Total Crates
-                                        </label>
-                                        <div class="col-sm-6">
-                                            <input type="number" class="form-control input_params" value="0"
-                                                id="f_no_of_crates" placeholder="">
-                                            <input type="number" class="form-control input_params" value="0"
-                                                id="f_black_crates" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -337,7 +341,8 @@
                                         data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
                                         data-total_weight="{{ $data->total_weight }}"
                                         data-carriage="{{ $data->total_weight }}"
-                                        data-crates="{{ $data->total_crates }}" data-black_crates="{{ $data->black_crates }}"  class="btn btn-warning btn-xs"
+                                        data-crates="{{ $data->total_crates }}"
+                                        data-black_crates="{{ $data->black_crates }}" class="btn btn-warning btn-xs"
                                         title="Receive transfer" id="despatchReceiveFreshModalShow"><i
                                             class="fa fa-check"></i>
                                     </button>
@@ -404,6 +409,10 @@
 
         $('#f_weight').on("input", function () {
             getNet()
+        });
+
+        $('.tareweight').on("input change", function () {
+            getIssuedTareweight()
         });
 
         $('#manual_weight').change(function () {
