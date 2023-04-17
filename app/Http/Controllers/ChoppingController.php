@@ -61,30 +61,32 @@ class ChoppingController extends Controller
 
         try {
             //insert batch
-            DB::table('batches')->insert([
-                'batch_no' => $batch_no,
-                'template_no' => $temp_no,
-                'output_quantity' => 0,
-                'status' => $request->status,
-                'from_batch' => $request->from_batch,
-                'user_id' => $helpers->authenticatedUserId(),
-            ]);
+            DB::transaction(function () use ($request, $helpers, $temp_no, $batch_no) {
+                DB::table('batches')->insert([
+                    'batch_no' => $batch_no,
+                    'template_no' => $temp_no,
+                    'output_quantity' => 0,
+                    'status' => $request->status,
+                    'from_batch' => $request->from_batch,
+                    'user_id' => $helpers->authenticatedUserId(),
+                ]);
 
-            // get template lines
-            $temp_lines = DB::table('template_lines')->where('template_no', $temp_no)
-                ->select('item_code', 'units_per_100')
-                ->get();
+                // get template lines
+                $temp_lines = DB::table('template_lines')->where('template_no', $temp_no)
+                    ->select('item_code', 'units_per_100')
+                    ->get();
 
-            if (!empty($temp_lines)) {
-                foreach ($temp_lines as $tl) {
-                    DB::table('production_lines')->insert([
-                        'batch_no' => $batch_no,
-                        'item_code' => $tl->item_code,
-                        'template_no' => $temp_no,
-                        'quantity' => $tl->units_per_100,
-                    ]);
+                if (!empty($temp_lines)) {
+                    foreach ($temp_lines as $tl) {
+                        DB::table('production_lines')->insert([
+                            'batch_no' => $batch_no,
+                            'item_code' => $tl->item_code,
+                            'template_no' => $temp_no,
+                            'quantity' => $tl->units_per_100,
+                        ]);
+                    }
                 }
-            }
+            });
 
             Toastr::success("Chopping Batch {$request->batch_no} created successfully", "Success");
             return redirect()
@@ -117,25 +119,27 @@ class ChoppingController extends Controller
     public function updateBatchItems(Request $request)
     {
         try {
-            //update
-            foreach ($request->item_code as $key => $value) {
+            DB::transaction(function () use ($request) {
+                //update
+                foreach ($request->item_code as $key => $value) {
+
+                    DB::table('production_lines')
+                        ->where('batch_no', $request->item_name)
+                        ->where('item_code', $value)
+                        ->update([
+                            'quantity' => $request->qty[$key],
+                            'updated_at' => now(),
+                        ]);
+                }
 
                 DB::table('production_lines')
                     ->where('batch_no', $request->item_name)
-                    ->where('item_code', $value)
+                    ->where('item_code', $request->main_item)
                     ->update([
-                        'quantity' => $request->qty[$key],
+                        'quantity' => $request->total_output,
                         'updated_at' => now(),
                     ]);
-            }
-
-            DB::table('production_lines')
-                ->where('batch_no', $request->item_name)
-                ->where('item_code', $request->main_item)
-                ->update([
-                    'quantity' => $request->total_output,
-                    'updated_at' => now(),
-                ]);
+            });
 
             Toastr::success("Update items on batch no: {$request->item_name} completed successfully", 'Success');
             return redirect()->back();

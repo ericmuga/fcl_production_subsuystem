@@ -191,6 +191,7 @@
                                 <th>Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
+                                <th>Black Crates</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
                                 <th>Export No</th>
@@ -208,6 +209,7 @@
                                 <th>Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
+                                <th>Black Crates</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
                                 <th>Export No</th>
@@ -233,6 +235,7 @@
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates }}</td>
+                                <td>{{ $data->black_crates }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->description }}</td>

@@ -175,12 +175,14 @@
                                                 id="f_tareweight" name="f_tareweight" placeholder="">
                                         </div>
                                     </div> <br>
-                                    <div hidden class="row">
+                                    <div class="row">
                                         <label for="inputEmail3" class="col-sm-6 col-form-label">Total Crates
                                         </label>
                                         <div class="col-sm-6">
                                             <input type="number" class="form-control input_params" value="0"
                                                 id="f_no_of_crates" placeholder="">
+                                            <input type="number" class="form-control input_params" value="0"
+                                                id="f_black_crates" placeholder="">
                                         </div>
                                     </div>
                                 </div>
@@ -273,6 +275,8 @@
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
+                                <th>Total Crates</th>
+                                <th>Black Crates</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
                                 <th>Status</th>
@@ -290,6 +294,8 @@
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
+                                <th>Total Crates</th>
+                                <th>Black Crates</th>
                                 <th>Location </th>
                                 <th>Chiller</th>
                                 <th>Status</th>
@@ -308,6 +314,8 @@
                                 <td>{{ $data->product }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
+                                <td>{{ $data->total_crates }}</td>
+                                <td>{{ $data->black_crates }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 @if ($data->received_by == null)
@@ -329,7 +337,7 @@
                                         data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
                                         data-total_weight="{{ $data->total_weight }}"
                                         data-carriage="{{ $data->total_weight }}"
-                                        data-crates="{{ $data->total_crates }}" class="btn btn-warning btn-xs"
+                                        data-crates="{{ $data->total_crates }}" data-black_crates="{{ $data->black_crates }}"  class="btn btn-warning btn-xs"
                                         title="Receive transfer" id="despatchReceiveFreshModalShow"><i
                                             class="fa fa-check"></i>
                                     </button>
@@ -420,6 +428,7 @@
             let unit_measure = $(this).data('unit_measure');
             let issued_weight = $(this).data('total_weight');
             let crates = $(this).data('crates');
+            let black_crates = $(this).data('black_crates');
 
             $('#f_item_id').val(id);
             $('#f_product').val(code); //item_code
@@ -427,6 +436,7 @@
             $('#f_unit_measure').val(unit_measure);
             $('#f_issued_weight').val(issued_weight);
             $('#f_no_of_crates').val(crates);
+            $('#f_black_crates').val(black_crates);
 
             $('#despatchReceiveFreshModal').modal('show');
         });
@@ -457,12 +467,13 @@
     const getIssuedTareweight = () => {
         let tare = 40
         let no_of_crates = $('#f_no_of_crates').val();
+        let black_crates = $('#f_black_crates').val();
 
         if (no_of_crates != 0) {
-            tare = parseInt(no_of_crates) * 1.8
+            tare = (parseInt(no_of_crates) * 1.8) + (parseInt(black_crates) * 0.2)
         }
 
-        $('#f_tareweight').val(tare)
+        $('#f_tareweight').val(tare.toFixed(2))
     }
 
     const validateOnSubmitFresh = () => {

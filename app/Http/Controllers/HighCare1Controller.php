@@ -106,6 +106,7 @@ class HighCare1Controller extends Controller
                 'chiller_code' => $request->chiller_code,
                 'total_pieces' => $request->no_of_pieces ?: 0,
                 'total_weight' => $request->net,
+                'black_crates' => $request->black_crates,
                 'total_crates' => $request->no_of_crates ?: 0,
                 'full_crates' => $request->no_of_crates ?: 0,
                 'incomplete_crate_pieces' => 0,
