@@ -71,7 +71,7 @@ class FreshcutsBulkController extends Controller
     {
         switch ($request->transfer_type) {
             case '2':
-                $location = '3636';
+                $location = '3600';
                 break;
 
             default:
