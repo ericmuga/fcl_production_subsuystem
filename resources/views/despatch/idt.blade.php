@@ -341,7 +341,7 @@
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 @if ($data->received_by == null)
                                 <td>
-                                    @if ($data->filter1 == 'bulk')
+                                    @if ($data->transfer_from == '1570' || ($data->transfer_from == '2595' && $data->filter1 == 'bulk'))
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
                                         data-unit_count="{{ $data->unit_count_per_crate }}"
