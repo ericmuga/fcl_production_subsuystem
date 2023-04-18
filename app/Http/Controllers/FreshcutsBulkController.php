@@ -69,14 +69,17 @@ class FreshcutsBulkController extends Controller
 
     public function createIdt(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         switch ($request->transfer_type) {
             case '2':
-                $location = '3600';
+                $location = '3600'; //export
+                $desc = $request->desc;
                 break;
 
             default:
                 # code...
                 $location = '3535';
+                $desc = $request->desc1;
                 break;
         }
 
@@ -94,7 +97,7 @@ class FreshcutsBulkController extends Controller
                 'incomplete_crate_pieces' => 0,
                 'transfer_type' => $request->transfer_type,
                 'transfer_from' => '1570',
-                'description' => $request->desc,
+                'description' => $desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
                 'user_id' => $helpers->authenticatedUserId(),

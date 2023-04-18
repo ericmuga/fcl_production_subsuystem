@@ -127,11 +127,13 @@
                     </div>
                 </div> <br>
                 <div class="row form-group">
-                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
-                    <div class="col-sm-9">
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder="" required>
-                        </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Batch No </label>
+                        <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder="" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Description (<i>optional</i>)</label>
+                        <input type="text" class="form-control" id="desc1" value="" name="desc1" placeholder="">
                     </div>
                 </div>
                 <div hidden id="export_desc_div" class="row form-group">
@@ -190,7 +192,7 @@
                                 <th>Black Crates</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
-                                <th>Export No</th>
+                                <th>Description</th>
                                 <th>Batch No</th>
                                 <th>Status</th>
                                 <th>Date</th>
@@ -208,7 +210,7 @@
                                 <th>Black Crates</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
-                                <th>Export No</th>
+                                <th>Description</th>
                                 <th>Batch No</th>
                                 <th>Status</th>
                                 <th>Date</th>
