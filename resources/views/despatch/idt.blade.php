@@ -140,7 +140,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Receive Fresh Cuts Dispatch Transfer</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Receive Fresh Cuts & Bulk Dispatch Transfer</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -341,7 +341,7 @@
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 @if ($data->received_by == null)
                                 <td>
-                                    @if ($data->transfer_from == '1570')
+                                    @if ($data->filter1 == 'bulk')
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
                                         data-unit_count="{{ $data->unit_count_per_crate }}"

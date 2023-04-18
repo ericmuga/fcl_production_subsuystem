@@ -64,7 +64,12 @@ class DespatchController extends Controller
                 $q->where('idt_transfers.transfer_from', '=', '2055'); // from sausage only
             })
             ->when($filter == 'highcare', function ($q) {
-                $q->where('idt_transfers.transfer_from', '=', '2595'); // from highcare only
+                $q->where('idt_transfers.transfer_from', '=', '2595') // from highcare and not bulk only
+                    ->where('idt_transfers.filter1', null);
+            })
+            ->when($filter == 'highcare_bulk', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '2595') // from highcare and bulk only
+                    ->where('idt_transfers.filter1', 'bulk');
             })
             ->when($filter == 'fresh_cuts', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '1570'); // from butchery only
