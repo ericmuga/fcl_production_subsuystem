@@ -60,6 +60,8 @@ class DespatchController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('idt_transfers.received_by', '=', null)
             ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays($user_id == 34 ? 4 : 1)) // 4 days supervisors like pngjuguna, others 1 day back only.
+
             ->when($filter == 'sausage', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '2055'); // from sausage only
             })
@@ -74,14 +76,6 @@ class DespatchController extends Controller
             ->when($filter == 'fresh_cuts', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '1570'); // from butchery only
             });
-
-        if ($user_id == 34) {
-            # supervisors
-            $query->whereDate('idt_transfers.created_at', '>=', today()->subDays(4)); //last 4 days for peter njuguna
-        } else {
-            # others
-            $query->whereDate('idt_transfers.created_at', '>=', today()->subDays(1));
-        }
 
         $transfer_lines = $query->get();
 
