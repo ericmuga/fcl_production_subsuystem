@@ -151,8 +151,8 @@
                             <div class="card-body" style="">
                                 <div class="form-group">
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-5 col-form-label">Product Name </label>
-                                        <div class="col-sm-7">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Product Name </label>
+                                        <div class="col-sm-8">
                                             <input type="text" readonly class="form-control" value="" id="f_item"
                                                 placeholder="" name="item">
                                             <input type="hidden" name="product" id="f_product" value="">
@@ -160,9 +160,9 @@
                                         </div>
                                     </div> <br>
                                     <div class="row">
-                                        <label for="inputEmail3" class="col-sm-5 col-form-label">Item Unit Measure
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label">Item Unit Measure
                                         </label>
-                                        <div class="col-sm-7">
+                                        <div class="col-sm-8">
                                             <input type="number" readonly class="form-control input_params" value="0"
                                                 id="f_unit_measure" name="unit_measure" placeholder="">
                                         </div>
@@ -239,6 +239,14 @@
                                             id="f_chiller_code" required>
                                             <option value="">Select chiller</option>
                                         </select>
+                                    </div>
+                                </div> <br>
+                                <div class="row">
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label">No of Pieces
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control input_params" value=""
+                                            id="f_no_of_pieces" name="f_no_of_pieces" placeholder="" required>
                                     </div>
                                 </div>
                                 <div class="form-group" style="padding-left: 30%; padding-top: 15%">
@@ -341,7 +349,8 @@
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 @if ($data->received_by == null)
                                 <td>
-                                    @if ($data->transfer_from == '1570' || ($data->transfer_from == '2595' && $data->filter1 == 'bulk'))
+                                    @if ($data->transfer_from == '1570' || ($data->transfer_from == '2595' &&
+                                    $data->filter1 == 'bulk'))
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
                                         data-unit_count="{{ $data->unit_count_per_crate }}"

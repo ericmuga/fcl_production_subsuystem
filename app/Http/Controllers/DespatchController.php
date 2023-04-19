@@ -132,6 +132,7 @@ class DespatchController extends Controller
                 ->where('id', $request->item_id)
                 ->update([
                     'chiller_code' => $request->chiller_code,
+                    'receiver_total_pieces' => $request->f_no_of_pieces,
                     'receiver_total_weight' => $request->net,
                     'received_by' => $helpers->authenticatedUserId(),
                     'with_variance' => $request->valid_match,
