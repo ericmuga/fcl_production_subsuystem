@@ -146,10 +146,17 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
-                    <button type="submit" onclick="return validateOnSubmit()"
+                    <button type="submit" id="btn_save" onclick="return validateOnSubmit()"
                         class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i class="fa fa-paper-plane"
                             aria-hidden="true"></i>
                         Save</button>
+                </div>
+            </div>
+        </div>
+        <div id="loading" class="collapse">
+            <div class="row d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                    <span class="sr-only">Loading...</span>
                 </div>
             </div>
         </div>
@@ -372,13 +379,13 @@
     $(document).ready(function () {
         loadWeighData();
 
-        $("#form-slaughter-weigh").submit(function () {
-            let loading_val = $('#loading_value').val()
-            if (loading_val != 1) {
-                alert('please wait for loading data to complete')
-                return false;
-            }
-        });
+        // $("#form-slaughter-weigh").submit(function () {
+        //     let loading_val = $('#loading_value').val()
+        //     if (loading_val != 1) {
+        //         alert('please wait for loading data to complete')
+        //         return false;
+        //     }
+        // });
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
@@ -438,7 +445,9 @@
     });
 
     function loadWeighData() {
+        $('#loading').collapse('show');
         $('#loading_value').val(0)
+        $('#btn_save').prop('disabled', true)
         /* Start weigh data ajax */
         var slapmark = $('#slapmark').val();
         var carcass_type = $('#carcass_type').val();
@@ -470,6 +479,8 @@
                 success: function (res) {
                     if (res) {
                         //console.log(res);
+                        $('#btn_save').prop('disabled', false)
+                        $('#loading').collapse('hide');
                         var str = JSON.stringify(res);
                         var obj = JSON.parse(str);
 
