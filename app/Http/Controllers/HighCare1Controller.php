@@ -108,6 +108,14 @@ class HighCare1Controller extends Controller
                 break;
         }
 
+        $tranfer_from_default = ['J31022101', 'J31050701', 'J31022210', 'J31022211', 'J31050905', 'J31090264', 'J31020851', 'J31022751'];
+
+        $transfer_from = '2500'; //bacon and ham, default
+
+        if (in_array($request->product, $tranfer_from_default)) {
+            $transfer_from = '2595'; //highcare
+        }
+
         try {
             // try save
             DB::table('idt_transfers')->insert([
@@ -121,7 +129,7 @@ class HighCare1Controller extends Controller
                 'full_crates' => $request->no_of_crates ?: 0,
                 'incomplete_crate_pieces' => 0,
                 'transfer_type' => $request->transfer_type,
-                'transfer_from' => '2595',
+                'transfer_from' => $transfer_from,
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
