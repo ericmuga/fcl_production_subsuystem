@@ -88,6 +88,7 @@ class HighCare1Controller extends Controller
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
             ->where('idt_transfers.transfer_from', '2595')
+            ->orWhere('idt_transfers.transfer_from', '2500')
             ->where('idt_transfers.filter1', 'bulk')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();

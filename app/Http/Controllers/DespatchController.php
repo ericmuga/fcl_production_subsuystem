@@ -71,6 +71,7 @@ class DespatchController extends Controller
             })
             ->when($filter == 'highcare_bulk', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '2595') // from highcare and bulk only
+                    ->orWhere('idt_transfers.transfer_from', '2500')
                     ->where('idt_transfers.filter1', 'bulk');
             })
             ->when($filter == 'fresh_cuts', function ($q) {
