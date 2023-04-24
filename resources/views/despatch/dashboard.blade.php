@@ -19,6 +19,20 @@
     $total_weight_h = isset($transfers['2595'][0]->total_weight)? $transfers['2595'][0]->total_weight : 0;
     $issued_weight_h = isset($transfers['2595'][0]->issued_weight)? $transfers['2595'][0]->issued_weight : 0;
 
+    // highcare bulk 2500
+    $total_pieces_b = isset($transfers['2500'][0]->total_pieces)? $transfers['2500'][0]->total_pieces : 0;
+    $issued_pieces_b = isset($transfers['2500'][0]->issued_pieces)? $transfers['2500'][0]->issued_pieces : 0;
+    $total_weight_b = isset($transfers['2500'][0]->total_weight)? $transfers['2500'][0]->total_weight : 0;
+    $issued_weight_b = isset($transfers['2500'][0]->issued_weight)? $transfers['2500'][0]->issued_weight : 0;
+
+    //issued 
+    $total_h_pieces_issued = (int)$issued_pieces_h + (int)$issued_pieces_b;
+    $total_h_weight_issued = (float)$issued_weight_h + (float)$issued_weight_b;
+
+    //received
+    $total_h_pieces_recv = (int)$total_pieces_h + (int)$total_pieces_b;
+    $total_h_weight_recv = (float)$total_weight_h + (float)$total_weight_b;
+
     // sausage 2055
     $total_pieces = isset($transfers['2055'][0]->total_pieces)? $transfers['2055'][0]->total_pieces : 0;
     $issued_pieces = isset($transfers['2055'][0]->issued_pieces)? $transfers['2055'][0]->issued_pieces : 0;
@@ -105,14 +119,14 @@
 </div>
 <!-- /.row -->
 <p class="row mb-2 ml-2">
-    <strong> Idt Transfers High Care: </strong>
+    <strong> Idt Transfers High Care + Bulk : </strong>
 </p>
 <div class="row">
     <div class="col-md-3 col-6">
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>{{ number_format($total_pieces_h, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($total_weight_h, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ number_format($total_h_pieces_recv, 0) }} <sup style="font-size: 20px">pkts</sup> | {{ number_format($total_h_weight_recv, 2) }} <sup style="font-size: 20px">Kgs</sup></h3>
 
                 <p>Received Total Transfers</p>
             </div>
@@ -126,9 +140,9 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-warning">
+        <div class="small-box bg-secondary">
             <div class="inner">
-                <h3>{{ number_format($issued_pieces_h, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($issued_weight_h, 2) }} <sup
+                <h3>{{ number_format($total_h_pieces_issued, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($total_h_weight_issued, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Issued Total Transfers</p>
@@ -144,7 +158,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ (int)$total_pieces_h - (int)$issued_pieces_h }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format((float)$total_weight_h - (float)$issued_weight_h, 2) }} <sup
+                <h3>{{ $total_h_pieces_recv - $total_h_pieces_issued }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format((float)$total_h_weight_recv - (float)$total_h_weight_issued, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Variance of Despatch Against Highcare</p>
@@ -159,9 +173,9 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-danger">
+        <div class="small-box bg-warning">
             <div class="inner">
-                <h3>{{ number_format($total_pieces_h, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($total_weight_h, 2) }} <sup
+                <h3>{{ number_format($total_h_pieces_recv, 0) }}<sup style="font-size: 15px"> Pkts</sup>| {{ number_format($total_h_weight_recv, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
 
                 <p>Received Stocks Per Chiller</p>
@@ -175,7 +189,6 @@
     </div>
     <!-- ./col -->
 </div>
-<!-- /.row -->
 <p class="row mb-2 ml-2">
     <strong> Idt Transfers FreshCuts: </strong>
 </p>
@@ -198,7 +211,7 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-success">
+        <div class="small-box bg-primary">
             <div class="inner">
                 <h3> {{ number_format($issued_weight_f, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>

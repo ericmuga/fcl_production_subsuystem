@@ -26,7 +26,7 @@ class DespatchController extends Controller
 
         $transfers = DB::table('idt_transfers')
             ->whereDate('idt_transfers.created_at', today())
-            ->whereIn('idt_transfers.transfer_from', ['2055', '2595', '1570'])
+            ->whereIn('idt_transfers.transfer_from', ['2055', '2595', '1570', '2500'])
             ->select('transfer_from', DB::raw('SUM(idt_transfers.receiver_total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as total_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->groupBy('idt_transfers.transfer_from')
             ->get()->groupBy('transfer_from');
@@ -205,7 +205,8 @@ class DespatchController extends Controller
                 $q->where('idt_transfers.transfer_from', '2055');
             })
             ->when($filter == 'highcare', function ($q) {
-                $q->where('idt_transfers.transfer_from', '2595');
+                $q->where('idt_transfers.transfer_from', '2595')
+                    ->orWhere('idt_transfers.transfer_from', '2500');
             })
             ->having(DB::raw('COALESCE(SUM(idt_transfers.total_weight), 0)'), '!=', DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0)'))
             ->groupBy('idt_transfers.product_code', 'items.description')
