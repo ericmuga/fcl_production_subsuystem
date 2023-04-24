@@ -152,12 +152,12 @@
                         Save</button>
                 </div>
             </div>
-        </div>
-        <div id="loading" class="collapse">
-            <div class="row d-flex justify-content-center">
-                <div class="spinner-border" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+        </div>        
+    </div>
+    <div id="loading" class="collapse">
+        <div class="row d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
             </div>
         </div>
     </div>
