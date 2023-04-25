@@ -227,7 +227,7 @@
     </div>
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-warning">
+        <div class="small-box bg-danger">
             <div class="inner">
                 <h3> {{ number_format((float)$total_weight_f - (float)$issued_weight_f, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
@@ -244,7 +244,7 @@
     <!-- ./col -->
     <div class="col-md-3 col-6">
         <!-- small box -->
-        <div class="small-box bg-dark">
+        <div class="small-box bg-secondary">
             <div class="inner">
                 <h3> {{ number_format($total_weight_f, 2) }} <sup
                         style="font-size: 15px">Kgs</sup></h3>
