@@ -350,6 +350,7 @@
                                 @if ($data->received_by == null)
                                 <td>
                                     @if ($data->transfer_from == '1570' || ($data->transfer_from == '2595' &&
+                                    $data->filter1 == 'bulk') || ($data->transfer_from == '2500' &&
                                     $data->filter1 == 'bulk'))
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product="{{ $data->product_code }}"
