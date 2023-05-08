@@ -87,10 +87,12 @@ class HighCare1Controller extends Controller
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
-            ->where('idt_transfers.transfer_from', '2595')
-            ->orWhere('idt_transfers.transfer_from', '2500')
+            ->where(function ($query) {
+                $query->where('idt_transfers.transfer_from', '2595')
+                    ->orWhere('idt_transfers.transfer_from', '2500');
+            })
             ->where('idt_transfers.filter1', 'bulk')
-            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->orderByDesc('idt_transfers.id')
             ->get();
 
         return view('highcare1.idt-bulk', compact('title', 'items', 'transfer_lines', 'configs', 'helpers', 'tags'));
