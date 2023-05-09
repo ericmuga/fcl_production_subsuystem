@@ -188,7 +188,8 @@
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Unit Measure</th>
-                                <th>Location </th>
+                                <th>From Location </th>
+                                <th>To Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
@@ -206,7 +207,8 @@
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Unit Measure</th>
-                                <th>Location </th>
+                                <th>From Location </th>
+                                <th>To Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
@@ -232,6 +234,7 @@
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
+                                <td>{{ $data->transfer_from }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates }}</td>
