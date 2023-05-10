@@ -16,7 +16,7 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
-            Toastr::warning('Your Session has expired. Please login again','Success');
+            Toastr::warning('Your Session has expired. Please login again','Warning');
             return route('login');
         }
     }
