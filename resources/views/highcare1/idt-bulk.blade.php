@@ -62,7 +62,7 @@
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Black Crates </label>
                                     <input type="number" class="form-control" id="black_crates" value=""
-                                        name="black_crates" min="1" placeholder="">
+                                        name="black_crates" min="0" placeholder="">
                                 </div>
                             </div>
                         </div>
