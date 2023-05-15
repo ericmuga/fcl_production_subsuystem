@@ -111,11 +111,11 @@ class HighCare1Controller extends Controller
                 break;
         }
 
-        $tranfer_from_default = ['J31022101', 'J31050701', 'J31022210', 'J31022211', 'J31050905', 'J31090264', 'J31020851', 'J31022751'];
+        $tranfer_from_2595 = ['J31022101', 'J31050701', 'J31022210', 'J31022211', 'J31050905', 'J31090264', 'J31020851', 'J31022751', 'J31022551', 'J31090176', 'J31022851']; //from location 2595
 
         $transfer_from = '2500'; //bacon and ham, default
 
-        if (in_array($request->product, $tranfer_from_default)) {
+        if (in_array($request->product, $tranfer_from_2595)) {
             $transfer_from = '2595'; //highcare
         }
 
