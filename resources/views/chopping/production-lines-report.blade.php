@@ -7,7 +7,7 @@
             <div class="card-header">
                 <div class="row">
                     <div class="col-md-7">
-                        <h3 class="card-title"> Chopping Posted Production Lines Report | <span
+                        <h3 class="card-title"> Chopping Posted Production Lines Report <span
                                 id="subtext-h1-title"></h3>
                     </div>
                 </div>
