@@ -42,7 +42,6 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                {{-- <th>Batch No</th> --}}
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
@@ -57,7 +56,6 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
-                                {{-- <th>Batch No</th> --}}
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <<th>std Qty </th>
@@ -73,7 +71,6 @@
                             @foreach($lines as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                {{-- <td>{{ $data->batch_no }}</td> --}}
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ number_format($data->units_per_100, 2) }}</td>
@@ -339,7 +336,7 @@
         if (close_batch > start_batch) {
             valid = true            
         } else {
-            alert('The value of to batch number must be bigger than from batch ')
+            alert('The value of to batch number must be bigger than start batch ')
         }
 
         return valid;
