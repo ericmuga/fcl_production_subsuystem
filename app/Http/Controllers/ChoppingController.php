@@ -110,6 +110,27 @@ class ChoppingController extends Controller
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
                 $join->on($table . '.template_no', '=', 'template_lines.template_no');
             })
+            ->select('production_lines.*', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.units_per_100', 'template_lines.location', 'batches.status')
+            ->orderBy('template_lines.type', 'ASC')
+            ->get();
+
+        return view('chopping.production-lines', compact('title', 'lines', 'helpers', 'batch_no', 'from_batch'));
+    }
+
+    public function postedLinesReport($batch_no, Helpers $helpers, $from_batch)
+    {
+        $title = "Chopping Production Lines";
+
+        $table = 'production_lines';
+
+        $lines = DB::table('production_lines')
+            ->where('production_lines.batch_no', $batch_no)
+            ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
+            ->join('template_lines', function ($join) use ($table) {
+                $join->on($table . '.item_code', '=',  'template_lines.item_code');
+                $join->on($table . '.template_no', '=', 'template_lines.template_no');
+            })
+            ->select('production_lines.*', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.units_per_100', 'template_lines.location', 'batches.status')
             ->orderBy('template_lines.type', 'ASC')
             ->get();
 

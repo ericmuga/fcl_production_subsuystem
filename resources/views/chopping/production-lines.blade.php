@@ -207,6 +207,12 @@
                 <div class="modal-body">
                     <p><i> Close Batch by entering end of batch no below</i></p>
                     <div class="row">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">From Batch No: </label>
+                        <div class="col-sm-9">
+                            <input type="number" readonly class="form-control" id="from_batch" name="from_batch" value="{{ $from_batch }}">
+                        </div>
+                    </div>
+                    <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">To Batch No: </label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control" id="to_batch" name="to_batch" value=""
@@ -215,11 +221,10 @@
                     </div>
                     <input type="hidden" value="{{ $batch_no }}" name="batch_no" id="batch_no">
                     <input type="hidden" value="close" name="filter" id="filter">
-                    <input type="hidden" value="{{ $from_batch }}" name="from_batch" id="from_batch">
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-warning btn-lg btn-prevent-multiple-submits"><i
+                    <button type="submit" onclick="return validateCloseOnSubmit()" class="btn btn-warning btn-lg btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Close Batch</button>
                 </div>
             </div>
@@ -251,7 +256,7 @@
                     <input type="hidden" value="post" name="filter" id="filter">
                     @foreach($lines as $data)
                     @if (str_starts_with($data->item_code, 'H'))
-                    <input type="" value="{{ $data->item_code.':' }} {{ $data->quantity }}" name="item_array[]"
+                    <input type="" readonly value="{{ $data->item_code.':' }} {{ $data->quantity }}" name="item_array[]"
                         id="item_array">
                     @else
                     @endif
@@ -318,6 +323,23 @@
         } else {
             // It's not a number
             alert('The output total value must be valid');
+        }
+
+        return valid;
+    }
+
+    const validateCloseOnSubmit = () => {
+        let valid = false
+
+        // Get the input value
+        let start_batch = parseInt($('#from_batch').val());
+        let close_batch = parseInt($('#to_batch').val());
+
+        // Check close batch is bigger than start batch
+        if (close_batch > start_batch) {
+            valid = true            
+        } else {
+            alert('The value of to batch number must be bigger than from batch ')
         }
 
         return valid;
