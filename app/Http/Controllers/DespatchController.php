@@ -60,7 +60,7 @@ class DespatchController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('idt_transfers.received_by', '=', null)
             ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
-            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(($username == 'pnjuguna' || $username == 'skinyua') ? 4 : 1)) // 4 days supervisors like pngjuguna, others 1 day back only.
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(($username == 'pnjuguna' || $username == 'skinyua') ? 15 : 1)) // 15 days supervisors like pngjuguna, others 1 day back only.
             ->when($filter == 'sausage', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '2055'); // from sausage only
             })
