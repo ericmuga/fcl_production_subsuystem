@@ -155,6 +155,8 @@ class DespatchController extends Controller
     {
         $title = "IDT-Report";
 
+        $days_filter = 20;
+
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
@@ -163,12 +165,12 @@ class DespatchController extends Controller
             ->when($filter == 'today', function ($q) {
                 $q->whereDate('idt_transfers.created_at', today()); // today only
             })
-            ->when($filter == 'history', function ($q) {
-                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays(7)); // today plus last 7 days
+            ->when($filter == 'history', function ($q, $days_filter) {
+                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays($days_filter)); // today plus last 7 days
             })
             ->get();
 
-        return view('despatch.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers'));
+        return view('despatch.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers', 'days_filter'));
     }
 
     public function exportIdtHistory(Request $request)

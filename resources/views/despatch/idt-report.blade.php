@@ -59,8 +59,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Despatch Production Registry | showing <strong>{{ $filter }}</strong> of all
-                    <strong>last 30</strong> Days Entries</h3>
+                <h3 class="card-title">Despatch Production Registry | showing last                    <strong> {{ $days_filter?? 'Today'  }}</strong> Days Entries</h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
