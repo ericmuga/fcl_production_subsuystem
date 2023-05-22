@@ -166,7 +166,7 @@ class DespatchController extends Controller
                 $q->whereDate('idt_transfers.created_at', today()); // today only
             })
             ->when($filter == 'history', function ($q, $days_filter) {
-                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays($days_filter)); // today plus last 7 days
+                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays(20)); // today plus last 7 days
             })
             ->get();
 
