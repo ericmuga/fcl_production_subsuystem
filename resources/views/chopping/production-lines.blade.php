@@ -42,10 +42,15 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Template No</th>
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
                                 <th>Used Qty</th>
+                                @if ($lines[0]->status != 'open')                                    
+                                    <th>Batch Size</th>
+                                    <th>Used Total</th>
+                                @endif
                                 <th>Main Product</th>
                                 <th>Type</th>
                                 <th>Unit Measure</th>
@@ -56,25 +61,37 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
+                                <th>Template No</th>
                                 <th>Item Code </th>
                                 <th>Description </th>
-                                <<th>std Qty </th>
-                                    <th>Used Qty</th>
-                                    <th>Main Product</th>
-                                    <th>Type</th>
-                                    <th>Unit Measure</th>
-                                    <th>Location</th>
-                                    <th>Date</th>
+                                <th>std Qty </th>
+                                <th>Used Qty</th>
+                                @if ($lines[0]->status != 'open')                                    
+                                    <th>Batch Size</th>
+                                    <th>Used Total</th>
+                                @endif
+                                <th>Main Product</th>
+                                <th>Type</th>
+                                <th>Unit Measure</th>
+                                <th>Location</th>
+                                <th>Date</th>
                             </tr>
                         </tfoot>
                         <tbody>
                             @foreach($lines as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $data->template_no }}</td>
                                 <td>{{ $data->item_code }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ number_format($data->units_per_100, 2) }}</td>
                                 <td>{{ number_format($data->quantity, 2) }}</td>
+
+                                @if ($lines[0]->status != 'open')                                    
+                                    <td>{{ ($data->to_batch - $data->from_batch) + 1 }}</td>
+                                    <td>{{ (($data->to_batch - $data->from_batch) + 1 ) * $data->quantity }}</td>
+                                @endif                           
+                                
                                 @if ($data->main_product == 'No')
                                 <td><span class="badge badge-warning">No</span></td>
                                 @else
