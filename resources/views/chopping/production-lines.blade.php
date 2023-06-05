@@ -155,7 +155,7 @@
                         </div>
                         <div class="col-md-2">
                             <label>Std Qty</label>
-                            <input type="number" class="form-control" id="std_qty" value="{{ $l->quantity }}"
+                            <input type="number" class="form-control" id="std_qty" value="{{ $l->units_per_100 }}"
                                 name="std_qty[]" step="0.01" readonly placeholder="">
                         </div>
                         <div class="col-md-2">

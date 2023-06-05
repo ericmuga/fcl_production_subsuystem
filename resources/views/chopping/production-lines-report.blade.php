@@ -20,6 +20,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Batch No</th>
+                                <th>Template No</th>
+                                <th>Template Name</th>
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
@@ -35,6 +37,8 @@
                             <tr>
                                 <th>#</th>
                                 <th>Batch No</th>
+                                <th>Template No</th>
+                                <th>Template Name</th>
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
@@ -51,6 +55,8 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->batch_no }}</td>
+                                    <td>{{ $data->template_no }}</td>
+                                    <td>{{ $data->template_name }}</td>
                                     <td>{{ $data->item_code }}</td>
                                     <td>{{ $data->description }}</td>
                                     <td>{{ number_format($data->units_per_100, 2) }}</td>
