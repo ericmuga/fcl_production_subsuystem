@@ -61,7 +61,7 @@
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                         <li><a href="{{ route('template_list') }}" class="dropdown-item"> Template
                                 list
                             </a>
@@ -92,6 +92,20 @@
                                 <li>
                                     <a tabindex="-1" href="{{ route('chopping_posted_report') }}"
                                         class="dropdown-item"> Chopping posted Lines</a>
+                                </li>
+                                <li class="dropdown-divider"></li>
+                                <!-- Level 3 dropdown-->
+                                <li class="dropdown-submenu dropdown-hover">
+                                    <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown"
+                                        aria-haspopup="true" aria-expanded="false"
+                                        class="dropdown-item dropdown-toggle">Chopping Summary</a>
+                                    <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+                                        <li>
+                                            <a tabindex="-1"
+                                                href="{{ route('chopping_posted_report_summary', 'today') }}"
+                                                class="dropdown-item"> Today Lines Summary</a>
+                                        </li>
+                                    </ul>
                                 </li>
                             </ul>
                         </li>
