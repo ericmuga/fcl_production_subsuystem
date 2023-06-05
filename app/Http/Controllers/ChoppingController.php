@@ -144,8 +144,6 @@ class ChoppingController extends Controller
 
         $table = 'production_lines';
 
-
-
         $lines = DB::table('production_lines')
             ->where('batches.status', 'posted')
             ->where('template_lines.type', 'Intake')
