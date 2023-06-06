@@ -25,7 +25,9 @@
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
-                                <th>Used Qty</th>
+                                <th>Used Qty Per Run</th>
+                                <th>Batch Size </th>
+                                <th>Total Qty for batch</th>
                                 <th>Main Product</th>
                                 <th>Type</th>
                                 <th>Unit Measure</th>
@@ -42,7 +44,9 @@
                                 <th>Item Code </th>
                                 <th>Description </th>
                                 <th>std Qty </th>
-                                <th>Used Qty</th>
+                                <th>Used Qty Per Run</th>
+                                <th>Batch Size </th>
+                                <th>Total Qty for batch</th>
                                 <th>Main Product</th>
                                 <th>Type</th>
                                 <th>Unit Measure</th>
@@ -61,6 +65,8 @@
                                     <td>{{ $data->description }}</td>
                                     <td>{{ number_format($data->units_per_100, 2) }}</td>
                                     <td>{{ number_format($data->quantity, 2) }}</td>
+                                    <td>{{ number_format((($data->to_batch - $data->from_batch) + 1), 2) }}</td>
+                                    <td>{{ number_format(((($data->to_batch - $data->from_batch) + 1) * $data->quantity ), 2) }}</td>
                                     @if($data->main_product == 'No')
                                         <td><span class="badge badge-warning">No</span></td>
                                     @else
