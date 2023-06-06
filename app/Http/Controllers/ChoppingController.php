@@ -150,21 +150,24 @@ class ChoppingController extends Controller
         $lines = DB::table('production_lines')
             ->where('batches.status', 'posted')
             ->where('template_lines.type', 'Intake')
-            ->when($filter == 'today', function ($q) {
-                $q->whereDate('production_lines.created_at', today()); // today
-            })
+            // ->when($filter == 'today', function ($q) {
+            //     $q->whereDate('production_lines.created_at', today()); // today
+            // })
             ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
             ->join('template_lines', function ($join) use ($table) {
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
                 $join->on($table . '.template_no', '=', 'template_lines.template_no');
             })
             ->select(
+                'batches.batch_no',
                 'production_lines.item_code',
                 'template_lines.description',
                 'template_lines.type',
                 'template_lines.main_product',
                 'template_lines.unit_measure',
                 'template_lines.location',
+                'batches.to_batch',
+                'batches.from_batch',
                 DB::raw('SUM(production_lines.quantity) as used_quantity')
             )
             ->groupBy(
@@ -173,8 +176,12 @@ class ChoppingController extends Controller
                 'template_lines.type',
                 'template_lines.main_product',
                 'template_lines.unit_measure',
-                'template_lines.location'
+                'template_lines.location',
+                'batches.to_batch',
+                'batches.from_batch',
+                'batches.batch_no'
             )
+            ->orderBy('batches.batch_no')
             ->get()->dd();
 
         return view('chopping.production-summary-report', compact('title', 'lines', 'helpers'));

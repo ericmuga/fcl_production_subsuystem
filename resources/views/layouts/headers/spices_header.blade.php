@@ -93,7 +93,7 @@
                                     <a tabindex="-1" href="{{ route('chopping_posted_report') }}"
                                         class="dropdown-item"> Chopping posted Lines</a>
                                 </li>
-                                <li class="dropdown-divider"></li>
+                                {{-- <li class="dropdown-divider"></li>
                                 <!-- Level 3 dropdown-->
                                 <li class="dropdown-submenu dropdown-hover">
                                     <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown"
@@ -106,7 +106,7 @@
                                                 class="dropdown-item"> Today Lines Summary</a>
                                         </li>
                                     </ul>
-                                </li>
+                                </li> --}}
                             </ul>
                         </li>
                         <!-- End Level two -->
