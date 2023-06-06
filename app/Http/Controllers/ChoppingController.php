@@ -117,7 +117,7 @@ class ChoppingController extends Controller
         return view('chopping.production-lines', compact('title', 'lines', 'helpers', 'batch_no', 'from_batch'));
     }
 
-    public function postedLinesReport(Helpers $helpers)
+    public function postedLinesReport(Helpers $helpers, $filter = null)
     {
         $title = "Chopping Production Lines";
 
@@ -130,6 +130,9 @@ class ChoppingController extends Controller
             ->join('template_lines', function ($join) use ($table) {
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
                 $join->on($table . '.template_no', '=', 'template_lines.template_no');
+            })
+            ->when($filter == '', function ($q) {
+                $q->whereDate('production_lines.created_at', '>=', today()->subDays(5)); // last 5 days
             })
             ->select('production_lines.*', 'template_header.template_name', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.units_per_100', 'template_lines.location', 'batches.from_batch', 'batches.to_batch', 'batches.status')
             ->orderBy('batches.batch_no', 'ASC')

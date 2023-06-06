@@ -9,6 +9,8 @@
                     <div class="col-md-7">
                         <h3 class="card-title"> Chopping Posted Production Lines Report <span
                                 id="subtext-h1-title"></h3>
+                        <h3 class="card-title"> Chopping Posted Production Lines Report | <span id="subtext-h1-title"><small> showing
+                            <strong>Last 5 days</strong> Entries</small> </span></h3>
                     </div>
                 </div>
             </div>
