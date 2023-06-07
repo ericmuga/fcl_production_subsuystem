@@ -20,12 +20,15 @@
                                 class="fas fa-pencil-alt"></i>
                             Edit Batch
                         </button>
+
+                        {{-- @elseif ($lines->first()->status == 'closed') --}}
+                        @else
+                        
                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#closeModal"><i
                                 class="fas fa-lock"></i>
                             Close Batch
                         </button>
-
-                        @elseif ($lines->first()->status == 'closed')
+                        
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#postModal"><i
                                 class="fas fa-save"></i>
                             Post Batch

@@ -260,6 +260,7 @@ class ChoppingController extends Controller
                     DB::table('batches')
                         ->where('batch_no', $request->batch_no)
                         ->update([
+                            'from_batch' => $request->from_batch,
                             'to_batch' => $request->to_batch,
                             'status' => 'closed',
                             'output_quantity' => $this->getQuantityTotal($request->batch_no, $batch_size, $request->main_item),
