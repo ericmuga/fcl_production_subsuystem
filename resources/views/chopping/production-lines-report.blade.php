@@ -83,7 +83,7 @@
 
                                     <td>{{ $data->unit_measure }}</td>
                                     <td>{{ $data->location }}</td>
-                                    <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                    <td>{{ $helpers->amPmDate($data->batch_update_time) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

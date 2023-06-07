@@ -134,7 +134,7 @@ class ChoppingController extends Controller
             ->when($filter == '', function ($q) {
                 $q->whereDate('production_lines.created_at', '>=', today()->subDays(5)); // last 5 days
             })
-            ->select('production_lines.*', 'template_header.template_name', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.units_per_100', 'template_lines.location', 'batches.from_batch', 'batches.to_batch', 'batches.status')
+            ->select('production_lines.*', 'template_header.template_name', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.units_per_100', 'template_lines.location', 'batches.from_batch', 'batches.to_batch', 'batches.status', 'batches.updated_at as batch_update_time')
             ->orderBy('batches.batch_no', 'ASC')
             ->get();
 
