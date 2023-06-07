@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-8">
-            <h1 class="m-0"> {{ $title }} |<small> Showing all <strong>{{ $filter? : 'open' }}</strong> Batches </small> for <strong>Last 5 days</strong></h1>
+            <h1 class="m-0"> {{ $title }} |<small> Showing all <strong>{{ $filter? : 'open' }}</strong> Batches for </small><strong>Last 5 </strong>days</h1>
         </div><!-- /.col -->
         <div class="col-sm-4">
             <button class="btn btn-primary " data-toggle="collapse" data-target="#toggle_collapse"><i

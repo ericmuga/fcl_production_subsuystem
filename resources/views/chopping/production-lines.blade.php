@@ -223,7 +223,7 @@
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">From Batch No: </label>
                         <div class="col-sm-9">
-                            <input type="number" readonly class="form-control" id="from_batch" name="from_batch" value="{{ $from_batch }}">
+                            <input type="number" class="form-control" id="from_batch" name="from_batch" value="{{ $from_batch }}">
                         </div>
                     </div>
                     <div class="row">
