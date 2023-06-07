@@ -15,7 +15,7 @@
                     </div>
                     <div class="col-md-5">
 
-                        @if ($lines->first()->status == 'open' || $lines->first()->status == 'closed')
+                        @if ($lines->first()->status == 'open')
                         <button type="button" onClick="editModal()" class="btn btn-primary" id="#editModalShow"><i
                                 class="fas fa-pencil-alt"></i>
                             Edit Batch
