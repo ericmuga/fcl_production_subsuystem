@@ -134,13 +134,15 @@ Route::prefix('freshcuts_bulk')->group(function () {
 
 /*-------------Sausage------------------ */
 Route::get('/sausage/dashboard', [SausageController::class, 'index'])->name('sausage_dashboard');
-Route::get('/sausage/idt', [SausageController::class, 'getIdt'])->name('sausage_idt');
+Route::get('/sausage/create-idt', [SausageController::class, 'getIdt'])->name('sausage_idt');
+Route::get('/sausage/receive-idt', [SausageController::class, 'getReceiveIdt'])->name('sausage_idt_receive');
 Route::post('/item/details-axios', [SausageController::class, 'getItemDetails'])->name('item_details');
 Route::post('/fetch-transferToLocations-axios', [SausageController::class, 'getTransferToLocations'])->name('fetch_transfer_locations');
 Route::post('/check-user-rights', [SausageController::class, 'checkUserRights'])->name('check_user_rights');
 Route::post('/validate-user', [SausageController::class, 'validateUser'])->name('validateUser');
 Route::post('/save/idt', [SausageController::class, 'saveTransfer'])->name('save_idt');
 Route::post('/edit/idt-issue', [SausageController::class, 'editIdtIssue'])->name('edit_idt_issue');
+Route::post('/receive/idt', [SausageController::class, 'updateReceiveIdt'])->name('update_idt_receive');
 Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'productionEntries'])->name('sausage_entries');
 Route::post('/export-sausage-entries', [SausageController::class, 'exportSausageEntries'])->name('export_sausage_entries');
 Route::get('/sausage/idt-report/{filter?}', [SausageController::class, 'idtReport'])->name('sausage_idt_report');

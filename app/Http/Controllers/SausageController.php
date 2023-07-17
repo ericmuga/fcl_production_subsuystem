@@ -404,4 +404,36 @@ class SausageController extends Controller
 
         return view('sausage.idt-report', compact('title', 'filter', 'transfer_lines', 'items', 'helpers'));
     }
+
+    public function getReceiveIdt(Helpers $helpers, $filter = null)
+    {
+        $title = "IDT-Receive";
+
+        $configs = Cache::remember('sausage_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'sausage')
+                ->where('scale', 'Sausage')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
+
+        $transfer_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->whereDate('idt_transfers.created_at', today())
+            ->where('idt_transfers.transfer_from', '1570')
+            ->where('idt_transfers.location_code', '2055') // sausage
+            ->where('idt_transfers.received_by', '=', null)
+            ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->get();
+
+        return view('sausage.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
+    }
+
+    public function updateReceiveIdt(Request $request)
+    {
+        dd($request->all());
+    }
 }

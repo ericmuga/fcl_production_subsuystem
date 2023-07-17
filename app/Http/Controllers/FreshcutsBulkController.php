@@ -69,8 +69,12 @@ class FreshcutsBulkController extends Controller
 
     public function createIdt(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         switch ($request->transfer_type) {
+            case '1':
+                $location = $request->transfer_to; //export
+                $desc = $request->desc1;
+                break;
+
             case '2':
                 $location = '3600'; //export
                 $desc = $request->desc;
@@ -174,7 +178,7 @@ class FreshcutsBulkController extends Controller
         $transfer_lines = DB::table('idt_transfers')
             ->where('idt_transfers.transfer_from', '1570')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
-            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->when($filter == 'today', function ($q) {

@@ -1,8 +1,8 @@
 @extends('layouts.freshcuts-bulk_master')
 
 @section('content')
-<form id="form-save-freshcuts" class="form-prevent-multiple-submits" action="{{ route('freshcuts_create_idt') }}"
-    method="post">
+<form id="form-save-freshcuts" class="form-prevent-multiple-submits"
+    action="{{ route('freshcuts_create_idt') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -14,8 +14,9 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($items as $t)
-                                <option value="{{ $t->code }}">{{ $t->code.' - '.$t->description.'- '.$t->barcode }}
-                                </option>
+                                    <option value="{{ $t->code }}">
+                                        {{ $t->code.' - '.$t->description.'- '.$t->barcode }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -24,11 +25,11 @@
                 <div class="row form-group">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Transfer To</label>
-                        <select class="form-control select2" disabled name="transfer_to" id="transfer_to" required>
-                            {{-- <option disabled selected value> -- select an option -- </option>
+                        <select class="form-control select2" name="transfer_to" id="transfer_to" required>
+                            <option disabled selected value> -- select a transfer location -- </option>
                             <option value="2055">Sausage</option>
-                            <option value="2500">High Care</option> --}}
-                            <option selected value="3535">Despatch</option>
+                            {{-- <option value="2500">High Care</option> --}}
+                            <option value="3535">Despatch</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -129,7 +130,8 @@
                 <div class="row form-group">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Batch No </label>
-                        <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder="" required>
+                        <input type="text" class="form-control" id="batch_no" value="" name="batch_no" placeholder=""
+                            required>
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Description (<i>optional</i>)</label>
@@ -218,35 +220,36 @@
                         </tfoot>
                         <tbody>
                             @foreach($transfer_lines as $data)
-                            <tr>
-                                <td id="editIdtModalShow" data-id="{{$data->id}}" data-product="{{ $data->product}}"
-                                    data-unit_measure="{{ $data->qty_per_unit_of_measure }}"
-                                    data-total_pieces="{{ $data->total_pieces }}"
-                                    data-total_weight="{{ $data->total_weight }}"
-                                    data-transfer_type="{{ $data->transfer_type }}"
-                                    data-description="{{ $data->description }}" data-batch_no="{{ $data->batch_no }}"><a
-                                        href="#">{{ $data->id }}</a>
-                                </td>
-                                <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product }}</td>
-                                <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
-                                <td>{{ $data->location_code }}</td>
-                                <td>{{ $data->chiller_code }}</td>
-                                <td>{{ $data->total_crates }}</td>
-                                <td>{{ $data->black_crates }}</td>
-                                <td>{{ $data->total_pieces }}</td>
-                                <td>{{ $data->total_weight }}</td>
-                                <td>{{ $data->description }}</td>
-                                <td>{{ $data->batch_no }}</td>
-                                @if ($data->total_weight == 0 )
-                                <td><span class="badge badge-danger">cancelled</span></td>
-                                @elseif($data->total_weight > 0 && $data->received_by != null)
-                                <td><span class="badge badge-success">received</span></td>
-                                @elseif($data->total_weight > 0 && $data->received_by == null)
-                                <td><span class="badge badge-info">waiting receipt</span></td>
-                                @endif
-                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
-                            </tr>
+                                <tr>
+                                    <td id="editIdtModalShow" data-id="{{ $data->id }}"
+                                        data-product="{{ $data->product }}"
+                                        data-unit_measure="{{ $data->qty_per_unit_of_measure }}"
+                                        data-total_pieces="{{ $data->total_pieces }}"
+                                        data-total_weight="{{ $data->total_weight }}"
+                                        data-transfer_type="{{ $data->transfer_type }}"
+                                        data-description="{{ $data->description }}"
+                                        data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
+                                    </td>
+                                    <td>{{ $data->product_code }}</td>
+                                    <td>{{ $data->product }}</td>
+                                    <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
+                                    <td>{{ $data->location_code }}</td>
+                                    <td>{{ $data->chiller_code }}</td>
+                                    <td>{{ $data->total_crates }}</td>
+                                    <td>{{ $data->black_crates }}</td>
+                                    <td>{{ $data->total_pieces }}</td>
+                                    <td>{{ $data->total_weight }}</td>
+                                    <td>{{ $data->description }}</td>
+                                    <td>{{ $data->batch_no }}</td>
+                                    @if ($data->total_weight == 0 )
+                                    <td><span class="badge badge-danger">cancelled</span></td>
+                                    @elseif($data->total_weight > 0 && $data->received_by != null)
+                                    <td><span class="badge badge-success">received</span></td>
+                                    @elseif($data->total_weight > 0 && $data->received_by == null)
+                                    <td><span class="badge badge-info">waiting receipt</span></td>
+                                    @endif
+                                    <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -263,8 +266,8 @@
 <div id="editIdtModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-xl">
         <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('freshcuts_cancel_idt')}}"
-            method="post">
+        <form class="form-prevent-multiple-submits" id="form-edit-role"
+            action="{{ route('freshcuts_cancel_idt') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -347,6 +350,25 @@
 <script>
     $(document).ready(function () {
 
+        $('#transfer_to').change(function () {
+            // Get references to the select elements
+            const transferTypeSelect = document.getElementById('transfer_type');
+
+            // Check if the selected value is '3535' (Despatch)
+            if ($(this).val() == '3535') {
+                // Enable the 'Export' option in the transferTypeSelect
+                transferTypeSelect.options[2].disabled = false;
+            } else {
+                // Disable the 'Export' option in the transferTypeSelect
+                transferTypeSelect.options[2].disabled = true;
+
+                // If 'Export' option was selected, reset the selection
+                if (transferTypeSelect.value == '2') {
+                    $('#transfer_type').select2("val", "All");
+                }
+            }
+        })
+
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
@@ -398,7 +420,7 @@
             $('#tareweight').val(carriage)
         });
 
-        $('#transfer_type').on('select2:select', function (e) {
+        $('#transfer_type').on('select2:select change', function (e) {
             let selected_type = $(this).val()
             let element = document.getElementById("export_desc_div")
 
@@ -471,7 +493,7 @@
         let no_of_crates = $('#no_of_crates').val()
         let black_crates = $('#black_crates').val()
 
-        if (tare == 1.8 && (no_of_crates == '' || black_crates == '' )) {
+        if (tare == 1.8 && (no_of_crates == '' || black_crates == '')) {
             alert('please enter total crates and black crates count')
 
         } else {

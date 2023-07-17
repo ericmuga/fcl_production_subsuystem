@@ -1,142 +1,13 @@
-@extends('layouts.despatch_master')
+@extends('layouts.freshcuts-bulk_master')
 
 @section('content')
-<div class="modal fade" id="despatchReceiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document">
-        <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('receive_idt') }}"
-            method="post">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Receive Dispatch Transfer</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="card-group">
-                        <div class="card">
-                            <div class="card-body" style="">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Product Name </label>
-                                        <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control" value="" id="item"
-                                                placeholder="" name="item">
-                                            <input type="hidden" name="product" id="product" value="">
-                                            <input type="hidden" name="item_id" id="item_id" value="">
-                                        </div>
-                                    </div><br>
-                                    <div class="row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Unit Count Per Crate
-                                        </label>
-                                        <div class="col-sm-9">
-                                            <input type="number" readonly class="form-control input_params" value="0"
-                                                id="unit_crate_count" name="unit_crate_count" placeholder=""
-                                                name="unit_crate_count">
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <label for="inputEmail3" class="col-sm-3 col-form-label">Item Unit Measure
-                                        </label>
-                                        <div class="col-sm-9">
-                                            <input type="number" readonly class="form-control input_params" value="0"
-                                                id="unit_measure" name="unit_measure" placeholder=""
-                                                name="unit_measure">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
-                                    <div class="col-sm-9">
-                                        <select class="form-control select2 locations" name="chiller_code"
-                                            id="chiller_code" required>
-                                            <option value="">Select chiller</option>
-                                        </select>
-                                    </div>
-                                </div><br>
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Total Crates</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" class="form-control crates" id="total_crates"
-                                            name="total_crates" value="" required onkeyup="handleChange()"
-                                            placeholder="">
-                                    </div>
-                                </div><br>
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">No. of full Crates</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" class="form-control crates" value="" id="full_crates"
-                                            name="full_crates" required onkeyup="handleChange()" placeholder="">
-                                    </div>
-                                </div><br>
-                                <div class="row incomplete_pieces">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Pieces in incomplete
-                                        Crate</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" class="form-control crates" value="0"
-                                            id="incomplete_pieces" name="incomplete_pieces" onClick="this.select();"
-                                            placeholder="">
-                                    </div>
-                                </div>
-                                <span class="text-danger" id="err1"></span>
-                                <span class="text-success" id="succ1"></span>
-                                <input type="hidden" name="crates_valid" id="crates_valid" value="0">
-                                <input type="hidden" id="issued_pieces" value="0">
-                                <input type="hidden" id="issued_weight" value="0">
-                                <input type="hidden" id="valid_match" name="valid_match" value="1">
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body text-center form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Pieces</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" readonly class="form-control" value="0" id="pieces"
-                                            name="pieces" placeholder="">
-                                    </div>
-                                </div><br>
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Calc Weight(Kgs)</label>
-                                    <div class="col-sm-9">
-                                        <input type="number" readonly step=".01" class="form-control" value="0"
-                                            id="weight" name="weight" placeholder="">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" name="location_code" id="location_code" value="3535">
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
-                        onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
-                            aria-hidden="true"></i> Save</button>
-                </div>
-                <div id="loading" class="collapse">
-                    <div class="row d-flex justify-content-center">
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
 
 <!--freshCuts-->
 <div class="modal fade" id="despatchReceiveFreshModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
-        <form id="form-save-batch" class="form-prevent-multiple-submits" action="{{ route('receive_idt_fresh') }}"
-            method="post">
+        <form id="form-save-batch" class="form-prevent-multiple-submits"
+            action="{{ route('update_idt_receive') }}" method="post"> 
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -233,15 +104,6 @@
                         <div class="card">
                             <div class="card-body form-group">
                                 <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Transfer To </label>
-                                    <div class="col-sm-8">
-                                        <select class="form-control select2 locations_f" name="chiller_code"
-                                            id="f_chiller_code" required>
-                                            <option value="">Select chiller</option>
-                                        </select>
-                                    </div>
-                                </div> <br>
-                                <div class="row">
                                     <label for="inputEmail3" class="col-sm-4 col-form-label">No of Pieces
                                     </label>
                                     <div class="col-sm-8">
@@ -278,7 +140,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Transfer Lines Entries | <span id="subtext-h1-title"><small> showing all
+                <h3 class="card-title"> Transfer From Butchery Lines Entries | <span id="subtext-h1-title"><small> showing all
                             <strong></strong> entries
                             ordered by
                             latest</small> </span></h3>
@@ -297,11 +159,10 @@
                                 <th>Std Unit Measure</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
-                                <th>Location </th>
-                                <th>Chiller</th>
+                                {{-- <th>Location </th> --}}
+                                {{-- <th>Chiller</th> --}}
                                 <th>Status</th>
                                 <th>Issued By</th>
-                                <th>Description</th>
                                 <th>Batch No</th>
                                 <th>Issue Date</th>
                                 <th>Action</th>
@@ -316,11 +177,10 @@
                                 <th>Std Unit Measure</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
-                                <th>Location </th>
-                                <th>Chiller</th>
+                                {{-- <th>Location </th> --}}
+                                {{-- <th>Chiller</th> --}}
                                 <th>Status</th>
                                 <th>Issued By</th>
-                                <th>Description</th>
                                 <th>Batch No</th>
                                 <th>Issue Date</th>
                                 <th>Action</th>
@@ -328,60 +188,43 @@
                         </tfoot>
                         <tbody>
                             @foreach($transfer_lines as $data)
-                            <tr>
-                                <td>{{ $data->id }}</td>
-                                <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product }}</td>
-                                <td>{{ $data->unit_count_per_crate }}</td>
-                                <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
-                                <td>{{ $data->total_crates }}</td>
-                                <td>{{ $data->black_crates }}</td>
-                                <td>{{ $data->location_code }}</td>
-                                <td>{{ $data->chiller_code }}</td>
-                                @if ($data->received_by == null)
-                                <td><span class="badge badge-secondary">pending</span></td>
-                                @elseif ($data->received_by != null)
-                                <td><span class="badge badge-success">received</span></td>
-                                @endif
-                                <td>{{ $data->username }}</td>
-                                <td>{{ $data->description }}</td>
-                                <td>{{ $data->batch_no }}</td>
-                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
-                                @if ($data->received_by == null)
-                                <td>
-                                    @if ($data->transfer_from == '1570' || ($data->transfer_from == '2595' &&
-                                    $data->filter1 == 'bulk') || ($data->transfer_from == '2500' &&
-                                    $data->filter1 == 'bulk'))
-                                    <button type="button" data-id="{{$data->id}}"
-                                        data-product="{{ $data->product_code }}"
-                                        data-unit_count="{{ $data->unit_count_per_crate }}"
-                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
-                                        data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
-                                        data-total_weight="{{ $data->total_weight }}"
-                                        data-carriage="{{ $data->total_weight }}"
-                                        data-crates="{{ $data->total_crates }}"
-                                        data-black_crates="{{ $data->black_crates }}" class="btn btn-warning btn-xs"
-                                        title="Receive transfer" id="despatchReceiveFreshModalShow"><i
-                                            class="fa fa-check"></i>
-                                    </button>
-
-                                    @else
-                                    <button type="button" data-id="{{$data->id}}"
-                                        data-product="{{ $data->product_code }}"
-                                        data-unit_count="{{ $data->unit_count_per_crate }}"
-                                        data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
-                                        data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
-                                        data-total_weight="{{ $data->total_weight }}" class="btn btn-warning btn-xs"
-                                        title="Receive transfer" id="despatchReceiveModalShow"><i
-                                            class="fa fa-check"></i>
-                                    </button>
-
+                                <tr>
+                                    <td>{{ $data->id }}</td>
+                                    <td>{{ $data->product_code }}</td>
+                                    <td>{{ $data->product }}</td>
+                                    <td>{{ $data->unit_count_per_crate }}</td>
+                                    <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
+                                    <td>{{ $data->total_crates }}</td>
+                                    <td>{{ $data->black_crates }}</td>
+                                    {{-- <td>{{ $data->location_code }}</td>
+                                    <td>{{ $data->chiller_code }}</td> --}}
+                                    @if($data->received_by == null)
+                                        <td><span class="badge badge-secondary">pending</span></td>
+                                    @elseif($data->received_by != null)
+                                        <td><span class="badge badge-success">received</span></td>
                                     @endif
-                                </td>
-                                @else
-                                <td><span class="badge badge-warning">no action</span></td>
-                                @endif
-                            </tr>
+                                    <td>{{ $data->username }}</td>
+                                    <td>{{ $data->batch_no }}</td>
+                                    <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                    @if ($data->received_by == null)
+                                    <td>
+                                        <button type="button" data-id="{{$data->id}}"
+                                            data-product="{{ $data->product_code }}"
+                                            data-unit_count="{{ $data->unit_count_per_crate }}"
+                                            data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
+                                            data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
+                                            data-total_weight="{{ $data->total_weight }}"
+                                            data-carriage="{{ $data->total_weight }}"
+                                            data-crates="{{ $data->total_crates }}"
+                                            data-black_crates="{{ $data->black_crates }}" class="btn btn-warning btn-xs"
+                                            title="Receive transfer" id="despatchReceiveFreshModalShow"><i
+                                                class="fa fa-check"></i>
+                                        </button>
+                                    </td>
+                                    @else
+                                    <td><span class="badge badge-warning">no action</span></td>
+                                    @endif
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -400,25 +243,15 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
-        $('.incomplete_pieces').hide();
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        $('#despatchReceiveModal').on('shown.bs.modal', function (e) {
-            e.preventDefault()
-            let product_code = $('#product').val()
-            fetchTransferToLocations(product_code)
-        })
-
         $('#despatchReceiveFreshModal').on('shown.bs.modal', function (e) {
             e.preventDefault()
             // calculate total tare..
             getIssuedTareweight()
-
-            let product_code = $('#f_product').val()
-            fetchTransferToLocationsFresh(product_code)
         })
 
         $('.crates').keyup(function () {
@@ -468,27 +301,6 @@
             $('#despatchReceiveFreshModal').modal('show');
         });
 
-        $("body").on("click", "#despatchReceiveModalShow", function (e) {
-            e.preventDefault();
-
-            let id = $(this).data('id');
-            let code = $(this).data('product');
-            let item = $(this).data('item');
-            let unit_count = $(this).data('unit_count');
-            let unit_measure = $(this).data('unit_measure');
-            let issued_pieces = $(this).data('total_pieces');
-            let issued_weight = $(this).data('total_weight');
-
-            $('#item_id').val(id);
-            $('#product').val(code); //item_code
-            $('#item').val(item); //item
-            $('#unit_crate_count').val(unit_count);
-            $('#unit_measure').val(unit_measure);
-            $('#issued_pieces').val(issued_pieces);
-            $('#issued_weight').val(issued_weight);
-
-            $('#despatchReceiveModal').modal('show');
-        });
     });
 
     const getIssuedTareweight = () => {
@@ -497,8 +309,9 @@
         let black_crates = $('#f_black_crates').val();
 
         if (no_of_crates != 0) {
-            tare = (parseInt(no_of_crates) * 1.8) + (parseInt(black_crates) * 0.2)            
-        } 
+            tare = (parseInt(no_of_crates) * 1.8) + (parseInt(black_crates) * 0.2)
+        }
+
         $('#f_tareweight').val(tare.toFixed(2))
 
         propCratesProperty(no_of_crates)
@@ -585,62 +398,6 @@
                 $('#incomplete_pieces').val(0)
             }
         }
-    }
-
-    const fetchTransferToLocations = (prod_code) => {
-        $('#loading').collapse('show');
-
-        const url = '/fetch-transferToLocations-axios'
-
-        const request_data = {
-            product_code: prod_code
-        }
-
-        return axios.post(url, request_data)
-            .then((res) => {
-                if (res) {
-                    $('#loading').collapse('hide');
-                    //empty the select list first
-                    $(".locations").empty();
-
-                    $.each(res.data, function (key, value) {
-                        $(".locations").append($("<option></option>").attr("value", value
-                                .chiller_code)
-                            .text(value.description));
-                    });
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-    }
-
-    const fetchTransferToLocationsFresh = (prod_code) => {
-        $('#loading_f').collapse('show');
-
-        const url = '/fetch-transferToLocations-axios'
-
-        const request_data = {
-            product_code: prod_code
-        }
-
-        return axios.post(url, request_data)
-            .then((res) => {
-                if (res) {
-                    $('#loading_f').collapse('hide');
-                    //empty the select list first
-                    $(".locations_f").empty();
-
-                    $.each(res.data, function (key, value) {
-                        $(".locations_f").append($("<option></option>").attr("value", value
-                                .chiller_code)
-                            .text(value.description));
-                    });
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-            })
     }
 
     const setCratesValidityMessage = (field_succ, field_err, message_succ, message_err) => {

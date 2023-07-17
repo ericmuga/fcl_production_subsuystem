@@ -176,7 +176,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Transfer Lines Entries | <span id="subtext-h1-title"><small> showing all
+                <h3 class="card-title"> Transfer to Despatch Lines Entries | <span id="subtext-h1-title"><small> showing all
                             <strong></strong> entries
                             ordered by
                             latest</small> </span></h3>

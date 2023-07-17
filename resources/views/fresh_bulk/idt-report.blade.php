@@ -20,6 +20,7 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>Location</th>
                                 <th>Issued Pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Pieces</th>
@@ -35,6 +36,7 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>Location</th>
                                 <th>Issued Pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Pieces</th>
@@ -51,6 +53,7 @@
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
+                                <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ number_format($data->receiver_total_pieces, 2) }}</td>

@@ -17,14 +17,25 @@
                 <li class="nav-item">
                     <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('sausage_idt') }}" class="nav-link">IDT</a>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle"> IDT </a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
+                        <li><a href="{{ route('sausage_idt') }}"
+                                class="dropdown-item">Create IDT</a>
+                        </li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('sausage_idt_receive') }}"
+                                class="dropdown-item">Receive-IDT</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('sausage_entries') }}" class="dropdown-item"> Today's Entries
+                        <li><a href="{{ route('sausage_entries') }}" class="dropdown-item"> Today's
+                                Entries
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
@@ -32,7 +43,8 @@
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('sausage_idt_report', 'history') }}" class="dropdown-item"> IDT History
+                        <li><a href="{{ route('sausage_idt_report', 'history') }}"
+                                class="dropdown-item"> IDT History
                             </a>
                         </li>
                     </ul>
@@ -62,14 +74,15 @@
                 </a>
                 <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                     <li>
-                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i> Switch
+                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i
+                                class="fas fa-exchange-alt"></i> Switch
                             Interphase
                         </a>
                     </li>
                     <li class="dropdown-divider"></li>
                     <li>
                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i
-                            class="fas fa-sign-out-alt"></i> Logout</a>
+                                class="fas fa-sign-out-alt"></i> Logout</a>
                     </li>
                 </ul>
             </li>
