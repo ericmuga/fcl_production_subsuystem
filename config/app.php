@@ -18,6 +18,7 @@ return [
     'list_comport_api_url' => env('GET_COMPORT_LIST_API_SERVICE', ''),
     'login_api_url' => env('LOGIN_URL', ''),
     'show_manual_weight' => env('SHOW_MANUAL_WEIGHT', '0'),
+    'allowed_usernames_deboning' => env('ALLOWED_USERNAMES_DEBONING', ''),
 
     /*
     |--------------------------------------------------------------------------

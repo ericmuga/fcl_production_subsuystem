@@ -109,9 +109,15 @@
 </div>
 <!-- end delete -->
 
-@if( Session::get('session_userName') == 'EKaranja' || Session::get('session_userName') == 'LGithinji' ||
-Session::get('session_userName') == 'AMugumo' ||
-Session::get('session_userName') == 'EMuga')
+@php
+// Retrieve the list of allowed usernames from .env and convert it into an array
+$allowedUsernames = explode(',', strtolower(config('app.allowed_usernames_deboning')));
+
+// Get the user input from the session and convert it to lowercase for case-insensitive comparison
+$sessionUsername = strtolower(Session::get('session_userName'));
+@endphp
+
+@if (in_array($sessionUsername, $allowedUsernames))
 <div class="div">
     <button type="button" class="btn btn-primary" id="addProductProcessModalShow" data-toggle="tooltip" title="add"><i
             class="fas fa-plus"> Add Product Process</i>
