@@ -17,6 +17,9 @@
                 <li class="nav-item">
                     <a href="{{ route('butchery_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('butchery_dashboardv2') }}" class="nav-link">Dashboard V2</a>
+                </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Weigh</a>

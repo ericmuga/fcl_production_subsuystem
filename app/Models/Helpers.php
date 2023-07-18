@@ -28,6 +28,23 @@ class Helpers
 
     }
 
+    public function randomBootstrap()
+    {
+        $classesArray = [
+            'bg-danger',
+            'bg-dark',
+            'bg-info',
+            'bg-primary',
+            'bg-secondary',
+            'bg-success',
+            'bg-warning'
+        ];
+
+        // Get two random items from the input array.
+        $k = array_rand($classesArray);
+        return $classesArray[$k];
+    }
+
     public function dateToHumanFormat($date)
     {
         return date("F jS, Y", strtotime($date));

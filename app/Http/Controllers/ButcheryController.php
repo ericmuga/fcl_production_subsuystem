@@ -155,6 +155,27 @@ class ButcheryController extends Controller
         return view('butchery.dashboard', compact('title', 'baconers', 'sows', 'baconers_weight', 'sows_weight', 'lined_baconers', 'lined_sows', 'three_parts_baconers', 'three_parts_sows', 'helpers', 'b_legs', 'b_shoulders', 'b_middles', 's_legs', 's_shoulders', 's_middles', 'sales', 'slaughtered_baconers_weight', 'slaughtered_sows_weight'));
     }
 
+    public function dashboardv2(Helpers $helpers)
+    {
+        $title = "dashboard-V2";
+
+        $main_items = DB::table('deboned_data')
+            ->join('products', 'deboned_data.item_code', '=', 'products.code')
+            ->whereDate('deboned_data.created_at', today())
+            ->where('deboned_data.product_type', 1) //main products only
+            ->select('deboned_data.item_code', 'products.description', DB::raw('SUM(deboned_data.net_weight) as total_net'), DB::raw('SUM(deboned_data.no_of_pieces) as total_pieces'))
+            ->groupBy('deboned_data.item_code', 'products.description')
+            ->orderBy('total_net', 'DESC')
+            ->get()->toArray();
+
+        $cumm = DB::table('deboned_data')
+            ->whereDate('deboned_data.created_at', today())
+            ->select(DB::raw('COALESCE(SUM(deboned_data.net_weight),0) as total_net'), DB::raw('COALESCE(SUM(deboned_data.no_of_pieces),0) as total_pieces'))
+            ->get()->toArray();
+
+        return view('butchery.dashboard2', compact('title', 'main_items', 'cumm', 'helpers'));
+    }
+
     public function scaleOneAndTwo(Helpers $helpers)
     {
         $title = "Scale-1&2";
