@@ -13,7 +13,7 @@
                             <label for="exampleInputPassword1"> Product</label>
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
-                                @foreach($items as $t)
+                                @foreach($combinedResult as $t)
                                     <option value="{{ $t->code }}">
                                         {{ $t->code.' - '.$t->description.'- '.$t->barcode }}
                                     </option>
@@ -26,9 +26,9 @@
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Transfer To</label>
                         <select class="form-control select2" name="transfer_to" id="transfer_to" required>
-                            <option disabled selected value> -- select a transfer location -- </option>
+                            <option disabled selected> -- select a transfer location -- </option>
                             <option value="2055">Sausage</option>
-                            {{-- <option value="2500">High Care</option> --}}
+                            <option value="2500">High Care</option>
                             <option value="3535">Despatch</option>
                         </select>
                     </div>
@@ -222,7 +222,7 @@
                             @foreach($transfer_lines as $data)
                                 <tr>
                                     <td id="editIdtModalShow" data-id="{{ $data->id }}"
-                                        data-product="{{ $data->product }}"
+                                        data-product="{{ $data->product?? $data->product2  }}"
                                         data-unit_measure="{{ $data->qty_per_unit_of_measure }}"
                                         data-total_pieces="{{ $data->total_pieces }}"
                                         data-total_weight="{{ $data->total_weight }}"
@@ -231,7 +231,7 @@
                                         data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
                                     </td>
                                     <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->product }}</td>
+                                    <td>{{ $data->product?? $data->product2 }}</td>
                                     <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                     <td>{{ $data->location_code }}</td>
                                     <td>{{ $data->chiller_code }}</td>
@@ -362,6 +362,10 @@
                 // Disable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = true;
 
+                // remove required when its not despatch
+                $('#chiller_code').prop('required', false);
+                // $('#batch_no').prop('required', false);
+
                 // If 'Export' option was selected, reset the selection
                 if (transferTypeSelect.value == '2') {
                     $('#transfer_type').select2("val", "All");
@@ -388,9 +392,10 @@
 
         $(document).on('change', '#product', function () {
             let product_code = $(this).val()
+            transferToControlHandler(product_code)
             fetchTransferToLocations(product_code);
         });
-
+        
         $('#manual_weight').change(function () {
             var manual_weight = document.getElementById('manual_weight');
             var reading = document.getElementById('reading');
@@ -459,6 +464,25 @@
             $('#editIdtModal').modal('show');
         });
     });
+
+    const startsWithCharacter =(str, character) => {
+        return str.startsWith(character);
+    }
+
+    const transferToControlHandler = (product_code) => {
+        const transferToSelect = document.getElementById('transfer_to');
+
+        const SAUSAGE_OPTION_INDEX = 1;
+        const HIGHCARE_OPTION_INDEX = 2;
+        const DESPATCH_OPTION_INDEX = 3;
+
+        const isStartsWithG = startsWithCharacter(product_code, 'G');
+        const isStartsWithJ = startsWithCharacter(product_code, 'J');
+
+        transferToSelect.options[SAUSAGE_OPTION_INDEX].disabled = isStartsWithJ;
+        transferToSelect.options[HIGHCARE_OPTION_INDEX].disabled = isStartsWithJ;
+        transferToSelect.options[DESPATCH_OPTION_INDEX].disabled = isStartsWithG;
+    };
 
     const fetchTransferToLocations = (prod_code) => {
 

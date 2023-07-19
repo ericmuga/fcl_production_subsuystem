@@ -17,7 +17,7 @@ class CreateIdtTransfersTable extends Migration
             $table->id();
             $table->string('product_code');
             $table->string('location_code');
-            $table->string('chiller_code');
+            $table->string('chiller_code')->nullable();
             $table->integer('total_crates')->default(0);
             $table->integer('full_crates')->default(0);
             $table->integer('incomplete_crate_pieces')->default(0);

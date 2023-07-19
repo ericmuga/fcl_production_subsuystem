@@ -52,7 +52,7 @@
                             <tr>
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product }}</td>
+                                <td>{{ $data->product ?? $data->product2 }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>

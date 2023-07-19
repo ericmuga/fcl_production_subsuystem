@@ -40,12 +40,38 @@ class FreshcutsBulkController extends Controller
                 ->get()->toArray();
         });
 
-        $items = Cache::remember('items_list_sausage', now()->addHours(10), function () {
+        // $items = Cache::remember('items_freshbulk', now()->addHours(10), function () {
+        //     return DB::table('items')
+        //         ->where('blocked', '!=', 1)
+        //         ->select('code', 'barcode', 'description')
+        //         ->get();
+        // });
+
+        // $products = DB::table('products')
+        //     ->select(DB::raw('TRIM(code) as code'), 'description')
+        //     ->addSelect(DB::raw("'' as barcode"))
+        //     ->get();
+
+        // dd($products);
+
+        // Query 1
+        $items = Cache::remember('items_freshbulk', now()->addHours(10), function () {
             return DB::table('items')
                 ->where('blocked', '!=', 1)
-                ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
+                ->select('code', 'barcode', 'description')
                 ->get();
         });
+
+        // Query 2
+        $products = Cache::remember('products_freshbulk', now()->addHours(10), function () {
+            return DB::table('products')
+                ->select(DB::raw('TRIM(code) as code'), 'description')
+                ->addSelect(DB::raw("'' as barcode"))
+                ->get();
+        });
+
+        // Merge the two collections
+        $combinedResult = $items->concat($products);
 
         $tags = Cache::remember('tags', now()->addHours(10), function () {
             return DB::table('receipts')
@@ -57,14 +83,15 @@ class FreshcutsBulkController extends Controller
 
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
             ->where('idt_transfers.transfer_from', '1570')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('fresh_bulk.idt', compact('title', 'items', 'transfer_lines', 'configs', 'helpers', 'tags'));
+        return view('fresh_bulk.idt', compact('title', 'combinedResult', 'transfer_lines', 'configs', 'helpers', 'tags'));
     }
 
     public function createIdt(Request $request, Helpers $helpers)
@@ -177,9 +204,10 @@ class FreshcutsBulkController extends Controller
 
         $transfer_lines = DB::table('idt_transfers')
             ->where('idt_transfers.transfer_from', '1570')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->when($filter == 'today', function ($q) {
                 $q->whereDate('idt_transfers.created_at', today()); // today only

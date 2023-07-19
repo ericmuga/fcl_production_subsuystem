@@ -419,8 +419,9 @@ class SausageController extends Controller
 
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
             ->where('idt_transfers.transfer_from', '1570')
             ->where('idt_transfers.location_code', '2055') // sausage
@@ -432,8 +433,29 @@ class SausageController extends Controller
         return view('sausage.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
     }
 
-    public function updateReceiveIdt(Request $request)
+    public function updateReceiveIdt(Request $request, Helpers $helpers)
     {
-        dd($request->all());
+        // dd($request->all());
+        try {
+            // try update
+            DB::table('idt_transfers')
+                ->where('id', $request->item_id)
+                ->update([
+                    'receiver_total_pieces' => $request->f_no_of_pieces,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => $helpers->authenticatedUserId(),
+                    'with_variance' => $request->valid_match,
+                    'updated_at' => now(),
+                ]);
+
+            Toastr::success('IDT Transfer received successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            $helpers->CustomErrorlogger($e);
+            return back()
+                ->withInput();
+        }
     }
 }

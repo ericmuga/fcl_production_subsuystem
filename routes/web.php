@@ -143,7 +143,7 @@ Route::post('/check-user-rights', [SausageController::class, 'checkUserRights'])
 Route::post('/validate-user', [SausageController::class, 'validateUser'])->name('validateUser');
 Route::post('/save/idt', [SausageController::class, 'saveTransfer'])->name('save_idt');
 Route::post('/edit/idt-issue', [SausageController::class, 'editIdtIssue'])->name('edit_idt_issue');
-Route::post('/receive/idt', [SausageController::class, 'updateReceiveIdt'])->name('update_idt_receive');
+Route::post('sausage/receive/idt', [SausageController::class, 'updateReceiveIdt'])->name('update_idt_receive');
 Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'productionEntries'])->name('sausage_entries');
 Route::post('/export-sausage-entries', [SausageController::class, 'exportSausageEntries'])->name('export_sausage_entries');
 Route::get('/sausage/idt-report/{filter?}', [SausageController::class, 'idtReport'])->name('sausage_idt_report');

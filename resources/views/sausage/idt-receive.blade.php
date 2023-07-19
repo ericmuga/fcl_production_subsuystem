@@ -155,12 +155,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Std Crate Count</th>
-                                <th>Std Unit Measure</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
-                                {{-- <th>Location </th> --}}
-                                {{-- <th>Chiller</th> --}}
                                 <th>Status</th>
                                 <th>Issued By</th>
                                 <th>Batch No</th>
@@ -173,12 +169,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Std Crate Count</th>
-                                <th>Std Unit Measure</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
-                                {{-- <th>Location </th> --}}
-                                {{-- <th>Chiller</th> --}}
                                 <th>Status</th>
                                 <th>Issued By</th>
                                 <th>Batch No</th>
@@ -191,13 +183,10 @@
                                 <tr>
                                     <td>{{ $data->id }}</td>
                                     <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->product }}</td>
-                                    <td>{{ $data->unit_count_per_crate }}</td>
+                                    <td>{{ $data->product?? $data->product2  }}</td>
                                     <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
                                     <td>{{ $data->total_crates }}</td>
                                     <td>{{ $data->black_crates }}</td>
-                                    {{-- <td>{{ $data->location_code }}</td>
-                                    <td>{{ $data->chiller_code }}</td> --}}
                                     @if($data->received_by == null)
                                         <td><span class="badge badge-secondary">pending</span></td>
                                     @elseif($data->received_by != null)
@@ -212,7 +201,7 @@
                                             data-product="{{ $data->product_code }}"
                                             data-unit_count="{{ $data->unit_count_per_crate }}"
                                             data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 3) }}"
-                                            data-item="{{ $data->product }}" data-total_pieces="{{ $data->total_pieces }}"
+                                            data-item="{{ $data->product?? $data->product2 }}" data-total_pieces="{{ $data->total_pieces }}"
                                             data-total_weight="{{ $data->total_weight }}"
                                             data-carriage="{{ $data->total_weight }}"
                                             data-crates="{{ $data->total_crates }}"
