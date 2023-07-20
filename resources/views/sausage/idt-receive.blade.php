@@ -184,7 +184,6 @@
                                     <td>{{ $data->id }}</td>
                                     <td>{{ $data->product_code }}</td>
                                     <td>{{ $data->product?? $data->product2  }}</td>
-                                    <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
                                     <td>{{ $data->total_crates }}</td>
                                     <td>{{ $data->black_crates }}</td>
                                     @if($data->received_by == null)

@@ -27,6 +27,7 @@ class DespatchController extends Controller
         $transfers = DB::table('idt_transfers')
             ->whereDate('idt_transfers.created_at', today())
             ->whereIn('idt_transfers.transfer_from', ['2055', '2595', '1570', '2500'])
+            ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->select('transfer_from', DB::raw('SUM(idt_transfers.receiver_total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as total_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->groupBy('idt_transfers.transfer_from')
             ->get()->groupBy('transfer_from');
@@ -59,6 +60,7 @@ class DespatchController extends Controller
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('idt_transfers.received_by', '=', null)
+            ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(($username == 'pnjuguna' || $username == 'skinyua') ? 20 : 1)) // 20 days supervisors like pngjuguna, others 1 day back only.
             ->when($filter == 'sausage', function ($q) {
@@ -162,6 +164,7 @@ class DespatchController extends Controller
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
+            ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->when($filter == 'today', function ($q) {
                 $q->whereDate('idt_transfers.created_at', today()); // today only
             })
@@ -186,6 +189,7 @@ class DespatchController extends Controller
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
             ->where('idt_transfers.transfer_from', $request->transfer_from)
+            ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->select('idt_transfers.id', 'idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from', 'idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', DB::raw("(CASE WHEN idt_transfers.with_variance = '0' THEN 'Yes' ELSE 'No' END) AS with_variance"), 'idt_transfers.batch_no', 'users.username as received_by', 'idt_transfers.created_at')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
@@ -203,6 +207,7 @@ class DespatchController extends Controller
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->select('idt_transfers.product_code', DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), 'items.description as product')
             ->orderBy('idt_transfers.product_code', 'ASC')
+            ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->whereDate('idt_transfers.created_at', today())
             ->when($filter == 'sausage', function ($q) {
                 $q->where('idt_transfers.transfer_from', '2055');
@@ -226,6 +231,7 @@ class DespatchController extends Controller
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->select('idt_transfers.product_code', 'idt_transfers.location_code', DB::raw('COALESCE(SUM(idt_transfers.receiver_total_pieces), 0) as received_pieces'), DB::raw('COALESCE(SUM(idt_transfers.receiver_total_weight), 0) as received_weight'), 'items.description as product')
             ->orderBy('idt_transfers.product_code', 'ASC')
+            ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->whereDate('idt_transfers.created_at', today())
             ->groupBy('idt_transfers.product_code', 'items.description', 'idt_transfers.location_code')
             ->get();
