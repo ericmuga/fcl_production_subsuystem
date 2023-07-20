@@ -111,3 +111,18 @@
 </div>
 
 @endsection
+
+@section('scripts')
+<script>
+    $(document).ready(function () {
+        // Set the interval to refresh every 5 minutes (300,000 milliseconds)
+        const refreshInterval = 300000; // 5 minutes in milliseconds
+        setInterval(refreshPage, refreshInterval);
+    });
+
+    // Function to refresh the page
+    const refreshPage =() => {
+        location.reload(); // Reloads the current page
+    }
+</script>
+@endsection
