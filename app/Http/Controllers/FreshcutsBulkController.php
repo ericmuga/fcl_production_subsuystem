@@ -40,20 +40,6 @@ class FreshcutsBulkController extends Controller
                 ->get()->toArray();
         });
 
-        // $items = Cache::remember('items_freshbulk', now()->addHours(10), function () {
-        //     return DB::table('items')
-        //         ->where('blocked', '!=', 1)
-        //         ->select('code', 'barcode', 'description')
-        //         ->get();
-        // });
-
-        // $products = DB::table('products')
-        //     ->select(DB::raw('TRIM(code) as code'), 'description')
-        //     ->addSelect(DB::raw("'' as barcode"))
-        //     ->get();
-
-        // dd($products);
-
         // Query 1
         $items = Cache::remember('items_freshbulk', now()->addHours(10), function () {
             return DB::table('items')

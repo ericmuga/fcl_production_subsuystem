@@ -168,8 +168,6 @@ class ButcheryController extends Controller
             ->orderBy('total_net', 'DESC')
             ->get()->toArray();
 
-        // dd($main_items);
-
         $cumm = DB::table('deboned_data')
             ->whereDate('deboned_data.created_at', today())
             ->select(DB::raw('COALESCE(SUM(deboned_data.net_weight),0) as total_net'), DB::raw('COALESCE(SUM(deboned_data.no_of_pieces),0) as total_pieces'))

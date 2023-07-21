@@ -20,7 +20,7 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Location</th>
+                                <th>Transfer To </th>
                                 <th>Issued Pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Pieces</th>
@@ -36,7 +36,7 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
-                                <th>Location</th>
+                                <th>Transfer To </th>
                                 <th>Issued Pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Pieces</th>
