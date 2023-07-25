@@ -65,9 +65,19 @@ class SausageController extends Controller
 
         $transfers = DB::table('idt_transfers')
             ->whereDate('idt_transfers.created_at', today())
-            ->where('idt_transfers.transfer_from', '=', '2055')
-            ->select(DB::raw('SUM(idt_transfers.total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'))
-            ->get();
+            ->whereIn('idt_transfers.transfer_from', ['2055', '1570'])
+            ->select(
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 2055 THEN idt_transfers.total_pieces ELSE 0 END) as total_pieces_2055'),
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 2055 THEN idt_transfers.total_weight ELSE 0 END) as total_weight_2055'),
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 2055 THEN idt_transfers.receiver_total_pieces ELSE 0 END) as received_pieces_2055'),
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 2055 THEN idt_transfers.receiver_total_weight ELSE 0 END) as received_weight_2055'),
+
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 1570 THEN idt_transfers.total_pieces ELSE 0 END) as total_pieces_1570'),
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 1570 THEN idt_transfers.total_weight ELSE 0 END) as total_weight_1570'),
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 1570 THEN idt_transfers.receiver_total_pieces ELSE 0 END) as received_pieces_1570'),
+                DB::raw('SUM(CASE WHEN idt_transfers.transfer_from = 1570 THEN idt_transfers.receiver_total_weight ELSE 0 END) as received_weight_1570')
+            )
+            ->first();
 
         return view('sausage.dashboard', compact('title', 'total_tonnage', 'total_entries', 'highest_product', 'lowest_product', 'wrong_entries', 'transfers'));
     }
