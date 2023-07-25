@@ -399,10 +399,11 @@ class SausageController extends Controller
         });
 
         $transfer_lines = DB::table('idt_transfers')
-            ->where('idt_transfers.transfer_from', '2055')
+            ->whereIn('idt_transfers.transfer_from', ['1570', '2055'])
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->when($filter == 'today', function ($q) {
                 $q->whereDate('idt_transfers.created_at', today()); // today only

@@ -1,4 +1,4 @@
-@extends('layouts.freshcuts-bulk_master')
+@extends('layouts.sausage_master')
 
 @section('content')
 

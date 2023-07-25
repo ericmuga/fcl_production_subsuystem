@@ -26,7 +26,7 @@
                         </li>
                         <li class="dropdown-divider"></li>
                         <li><a href="{{ route('sausage_idt_receive') }}"
-                                class="dropdown-item">Receive-IDT</a>
+                                class="dropdown-item">Receive From Butch-IDT</a>
                         </li>
                     </ul>
                 </li>
