@@ -432,12 +432,12 @@ class SausageController extends Controller
             ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
-            ->whereDate('idt_transfers.created_at', today())
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
             ->where('idt_transfers.transfer_from', '1570')
             ->where('idt_transfers.location_code', '2055') // sausage
             ->where('idt_transfers.received_by', '=', null)
             ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
-            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->orderByDesc('idt_transfers.id')
             ->get();
 
         return view('sausage.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
