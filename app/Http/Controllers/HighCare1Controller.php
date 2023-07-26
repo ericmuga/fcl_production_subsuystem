@@ -157,7 +157,7 @@ class HighCare1Controller extends Controller
 
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
-            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->when($filter == 'today', function ($q) {
                 $q->whereDate('idt_transfers.created_at', today()); // today only
@@ -166,6 +166,7 @@ class HighCare1Controller extends Controller
                 $q->whereDate('idt_transfers.created_at', '>=', today()->subDays(7)); // today plus last 7 days
             })
             ->where('idt_transfers.transfer_from', '=', '2595')
+            ->orWhere('idt_transfers.transfer_from', '=', '2500')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
@@ -236,12 +237,37 @@ class HighCare1Controller extends Controller
             ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
             ->where('idt_transfers.transfer_from', '1570')
-            ->where('idt_transfers.location_code', '2500') // highcare curing
+            ->where('idt_transfers.location_code', '2500') // curing
             ->where('idt_transfers.received_by', '=', null)
             ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
             ->orderByDesc('idt_transfers.id')
             ->get();
 
         return view('sausage.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
+    }
+
+    public function updateReceiveIdt(Request $request, Helpers $helpers)
+    {
+        try {
+            // try update
+            DB::table('idt_transfers')
+                ->where('id', $request->item_id)
+                ->update([
+                    'receiver_total_pieces' => $request->f_no_of_pieces,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => $helpers->authenticatedUserId(),
+                    'with_variance' => $request->valid_match,
+                    'updated_at' => now(),
+                ]);
+
+            Toastr::success('IDT Transfer received successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            $helpers->CustomErrorlogger($e);
+            return back()
+                ->withInput();
+        }
     }
 }

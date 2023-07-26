@@ -1,4 +1,4 @@
-@extends('layouts.sausage_master')
+@extends('layouts.highcare_master')
 
 @section('content')
 
@@ -7,7 +7,7 @@
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <form id="form-save-batch" class="form-prevent-multiple-submits"
-            action="{{ route('update_idt_receive') }}" method="post"> 
+            action="{{ route('update_idt_receive_highcare') }}" method="post"> 
             @csrf
             <div class="modal-content">
                 <div class="modal-header">

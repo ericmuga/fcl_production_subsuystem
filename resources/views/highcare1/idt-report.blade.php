@@ -20,6 +20,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>From</th>
+                                <th>To</th>
                                 <th>Issued Pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Pieces</th>
@@ -35,6 +37,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>From</th>
+                                <th>To</th>
                                 <th>Issued Pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Pieces</th>
@@ -51,13 +55,15 @@
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $data->product }}</td>
+                                <td>{{ $data->transfer_from }}</td>
+                                <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ number_format($data->receiver_total_pieces, 2) }}</td>
                                 <td>{{ number_format($data->receiver_total_weight, 2) }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
-                                <td>{{ $data->username }}</td>
+                                <td>{{ $data->received_by }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>
                             @endforeach
