@@ -89,7 +89,7 @@
 <hr>
 <!-- IDT Issued Transfers  -->
 <p class="row mb-2 ml-2">
-    <strong> Issued Idt Transfers: </strong>
+    <strong> Sausage To Despatch Idt Transfers: </strong>
 </p>
 <div class="row">
     <div class="col-md-3 col-6">
@@ -163,7 +163,7 @@
 <hr>
 <!-- IDT Received Transfers  -->
 <p class="row mb-2 ml-2">
-    <strong> Received Idt Transfers: </strong>
+    <strong> Butchery To Sausage Idt Transfers: </strong>
 </p>
 <div class="row">
     <div class="col-md-4 col-6">

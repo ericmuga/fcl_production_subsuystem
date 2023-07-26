@@ -28,7 +28,7 @@
                         <select class="form-control select2" name="transfer_to" id="transfer_to" required>
                             <option disabled selected> -- select a transfer location -- </option>
                             <option value="2055">Sausage</option>
-                            <option value="2500">High Care</option>
+                            <option value="2500">Curing</option>
                             <option value="3535">Despatch</option>
                         </select>
                     </div>
@@ -473,14 +473,14 @@
         const transferToSelect = document.getElementById('transfer_to');
 
         const SAUSAGE_OPTION_INDEX = 1;
-        const HIGHCARE_OPTION_INDEX = 2;
+        const CURING_OPTION_INDEX = 2;
         const DESPATCH_OPTION_INDEX = 3;
 
         const isStartsWithG = startsWithCharacter(product_code, 'G');
         const isStartsWithJ = startsWithCharacter(product_code, 'J');
 
         transferToSelect.options[SAUSAGE_OPTION_INDEX].disabled = isStartsWithJ;
-        transferToSelect.options[HIGHCARE_OPTION_INDEX].disabled = isStartsWithJ;
+        transferToSelect.options[CURING_OPTION_INDEX].disabled = isStartsWithJ;
         transferToSelect.options[DESPATCH_OPTION_INDEX].disabled = isStartsWithG;
     };
 

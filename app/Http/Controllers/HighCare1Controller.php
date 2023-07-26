@@ -216,4 +216,32 @@ class HighCare1Controller extends Controller
                 ->withInput();
         }
     }
+
+    public function getReceiveIdt(Helpers $helpers, $filter = null)
+    {
+        $title = "IDT-Receive";
+
+        $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'highcare1')
+                ->where('scale', 'Highcare1')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
+
+        $transfer_lines = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
+            ->where('idt_transfers.transfer_from', '1570')
+            ->where('idt_transfers.location_code', '2500') // highcare curing
+            ->where('idt_transfers.received_by', '=', null)
+            ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
+            ->orderByDesc('idt_transfers.id')
+            ->get();
+
+        return view('sausage.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
+    }
 }
