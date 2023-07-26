@@ -12,8 +12,8 @@
 @endsection
 
 @section('content')
-<form id="form-save-scale3" class="form-prevent-multiple-submits" action="{{ route('butchery_scale3_save') }}"
-    method="post">
+<form id="form-save-scale3" class="form-prevent-multiple-submits"
+    action="{{ route('butchery_scale3_save') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -25,10 +25,10 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
-                                <option
-                                    value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
-                                    {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->description.'-'.$product->product_type_name }}
-                                </option>
+                                    <option
+                                        value="{{ $product->shortcode.'-'.$product->code.'-'.$product->product_type_code }}">
+                                        {{ $product->shortcode . substr($product->code, strpos($product->code, "G") + 1).' '.$product->description.'-'.$product->product_type_name }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -246,34 +246,47 @@
                                 </tr>
                             </tfoot>
                             <tbody>
+                                @php
+                                    $createdAtDate = \Carbon\Carbon::parse($data->created_at)->format('Y-m-d');
+                                    $todayDate = \Carbon\Carbon::today()->format('Y-m-d');
+                                @endphp
+
                                 @foreach($deboning_data as $data)
-                                <tr>
-                                    <td>{{ $i++ }}</td>
-                                    <td id="itemCodeModalShow" data-id="{{$data->id}}"
-                                        data-weight="{{ number_format($data->actual_weight, 2) }}"
-                                        data-no_of_pieces="{{ $data->no_of_pieces }}" data-code="{{ $data->item_code }}"
-                                        data-type_id="{{ $data->type_id }}"
-                                        data-production_process="{{ $data->process_code }}"
-                                        data-item="{{ $data->description }}"><a href="#">{{ $data->item_code }}</a>
-                                    </td>
-                                    <td>{{ $data->description }}</td>
-                                    <td> {{ $data->product_type }}</td>
-                                    <td> {{ $data->process }}</td>
-                                    <td> {{ number_format($data->actual_weight, 2) }}</td>
-                                    <td> {{ number_format($data->net_weight, 2) }}</td>
-                                    <td> {{ $data->no_of_crates }}</td>
-                                    <td> {{ $data->no_of_pieces }}</td>
-                                    @if ($data->edited == 1)
-                                    <td>
-                                        <span class="badge badge-warning">Yes</span>
-                                    </td>
-                                    @else
-                                    <td>
-                                        <span class="badge badge-success">No</span>
-                                    </td>
-                                    @endif
-                                    <td> {{ $data->created_at }}</td>
-                                </tr>
+                                    <tr>
+                                        <td>{{ $i++ }}</td>
+                                        {{-- Allow edits for only today --}}
+                                        @if($createdAtDate === $todayDate)
+                                            <td id="itemCodeModalShow" data-id="{{ $data->id }}"
+                                                data-weight="{{ number_format($data->actual_weight, 2) }}"
+                                                data-no_of_pieces="{{ $data->no_of_pieces }}"
+                                                data-code="{{ $data->item_code }}"
+                                                data-type_id="{{ $data->type_id }}"
+                                                data-production_process="{{ $data->process_code }}"
+                                                data-item="{{ $data->description }}"><a
+                                                    href="#">{{ $data->item_code }}</a>
+                                            </td>
+                                        @else
+                                            <td><span class="badge badge-warning">Edit closed</span></td>
+                                        @endif
+
+                                        <td>{{ $data->description }}</td>
+                                        <td> {{ $data->product_type }}</td>
+                                        <td> {{ $data->process }}</td>
+                                        <td> {{ number_format($data->actual_weight, 2) }}</td>
+                                        <td> {{ number_format($data->net_weight, 2) }}</td>
+                                        <td> {{ $data->no_of_crates }}</td>
+                                        <td> {{ $data->no_of_pieces }}</td>
+                                        @if($data->edited == 1)
+                                            <td>
+                                                <span class="badge badge-warning">Yes</span>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <span class="badge badge-success">No</span>
+                                            </td>
+                                        @endif
+                                        <td> {{ $data->created_at }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>
@@ -292,8 +305,8 @@
 <div id="itemCodeModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role" action="{{route('butchery_scale3_update')}}"
-            method="post">
+        <form class="form-prevent-multiple-submits" id="form-edit-role"
+            action="{{ route('butchery_scale3_update') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -308,9 +321,9 @@
                         <label for="exampleInputPassword1">Product</label>
                         <select class="form-control select2" name="edit_product" id="edit_product" required>
                             @foreach($products as $product)
-                            <option value="{{ trim($product->code) }}" selected="selected">
-                                {{ ucwords($product->description) }} - {{ $product->code }}
-                            </option>
+                                <option value="{{ trim($product->code) }}" selected="selected">
+                                    {{ ucwords($product->description) }} - {{ $product->code }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
