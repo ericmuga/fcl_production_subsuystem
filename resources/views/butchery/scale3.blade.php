@@ -246,15 +246,15 @@
                                 </tr>
                             </tfoot>
                             <tbody>
-                                @php
-                                    $createdAtDate = \Carbon\Carbon::parse($data->created_at)->format('Y-m-d');
-                                    $todayDate = \Carbon\Carbon::today()->format('Y-m-d');
-                                @endphp
-
                                 @foreach($deboning_data as $data)
                                     <tr>
                                         <td>{{ $i++ }}</td>
                                         {{-- Allow edits for only today --}}
+                                        @php
+                                            $createdAtDate = \Carbon\Carbon::parse($data->created_at)->format('Y-m-d');
+                                            $todayDate = \Carbon\Carbon::today()->format('Y-m-d');
+                                        @endphp
+                                        
                                         @if($createdAtDate === $todayDate)
                                             <td id="itemCodeModalShow" data-id="{{ $data->id }}"
                                                 data-weight="{{ number_format($data->actual_weight, 2) }}"
