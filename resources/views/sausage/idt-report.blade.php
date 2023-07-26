@@ -20,7 +20,7 @@
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
-                                <th>Location </th>
+                                <th>To Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
                                 <th>Full Crates</th>
@@ -39,7 +39,7 @@
                                 <th>Product</th>
                                 <th>Std Crate Count</th>
                                 <th>Std Unit Measure</th>
-                                <th>Location </th>
+                                <th>To Location </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
                                 <th>Full Crates</th>
@@ -56,7 +56,7 @@
                             <tr>
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product }}</td>
+                                <td>{{ $data->product?? $data->product2 }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->location_code }}</td>
