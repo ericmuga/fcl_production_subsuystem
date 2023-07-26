@@ -11,7 +11,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Receive Fresh Cuts & Bulk Dispatch Transfer</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Receive IDT From Butchery</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -250,9 +250,9 @@
             getNet()
         });
 
-        $('.tareweight').on("input change", function () {
-            getIssuedTareweight()
-        });
+        // $('.tareweight').on("input change", function () {
+        //     getIssuedTareweight()
+        // });
 
         $('#manual_weight').change(function () {
             let manual_weight = document.getElementById('manual_weight');
