@@ -1,4 +1,4 @@
-@extends('layouts.highcare_master')
+@extends('layouts.sausage_master')
 
 @section('content')
 
