@@ -148,6 +148,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.select2').select2()
         });
 
+        //Date picker        
+        let dateToday = new Date();
+        let dateYesterday = dateToday.setDate(dateToday.getDate() - 1);
+
+        $('#reservationdate').datetimepicker({
+            format: 'L',
+            minDate: dateYesterday,
+        });
+
     </script>
 
     @yield('scripts')
