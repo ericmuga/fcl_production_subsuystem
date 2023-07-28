@@ -148,6 +148,7 @@ Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'produ
 Route::post('/export-sausage-entries', [SausageController::class, 'exportSausageEntries'])->name('export_sausage_entries');
 Route::get('/sausage/idt-report/{filter?}', [SausageController::class, 'idtReport'])->name('sausage_idt_report');
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
+Route::post('/sausage-get-batchno-axios', [SausageController::class, 'getBatchNoAxios']);
 /*-------------End Admin------------------ */
 
 /*-------------Start Spices------------------ */

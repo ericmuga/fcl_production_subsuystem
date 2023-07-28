@@ -300,12 +300,12 @@ class Helpers
         $view = Artisan::call('view:cache');
     }
 
-    public function generateIdtBatch()
+    public function generateIdtBatch($production_date)
     {
         $alphas = 'abcdefghijklmnopqrstuvwxyz';
         $batch_month = (int)date('m') - 1;
 
-        return date('d') . strtoupper(mb_substr($alphas, $batch_month, 1));
+        return date($production_date) . strtoupper(mb_substr($alphas, $batch_month, 1));
     }
 
     public function getLocationCode($export_status, $location_code)

@@ -146,8 +146,8 @@
                         <div class="col-sm-8">
                             <div class="row">
                                 <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                                    <input type="text" class="form-control datetimepicker-input" id="slaughter_date"
-                                        name="slaughter_date" required data-target="#reservationdate" />
+                                    <input type="text" class="form-control datetimepicker-input" id="prod_date"
+                                        name="prod_date" required data-target="#reservationdate" />
                                     <div class="input-group-append" data-target="#reservationdate"
                                         data-toggle="datetimepicker">
                                         <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -161,8 +161,8 @@
                         <div class="col-sm-9">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <input type="text" class="form-control" value="{{ $helpers->generateIdtBatch() }}"
-                                        id="batch" name="batch" required readonly>
+                                    <input type="text" class="form-control" value="" id="batch" name="batch" required
+                                        readonly>
                                 </div>
                                 <div class="col-sm-6">
                                     <input type="number" class="form-control" value="" id="batch_no" name="batch_no"
@@ -402,6 +402,23 @@
             calculateWeightEdit()
         });
 
+        $(function () {
+            $("#prod_date").on("blur", function () {
+                var selected = $(this).val();
+                if (selected.trim() === '') {
+                    alert("Date field is required.");
+                } else {
+                    console.log("Selected date:", selected);
+                    // Split the date by slashes to get day, month, and year parts
+                    var dateParts = selected.split('/');
+
+                    // Get the day part (the second element after splitting)
+                    var day = dateParts[1];
+                    getBatchNo(day)
+                }
+            });
+        });
+
         $('#for_export').on("change", function () {
             // updateExportUnitCount()
             let transfer_type = $('#for_export').val()
@@ -499,6 +516,8 @@
         let crates_validity = $("#crates_valid").val();
         let user_validity = $("#user_valid").val();
 
+        let batchField = document.getElementById('batch');
+
         if (crates_validity == 0) {
             status = false
             alert("please ensure you have valid crates before submitting")
@@ -513,6 +532,11 @@
         } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
             status = false
             alert("please ensure the pieces and weight have a value of more than zero")
+        }
+
+        if (batchField.value.trim() === '') {
+            event.preventDefault();
+            alert('Batch Number field is required.');
         }
 
         return status
@@ -554,27 +578,23 @@
             })
     }
 
-    const getBatchNo () => {
-        $('#loading').collapse('show');
+    const getBatchNo = (prod_date) => {
 
         const url = '/sausage-get-batchno-axios'
 
         const request_data = {
-            product_code: prod_code
+            production_date: prod_date
         }
 
         return axios.post(url, request_data)
             .then((response) => {
-                $('#loading').collapse('hide');
-
-                $('#unit_crate_count').val(response.data.unit_count_per_crate)
-                $('#unit_measure').val(parseFloat(response.data.qty_per_unit_of_measure))
-                validateCrates()
+                console.log(response); // Add this line to see the response data
+                $('#batch').val(response.data);
             })
+
             .catch((error) => {
                 console.log(error);
             })
-        
     }
 
     const fetchTransferToLocations = (prod_code) => {

@@ -469,4 +469,11 @@ class SausageController extends Controller
                 ->withInput();
         }
     }
+
+    public function getBatchNoAxios(Request $request, Helpers $helpers)
+    {
+        $data = $helpers->generateIdtBatch($request->production_date);
+
+        return response()->json($data);
+    }
 }
