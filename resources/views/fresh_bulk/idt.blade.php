@@ -352,19 +352,31 @@
 
         $('#transfer_to').change(function () {
             // Get references to the select elements
-            const transferTypeSelect = document.getElementById('transfer_type');
+            const transferTypeSelect = document.getElementById('transfer_type'); 
+
+            //hide crates_div
+            let element = document.getElementById("crates_div")
+            element.setAttribute("hidden", "hidden");
 
             // Check if the selected value is '3535' (Despatch)
             if ($(this).val() == '3535') {
                 // Enable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = false;
+                $('#transfer_type').val('');
             } else {
                 // Disable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = true;
+                
+                //select local option,  batch & pieces to zero
+                $('#transfer_type').val('1');
+                $('#batch_no').val('0');
+                $('#no_of_pieces').val('0');
+
+                $('#transfer_type').select2('destroy').select2();
+                $('#carriage_type').select2('destroy').select2();
 
                 // remove required when its not despatch
                 $('#chiller_code').prop('required', false);
-                // $('#batch_no').prop('required', false);
 
                 // If 'Export' option was selected, reset the selection
                 if (transferTypeSelect.value == '2') {
@@ -471,6 +483,16 @@
 
     const transferToControlHandler = (product_code) => {
         const transferToSelect = document.getElementById('transfer_to');
+        
+        //hide crates_div
+        let element = document.getElementById("crates_div")
+        element.setAttribute("hidden", "hidden");
+
+        //remove any selected value first.
+        $('#transfer_to').val('0');
+        $('#carriage_type').val('');
+        $('#transfer_to').select2('destroy').select2();
+        $('#carriage_type').select2('destroy').select2();
 
         const SAUSAGE_OPTION_INDEX = 1;
         const CURING_OPTION_INDEX = 2;
