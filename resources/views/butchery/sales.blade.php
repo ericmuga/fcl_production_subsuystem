@@ -58,7 +58,7 @@
                                 <td>
                                     <button type="button" data-id="{{$data->id}}"
                                         data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
-                                        data-no_carcass="{{ $data->no_of_pieces }}"
+                                        data-no_carcass_data="{{ $data->no_of_carcass }}"
                                         data-weight="{{number_format($data->actual_weight, 2, '.', '')}}" data-timestamp="{{ $data->created_at }}"
                                         class="btn btn-info btn-xs" title="Return Sale" id="returnSaleModalShow"><i
                                             class="fa fa-undo"></i>
@@ -160,7 +160,7 @@
                     <label for="item_name">Item Weight: </label>
                     <p><strong><input style="border:none" type="text" class="form-control" id="weight" name="weight" value=""
                                 readonly></strong></p>
-                    <input type="hidden" id="return_no_carcass" value="" name="return_no_carcass">
+                    <input type="" id="return_no_carcass" value="" name="return_no_carcass">
                     <input type="hidden" name="return_weight" id="return_weight">
                     <input type="hidden" name="return_item_code" id="return_item_code" value="">
                     <input type="hidden" name="return_item_id" id="return_item_id" value="">
@@ -211,7 +211,7 @@
             var id = $(this).data('id');
             var product = $(this).data('product_code');
             var item = $(this).data('item');
-            var no_carcass = $(this).data('no_carcass');            
+            var no_carcass = $(this).data('no_carcass_data');            
             var created_date = $(this).data('timestamp');
             var weight = $(this).data('weight');
 
