@@ -70,10 +70,6 @@
                                     </select>
                                 </div>
                                 <div class=" col-md-6">
-                                    {{-- <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="for_export" name="for_export" value="3600">
-                                        <label class="custom-control-label" for="for_export">For Export?</label>
-                                    </div> --}}
                                     <select class="form-control select2" name="for_export" id="for_export" required>
                                         <option value="" selected disabled>Transfer Type </option>
                                         <option value="0"> Local</option>
