@@ -98,6 +98,7 @@
                         readonly>
                 </div>
                 <input type="hidden" name="item_id" id="item_id" value="">
+                <input type="hidden" name="del_process_code" id="del_process_code" value="">
                 <div class="modal-footer">
                     <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-danger btn-lg  float-right"><i class="fas fa-trash"></i> Delete
@@ -178,6 +179,7 @@ $sessionUsername = strtolower(Session::get('session_userName'));
                                     @if (in_array($sessionUsername, $allowedUsernames))
 
                                     <button type="button" data-id="{{ $data->id }}"
+                                        data-del_process_code="{{ $data->process_code }}"
                                         data-desc="{{ trim($data->description).' for '.trim($data->process) }}"
                                         class="btn btn-danger btn-xs" id="deleteProductsModalShow" data-toggle="tooltip"
                                         title="delete"><i class="fas fa-trash"></i>
@@ -229,9 +231,11 @@ $sessionUsername = strtolower(Session::get('session_userName'));
 
             var id = $(this).data('id');
             var name = $(this).data('desc');
+            var process_code = $(this).data('del_process_code');
 
             $('#item_id').val(id);
             $('#item_name').val(name);
+            $('#del_process_code').val(process_code);
 
             $('#deleteProductsModal').modal('show');
         });

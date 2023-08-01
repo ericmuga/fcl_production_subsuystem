@@ -707,6 +707,7 @@ class ButcheryController extends Controller
 
     public function addProductProcess(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'process_code' => 'required',
         ]);
@@ -725,7 +726,7 @@ class ButcheryController extends Controller
 
         try {
             DB::transaction(function () use ($request) {
-                // delete existing processes of same product
+                // delete existing processes of same product process
                 DB::table('product_processes')
                     ->where('product_id', strtok($request->product,  '-'))
                     ->where('product_type', $request->product_type)
@@ -760,6 +761,7 @@ class ButcheryController extends Controller
             //code...
             DB::table('product_processes')
                 ->where('id', $request->item_id)
+                ->where('process_code', $request->del_process_code)
                 ->delete();
 
             $helpers->forgetCache('deboning_list_scale3');
