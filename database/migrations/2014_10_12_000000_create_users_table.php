@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('section', 50)->nullable();
             $table->string('role', 50)->nullable();
             $table->string('session')->nullable();
+            $table->string('barcode_id')->nullable();
             $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

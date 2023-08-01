@@ -126,7 +126,7 @@
                                 required>
                         </div>
                     </div>
-                </div> <br>
+                </div> 
                 <div class="row form-group">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Batch No </label>
@@ -146,6 +146,20 @@
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Order No </label>
                         <input type="text" class="form-control" id="order_no" value="" name="order_no" placeholder="">
+                    </div>
+                </div>
+                <div hidden id="receiver_div" class="row form-group">
+                    <div class="col-md-12">
+                        <label for="exampleInputPassword1">IDT Receiver</label>
+                        <select class="form-control select2 receiver_select" name="receiver_id" id="receiver_id"
+                                required>
+                                <option value="">Select idt receiver</option>
+                                @foreach($receipt_users as $u)
+                                    <option value="{{ $u->id }}">
+                                        {{ $u->barcode_id.'-'.$u->username }}
+                                    </option>
+                                @endforeach
+                            </select>
                     </div>
                 </div>
                 <div class="form-group" style="padding-top: 5%">
@@ -358,11 +372,18 @@
             let element = document.getElementById("crates_div")
             element.setAttribute("hidden", "hidden");
 
+            //receiver div
+            let element_recv = document.getElementById("receiver_div")
+
             // Check if the selected value is '3535' (Despatch)
             if ($(this).val() == '3535') {
                 // Enable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = false;
-                $('#transfer_type').val('');
+                $('#transfer_type').val('');   
+                
+                //hide receiver_div
+                element_recv.setAttribute("hidden", "hidden");
+                $('#receiver_id').prop('required', false);
             } else {
                 // Disable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = true;
@@ -382,6 +403,10 @@
                 if (transferTypeSelect.value == '2') {
                     $('#transfer_type').select2("val", "All");
                 }
+
+                //show receiver_div
+                element_recv.removeAttribute("hidden")
+                $('#receiver_id').prop('required', true);
             }
         })
 
@@ -483,7 +508,7 @@
 
     const transferToControlHandler = (product_code) => {
         const transferToSelect = document.getElementById('transfer_to');
-        
+
         //hide crates_div
         let element = document.getElementById("crates_div")
         element.setAttribute("hidden", "hidden");
