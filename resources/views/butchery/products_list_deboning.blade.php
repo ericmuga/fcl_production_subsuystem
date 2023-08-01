@@ -175,10 +175,7 @@ $sessionUsername = strtolower(Session::get('session_userName'));
 
                                 <td>{{ $data->process }}</td>
                                 <td>
-                                    @if( Session::get('session_userName') == 'EKaranja' ||
-                                    Session::get('session_userName') == 'AMugumo' || Session::get('session_userName') ==
-                                    'LGithinji' ||
-                                    Session::get('session_userName') == 'EMuga')
+                                    @if (in_array($sessionUsername, $allowedUsernames))
 
                                     <button type="button" data-id="{{ $data->id }}"
                                         data-desc="{{ trim($data->description).' for '.trim($data->process) }}"
