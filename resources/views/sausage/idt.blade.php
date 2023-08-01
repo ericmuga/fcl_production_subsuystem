@@ -388,6 +388,8 @@
     $(document).ready(function () {
         $('.incomplete_pieces').hide();
 
+        setProductionDate() //set production date default
+
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
@@ -404,16 +406,16 @@
 
         $(function () {
             $("#prod_date").on("blur", function () {
-                var selected = $(this).val();
+                let selected = $(this).val();
                 if (selected.trim() === '') {
                     alert("Date field is required.");
                 } else {
-                    console.log("Selected date:", selected);
+                    // console.log("Selected date:", selected);
                     // Split the date by slashes to get day, month, and year parts
-                    var dateParts = selected.split('/');
+                    let dateParts = selected.split('/');
 
                     // Get the day part (the second element after splitting)
-                    var day = dateParts[1];
+                    let day = dateParts[0];
                     getBatchNo(day)
                 }
             });
@@ -588,7 +590,7 @@
 
         return axios.post(url, request_data)
             .then((response) => {
-                console.log(response); // Add this line to see the response data
+                // console.log(response); // Add this line to see the response data
                 $('#batch').val(response.data);
             })
 
@@ -770,6 +772,25 @@
             .catch((error) => {
                 console.log(error);
             })
+    }
+
+    const setProductionDate = () => {
+        let dateToday = new Date()
+
+        // Format the date as "DD/MM/YYYY"
+        var formattedDateToday = `${padZero(dateToday.getDate())}/${padZero(dateToday.getMonth() + 1)}/${dateToday.getFullYear()}`
+        $('#prod_date').val(formattedDateToday)
+
+        // Split the date by slashes to get day, month, and year parts
+        let dateParts = formattedDateToday.split('/');
+
+        // Get the day part (the second element after splitting)
+        let day = dateParts[0];
+        getBatchNo(day)
+    }
+
+    const padZero = (num) => {
+        return num < 10 ? `0${num}` : num;
     }
 
 </script>
