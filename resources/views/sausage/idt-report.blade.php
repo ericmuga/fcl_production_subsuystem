@@ -69,7 +69,13 @@
                                 <td>{{ $data->incomplete_crate_pieces }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
-                                <td>{{ $data->username }}</td>
+                                @if($data->username )
+                                    <td>{{ $data->username }}</td>
+                                @else
+                                    <td>
+                                        <span class="badge badge-warning">pending receipt</span>
+                                    </td>
+                                @endif
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                             </tr>

@@ -52,7 +52,7 @@ class FreshcutsBulkController extends Controller
         $receipt_users = Cache::remember('idt_receipt_users', now()->addHours(10), function () {
             return DB::table('users')
                 ->where('barcode_id', '!=', null)
-                ->select('id', 'username', 'barcode_id')
+                ->select('id', 'username', 'barcode_id', 'section')
                 ->get();
         });
 

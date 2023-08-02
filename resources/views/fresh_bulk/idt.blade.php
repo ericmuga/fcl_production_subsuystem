@@ -150,13 +150,13 @@
                 </div>
                 <div hidden id="receiver_div" class="row form-group">
                     <div class="col-md-12">
-                        <label for="exampleInputPassword1">IDT Receiver</label>
+                        <label for="exampleInputPassword1">IDT Receiver(Supervisor)</label>
                         <select class="form-control select2 receiver_select" name="receiver_id" id="receiver_id"
                                 required>
-                                <option value="">Select idt receiver</option>
+                                <option value="">Select supervisor</option>
                                 @foreach($receipt_users as $u)
                                     <option value="{{ $u->id }}">
-                                        {{ $u->barcode_id.'-'.$u->username }}
+                                        {{ $u->barcode_id.'-'.$u->username.'-'.$u->section }}
                                     </option>
                                 @endforeach
                             </select>
