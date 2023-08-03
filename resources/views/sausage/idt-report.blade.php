@@ -28,6 +28,7 @@
                                 <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
+                                <th>Batch No</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Date</th>
@@ -48,6 +49,7 @@
                                 <th>Incomplete Crate Pieces</th>
                                 <th>Total Pieces</th>
                                 <th>Total Weight</th>
+                                <th>Batch No</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Date</th>
@@ -69,6 +71,7 @@
                                 <td>{{ $data->incomplete_crate_pieces }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
+                                <td>{{ $data->batch_no }}</td>
                                 @if($data->username )
                                     <td>{{ $data->username }}</td>
                                 @else
