@@ -169,8 +169,8 @@
                     </div>
                     <div class="div" style="padding-top: 5%">
                         <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
-                            onclick="return validateOnSubmit()"><i class="fa fa-paper-plane single-click"
-                                aria-hidden="true"></i> Save</button>
+                            onclick="return validateOnSubmit() && validateProductionDate()"><i
+                                class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                     </div>
                 </div>
             </div>
@@ -540,6 +540,61 @@
         return status
     }
 
+    const validateProductionDate = () => {
+        let status = true;
+
+        let selected_date = $('#prod_date').val();
+        const selectedDateMoment = formatInputDate(selected_date);
+        const currentDateMoment = moment().startOf('day'); // Set current time to 00:00:00
+
+        if (isWithinFirst4Hours()) {
+            // Get Unix timestamps
+            const selectedUnixTimestamp = selectedDateMoment.valueOf();
+            const currentUnixTimestamp = currentDateMoment.valueOf();
+
+            console.log('Selected date Unix timestamp (milliseconds):', selectedUnixTimestamp);
+            console.log('Current date Unix timestamp (milliseconds):', currentUnixTimestamp);
+
+
+            // Check if prod_date is the same as the current date.
+            if (selectedUnixTimestamp === currentUnixTimestamp) {
+                const confirmation = window.confirm(
+                    "It's within the first 4 hours of the day! Seems you have not changed production date. Do you want to proceed with the date?"
+                );
+                if (!confirmation) {
+                    // User clicked "Cancel" in the dialog, set status to false and show alert.
+                    status = false;
+                    // alert("User chose to cancel.");
+                }
+            } else if (selectedUnixTimestamp < currentUnixTimestamp) {
+                // alert("All good to proceed with the previous day's production date!");
+
+            } else if (selectedUnixTimestamp > currentUnixTimestamp) {
+                // The selected date is earlier than the current date (previous day).
+                // No need to show a dialog, just show a different alert.
+                status = false;
+                alert("Selected date is not within production date range!");
+            }
+        }
+
+        return status;
+    }
+
+    const formatInputDate = (dateString) => {
+        const parts = dateString.split("/");
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const year = parseInt(parts[2], 10);
+
+        const formattedDate = moment({ year, month: month - 1, day }).startOf('day'); // Set time to 00:00:00
+        return formattedDate;
+    }
+
+    const isWithinFirst4Hours = () => {
+        const now = new Date();
+        return now.getHours() < 4;
+    }
+
     const handleChange = () => {
         let total_crates = $("#total_crates").val();
         let full_crates = $("#full_crates").val();
@@ -774,7 +829,8 @@
         let dateToday = new Date()
 
         // Format the date as "DD/MM/YYYY"
-        var formattedDateToday = `${padZero(dateToday.getDate())}/${padZero(dateToday.getMonth() + 1)}/${dateToday.getFullYear()}`
+        var formattedDateToday =
+            `${padZero(dateToday.getDate())}/${padZero(dateToday.getMonth() + 1)}/${dateToday.getFullYear()}`
         $('#prod_date').val(formattedDateToday)
 
         // Split the date by slashes to get day, month, and year parts
