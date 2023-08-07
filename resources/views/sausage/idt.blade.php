@@ -559,7 +559,7 @@
             // Check if prod_date is the same as the current date.
             if (selectedUnixTimestamp === currentUnixTimestamp) {
                 const confirmation = window.confirm(
-                    "It's within the first 4 hours of the day! Seems you have not changed production date. Do you want to proceed with the date?"
+                    "It's within the first 5 hours of the day! Seems you have not changed production date. Do you want to proceed with the date?"
                 );
                 if (!confirmation) {
                     // User clicked "Cancel" in the dialog, set status to false and show alert.
@@ -592,7 +592,7 @@
 
     const isWithinFirst4Hours = () => {
         const now = new Date();
-        return now.getHours() < 4;
+        return now.getHours() < 5;
     }
 
     const handleChange = () => {
