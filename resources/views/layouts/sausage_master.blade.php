@@ -160,6 +160,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $("#example1").DataTable({
                 "responsive": false,
                 "autoWidth": false,
+                "scrollX": true,
                 "lengthChange": true,
                 "lengthMenu": [
                     [3, 5, 10, 25, 50, -1],
