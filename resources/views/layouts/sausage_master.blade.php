@@ -174,9 +174,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.select2').select2()
         });
 
+        const today = new Date();
         //Date picker        
         $('#reservationdate').datetimepicker({
             format : "DD/MM/YYYY",
+            maxDate: today,
         });
 
     </script>
