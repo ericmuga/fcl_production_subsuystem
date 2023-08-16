@@ -174,6 +174,7 @@ class ButcheryController extends Controller
         $cumm = DB::table('deboned_data')
             ->whereDate('deboned_data.created_at', today())
             ->whereIn('deboned_data.process_code', $process_filter)
+            ->whereIn('deboned_data.product_type', [1, 2])
             ->select(DB::raw('COALESCE(SUM(deboned_data.net_weight),0) as total_net'), DB::raw('COALESCE(SUM(deboned_data.no_of_pieces),0) as total_pieces'))
             ->get()->toArray();
 
