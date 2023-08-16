@@ -44,13 +44,17 @@
                     break;
             }
         }
+
+        $totalLegsNet = collect($legs)->sum('total_net');
+        $totalMiddlesNet = collect($middles)->sum('total_net');
+        $totalShouldersNet = collect($shoulders)->sum('total_net');
     @endphp
 
     <div class="col-md-4">
         <h4>Legs</h4>
         @foreach ($legs as $data)
             <div class="progress-group">
-                {{ $data->item_code.' '.$data->description }}
+                {{ $data->item_code.' '.$data->description.'-'.$data->product_type_name }}
                 <span class="float-right"><b>{{ $data->total_pieces }}</b> | {{ number_format($data->total_net, 2) }}<sup style="font-size: 15px">kgs</sup></span>
                 <div class="progress progress-sm">
                     <div class="progress-bar {{ $helpers->randomBootstrap() }}" @if ($cumm[0]->total_net > 0)
@@ -65,7 +69,7 @@
         <h4>Middles</h4>
         @foreach ($middles as $data)
             <div class="progress-group">
-                {{ $data->item_code.' '.$data->description }}
+                {{ $data->item_code.' '.$data->description.'-'.$data->product_type_name }}
                 <span class="float-right"><b>{{ $data->total_pieces }}</b> | {{ number_format($data->total_net, 2) }}<sup style="font-size: 15px">kgs</sup></span>
                 <div class="progress progress-sm">
                     <div class="progress-bar {{ $helpers->randomBootstrap() }}" @if ($cumm[0]->total_net > 0)
@@ -80,7 +84,7 @@
         <h4>Shoulders</h4>
         @foreach ($shoulders as $data)
             <div class="progress-group">
-                {{ $data->item_code.' '.$data->description }}
+                {{ $data->item_code.' '.$data->description.'-'.$data->product_type_name }}
                 <span class="float-right"><b>{{ $data->total_pieces }}</b> | {{ number_format($data->total_net, 2) }}<sup style="font-size: 15px">kgs</sup></span>
                 <div class="progress progress-sm">
                     <div class="progress-bar {{ $helpers->randomBootstrap() }}" @if ($cumm[0]->total_net > 0)
@@ -91,7 +95,20 @@
         @endforeach
     </div>
 </div>
+<hr>
+<div class="row">
+    <div class="col-md-4">
+        <h4>Legs (Total: {{ number_format($totalLegsNet, 2) }})</h4>
+    </div>
 
+    <div class="col-md-4">
+        <h4>Middles (Total: {{ number_format($totalMiddlesNet, 2) }})</h4>
+    </div>
+
+    <div class="col-md-4">
+        <h4>Shoulders (Total: {{ number_format($totalShouldersNet, 2) }})</h4>
+    </div>
+</div>
 <hr>
 <div class="row">
     <div class="col-md-12">

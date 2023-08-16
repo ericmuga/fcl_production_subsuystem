@@ -162,9 +162,10 @@ class ButcheryController extends Controller
         $main_items = DB::table('deboned_data')
             ->join('products', 'deboned_data.item_code', '=', 'products.code')
             ->whereDate('deboned_data.created_at', today())
-            ->where('deboned_data.product_type', 1) //main products only
-            ->select('deboned_data.item_code', 'products.description', 'deboned_data.process_code', DB::raw('SUM(deboned_data.net_weight) as total_net'), DB::raw('SUM(deboned_data.no_of_pieces) as total_pieces'))
-            ->groupBy('deboned_data.item_code', 'products.description', 'deboned_data.process_code')
+            ->whereIn('deboned_data.product_type', [1, 2]) //main & by products 
+            ->select('deboned_data.item_code', 'deboned_data.product_type', 'products.description', 'deboned_data.process_code', DB::raw('SUM(deboned_data.net_weight) as total_net'), DB::raw('SUM(deboned_data.no_of_pieces) as total_pieces'))
+            ->selectRaw("CASE WHEN deboned_data.product_type = 1 THEN 'Main' ELSE 'By Product' END as product_type_name")
+            ->groupBy('deboned_data.item_code', 'deboned_data.product_type', 'products.description', 'deboned_data.process_code')
             ->orderBy('total_net', 'DESC')
             ->get()->toArray();
 
