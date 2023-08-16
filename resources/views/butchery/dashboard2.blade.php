@@ -18,11 +18,31 @@
 <!-- Small boxes (Stat box) -->
 <div class="row">
     @php
+
+        $mainItems = [];
+        $ByProductItems = [];
+
+        foreach ($main_items as $data) {
+            if ($data->product_type == '1') {
+                $mainItems[] = $data;
+            } else {
+                $ByProductItems[] = $data;
+            }
+        }
+
+        // Sort the by product items by total_net in descending order
+        usort($ByProductItems, function ($a, $b) {
+            return $b->total_net - $a->total_net;
+        });
+
+        // Merge the main items and the sorted other items
+        $sortedItems = array_merge($mainItems, $ByProductItems);
+
         $legs = [];
         $middles = [];
         $shoulders = [];
 
-        foreach ($main_items as $data) {
+        foreach ($sortedItems as $data) {
             switch ($data->process_code) {
                 case '4':
                 case '7':
