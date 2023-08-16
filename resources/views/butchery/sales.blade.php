@@ -160,7 +160,7 @@
                     <label for="item_name">Item Weight: </label>
                     <p><strong><input style="border:none" type="text" class="form-control" id="weight" name="weight" value=""
                                 readonly></strong></p>
-                    <input type="" id="return_no_carcass" value="" name="return_no_carcass">
+                    <input type="hidden" id="return_no_carcass" value="" name="return_no_carcass">
                     <input type="hidden" name="return_weight" id="return_weight">
                     <input type="hidden" name="return_item_code" id="return_item_code" value="">
                     <input type="hidden" name="return_item_id" id="return_item_id" value="">
