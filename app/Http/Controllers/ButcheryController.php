@@ -169,8 +169,11 @@ class ButcheryController extends Controller
             ->orderBy('total_net', 'DESC')
             ->get()->toArray();
 
+        $process_filter = ['4', '7', '11', '5', '16', '17', '6', '18', '12'];
+
         $cumm = DB::table('deboned_data')
             ->whereDate('deboned_data.created_at', today())
+            ->whereIn('deboned_data.process_code', $process_filter)
             ->select(DB::raw('COALESCE(SUM(deboned_data.net_weight),0) as total_net'), DB::raw('COALESCE(SUM(deboned_data.no_of_pieces),0) as total_pieces'))
             ->get()->toArray();
 
