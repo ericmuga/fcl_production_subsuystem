@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProductTypesTable extends Migration
+class CreateBeefItemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,13 @@ class CreateProductTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('product_types', function (Blueprint $table) {
+        Schema::create('beef_items', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('code');
-            $table->string('description', 50)->nullable();
+            $table->string('code')->unique(); // stands for both unique and indexable
+            $table->string('barcode')->nullable();
+            $table->string('description', 50);
+            $table->string('unit_of_measure', 10)->default('KG');
+            $table->string('location_code', 50);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
@@ -29,6 +32,6 @@ class CreateProductTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_types');
+        Schema::dropIfExists('beef_items');
     }
 }

@@ -27,6 +27,17 @@
                         <i class="fa fa-cut fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
+                <div class="card p-2 bg-muted" style="height: 200px">
+                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                        href="{{ route('spices_dashboard') }}">
+                        <h4 class="card-title">Beef Butchery</h4>
+                        <p class="card-text">Select this option to switch to Beef Butchery interface.
+                        </p>
+                    </a>
+                    <div class="icon text-center">
+                        <i class="fas fa-code fa-4x" aria-hidden="true"></i>
+                    </div>
+                </div>
                 <div class="card p-2 bg-secondary" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('spices_dashboard') }}">
