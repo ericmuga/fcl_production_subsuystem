@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BeefLambController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
 use App\Http\Controllers\ChoppingController;
@@ -205,6 +206,6 @@ Route::prefix('highcare1')->group(function () {
 });
 /*-------------End HighCare1------------------ */
 
-/*-------------Start HighCare2------------------ */
-Route::get('/highcare2/dashboard', [HighCare2Controller::class, 'index'])->name('highcare2_dashboard');
+/*-------------Start Beef/Lamb------------------ */
+Route::get('/Beef-Lamb/dashboard', [BeefLambController::class, 'index'])->name('beef_dashboard');
 /*-------------End HighCare2------------------ */

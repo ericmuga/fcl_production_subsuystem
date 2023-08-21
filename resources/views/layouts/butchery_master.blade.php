@@ -50,7 +50,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <div class="wrapper">
 
         <!-- Navbar -->
-        @include('layouts.headers.butchery_header')
+        @if ($layout == 'beef')
+            @include('layouts.headers.beef_header')   
+        @else
+            @include('layouts.headers.butchery_header')            
+        @endif
+        
         <!-- /.navbar -->
 
         <!-- Content Wrapper. Contains page content -->

@@ -29,7 +29,7 @@
                 </div>
                 <div class="card p-2 bg-muted" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
-                        href="{{ route('spices_dashboard') }}">
+                        href="{{ route('beef_dashboard') }}">
                         <h4 class="card-title">Beef Butchery</h4>
                         <p class="card-text">Select this option to switch to Beef Butchery interface.
                         </p>
