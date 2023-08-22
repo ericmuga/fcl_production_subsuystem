@@ -21,18 +21,18 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Weigh</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_scale1_2') }}" class="dropdown-item">Beef Slicing</a></li>                        
+                        <li><a href="{{ route('deboning_beef') }}" class="dropdown-item">Debone Beef</a></li>                        
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
+                        <li><a href="#" class="dropdown-item"> Beef Products
                             </a></li>
                         <li class="dropdown-divider"></li>
                         <li>
-                            <a href="{{ route('butchery_split_weights') }}" class="dropdown-item">Weight Splitting
+                            <a href="#" class="dropdown-item">Weight Splitting
                             </a>
                         </li>
                         <li class="dropdown-divider"></li>
@@ -100,24 +100,4 @@
     </div>
 </nav>
 
-<!-- logout modal -->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Please confirm if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary btn-flat " type="button" data-dismiss="modal">Cancel</button>
-                <a href="{{ route('logout') }}" type="submit"
-                    class="btn btn-warning btn-lg  float-right"><i class="fas fa-sign-out-alt"></i> Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- end logout -->
+@include('layouts.partials.logout')
