@@ -159,7 +159,7 @@
                                 name="std_qty[]" step="0.01" readonly placeholder="">
                         </div>
                         <div class="col-md-2">
-                            <label>Used Qty {{ $l->item_code }}</label>
+                            <label>Used Qty</label>
                             <input type="number" class="form-control qty_used" id="qty" value="{{ $l->item_code == 'H221016' || $l->item_code == 'H221015' || $l->item_code == 'H221053' ? '0.00' :$l->quantity }}"
                                 name="qty[]" step="0.01" onClick="this.select();" placeholder="">
                         </div>
