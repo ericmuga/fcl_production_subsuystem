@@ -160,7 +160,7 @@
                         </div>
                         <div class="col-md-2">
                             <label>Used Qty</label>
-                            <input type="number" class="form-control qty_used" id="qty" value="{{ $l->item_code == 'H221016' || 'H221015' || 'H221053' ? 0 : $l->quantity }}"
+                            <input type="number" class="form-control qty_used" id="qty" value="{{ $l->quantity }}"
                                 name="qty[]" step="0.01" onClick="this.select();" placeholder="">
                         </div>
                         <div class="col-md-4">
