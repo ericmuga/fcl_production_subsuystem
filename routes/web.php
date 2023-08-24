@@ -207,5 +207,8 @@ Route::prefix('highcare1')->group(function () {
 /*-------------End HighCare1------------------ */
 
 /*-------------Start Beef/Lamb------------------ */
-Route::get('/Beef-Lamb/dashboard', [BeefLambController::class, 'index'])->name('beef_dashboard');
+Route::prefix('Beef-Lamb')->group(function () {
+    Route::get('/dashboard', [BeefLambController::class, 'index'])->name('beef_dashboard');
+    Route::get('/deboning-beef', [BeefLambController::class, 'getBeefSlicing'])->name('deboning_beef');
+});
 /*-------------End HighCare2------------------ */
