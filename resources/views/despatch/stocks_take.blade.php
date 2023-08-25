@@ -12,8 +12,8 @@
 @endsection
 
 @section('content')
-<form id="form-save-scale3" class="form-prevent-multiple-submits"
-    action="{{ route('save_stocks') }}" method="post">
+<form id="form-save-scale3" class="form-prevent-multiple-submits" action="{{ route('save_stocks') }}"
+    method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -25,7 +25,8 @@
                             <select class="form-control select2" name="product" id="product" required>
                                 <option value="">Select product</option>
                                 @foreach($items as $i)
-                                    <option value="{{ $i->code.'-'.$i->unit_of_measure.'-'.$i->qty_per_unit_of_measure }}">
+                                    <option
+                                        value="{{ $i->code.'-'.$i->unit_of_measure.'-'.$i->qty_per_unit_of_measure }}">
                                         {{ $i->code. '-'.$i->description }}
                                     </option>
                                 @endforeach
@@ -43,8 +44,7 @@
                     <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Qty Unit Measure</label>
-                            <input type="text" class="form-control" id="qty_unit"
-                                value="" readonly>
+                            <input type="text" class="form-control" id="qty_unit" value="" readonly>
                         </div>
                     </div>
                 </div>
@@ -54,11 +54,13 @@
             <div class="card-body text-center">
                 <div class="form-group">
                     <label for="exampleInputEmail1">Weight</label>
-                    <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="" placeholder="" required>
+                    <input type="number" step="0.01" class="form-control" id="reading" name="reading" value=""
+                        placeholder="" required>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Pieces</label>
-                    <input type="number" class="form-control" id="pieces" name="pieces" value="" step="" placeholder="" required>
+                    <input type="number" class="form-control" id="pieces" name="pieces" value="" step="" placeholder=""
+                        required>
                 </div>
             </div>
         </div>
@@ -67,18 +69,16 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Stock Take Date</label>
                     <div class="input-group date" id="reservationdate" data-target-input="nearest">
-                        <input type="text" class="form-control datetimepicker-input" id="prod_date"
-                            name="prod_date" required data-target="#reservationdate" />
-                        <div class="input-group-append" data-target="#reservationdate"
-                            data-toggle="datetimepicker">
+                        <input type="text" class="form-control datetimepicker-input" id="prod_date" name="prod_date"
+                            required data-target="#reservationdate" />
+                        <div class="input-group-append" data-target="#reservationdate" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Chiller </label>
-                    <select class="form-control select2" name="chiller_code" id="chiller_code"
-                        required>
+                    <select class="form-control select2" name="chiller_code" id="chiller_code" required>
                         <option value="">Select chiller</option>
                         @foreach($chillers as $c)
                             <option value="{{ $c->chiller_code }}">{{ $c->description }}</option>
@@ -87,8 +87,7 @@
                 </div>
                 <input type="hidden" class="input_checks" id="location_code" value="3535">
                 <div class="form-group" style="padding-top: 5%">
-                    <button type="submit"
-                        class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                 </div>
             </div>
@@ -110,13 +109,14 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Stock Entries Data | <span id="subtext-h1-title"><small> entries for last 10 days</small> </span></h3>
+                    <h3 class="card-title"> Stock Entries Data | <span id="subtext-h1-title"><small> entries for last 10
+                                days</small> </span></h3>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
-                    <div class="hidden" hidden>{{ $i = 1 }}</div>
                     <div class="table-responsive">
-                        <table id="example1" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                            width="100%">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -141,19 +141,17 @@
                                     <th>Date </th>
                                 </tr>
                             </tfoot>
-                            <tr>
-                                @foreach ( $data as $d)
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $d->product_code }}</td>
-                                <td>{{ $d->description }}</td>
-                                <td>{{ $d->weight }}</td>
-                                <td>{{ $d->pieces }}</td>
-                                <td>{{ $d->location_code }}</td>
-                                <td>{{ $d->chiller_code }}</td>
-                                <td>{{ $d->created_at }}</td>                                    
-                                @endforeach
-                            </tr>
                             <tbody>
+                                @foreach($data as $d)
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $d->product_code }}</td>
+                                    <td>{{ $d->description }}</td>
+                                    <td>{{ $d->weight }}</td>
+                                    <td>{{ $d->pieces }}</td>
+                                    <td>{{ $d->location_code }}</td>
+                                    <td>{{ $d->chiller_code }}</td>
+                                    <td>{{ $d->created_at }}</td>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -278,7 +276,7 @@
                 const parts = itm.split('-');
                 // console.log(parts[0])
                 $('#unit_measure').val(parts[1])
-                
+
                 let formatedQty = parseFloat(parts[2])
                 $('#qty_unit').val(formatedQty.toFixed(2))
 
