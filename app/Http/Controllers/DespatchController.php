@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -237,5 +238,52 @@ class DespatchController extends Controller
             ->get();
 
         return view('despatch.idt-per-chiller', compact('title', 'items'));
+    }
+
+    public function takeStocks()
+    {
+        $title = 'Despatch Stocks';
+
+        $items = DB::table('items')
+            ->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+            ->get();
+
+        $chillers = DB::table('chillers')
+            ->where('location_code', '3535')
+            ->get();
+
+        $data = DB::table('stocks')
+            ->join('items', 'stocks.product_code', '=', 'items.code')
+            ->where('stocks.created_at', '>=', today()->subDays(10))
+            ->select('stocks.*', 'items.description')
+            ->get();
+
+        return view('despatch.stocks_take', compact('title', 'items', 'chillers', 'data'));
+    }
+
+    public function saveStocks(Request $request, Helpers $helpers)
+    {
+        // dd($request->all());
+        $parsedDate = Carbon::createFromFormat('d/m/Y', $request->prod_date)->toDateString();
+
+        try {
+            // try update
+            DB::table('stocks')->insert([
+                'product_code' => substr($request->product, 0, strpos($request->product, '-')),
+                'weight' => $request->reading,
+                'pieces' => $request->pieces,
+                'location_code' => '3535',
+                'chiller_code' => $request->chiller_code,
+                'stock_date' => $parsedDate,
+            ]);
+
+            Toastr::success('Saved stocks successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            Log::error('Exception in ' . __METHOD__ . '(): ' . $e->getMessage());
+            return back();
+        }
     }
 }

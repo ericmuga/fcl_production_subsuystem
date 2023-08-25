@@ -190,6 +190,8 @@ Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtRep
 Route::post('/despatch/idt-export', [DespatchController::class, 'exportIdtHistory'])->name('despatch_export_idt');
 Route::get('/despatch/idt-variance/{filter?}', [DespatchController::class, 'idtVarianceReport'])->name('despatch_idt_variance');
 Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPerChiller'])->name('despatch_idt_per_chiller');
+Route::get('/despatch/stocks-take', [DespatchController::class, 'takeStocks'])->name('take_stocks');
+Route::post('/despatch/stocks-save', [DespatchController::class, 'saveStocks'])->name('save_stocks');
 /*-------------End Despatch------------------ */
 
 /*-------------Start HighCare1------------------ */
