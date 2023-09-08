@@ -192,6 +192,7 @@ Route::get('/despatch/idt-variance/{filter?}', [DespatchController::class, 'idtV
 Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPerChiller'])->name('despatch_idt_per_chiller');
 Route::get('/despatch/stocks-take', [DespatchController::class, 'takeStocks'])->name('take_stocks');
 Route::post('/despatch/stocks-save', [DespatchController::class, 'saveStocks'])->name('save_stocks');
+Route::post('/import-stocks', [DespatchController::class, 'importStocks'])->name('import_stocks_excel');
 /*-------------End Despatch------------------ */
 
 /*-------------Start HighCare1------------------ */

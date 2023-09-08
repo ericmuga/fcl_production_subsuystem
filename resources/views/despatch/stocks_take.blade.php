@@ -6,12 +6,41 @@
         <div class="col-sm-6">
             <h1 class="m-0"> {{ $title }} |<small> Create Stock Take Entries </small></h1>
         </div><!-- /.col -->
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal"><i
+                class="fa fa-excel"></i>
+            Import Stocks
+        </button>
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
 
 @endsection
 
 @section('content')
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <form action="{{ route('import_stocks_excel') }}" method="post" enctype="multipart/form-data">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    <input type="file" name="file">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"> Import Stocks</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
 <form id="form-save-scale3" class="form-prevent-multiple-submits" action="{{ route('save_stocks') }}"
     method="post">
     @csrf
@@ -109,7 +138,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Stock Entries Data | <span id="subtext-h1-title"><small> entries for last 10
+                    <h3 class="card-title"> Stock Entries Data | <span id="subtext-h1-title"><small> entries for
+                                last 10
                                 days</small> </span></h3>
                 </div>
                 <!-- /.card-header -->
@@ -143,14 +173,16 @@
                             </tfoot>
                             <tbody>
                                 @foreach($data as $d)
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $d->product_code }}</td>
-                                    <td>{{ $d->description }}</td>
-                                    <td>{{ $d->weight }}</td>
-                                    <td>{{ $d->pieces }}</td>
-                                    <td>{{ $d->location_code }}</td>
-                                    <td>{{ $d->chiller_code }}</td>
-                                    <td>{{ $d->created_at }}</td>
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $d->product_code }}</td>
+                                        <td>{{ $d->description }}</td>
+                                        <td>{{ $d->weight }}</td>
+                                        <td>{{ $d->pieces }}</td>
+                                        <td>{{ $d->location_code }}</td>
+                                        <td>{{ $d->chiller_code }}</td>
+                                        <td>{{ $d->created_at }}</td>
+                                    </tr>
                                 @endforeach
                             </tbody>
                         </table>

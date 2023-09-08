@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DespatchIdtHistoryExport;
+use App\Imports\ImportStocks;
+use App\Imports\ImportStocksCSV;
+use App\Imports\ImportStocksExcel;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -280,6 +283,35 @@ class DespatchController extends Controller
             Toastr::success('Saved stocks successfully', 'Success');
             return redirect()
                 ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            Log::error('Exception in ' . __METHOD__ . '(): ' . $e->getMessage());
+            return back();
+        }
+    }
+
+    public function importStocks(Request $request)
+    {
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|mimes:csv,xlsx,xls|max:4096',
+            ]);
+
+            if ($validator->passes()) {
+                Excel::import(new ImportStocks, $request->file('file')->store('temp'));
+
+                Toastr::success('Stocks file imported successfully', 'Success');
+                return redirect()
+                    ->back();
+            } else {
+                $errors = $validator->errors();
+
+                foreach ($errors->all() as $error) {
+                    Toastr::error($error, 'Error!');
+                }
+                return back();
+            }
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             Log::error('Exception in ' . __METHOD__ . '(): ' . $e->getMessage());
