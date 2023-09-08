@@ -302,7 +302,7 @@ class Helpers
 
     public function generateIdtBatch($production_date)
     {
-        $alphas = 'abcdefghijklmnopqrstuvwxyz';
+        $alphas = 'abcdefghjklmnopqrstuvwxyz';
         $batch_month = (int)date('m') - 1;
 
         return date($production_date) . strtoupper(mb_substr($alphas, $batch_month, 1));
