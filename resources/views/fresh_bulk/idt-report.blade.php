@@ -61,7 +61,7 @@
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $data->username }}</td>
-                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
                             </tr>
                             @endforeach
                         </tbody>

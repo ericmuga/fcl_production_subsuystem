@@ -116,7 +116,7 @@
                         <td> {{ number_format($data->net_weight, 2) }}</td>
                         <td> {{ $data->no_of_crates }}</td>
                         <td> {{ $data->no_of_pieces }}</td>
-                        <td> {{ $data->created_at }}</td>
+                        <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -262,7 +262,7 @@
                                     @elseif($data->total_weight > 0 && $data->received_by == null)
                                     <td><span class="badge badge-info">waiting receipt</span></td>
                                     @endif
-                                    <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
