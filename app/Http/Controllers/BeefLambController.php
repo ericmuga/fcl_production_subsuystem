@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Helpers;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class BeefLambController extends Controller
 {
@@ -26,7 +28,7 @@ class BeefLambController extends Controller
 
     public function getBeefSlicing()
     {
-        $title = 'Beef Slicing';
+        $title = 'Beef';
 
         $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
@@ -43,8 +45,36 @@ class BeefLambController extends Controller
             ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
             ->get();
 
-        // dd($products);
-
         return view('beef_lamb.deboning_beef', compact('title', 'products', 'configs'));
+    }
+
+    public function saveBeefDebone(Request $request, Helpers $helpers)
+    {
+        $parts = explode(':', $request->product);
+        $manual = $request->manual_weight == 'on';
+
+        try {
+            //insert change logs
+            DB::table('beef_debone')->insert([
+                'item_code' => $parts[1],
+                'scale_reading' => $request->reading,
+                'net_weight' => $request->net,
+                'process_code' => $parts[3],
+                'product_type' => $parts[4],
+                'no_of_pieces' => $request->no_of_pieces,
+                'no_of_crates' => $request->total_crates,
+                'black_crates' => $request->black_crates,
+                'manual_weight' => $manual,
+                'user_id' => $helpers->authenticatedUserId(),
+            ]);
+
+            Toastr::success("Deboning beef entry : {$request->item_id} inserted successfully", 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
+            return back();
+        }
     }
 }

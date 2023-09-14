@@ -13,7 +13,7 @@
 
 @section('content')
 <form id="form-save-scale3" class="form-prevent-multiple-submits"
-    action="{{ route('butchery_scale3_save') }}" method="post">
+    action="{{ route('beef_debone_save') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -26,7 +26,7 @@
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
                                     <option
-                                        value="{{ $product->shortcode.'-'.$product->product_code.'-'.$product->product_type }}">
+                                        value="{{ $product->shortcode.':'.$product->product_code.':'.$product->description.':'.$product->process_code.':'.$product->product_type.':'.$product->type_description.':'.$product->process }}">
                                         {{ $product->shortcode . substr($product->product_code, strpos($product->product_code, "G") + 1).' '.$product->description.'-'.$product->type_description }}
                                     </option>
                                 @endforeach
@@ -38,7 +38,9 @@
                     <div class="col-md-8">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Product Type</label>
-                            <input type="text" class="form-control" id="product_type" value="" name="product_type">
+                            <input type="text" class="form-control" id="product_type" value="">
+                            <input type="hidden" class="form-control" id="product_type_code" value=""
+                                name="product_type_code">
                         </div>
                     </div>
                 </div>
@@ -52,11 +54,10 @@
                     <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Production Process</label>
-                            <input type="text" class="form-control" id="production_process" name="production_process"
-                                value="">
+                            <input type="text" class="form-control" id="production_process" value="">
+                            <input type="hidden" class="form-control" id="production_process_code"
+                                name="production_process_code" value="">
                         </div>
-                        <input type="hidden" class="form-control" id="production_process_code"
-                            name="production_process_code" value="">
                     </div>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
@@ -65,7 +66,6 @@
                     <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport }}"
                             style="border:none" disabled></small>
                 </div>
-
             </div>
         </div>
         <div class="card ">
@@ -80,12 +80,22 @@
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div> <br>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Crates Tare-Weight</label>
-                    <input type="number" class="form-control" id="tareweight" name="tareweight"
-                        value="{{ number_format($configs[0]->tareweight * 4, 2) }}" readonly>
-                    <input type="hidden" class="form-control " id="default_tareweight"
-                        value="{{ number_format($configs[0]->tareweight, 2) }}">
+                <div class="row form-group">
+                    <div class="crates col-md-4">
+                        <label for="exampleInputPassword1">Total Crates </label>
+                        <input type="number" class="form-control" id="total_crates" value="" name="total_crates"
+                            min="2" placeholder="" required>
+                    </div>
+                    <div class="crates col-md-4">
+                        <label for="exampleInputPassword1">Black Crates </label>
+                        <input type="number" class="form-control" id="black_crates" value="" name="black_crates"
+                            min="1" placeholder="" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="exampleInputPassword1">Total Tare</label>
+                        <input type="number" class="form-control" id="tareweight" name="tareweight"
+                            value="0.0" readonly>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
@@ -97,33 +107,28 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Production Date</label>
-                    <select class="form-control" name="prod_date" id="prod_date" required>
-                        <option selected value="today">Today</option>
-                        <option value="yesterday">Yesterday</option>
-                    </select>
+                    <label for="inputEmail3" class="col-form-label">Production Date (dd/mm/yyyy)</label>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                                <input type="text" class="form-control datetimepicker-input" id="prod_date"
+                                    name="prod_date" required data-target="#reservationdate" />
+                                <div class="input-group-append" data-target="#reservationdate"
+                                    data-toggle="datetimepicker">
+                                    <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4"
-                        name="no_of_crates" placeholder="" required>
+                <div class="row form-group justify-content-center">
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">No. of pieces </label>
+                        <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces" required>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
-                        name="no_of_pieces" placeholder="" required>
-                </div>
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
-                    <label class="form-check-label" for="for_transfer"><strong> For Transfer?</strong></label>
-                </div><br>
-                <div id="transfer_div" class="form-group collapse">
-                    <label for="exampleInputPassword1">Transfer To</label>
-                    <select class="form-control select2" name="transfer_to" id="transfer_to" required>
-                        <option selected value="1">Sausage</option>
-                        <option value="2">High Care</option>
-                        <option value="3">Despatch</option>
-                    </select>
+                <div class="row">
+                    
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()"
@@ -133,8 +138,6 @@
             </div>
         </div>
     </div>
-    <input type="hidden" class="input_checks" id="loading_value" value="0">
-
     <div id="loading" class="collapse">
         <div class="row d-flex justify-content-center">
             <div class="spinner-border" role="status">
@@ -143,6 +146,7 @@
         </div>
     </div>
 </form>
+<br>
 
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#slicing_output_show"><i
@@ -197,6 +201,32 @@
                                 </tr>
                             </tfoot>
                             <tbody>
+                                {{-- @foreach($transfer_lines as $data)
+                                <tr>
+                                    <td id="editIdtModalShow" data-id="{{ $data->id }}"
+                                        data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
+                                    </td>
+                                    <td>{{ $data->product_code }}</td>
+                                    <td>{{ $data->product?? $data->product2 }}</td>
+                                    <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
+                                    <td>{{ $data->location_code }}</td>
+                                    <td>{{ $data->chiller_code }}</td>
+                                    <td>{{ $data->total_crates?? 0 }}</td>
+                                    <td>{{ $data->black_crates?? 0 }}</td>
+                                    <td>{{ $data->total_pieces }}</td>
+                                    <td>{{ $data->total_weight }}</td>
+                                    <td>{{ $data->description }}</td>
+                                    <td>{{ $data->batch_no }}</td>
+                                    @if ($data->total_weight == 0 )
+                                    <td><span class="badge badge-danger">cancelled</span></td>
+                                    @elseif($data->total_weight > 0 && $data->received_by != null)
+                                    <td><span class="badge badge-success">received</span></td>
+                                    @elseif($data->total_weight > 0 && $data->received_by == null)
+                                    <td><span class="badge badge-info">waiting receipt</span></td>
+                                    @endif
+                                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                                </tr>
+                            @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -311,6 +341,8 @@
 <script>
     $(document).ready(function () {
 
+        setProductionDate() //set production date default
+
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
@@ -326,6 +358,23 @@
             reading.readOnly = true;
 
         }
+
+        $('#manual_weight').change(function () {
+            var manual_weight = document.getElementById('manual_weight');
+            var reading = document.getElementById('reading');
+            if (manual_weight.checked == true) {
+                reading.readOnly = false;
+                reading.focus();
+                $('#reading').val("");
+                getNet()
+
+            } else {
+                reading.readOnly = true;
+                reading.focus();
+                $('#reading').val("");
+                getNet()
+            }
+        });
 
         $("body").on("click", "#itemCodeModalShow", function (e) {
             e.preventDefault();
@@ -352,19 +401,52 @@
 
             $('#itemCodeModal').modal('show');
         });
-        
+
         $('#product').change(function () {
-            $('#loading').collapse('show');
-            $('#loading_value').val(0)
-            var code = $('#product').val();
-            var shortcode = code.split('-')[0];
-            var product_code = code.split('-')[1];
-            var product_type_code = code.split('-')[2];
+            var data = $(this).val();
 
-            //use axios
+            var desc = data.split(':')[2];
+            var process_code = data.split(':')[3];
+            var process = data.split(':')[6];
+            var product_type_code = data.split(':')[4];
+            var product_type = data.split(':')[5];
 
+            $('#product_type').val(product_type);
+            $('#product_type_code').val(product_type_code);
+            $('#product_name').val(desc);
+            $('#production_process').val(process);
+            $('#production_process_code').val(process_code);
+        });
+
+        $(".crates").on("input", function() {
+            getTareweight()
+            getNet()
+        });
+
+        // $('#black_crates').on("input", function () {
+        //     getNet()
+        // });
+
+        // $('#total_crates').on("input", function () {
+        //     getNet()
+        // });
+
+        $('#reading').on("input", function () {
+            getNet()
         });
     });
+
+    const getTareweight =() => {
+        let total_crates = $('#total_crates').val()
+        let black_crates = $('#black_crates').val()
+        let tareweight = 0
+
+        if (parseInt(total_crates) > 0 && parseInt(black_crates)) {
+            tareweight = (parseInt(total_crates) * 1.8) + (parseInt(black_crates) * 0.2)
+            let formatted = Math.round((tareweight + Number.EPSILON) * 100) / 100;
+            $('#tareweight').val(formatted);
+        }
+    }
 
     function validateOnSubmit() {
         $valid = true;
@@ -374,12 +456,6 @@
         var no_of_pieces = $('#no_of_pieces').val();
         var process = $('#production_process').val();
         var process_substring = process.substr(0, process.indexOf(' '));
-        let loading_val = $('#loading_value').val()
-
-        if (loading_val != 1) {
-            alert('please wait for loading process code to complete')
-            $valid = false;
-        }
 
         if (net == "" || net <= 0.00) {
             $valid = false;
@@ -454,6 +530,38 @@
         } else {
             alert("Please set comport value first");
         }
+    }
+
+    const getNet = () => {
+        var reading = document.getElementById('reading').value;
+        var tareweight = document.getElementById('tareweight').value;
+        var net = document.getElementById('net');
+
+        new_net_value = parseFloat(reading) - parseFloat(tareweight);
+        if (tareweight > 0 && reading != '') {            
+            net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
+        } else {
+            net.value = 0.0;
+        }
+    }
+
+    const setProductionDate = () => {
+        let dateToday = new Date()
+
+        // Format the date as "DD/MM/YYYY"
+        var formattedDateToday =
+            `${padZero(dateToday.getDate())}/${padZero(dateToday.getMonth() + 1)}/${dateToday.getFullYear()}`
+        $('#prod_date').val(formattedDateToday)
+
+        // Split the date by slashes to get day, month, and year parts
+        let dateParts = formattedDateToday.split('/');
+
+        // Get the day part (the second element after splitting)
+        let day = dateParts[0]
+    }
+
+    const padZero = (num) => {
+        return num < 10 ? `0${num}` : num;
     }
 
 </script>
