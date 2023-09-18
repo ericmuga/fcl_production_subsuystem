@@ -34,7 +34,7 @@ class BeefLambController extends Controller
 
         $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
-                ->where('section', 'beef')
+                ->where('section', 'beef_lamb')
                 ->where('scale', 'Beef')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();

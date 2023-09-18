@@ -63,7 +63,7 @@
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
-                    <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport }}"
+                    <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport?? '' }}"
                             style="border:none" disabled></small>
                 </div>
             </div>
