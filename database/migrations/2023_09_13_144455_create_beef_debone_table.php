@@ -22,6 +22,8 @@ class CreateBeefDeboneTable extends Migration
             $table->tinyInteger('product_type');
             $table->integer('no_of_pieces')->default(0);
             $table->integer('no_of_crates');
+            $table->string('location_code');
+            $table->date('production_date');
             $table->tinyInteger('edited')->default(0);
             $table->tinyInteger('manual_weight')->default(0);
             $table->foreignId('user_id')->constrained('users');

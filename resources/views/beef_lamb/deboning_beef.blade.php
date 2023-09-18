@@ -83,18 +83,18 @@
                 <div class="row form-group">
                     <div class="crates col-md-4">
                         <label for="exampleInputPassword1">Total Crates </label>
-                        <input type="number" class="form-control" id="total_crates" value="" name="total_crates"
-                            min="2" placeholder="" required>
+                        <input type="number" class="form-control" id="total_crates" value="" name="total_crates" min="2"
+                            placeholder="" required>
                     </div>
                     <div class="crates col-md-4">
                         <label for="exampleInputPassword1">Black Crates </label>
-                        <input type="number" class="form-control" id="black_crates" value="" name="black_crates"
-                            min="1" placeholder="" required>
+                        <input type="number" class="form-control" id="black_crates" value="" name="black_crates" min="1"
+                            placeholder="" required>
                     </div>
                     <div class="col-md-4">
                         <label for="exampleInputPassword1">Total Tare</label>
-                        <input type="number" class="form-control" id="tareweight" name="tareweight"
-                            value="0.0" readonly>
+                        <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.0"
+                            readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -124,11 +124,12 @@
                 <div class="row form-group justify-content-center">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">No. of pieces </label>
-                        <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces" required>
+                        <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
+                            required>
                     </div>
                 </div>
                 <div class="row">
-                    
+
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" onclick="return validateOnSubmit()"
@@ -177,12 +178,14 @@
                                     <th>product </th>
                                     <th>Product Type</th>
                                     <th>Production Process</th>
+                                    <th>Total Crates</th>
+                                    <th>Black Crates</th>
                                     <th>Scale Weight(kgs)</th>
+                                    <th>Total Tare</th>
                                     <th>Net Weight(kgs)</th>
-                                    <th>No. of Crates</th>
-                                    <th>No. of Pieces</th>
-                                    <th>Edited</th>
-                                    <th>Date </th>
+                                    <th>Total Pieces</th>
+                                    <th>Prod Date</th>
+                                    <th>Created Date </th>
                                 </tr>
                             </thead>
                             <tfoot>
@@ -192,41 +195,36 @@
                                     <th>product </th>
                                     <th>Product Type</th>
                                     <th>Production Process</th>
+                                    <th>Total Crates</th>
+                                    <th>Black Crates</th>
                                     <th>Scale Weight(kgs)</th>
+                                    <th>Total Tare</th>
                                     <th>Net Weight(kgs)</th>
-                                    <th>No. of Crates</th>
-                                    <th>No. of Pieces</th>
-                                    <th>Edited</th>
-                                    <th>Date </th>
+                                    <th>Total Pieces</th>
+                                    <th>Prod Date</th>
+                                    <th>Created Date </th>
                                 </tr>
                             </tfoot>
                             <tbody>
-                                {{-- @foreach($transfer_lines as $data)
-                                <tr>
-                                    <td id="editIdtModalShow" data-id="{{ $data->id }}"
-                                        data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
-                                    </td>
-                                    <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->product?? $data->product2 }}</td>
-                                    <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
-                                    <td>{{ $data->location_code }}</td>
-                                    <td>{{ $data->chiller_code }}</td>
-                                    <td>{{ $data->total_crates?? 0 }}</td>
-                                    <td>{{ $data->black_crates?? 0 }}</td>
-                                    <td>{{ $data->total_pieces }}</td>
-                                    <td>{{ $data->total_weight }}</td>
-                                    <td>{{ $data->description }}</td>
-                                    <td>{{ $data->batch_no }}</td>
-                                    @if ($data->total_weight == 0 )
-                                    <td><span class="badge badge-danger">cancelled</span></td>
-                                    @elseif($data->total_weight > 0 && $data->received_by != null)
-                                    <td><span class="badge badge-success">received</span></td>
-                                    @elseif($data->total_weight > 0 && $data->received_by == null)
-                                    <td><span class="badge badge-info">waiting receipt</span></td>
-                                    @endif
-                                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
-                                </tr>
-                            @endforeach --}}
+                                @foreach($entries as $data)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $data->item_code }}</td>
+                                        <td>{{ $data->description }}</td>
+                                        <td>{{ $data->product_type }}</td>
+                                        <td>{{ $data->process }}</td>
+                                        <td>{{ $data->no_of_crates }}</td>
+                                        <td>{{ $data->black_crates }}</td>
+                                        <td>{{ $data->scale_reading }}</td>
+                                        <td>{{ number_format(($data->no_of_crates * 1.8) + ($data->black_crates * 0.2), 2) }}</td>
+                                        <td>{{ number_format($data->net_weight, 2) }}</td>
+                                        <td>{{ $data->no_of_pieces }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($data->production_date)->format('d/m/Y') }}
+                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -418,7 +416,7 @@
             $('#production_process_code').val(process_code);
         });
 
-        $(".crates").on("input", function() {
+        $(".crates").on("input", function () {
             getTareweight()
             getNet()
         });
@@ -436,7 +434,7 @@
         });
     });
 
-    const getTareweight =() => {
+    const getTareweight = () => {
         let total_crates = $('#total_crates').val()
         let black_crates = $('#black_crates').val()
         let tareweight = 0
@@ -538,7 +536,7 @@
         var net = document.getElementById('net');
 
         new_net_value = parseFloat(reading) - parseFloat(tareweight);
-        if (tareweight > 0 && reading != '') {            
+        if (tareweight > 0 && reading != '') {
             net.value = Math.round((new_net_value + Number.EPSILON) * 100) / 100;
         } else {
             net.value = 0.0;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -45,11 +46,19 @@ class BeefLambController extends Controller
             ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
             ->get();
 
-        return view('beef_lamb.deboning_beef', compact('title', 'products', 'configs'));
+        $entries = DB::table('beef_debone')
+            ->whereDate('beef_debone.created_at', today())
+            ->join('beef_items', 'beef_debone.item_code', '=', 'beef_items.code')
+            ->join('processes', 'beef_debone.process_code', '=', 'processes.process_code')
+            ->select('beef_debone.*', 'beef_items.description', 'processes.process')
+            ->get();
+
+        return view('beef_lamb.deboning_beef', compact('title', 'products', 'configs', 'entries'));
     }
 
     public function saveBeefDebone(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         $parts = explode(':', $request->product);
         $manual = $request->manual_weight == 'on';
 
@@ -64,6 +73,8 @@ class BeefLambController extends Controller
                 'no_of_pieces' => $request->no_of_pieces,
                 'no_of_crates' => $request->total_crates,
                 'black_crates' => $request->black_crates,
+                'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
+                'location_code' => '1570',
                 'manual_weight' => $manual,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
