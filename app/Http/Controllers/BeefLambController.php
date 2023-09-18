@@ -23,7 +23,6 @@ class BeefLambController extends Controller
 
         $layout = 'beef';
 
-
         return view('beef_lamb.dashboard', compact('title', 'layout', 'helpers'));
     }
 
@@ -31,10 +30,12 @@ class BeefLambController extends Controller
     {
         $title = 'Beef';
 
+        $layout = 'beef';
+
         $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'beef')
-                ->where('scale', 'beef')
+                ->where('scale', 'Beef')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });
@@ -53,12 +54,11 @@ class BeefLambController extends Controller
             ->select('beef_debone.*', 'beef_items.description', 'processes.process')
             ->get();
 
-        return view('beef_lamb.deboning_beef', compact('title', 'products', 'configs', 'entries'));
+        return view('beef_lamb.deboning_beef', compact('title', 'products', 'configs', 'entries', 'layout'));
     }
 
     public function saveBeefDebone(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         $parts = explode(':', $request->product);
         $manual = $request->manual_weight == 'on';
 

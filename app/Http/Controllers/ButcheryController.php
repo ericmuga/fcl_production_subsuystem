@@ -938,7 +938,7 @@ class ButcheryController extends Controller
         return redirect()->back();
     }
 
-    public function scaleSettings(Helpers $helpers, $filter)
+    public function scaleSettings(Helpers $helpers, $filter, $lay = null)
     {
         $title = "Scale";
 
@@ -946,7 +946,9 @@ class ButcheryController extends Controller
             ->where('section', $filter)
             ->get();
 
-        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers'));
+        $layout = $lay;
+
+        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers', 'layout'));
     }
 
     public function UpdateScalesettings(Request $request, Helpers $helpers)
