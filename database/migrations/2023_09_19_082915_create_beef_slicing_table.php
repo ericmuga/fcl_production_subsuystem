@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBeefDeboneTable extends Migration
+class CreateBeefSlicingTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateBeefDeboneTable extends Migration
      */
     public function up()
     {
-        Schema::create('beef_debone', function (Blueprint $table) {
+        Schema::create('beef_slicing', function (Blueprint $table) {
             $table->id();
             $table->string('item_code', 20);
             $table->double('scale_reading', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code')->nullable();
             $table->tinyInteger('product_type');
-            $table->integer('no_of_pieces')->default(0);
+            $table->integer('no_of_pieces')->nullable();
             $table->integer('no_of_crates');
             $table->string('location_code');
             $table->date('production_date');
@@ -39,6 +39,6 @@ class CreateBeefDeboneTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('beef_debone');
+        Schema::dropIfExists('beef_slicing');
     }
 }

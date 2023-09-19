@@ -47,30 +47,30 @@ class BeefLambController extends Controller
             ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
             ->get();
 
-        $entries = DB::table('beef_debone')
-            ->whereDate('beef_debone.created_at', today())
-            ->join('beef_items', 'beef_debone.item_code', '=', 'beef_items.code')
-            ->join('processes', 'beef_debone.process_code', '=', 'processes.process_code')
-            ->select('beef_debone.*', 'beef_items.description', 'processes.process')
+        $entries = DB::table('beef_slicing')
+            ->whereDate('beef_slicing.created_at', today())
+            ->join('beef_items', 'beef_slicing.item_code', '=', 'beef_items.code')
+            ->join('processes', 'beef_slicing.process_code', '=', 'processes.process_code')
+            ->select('beef_slicing.*', 'beef_items.description', 'processes.process')
             ->get();
 
-        return view('beef_lamb.deboning_beef', compact('title', 'products', 'configs', 'entries', 'layout'));
+        return view('beef_lamb.slicing_beef', compact('title', 'products', 'configs', 'entries', 'layout'));
     }
 
-    public function saveBeefDebone(Request $request, Helpers $helpers)
+    public function saveBeefSlicing(Request $request, Helpers $helpers)
     {
         $parts = explode(':', $request->product);
         $manual = $request->manual_weight == 'on';
 
         try {
             //insert change logs
-            DB::table('beef_debone')->insert([
+            DB::table('beef_slicing')->insert([
                 'item_code' => $parts[1],
                 'scale_reading' => $request->reading,
                 'net_weight' => $request->net,
                 'process_code' => $parts[3],
                 'product_type' => $parts[4],
-                'no_of_pieces' => $request->no_of_pieces,
+                'no_of_pieces' => $request->no_of_pieces ?? 0,
                 'no_of_crates' => $request->total_crates,
                 'black_crates' => $request->black_crates,
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
