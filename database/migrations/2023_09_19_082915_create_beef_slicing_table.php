@@ -22,6 +22,7 @@ class CreateBeefSlicingTable extends Migration
             $table->tinyInteger('product_type');
             $table->integer('no_of_pieces')->nullable();
             $table->integer('no_of_crates');
+            $table->integer('black_crates');
             $table->string('location_code');
             $table->date('production_date');
             $table->tinyInteger('edited')->default(0);
