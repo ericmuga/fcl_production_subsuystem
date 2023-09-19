@@ -50,7 +50,7 @@
             <div class="inner">
                 <h3>23,150<sup style="font-size: 20px">Kgs</sup></h3>
 
-                <p>Total Cumm Weight</p>
+                <p>Total Cumm</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>

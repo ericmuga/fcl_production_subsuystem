@@ -28,13 +28,8 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="#" class="dropdown-item"> Beef Products
+                        <li><a href="{{ route('create_movement') }}" class="dropdown-item"> Asset List
                             </a></li>
-                        <li class="dropdown-divider"></li>
-                        <li>
-                            <a href="#" class="dropdown-item">Weight Splitting
-                            </a>
-                        </li>
                         <li class="dropdown-divider"></li>
 
                         <!-- Level two dropdown-->
@@ -43,7 +38,7 @@
                                 aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
                             <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
                                 <li>
-                                    <a tabindex="-1" href="#" class="dropdown-item"> Beef Reports</a>
+                                    <a tabindex="-1" href="#" class="dropdown-item"> Movement History</a>
                                 </li>                                
                             </ul>
                         </li>

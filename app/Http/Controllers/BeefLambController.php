@@ -12,25 +12,24 @@ use Illuminate\Support\Facades\Log;
 
 class BeefLambController extends Controller
 {
+    protected $layout = 'beef';
+
     public function __construct()
     {
         $this->middleware('session_check');
+        view()->share('layout', $this->layout);
     }
 
     public function index(Helpers $helpers)
     {
         $title = "dashboard";
 
-        $layout = 'beef';
-
-        return view('beef_lamb.dashboard', compact('title', 'layout', 'helpers'));
+        return view('beef_lamb.dashboard', compact('title', 'helpers'));
     }
 
     public function getBeefSlicing()
     {
         $title = 'Beef';
-
-        $layout = 'beef';
 
         $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
@@ -54,7 +53,7 @@ class BeefLambController extends Controller
             ->select('beef_slicing.*', 'beef_items.description', 'processes.process')
             ->get();
 
-        return view('beef_lamb.slicing_beef', compact('title', 'products', 'configs', 'entries', 'layout'));
+        return view('beef_lamb.slicing_beef', compact('title', 'products', 'configs', 'entries'));
     }
 
     public function saveBeefSlicing(Request $request, Helpers $helpers)
