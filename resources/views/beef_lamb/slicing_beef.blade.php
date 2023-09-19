@@ -211,7 +211,13 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $data->item_code }}</td>
                                         <td>{{ $data->description }}</td>
-                                        <td>{{ $data->product_type }}</td>
+                                        @if ($data->product_type == 1)
+                                            <td>Main</td>
+                                        @elseif ($data->product_type == 2)
+                                            <td>By-Product</td>
+                                        @else
+                                            <td>Intake</td>
+                                        @endif
                                         <td>{{ $data->process }}</td>
                                         <td>{{ $data->no_of_crates }}</td>
                                         <td>{{ $data->black_crates }}</td>
