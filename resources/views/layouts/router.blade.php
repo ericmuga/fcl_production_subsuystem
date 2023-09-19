@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="card-deck-wrapper">
             <div class="card-deck">
-                <div class="card p-2 bg-info" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-info" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                         href="{{ route('slaughter_dashboard') }}">
                         <h4 class="card-title">Slaughter</h4>
@@ -16,7 +16,7 @@
                         <i class="fa fa-shopping-basket fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div class="card p-2 bg-warning" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-warning" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                         href="{{ route('butchery_dashboard') }}">
                         <h4 class="card-title">Butchery</h4>
@@ -27,7 +27,7 @@
                         <i class="fa fa-cut fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div class="card p-2 bg-muted" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-muted" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('beef_dashboard') }}">
                         <h4 class="card-title">Beef Butchery</h4>
@@ -38,7 +38,7 @@
                         <i class="fas fa-code fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div class="card p-2 bg-secondary" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-secondary" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('spices_dashboard') }}">
                         <h4 class="card-title">Spices & Chopping Section</h4>
@@ -58,7 +58,7 @@
     <div class="container-fluid">
         <div class="card-deck-wrapper">
             <div class="card-deck">
-                <div class="card p-2 bg-success" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-success" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('freshcuts_bulk_dashboard') }}">
                         <h4 class="card-title">Fresh Cuts & Bulk</h4>
@@ -69,7 +69,7 @@
                         <i class="fa fa-share-alt fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div class="card p-2 bg-dark" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-dark" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                         href="{{ route('sausage_dashboard') }}">
                         <h4 class="card-title">Sausage</h4>
@@ -80,7 +80,7 @@
                         <i class="fa fa-barcode fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div class="card p-2 bg-primary" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-primary" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link" href="{{ route('highcare1_dashboard') }}">
                         <h4 class="card-title">High Care</h4>
                         <p class="card-text">Select this option to switch to High Care interface.
@@ -90,7 +90,7 @@
                         <i class="fa fa-check-circle fa-4x" aria-hidden="true"></i>
                     </div>
                 </div>
-                <div class="card p-2 bg-danger" style="height: 200px">
+                <div class="col-md-3 card p-2 bg-danger" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('despatch_dashboard') }}">
                         <h4 class="card-title">Despatch Stocks</h4>
@@ -99,6 +99,26 @@
                     </a>
                     <div class="icon text-center">
                         <i class="fa fa-truck fa-4x" aria-hidden="true"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="container-fluid">
+        <div class="card-deck-wrapper">
+            <div class="card-deck">
+                <div class="col-md-3 card p-2 bg-secondary" style="height: 200px">
+                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                        href="{{ route('assets_dashboard') }}">
+                        <h4 class="card-title">Asset Movements </h4>
+                        <p class="card-text">Select this option to switch to Asset Movements.
+                        </p>
+                    </a>
+                    <div class="icon text-center">
+                        <i class="fas fa-exchange-alt fa-4x"></i>
                     </div>
                 </div>
             </div>
