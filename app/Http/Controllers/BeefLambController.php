@@ -63,7 +63,7 @@ class BeefLambController extends Controller
         $manual = $request->manual_weight == 'on';
 
         try {
-            //insert change logs
+            //insert 
             DB::table('beef_slicing')->insert([
                 'item_code' => $parts[1],
                 'scale_reading' => $request->reading,
