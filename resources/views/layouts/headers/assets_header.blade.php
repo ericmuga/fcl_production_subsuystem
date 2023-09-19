@@ -1,6 +1,6 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container-fluid">
-        <a href="{{ route('highcare1_dashboard') }}" class="navbar-brand">
+        <a href="{{ route('butchery_dashboard') }}" class="navbar-brand">
             <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
                 class="brand-image" style="">
             <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
@@ -15,45 +15,49 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a href="{{ route('highcare1_dashboard') }}" class="nav-link">Dashboard</a>
+                    <a href="{{ route('assets_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
-                {{-- <li class="nav-item">
-                    <a href="{{ route('highcare1_idt') }}" class="nav-link">IDT</a>
-                </li> --}}
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle"> IDT </a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
-                        <li><a href="{{ route('highcare1_idt') }}"
-                                class="dropdown-item">Create IDT</a>
-                        </li>
-                        <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('highcare_idt_receive') }}"
-                                class="dropdown-item">Receive From Butch-IDT</a>
-                        </li>
+                        class="nav-link dropdown-toggle">Movements</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="#" class="dropdown-item">Create Movement</a></li>                        
                     </ul>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('highcare1_idt_bulk') }}" class="nav-link">Bulk-IDT</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                        
-                        <li><a href="{{ route('highcare1_idt_report') }}" class="dropdown-item"> IDT History
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="#" class="dropdown-item"> Beef Products
+                            </a></li>
+                        <li class="dropdown-divider"></li>
+                        <li>
+                            <a href="#" class="dropdown-item">Weight Splitting
                             </a>
                         </li>
+                        <li class="dropdown-divider"></li>
+
+                        <!-- Level two dropdown-->
+                        <li class="dropdown-submenu dropdown-hover">
+                            <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
+                            <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+                                <li>
+                                    <a tabindex="-1" href="#" class="dropdown-item"> Beef Reports</a>
+                                </li>                                
+                            </ul>
+                        </li>
+                        <!-- End Level two -->
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Settings</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_scale_settings', 'highcare1') }}"
+                        <li><a href="{{ route('butchery_scale_settings', ['beef_lamb', 'beef']) }}"
                                 class="dropdown-item">Scale
-                                settings 
-                            </a>
-                        </li>
+                                settings </a></li>
+                        <li class="dropdown-divider"></li>
                     </ul>
                 </li>
             </ul>
@@ -77,6 +81,4 @@
     </div>
 </nav>
 
-<!-- logout modal -->
 @include('layouts.partials.logout')
-<!-- end logout -->

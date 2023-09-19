@@ -57,6 +57,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 @case('beef')
                     @include('layouts.headers.beef_header')
                     @break
+                @case('assets')
+                    @include('layouts.headers.assets_header')
+                    @break
 
                 @default
                     @include('layouts.headers.butchery_header')

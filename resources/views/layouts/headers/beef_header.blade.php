@@ -21,33 +21,15 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Weigh</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('deboning_beef') }}" class="dropdown-item">Debone Beef</a></li>                        
+                        <li><a href="{{ route('slicing_beef') }}" class="dropdown-item">Slicing Beef</a></li>                        
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Data Management</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="#" class="dropdown-item"> Beef Products
+                        <li><a href="#" class="dropdown-item"> Slicing History
                             </a></li>
-                        <li class="dropdown-divider"></li>
-                        <li>
-                            <a href="#" class="dropdown-item">Weight Splitting
-                            </a>
-                        </li>
-                        <li class="dropdown-divider"></li>
-
-                        <!-- Level two dropdown-->
-                        <li class="dropdown-submenu dropdown-hover">
-                            <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
-                            <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                                <li>
-                                    <a tabindex="-1" href="#" class="dropdown-item"> Beef Reports</a>
-                                </li>                                
-                            </ul>
-                        </li>
-                        <!-- End Level two -->
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -77,26 +59,7 @@
         </div>
 
         <!-- Right navbar links -->
-        <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-            <li class="nav-item dropdown no-arrow">
-                <a class="nav-link dropdown-toggle" style="color:black" href="#" id="userDropdown" role="button"
-                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-user-circle"></i> {{ Session::get('session_userName') }}
-                </a>
-                <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                    <li>
-                        <a href="{{ route('redirect_page') }}" class="dropdown-item"><i class="fas fa-exchange-alt"></i> Switch
-                            Interphase
-                        </a>
-                    </li>
-                    <li class="dropdown-divider"></li>
-                    <li>
-                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"><i
-                                class="fas fa-sign-out-alt"></i> Logout</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
+        @include('layouts.partials.right_nav')
     </div>
 </nav>
 

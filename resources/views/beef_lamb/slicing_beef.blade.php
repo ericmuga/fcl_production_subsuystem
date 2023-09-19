@@ -4,7 +4,7 @@
 <div class="container">
     <div class="row mb-2">
         <div class="col-sm-6">
-            <h1 class="m-0"> {{ $title }} |<small> Deboning Beef </small></h1>
+            <h1 class="m-0"> {{ $title }} |<small> Slicing Beef </small></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
@@ -13,7 +13,7 @@
 
 @section('content')
 <form id="form-save-scale3" class="form-prevent-multiple-submits"
-    action="{{ route('beef_debone_save') }}" method="post">
+    action="{{ route('beef_slicing_save') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card">
@@ -38,7 +38,7 @@
                     <div class="col-md-8">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Product Type</label>
-                            <input type="text" class="form-control" id="product_type" value="">
+                            <input type="text" class="form-control" id="product_type" value="" readonly>
                             <input type="hidden" class="form-control" id="product_type_code" value=""
                                 name="product_type_code">
                         </div>
@@ -48,13 +48,13 @@
                     <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Product Name</label>
-                            <input type="text" class="form-control" id="product_name" value="">
+                            <input type="text" class="form-control" id="product_name" readonly value="">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Production Process</label>
-                            <input type="text" class="form-control" id="production_process" value="">
+                            <input type="text" class="form-control" id="production_process" readonly value="">
                             <input type="hidden" class="form-control" id="production_process_code"
                                 name="production_process_code" value="">
                         </div>
@@ -123,9 +123,9 @@
                 </div>
                 <div class="row form-group justify-content-center">
                     <div class="col-md-6">
-                        <label for="exampleInputPassword1">No. of pieces </label>
+                        <label for="exampleInputPassword1">No. of pieces(Optional) </label>
                         <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
-                            required>
+                            >
                     </div>
                 </div>
                 <div class="row">

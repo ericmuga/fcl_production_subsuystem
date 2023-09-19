@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BeefLambController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
@@ -212,7 +213,15 @@ Route::prefix('highcare1')->group(function () {
 /*-------------Start Beef/Lamb------------------ */
 Route::prefix('Beef')->group(function () {
     Route::get('/dashboard', [BeefLambController::class, 'index'])->name('beef_dashboard');
-    Route::get('/deboning', [BeefLambController::class, 'getBeefSlicing'])->name('deboning_beef');
-    Route::post('/deboning-save', [BeefLambController::class, 'saveBeefDebone'])->name('beef_debone_save');
+    Route::get('/slicing', [BeefLambController::class, 'getBeefSlicing'])->name('slicing_beef');
+    Route::post('/save', [BeefLambController::class, 'saveBeefSlicing'])->name('beef_slicing_save');
 });
-/*-------------End HighCare2------------------ */
+/*-------------End Beef------------------ */
+
+/*-------------Start Assets----------------- */
+Route::prefix('Asset')->group(function () {
+    Route::get('/dashboard', [AssetController::class, 'index'])->name('assets_dashboard');
+    Route::get('/create', [AssetController::class, 'createMovement'])->name('create_movement');
+    Route::post('/save', [AssetController::class, 'saveMovement'])->name('save_movement');
+});
+/*-------------End Assets------------------ */
