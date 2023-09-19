@@ -1,6 +1,6 @@
 <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
     <div class="container-fluid">
-        <a href="{{ route('highcare1_dashboard') }}" class="navbar-brand">
+        <a href="{{ route('freshcuts_bulk_dashboard') }}" class="navbar-brand">
             <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
                 class="brand-image" style="">
             <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
