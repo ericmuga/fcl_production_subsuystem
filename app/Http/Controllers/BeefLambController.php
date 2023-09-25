@@ -51,6 +51,7 @@ class BeefLambController extends Controller
             ->join('beef_items', 'beef_slicing.item_code', '=', 'beef_items.code')
             ->join('processes', 'beef_slicing.process_code', '=', 'processes.process_code')
             ->select('beef_slicing.*', 'beef_items.description', 'processes.process')
+            ->orderByDesc('id')
             ->get();
 
         return view('beef_lamb.slicing_beef', compact('title', 'products', 'configs', 'entries'));

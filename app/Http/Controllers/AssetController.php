@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Helpers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 
 class AssetController extends Controller
 {
@@ -19,17 +21,32 @@ class AssetController extends Controller
     {
         $title = "dashboard";
 
-        // $layout = 'assets';
-
         return view('assets.dashboard', compact('title', 'helpers'));
     }
 
-    public function createMovement(Request $request)
+    public function createMovement(Request $request, Helpers $helpers)
     {
-        $title = "dashboard";
+        $title = "Create";
 
-        // $layout = 'assets';
+        $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
+            return DB::table('view_assets')
+                ->take(100)
+                ->get();
+        });
 
-        return view('assets.transactions', compact('title', 'helpers'));
+        // dd($data);
+
+        return view('assets.transactions', compact('title', 'helpers', 'data'));
+    }
+
+    public function fetchData()
+    {
+        $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
+            return DB::table('view_assets')
+                ->take(100)
+                ->get();
+        });
+
+        return response()->json($data);
     }
 }

@@ -21,7 +21,7 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Movements</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="#" class="dropdown-item">Create Movement</a></li>                        
+                        <li><a href="{{ route('create_movement') }}" class="dropdown-item">Create Movement</a></li>                        
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -43,16 +43,6 @@
                             </ul>
                         </li>
                         <!-- End Level two -->
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">Settings</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_scale_settings', ['beef_lamb', 'beef']) }}"
-                                class="dropdown-item">Scale
-                                settings </a></li>
-                        <li class="dropdown-divider"></li>
                     </ul>
                 </li>
             </ul>

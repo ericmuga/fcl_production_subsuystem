@@ -219,9 +219,10 @@ Route::prefix('Beef')->group(function () {
 /*-------------End Beef------------------ */
 
 /*-------------Start Assets----------------- */
-Route::prefix('Asset')->group(function () {
+Route::prefix('asset')->group(function () {
     Route::get('/dashboard', [AssetController::class, 'index'])->name('assets_dashboard');
     Route::get('/create', [AssetController::class, 'createMovement'])->name('create_movement');
     Route::post('/save', [AssetController::class, 'saveMovement'])->name('save_movement');
+    Route::get('/fetch-data', [AssetController::class, 'fetchData'])->name('assets_fetch_data');
 });
 /*-------------End Assets------------------ */
