@@ -18,7 +18,7 @@
     <div class="card-group">
         <div class="card">
             <div class="card-body">
-                <h5>To: </h5>
+                <h5><strong>To:</strong></h5>
                 <div class="form-group text-center">
                     <div class="row">
                         <div class="col-md-12">
@@ -32,12 +32,7 @@
                     <div class="col-md-12">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1"> Move To Dept List</label>
-                            <select class="form-control select2" name="to_dept" id="to_dept" required>
-                                @foreach($data as $d)
-                                    <option value="{{ trim($d->Location_code) }}" selected="selected">
-                                        {{ ucwords($d->LocationName) }}
-                                    </option>
-                                @endforeach
+                            <select class="form-control select2" name="to_dept" id="to_dept_select" required>
                             </select>
                         </div>
                     </div>
@@ -46,12 +41,7 @@
                     <div class="col-md-12">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1"> Move To User List</label>
-                            <select class="form-control select2" name="to_user" id="to_user" required>
-                                @foreach($data as $d)
-                                    <option value="{{ trim($d->Responsible_employee) }}" selected="selected">
-                                        {{ ucwords($d->Responsible_employee) }}
-                                    </option>
-                                @endforeach
+                            <select class="form-control select2" name="to_user" id="to_user_select" required>
                             </select>
                         </div>
                     </div>
@@ -60,28 +50,18 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <h5>From: </h5>
+                <h5><strong>From:</strong></h5>
                 <div class="row form-group text-center">
                     <div class="col-md-12">
                         <label for="exampleInputPassword1"> Move From User List</label>
-                        <select class="form-control select2" name="from_user" id="from_user" required>
-                            @foreach($data as $d)
-                                <option value="{{ trim($d->Responsible_employee) }}" selected="selected">
-                                    {{ ucwords($d->Responsible_employee) }}
-                                </option>
-                            @endforeach
+                        <select class="form-control select2" name="from_user" id="from_user_select" required>
                         </select>
                     </div>
                 </div>
                 <div class="row form-group text-center">
                     <div class="col-md-12">
                         <label for="exampleInputPassword1"> Move From Dept List</label>
-                        <select class="form-control select2" name="from_dept" id="from_dept" required>
-                            @foreach($data as $d)
-                                <option value="{{ trim($d->Location_code) }}" selected="selected">
-                                    {{ ucwords($d->LocationName) }}
-                                </option>
-                            @endforeach
+                        <select class="form-control select2" name="from_dept" id="from_dept_select" required>
                         </select>
                     </div>
                 </div>
@@ -89,30 +69,37 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <h5>Authentication: </h5>
+                <h5><strong>Authentication:</strong></h5>
                 <div class="row form-group text-center">
                     <div class="col-md-12">
                         <label for="exampleInputPassword1"> Receiving Username</label>
                         <input type="text" id="receipt_user" value="" class="form-control" required>
-                        <input type="" id="auth_val" value="0">
                     </div>
                 </div>
                 <div class="row form-group text-center">
-                    <div class="col-md-12">
+                    <div class="col-md-8">
                         <label for="exampleInputPassword1"> Receiving User Password</label>
                         <div class="input-group">
                             <input type="password" class="form-control" id="password" name="password"
                                 placeholder="Enter your password" aria-describedby="password-toggle">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="button" id="password-toggle">
+                                <button class="btn btn-secondary" type="button" id="password-toggle">
                                     <i class="fa fa-eye" aria-hidden="true"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-4" style="padding-top: 7%">
+                        <button type="button" id="validate_user_btn" class="btn btn-info">Validate</button>
+                    </div>
                 </div>
-                <div class="form-group" style="padding-top: 5%">
-                    <button type="submit" onclick="return validateOnSubmit()"
+                <div class="col-md-4">
+                    <span class="text-danger" id="err"></span>
+                    <span class="text-success" id="succ"></span>
+                </div>
+                <input type="hidden" id="auth_val" value="0">
+                <div class="row form-group text-center" style="padding-top: 5%; padding-left: 40%">
+                    <button type="submit" onclick="return validateOnSubmit()" disabled
                         class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                 </div>
@@ -231,6 +218,7 @@
 <script>
     $(document).ready(function () {
         fetchData()
+
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
@@ -252,9 +240,101 @@
                 isMouseDown = false;
             }
         });
+
+        // $('#auth_val').on('change', function (e) {
+        //     e.preventDefault()
+        //     alert('value changed')
+        //     checkValidUserValue()          
+        // });
+
+        $('#validate_user_btn').on('click', function (e) {
+            e.preventDefault()
+            checkParams()          
+        });
     });
 
-    function validateOnSubmit() {
+    const setUserMessage = (field_succ, field_err, message_succ, message_err) => {
+        document.getElementById(field_succ).innerHTML = message_succ
+        document.getElementById(field_err).innerHTML = message_err
+    }
+
+    const checkValidUserValue = () => {
+        let auth_val = $('#auth_val').val()
+
+        // Check if the value not zero and enable it
+        if (auth_val != 0) {
+            submitButton.disabled = false; // enable the button
+        }
+    }
+
+    const checkParams = () => {
+        let username = $('#receipt_user').val()
+        let password = $('#password').val()
+
+        if (username == '' || password == '') {
+            setUserMessage('succ', 'err', '', 'please enter both username & Password')
+        } else {
+            setUserMessage('succ', 'err', '', '')
+            validateUser(username, password)
+        }
+    }
+
+    const setUserValidity = (status) => {
+        $("#auth_val").val(status);
+    }
+
+    const validateUser = (username, password) => {
+        const url = "/asset/validate-user"
+
+        $('#validate_user_btn').addClass('disabled')
+        setUserMessage('succ', 'err', 'Validating user...', '')
+
+        const request_data = {
+            username: 'FARMERSCHOICE\\' + username,
+            password: password
+        }
+
+        axios.post(url, request_data)
+            .then((res) => {
+                if (res) {
+                    const obj = JSON.parse(res.data)
+                    if (obj.success == true) {
+                        setUserMessage('succ', 'err', 'validated receiver', '')
+                        setUserValidity(1)
+                        checkValidUserValue()
+                    } else {
+                        setUserMessage('succ', 'err', '', 'Wrong credentials')
+                        setUserValidity(0)
+                    }
+
+                } else {
+                    setUserMessage('succ', 'err', '', 'No response from login Api service. Contact IT')
+                }
+
+                $('#validate_user_btn').removeClass('disabled')
+
+                // if (response.data == '0100') {
+                //     // console.log('Pin verification Successful')
+                //     setUserMessage('succ', 'err', 'Pin verification Successful..fiscalising', '')
+                //     createInvoice();
+                // } else if (response.data == '' || response.data == undefined) {
+                //     // console.log('No response from device')
+                //     setUserMessage('succ', 'err', '', 'No response from device')
+                //     $('#validate_user_btn').removeClass('disabled')
+                // } else {
+                //     // console.log('Pin verification error: ' + response.data)
+                //     setUserMessage('succ', 'err', '', 'Pin verification error: ' + response.data)
+                //     $('#validate_user_btn').removeClass('disabled')
+                // }
+            })
+            .catch((error) => {
+                console.log(error);
+                setUserMessage('succ', 'err', '', error)
+                $('#validate_user_btn').removeClass('disabled')
+            })
+    }
+
+    const validateOnSubmit = () => {
         $valid = true;
 
         var net = $('#net').val();
@@ -277,22 +357,59 @@
     }
 
     const fetchData = () => {
+        $('#loading').collapse('show');
         axios.get('/asset/fetch-data')
             .then(function (response) {
-                var dataSelect = document.getElementById('fa_select');
-                dataSelect.innerHTML = ''; // Clear existing options
+                $('#loading').collapse('hide');
+                let faSelect = document.getElementById('fa_select');
+                let toDeptSelect = document.getElementById('to_dept_select');
+                let fromDeptSelect = document.getElementById('from_dept_select');
+                let toUserSelect = document.getElementById('to_user_select');
+                let fromUserSelect = document.getElementById('from_user_select');
+
+                // Create an object to keep track of unique values
+                let uniqueValues = {};
+
+                // Clear existing options and add an empty option
+                faSelect.innerHTML = '<option value="">Select an option</option>';
+                toDeptSelect.innerHTML = '<option value="">Select an option</option>';
+                fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
+                toUserSelect.innerHTML = '<option value="">Select an option</option>';
+                fromUserSelect.innerHTML = '<option value="">Select an option</option>';
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
-                    var option = document.createElement('option');
-                    option.value = item.No_; // Set the value you want to submit
-                    option.text = item.Description; // Set the text displayed in the select
-                    dataSelect.appendChild(option);
+                    appendOption(faSelect, item.No_, item.No_ + ' ' + item.Description);
+
+                    // Check if the value is unique
+                    if (!uniqueValues.hasOwnProperty(item.Location_code)) {
+                        appendOption(toDeptSelect, item.Location_code, item.LocationName);
+                        uniqueValues[item.Location_code] = true;
+
+                        appendOption(fromDeptSelect, item.Location_code, item.LocationName);
+                        uniqueValues[item.Location_code] = true;
+                    }
+                    if (!uniqueValues.hasOwnProperty(item.Responsible_employee)) {
+                        appendOption(toUserSelect, item.Responsible_employee, item
+                            .Responsible_employee);
+                        uniqueValues[item.Responsible_employee] = true;
+
+                        appendOption(fromUserSelect, item.Responsible_employee, item
+                            .Responsible_employee);
+                        uniqueValues[item.Responsible_employee] = true;
+                    }
                 });
             })
             .catch(function (error) {
                 console.error(error);
             });
+    }
+
+    const appendOption = (selectElement, value, text) => {
+        var option = document.createElement('option');
+        option.value = value;
+        option.text = text;
+        selectElement.appendChild(option);
     }
 
 </script>

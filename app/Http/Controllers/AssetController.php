@@ -43,10 +43,23 @@ class AssetController extends Controller
     {
         $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
             return DB::table('view_assets')
-                ->take(100)
                 ->get();
         });
 
         return response()->json($data);
+    }
+
+    public function validateUser(Request $request, Helpers $helpers)
+    {
+        $request_data = [
+            "username" => $request->username,
+            "password" => $request->password,
+        ];
+
+        $post_data = json_encode($request_data);
+
+        $result = $helpers->validateLogin($post_data);
+
+        return response()->json($result);
     }
 }
