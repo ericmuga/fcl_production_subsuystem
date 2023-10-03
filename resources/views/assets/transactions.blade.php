@@ -39,20 +39,16 @@
                     </div>
                     <div class="row form-group text-center">
                         <div class="col-md-12">
-                            <div class="form-group" id="product_type_select">
-                                <label for="exampleInputPassword1"> Move To Dept List</label>
-                                <select class="form-control select2" name="to_dept" id="to_dept_select" required>
-                                </select>
-                            </div>
+                            <label for="exampleInputPassword1"> Move To User List</label>
+                            <select class="form-control select2" name="to_user" id="to_user_select" required>
+                            </select>
                         </div>
                     </div>
                     <div class="row form-group text-center">
                         <div class="col-md-12">
-                            <div class="form-group" id="product_type_select">
-                                <label for="exampleInputPassword1"> Move To User List</label>
-                                <select class="form-control select2" name="to_user" id="to_user_select" required>
-                                </select>
-                            </div>
+                            <label for="exampleInputPassword1"> Move To Dept List</label>
+                            <select class="form-control select2" name="to_dept" id="to_dept_select" required>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -123,7 +119,8 @@
             </div>
         </div>
     </form>
-</div><hr>
+</div>
+<hr>
 
 <div class="row">
     <div class="col-md-12">
