@@ -18,7 +18,7 @@
         Create
     </button>
 </div>
-<hr>
+<br>
 
 <div id="slicing_output_show" class="collapse">
     <form id="form-save-scale3" class="form-prevent-multiple-submits"
@@ -119,8 +119,7 @@
             </div>
         </div>
     </form>
-</div>
-<hr>
+</div><br>
 
 <div class="row">
     <div class="col-md-12">
@@ -139,10 +138,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>Fa </th>
-                                <th>To Dept </th>
                                 <th>To User</th>
-                                <th>From Dept</th>
+                                <th>To Dept </th>
                                 <th>From User</th>
+                                <th>From Dept</th>
                                 <th>Created By</th>
                                 <th>Created Date </th>
                             </tr>
@@ -182,7 +181,7 @@
         <!-- /.card -->
         <!-- /.col -->
     </div>
-</div>
+</div><br>
 
 @endsection
 
@@ -211,6 +210,19 @@
         $('#validate_user_btn').on('click', function (e) {
             e.preventDefault()
             checkParams()
+        });
+
+        $('#fa_select').change(function () {
+            let data = $(this).val();
+
+            var location = data.split(':')[1];
+            var emp = data.split(':')[2];
+
+            $('#from_dept_select').val(location);
+            $('#from_user_select').val(emp);
+
+            $('#from_dept_select').select2('destroy').select2();
+            $('#from_user_select').select2('destroy').select2();
         });
     });
 
@@ -245,7 +257,7 @@
     }
 
     const validateUser = (username, password) => {
-        const url = "/asset/validate-user"
+        const url = "/asset/check-user"
 
         $('#validate_user_btn').addClass('disabled')
         setUserMessage('succ', 'err', 'Validating user...', '')
@@ -274,19 +286,6 @@
 
                 $('#validate_user_btn').removeClass('disabled')
 
-                // if (response.data == '0100') {
-                //     // console.log('Pin verification Successful')
-                //     setUserMessage('succ', 'err', 'Pin verification Successful..fiscalising', '')
-                //     createInvoice();
-                // } else if (response.data == '' || response.data == undefined) {
-                //     // console.log('No response from device')
-                //     setUserMessage('succ', 'err', '', 'No response from device')
-                //     $('#validate_user_btn').removeClass('disabled')
-                // } else {
-                //     // console.log('Pin verification error: ' + response.data)
-                //     setUserMessage('succ', 'err', '', 'Pin verification error: ' + response.data)
-                //     $('#validate_user_btn').removeClass('disabled')
-                // }
             })
             .catch((error) => {
                 console.log(error);
@@ -340,7 +339,7 @@
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
-                    appendOption(faSelect, item.No_, item.No_ + ' ' + item.Description);
+                    appendOption(faSelect, item.No_+':'+item.Location_code+':'+item.Responsible_employee, item.No_ + ' ' + item.Description);
 
                     // Check if the value is unique
                     if (!uniqueValues.hasOwnProperty(item.Location_code)) {
@@ -371,6 +370,12 @@
         option.value = value;
         option.text = text;
         selectElement.appendChild(option);
+    }
+
+    const autofillFromDetails = () => {
+
+        console.log('autofill');
+
     }
 
 </script>

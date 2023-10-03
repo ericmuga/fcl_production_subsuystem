@@ -76,7 +76,7 @@ class AssetController extends Controller
         try {
             //insert 
             DB::table('asset_movements')->insert([
-                'fa' => $request->fa,
+                'fa' => strtok($request->fa, ':'),
                 'to_dept' => $request->to_dept,
                 'to_user' => $request->to_user,
                 'from_dept' => $request->from_dept,
