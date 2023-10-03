@@ -57,7 +57,7 @@ class AssetController extends Controller
         return response()->json($data);
     }
 
-    public function validateUser(Request $request, Helpers $helpers)
+    public function validateUserAssets(Request $request, Helpers $helpers)
     {
         $request_data = [
             "username" => $request->username,
