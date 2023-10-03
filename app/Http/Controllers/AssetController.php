@@ -42,6 +42,7 @@ class AssetController extends Controller
             ->whereDate('asset_movements.created_at', today())
             ->join('users', 'asset_movements.user_id', '=', 'users.id')
             ->select('asset_movements.*', 'users.username')
+            ->orderByDesc('id')
             ->get();
 
         return view('assets.transactions', compact('title', 'helpers', 'entries'));
