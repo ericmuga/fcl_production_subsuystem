@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Helpers;
+use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AssetController extends Controller
 {
@@ -28,15 +30,21 @@ class AssetController extends Controller
     {
         $title = "Create";
 
-        $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
-            return DB::table('view_assets')
-                ->take(100)
-                ->get();
-        });
+        $entries = DB::table('asset_movements')
+            ->whereDate('asset_movements.created_at', today())
+            ->join('users', 'asset_movements.user_id', '=', 'users.id')
+            ->select('asset_movements.*', 'users.username')
+            ->get();
 
-        // dd($data);
+        // $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
+        //     return DB::table('view_assets')
+        //         ->take(100)
+        //         ->get();
+        // });
 
-        return view('assets.transactions', compact('title', 'helpers', 'data'));
+        // dd($entries);
+
+        return view('assets.transactions', compact('title', 'helpers', 'entries'));
     }
 
     public function fetchData()
@@ -61,5 +69,28 @@ class AssetController extends Controller
         $result = $helpers->validateLogin($post_data);
 
         return response()->json($result);
+    }
+
+    public function saveMovement(Request $request, Helpers $helpers)
+    {
+        try {
+            //insert 
+            DB::table('asset_movements')->insert([
+                'fa' => $request->fa,
+                'to_dept' => $request->to_dept,
+                'to_user' => $request->to_user,
+                'from_dept' => $request->from_dept,
+                'from_user' => $request->from_user,
+                'user_id' => $helpers->authenticatedUserId(),
+            ]);
+
+            Toastr::success("Asset Movement entry to user : {$request->to_user} inserted successfully", 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
+            return back();
+        }
     }
 }
