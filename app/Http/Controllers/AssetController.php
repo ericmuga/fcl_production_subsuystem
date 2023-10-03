@@ -23,7 +23,15 @@ class AssetController extends Controller
     {
         $title = "dashboard";
 
-        return view('assets.dashboard', compact('title', 'helpers'));
+        $data = DB::table('view_assets')
+            ->selectRaw('COUNT(DISTINCT No_) as assets_count, COUNT(DISTINCT Responsible_employee) as users_count, COUNT(DISTINCT Location_code) as depts_count')
+            ->first();
+
+        $results = DB::table('asset_movements')
+            ->selectRaw("COUNT(id) as total_count, SUM(CASE WHEN CAST(created_at AS DATE) = '" . today() . "' THEN 1 ELSE 0 END) as today_count")
+            ->first();
+
+        return view('assets.dashboard', compact('title', 'helpers', 'data', 'results'));
     }
 
     public function createMovement(Request $request, Helpers $helpers)
@@ -35,14 +43,6 @@ class AssetController extends Controller
             ->join('users', 'asset_movements.user_id', '=', 'users.id')
             ->select('asset_movements.*', 'users.username')
             ->get();
-
-        // $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
-        //     return DB::table('view_assets')
-        //         ->take(100)
-        //         ->get();
-        // });
-
-        // dd($entries);
 
         return view('assets.transactions', compact('title', 'helpers', 'entries'));
     }

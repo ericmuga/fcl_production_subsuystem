@@ -19,9 +19,9 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>200 products<sup style="font-size: 20px"> 20,456 Kgs</sup></h3>
+                <h3>{{ $results->today_count }}<sup style="font-size: 20px"> | {{ $results->total_count }}</sup></h3>
 
-                <p>Chiller C</p>
+                <p>Total Transactions Today | Cumm Transactions</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -33,9 +33,9 @@
         <!-- small box -->
         <div class="small-box bg-success">
             <div class="inner">
-                <h3>5,323<sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ $data->depts_count }}<sup style="font-size: 20px"></sup></h3>
 
-                <p>Chiller D</p>
+                <p>Departments Count</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
@@ -48,9 +48,9 @@
         <!-- small box -->
         <div class="small-box bg-dark">
             <div class="inner">
-                <h3>23,150<sup style="font-size: 20px">Kgs</sup></h3>
+                <h3>{{ $data->users_count }}<sup style="font-size: 20px"></sup></h3>
 
-                <p>Total Cumm</p>
+                <p>Users Count</p>
             </div>
             <div class="icon">
                 <i class="ion ion-bag"></i>
@@ -63,9 +63,9 @@
         <!-- small box -->
         <div class="small-box bg-danger">
             <div class="inner">
-                <h3>635</h3>
+                <h3>{{ $data->assets_count }}</h3>
 
-                <p>Total Transactions </p>
+                <p>Assets Count</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
