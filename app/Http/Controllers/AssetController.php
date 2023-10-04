@@ -94,4 +94,31 @@ class AssetController extends Controller
             return back();
         }
     }
+
+    public function movementHistory()
+    {
+        $title = 'Movement History';
+
+        $data = DB::table('asset_movements')
+            ->join('users', 'asset_movements.user_id', '=', 'users.id')
+            ->select('asset_movements.*', 'users.username')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('assets.history', compact('data', 'title'));
+    }
+
+    public function assetList()
+    {
+        $title = 'Asset List';
+
+        $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
+            return DB::table('view_assets')
+                ->get();
+        });
+
+        // dd($data);
+
+        return view('assets.history', compact('data', 'title'));
+    }
 }

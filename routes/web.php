@@ -225,5 +225,7 @@ Route::prefix('asset')->group(function () {
     Route::post('/save', [AssetController::class, 'saveMovement'])->name('save_movement');
     Route::get('/fetch-data', [AssetController::class, 'fetchData'])->name('assets_fetch_data');
     Route::post('/check-user', [AssetController::class, 'validateUserAssets'])->name('validateUserAsset');
+    Route::get('/movement-history', [AssetController::class, 'movementHistory'])->name('movement_history');
+    Route::get('/list', [AssetController::class, 'assetList'])->name('asset_list');
 });
 /*-------------End Assets------------------ */

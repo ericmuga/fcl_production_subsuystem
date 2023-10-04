@@ -138,6 +138,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Fa </th>
+                                <th>Description </th>
                                 <th>To User</th>
                                 <th>To Dept </th>
                                 <th>From User</th>
@@ -150,6 +151,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Fa </th>
+                                <th>Description </th>
                                 <th>To User</th>
                                 <th>To Dept </th>
                                 <th>From User</th>
@@ -163,6 +165,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $e->fa }}</td>
+                                    <td>{{ $e->Description }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->to_dept }}</td>
                                     <td>{{ $e->from_user }}</td>

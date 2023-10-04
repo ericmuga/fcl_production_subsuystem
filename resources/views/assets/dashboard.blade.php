@@ -19,7 +19,7 @@
         <!-- small box -->
         <div class="small-box bg-info">
             <div class="inner">
-                <h3>{{ $results->today_count }}<sup style="font-size: 20px"> | {{ $results->total_count }}</sup></h3>
+                <h3>{{ $results->today_count? : 0 }}<sup style="font-size: 20px"> | {{ $results->total_count }}</sup></h3>
 
                 <p>Total Transactions Today | Cumm Transactions</p>
             </div>
