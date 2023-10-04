@@ -117,8 +117,6 @@ class AssetController extends Controller
                 ->get();
         });
 
-        // dd($data);
-
         return view('assets.history', compact('data', 'title'));
     }
 }

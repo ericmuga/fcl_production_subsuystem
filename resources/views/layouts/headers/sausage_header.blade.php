@@ -53,7 +53,7 @@
                                 </li>
                                 <li class="dropdown-divider"></li>
                                 <li>
-                                    <a tabindex="-1" href="#"
+                                    <a tabindex="-1" href="{{ route('per_batch_sausage') }}"
                                         class="dropdown-item"> Per Batch Today</a>
                                 </li>                                
                             </ul>

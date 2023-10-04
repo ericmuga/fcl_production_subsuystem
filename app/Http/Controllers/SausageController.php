@@ -476,4 +476,22 @@ class SausageController extends Controller
 
         return response()->json($data);
     }
+
+    public function perBatchReport($filter = null)
+    {
+        $title = 'Batches Report';
+
+        $per_batch = DB::table('idt_transfers')
+            ->where('idt_transfers.transfer_from', '2055')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->select('idt_transfers.batch_no', DB::raw('SUM(idt_transfers.total_pieces) AS pieces'), DB::raw('SUM(idt_transfers.total_weight) as weight'))
+            ->groupBy('idt_transfers.batch_no')
+            ->when($filter == null, function ($q) {
+                $q->whereDate('idt_transfers.created_at', today()); // today
+            })
+            ->orderBy('idt_transfers.batch_no', 'DESC')
+            ->get();
+
+        return view('sausage.per-batch-report', compact('title', 'per_batch', 'filter'));
+    }
 }

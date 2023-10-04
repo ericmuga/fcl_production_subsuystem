@@ -150,6 +150,7 @@ Route::get('/sausage/today-entries/{filter?}', [SausageController::class, 'produ
 Route::post('/export-sausage-entries', [SausageController::class, 'exportSausageEntries'])->name('export_sausage_entries');
 Route::get('/sausage/idt-report/{filter?}', [SausageController::class, 'idtReport'])->name('sausage_idt_report');
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
+Route::get('/per-batch-report/{filter?}', [SausageController::class, 'perBatchReport'])->name('per_batch_sausage');
 Route::post('/sausage-get-batchno-axios', [SausageController::class, 'getBatchNoAxios']);
 /*-------------End Admin------------------ */
 
