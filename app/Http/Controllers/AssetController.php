@@ -45,6 +45,8 @@ class AssetController extends Controller
             ->orderByDesc('id')
             ->get();
 
+        // dd($entries);
+
         return view('assets.transactions', compact('title', 'helpers', 'entries'));
     }
 
@@ -74,10 +76,12 @@ class AssetController extends Controller
 
     public function saveMovement(Request $request, Helpers $helpers)
     {
+        $parts = explode(':', $request->fa);
         try {
             //insert 
             DB::table('asset_movements')->insert([
-                'fa' => strtok($request->fa, ':'),
+                'fa' => $parts[0],
+                'description' => $parts[3],
                 'to_dept' => $request->to_dept,
                 'to_user' => $request->to_user,
                 'from_dept' => $request->from_dept,

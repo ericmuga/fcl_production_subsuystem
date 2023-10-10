@@ -16,6 +16,7 @@ class CreateAssetMovementsTable extends Migration
         Schema::create('asset_movements', function (Blueprint $table) {
             $table->id();
             $table->string('fa');
+            $table->string('description');
             $table->string('to_dept');
             $table->string('to_user'); //receiving user
             $table->string('from_dept');

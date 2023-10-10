@@ -165,7 +165,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $e->fa }}</td>
-                                    <td>{{ $e->Description }}</td>
+                                    <td>{{ $e->description }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->to_dept }}</td>
                                     <td>{{ $e->from_user }}</td>
@@ -342,7 +342,7 @@
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
-                    appendOption(faSelect, item.No_+':'+item.Location_code+':'+item.Responsible_employee, item.No_ + ' ' + item.Description);
+                    appendOption(faSelect, item.No_+':'+item.Location_code+':'+item.Responsible_employee+':'+item.Description, item.No_ + ' ' + item.Description);
 
                     // Check if the value is unique
                     if (!uniqueValues.hasOwnProperty(item.Location_code)) {
