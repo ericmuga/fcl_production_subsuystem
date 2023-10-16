@@ -13,8 +13,8 @@
 
 @section('content')
 <div class="div">
-    <button class="btn btn-primary " data-toggle="collapse" onclick="fetchData()" data-target="#slicing_output_show"><i
-            class="fa fa-plus"></i>
+    <button class="btn btn-primary " data-toggle="collapse" id="collapseBtn"
+        data-target="#slicing_output_show"><i class="fa fa-plus"></i>
         Create
     </button>
 </div>
@@ -215,6 +215,12 @@
             checkParams()
         });
 
+        $('#collapseBtn').on('click', function (a) {
+            a.preventDefault()
+            fetchData()
+            fetchEmployees()
+        });
+
         $('#fa_select').change(function () {
             let data = $(this).val();
 
@@ -327,7 +333,7 @@
                 let faSelect = document.getElementById('fa_select');
                 let toDeptSelect = document.getElementById('to_dept_select');
                 let fromDeptSelect = document.getElementById('from_dept_select');
-                let toUserSelect = document.getElementById('to_user_select');
+                // let toUserSelect = document.getElementById('to_user_select');
                 let fromUserSelect = document.getElementById('from_user_select');
 
                 // Create an object to keep track of unique values
@@ -337,12 +343,14 @@
                 faSelect.innerHTML = '<option value="">Select an option</option>';
                 toDeptSelect.innerHTML = '<option value="">Select an option</option>';
                 fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
-                toUserSelect.innerHTML = '<option value="">Select an option</option>';
+                // toUserSelect.innerHTML = '<option value="">Select an option</option>';
                 fromUserSelect.innerHTML = '<option value="">Select an option</option>';
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
-                    appendOption(faSelect, item.No_+':'+item.Location_code+':'+item.Responsible_employee+':'+item.Description, item.No_ + ' ' + item.Description);
+                    appendOption(faSelect, item.No_ + ':' + item.Location_code + ':' + item
+                        .Responsible_employee + ':' + item.Description, item.No_ + ' ' + item
+                        .Description);
 
                     // Check if the value is unique
                     if (!uniqueValues.hasOwnProperty(item.Location_code)) {
@@ -353,9 +361,9 @@
                         uniqueValues[item.Location_code] = true;
                     }
                     if (!uniqueValues.hasOwnProperty(item.Responsible_employee)) {
-                        appendOption(toUserSelect, item.Responsible_employee, item
-                            .Responsible_employee);
-                        uniqueValues[item.Responsible_employee] = true;
+                        // appendOption(toUserSelect, item.Responsible_employee, item
+                        //     .Responsible_employee);
+                        // uniqueValues[item.Responsible_employee] = true;
 
                         appendOption(fromUserSelect, item.Responsible_employee, item
                             .Responsible_employee);
@@ -368,17 +376,33 @@
             });
     }
 
+    const fetchEmployees = () => {
+        $('#loading').collapse('show');
+        axios.get('/asset/fetch-employees')
+            .then(function (response) {
+                $('#loading').collapse('hide');
+                console.log(response)
+                let toUserSelect = document.getElementById('to_user_select');
+
+                // Clear existing options and add an empty option
+                toUserSelect.innerHTML = '<option value="">Select an option</option>';
+
+                // Append options from Axios response
+                response.data.forEach(function (item) {
+                    appendOption(toUserSelect, item.No_, item
+                        .No_);
+                });
+            })
+            .catch(function (error) {
+                console.error(error);
+            });
+    }
+
     const appendOption = (selectElement, value, text) => {
         var option = document.createElement('option');
         option.value = value;
         option.text = text;
         selectElement.appendChild(option);
-    }
-
-    const autofillFromDetails = () => {
-
-        console.log('autofill');
-
     }
 
 </script>
