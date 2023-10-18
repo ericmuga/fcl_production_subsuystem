@@ -26,9 +26,11 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Description </th>
-                                <th>Comments </th>
+                                <th>From Dept </th>
+                                <th>From Employee </th>
                                 <th>Assigned Employee</th>
                                 <th>Employee Dept</th>
+                                <th>Date </th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -36,20 +38,23 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Description </th>
-                                <th>Comments </th>
+                                <th>From Dept </th>
+                                <th>From Employee </th>
                                 <th>Assigned Employee</th>
                                 <th>Employee Dept</th>
-                            </tr>
+                                <th>Date </th>
                         </tfoot>
                         <tbody>
                             @foreach($data as $e)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $e->No_ }}</td>
-                                    <td>{{ $e->Description }}</td>
-                                    <td>{{ $e->Comments }}</td>
-                                    <td>{{ $e->Responsible_employee }}</td>
-                                    <td>{{ $e->LocationName }}</td>
+                                    <td>{{ $e->fa }}</td>
+                                    <td>{{ $e->description }}</td>
+                                    <td>{{ $e->from_dept }}</td>
+                                    <td>{{ $e->from_user }}</td>
+                                    <td>{{ $e->to_user }}</td>
+                                    <td>{{ $e->to_dept }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($e->created_at)->format('d/m/Y H:i') }}
                                 </tr>
                             @endforeach
                         </tbody>
