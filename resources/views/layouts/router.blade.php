@@ -8,8 +8,8 @@
                 <div class="col-md-3 card p-2 bg-info" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                         href="{{ route('slaughter_dashboard') }}">
-                        <h4 class="card-title">Slaughter</h4>
-                        <p class="card-text">Select this option to switch to slaughter.
+                        <h4 class="card-title">Pork Slaughter</h4>
+                        <p class="card-text">Select this option to switch to pork slaughter.
                         </p>
                     </a>
                     <div class="icon text-center">
@@ -19,8 +19,8 @@
                 <div class="col-md-3 card p-2 bg-warning" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none"
                         href="{{ route('butchery_dashboard') }}">
-                        <h4 class="card-title">Butchery</h4>
-                        <p class="card-text">Select this option to switch to butchery.
+                        <h4 class="card-title">Pork Butchery</h4>
+                        <p class="card-text">Select this option to switch to pork  butchery.
                         </p>
                     </a>
                     <div class="icon text-center">
