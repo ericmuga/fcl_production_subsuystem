@@ -38,7 +38,7 @@
                     <label for="exampleInputPassword1">Batch No</label>
                     <input type="text" class="form-control" id="batch_no" name="batch_no" value="" placeholder="" required>
                 </div>
-                <div class="form-group" style="padding-left: 30%;">
+                <div class="form-group" style="padding-top: 5%;">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
                     <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport?? '' }}"
