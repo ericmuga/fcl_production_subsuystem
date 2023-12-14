@@ -3,8 +3,8 @@
 @section('content-header')
 <div class="container">
     <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0"> {{ $title }} |<small> Slicing Beef </small></h1>
+        <div class="col-sm-9">
+            <h1 class="m-0"> {{ $title }} |<small> Beef/Lamb Products Receiving </small></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
 </div><!-- /.container-fluid -->
@@ -13,11 +13,11 @@
 
 @section('content')
 <form id="form-save-scale3" class="form-prevent-multiple-submits"
-    action="{{ route('beef_slicing_save') }}" method="post">
+    action="{{ route('save_idt_receiving') }}" method="post">
     @csrf
     <div class="card-group">
         <div class="card">
-            <div class="card-body " style="">
+            <div class="card-body text-center">
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-12">
@@ -26,39 +26,17 @@
                                 <option value="">Select product</option>
                                 @foreach($products as $product)
                                     <option
-                                        value="{{ $product->shortcode.':'.$product->product_code.':'.$product->description.':'.$product->process_code.':'.$product->product_type.':'.$product->type_description.':'.$product->process }}">
-                                        {{ $product->shortcode . substr($product->product_code, strpos($product->product_code, "G") + 1).' '.$product->description.'-'.$product->type_description }}
+                                        value="{{ $product->code }}">
+                                        {{ $product->description }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                 </div>
-                <div class="row form-group">
-                    <div class="col-md-8">
-                        <div class="form-group" id="product_type_select">
-                            <label for="exampleInputPassword1">Product Type</label>
-                            <input type="text" class="form-control" id="product_type" value="" readonly>
-                            <input type="hidden" class="form-control" id="product_type_code" value=""
-                                name="product_type_code">
-                        </div>
-                    </div>
-                </div>
-                <div class="row form-group">
-                    <div class="col-md-6">
-                        <div class="form-group" id="product_type_select">
-                            <label for="exampleInputPassword1">Product Name</label>
-                            <input type="text" class="form-control" id="product_name" readonly value="">
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group" id="product_type_select">
-                            <label for="exampleInputPassword1">Production Process</label>
-                            <input type="text" class="form-control" id="production_process" readonly value="">
-                            <input type="hidden" class="form-control" id="production_process_code"
-                                name="production_process_code" value="">
-                        </div>
-                    </div>
+                <div class="form-group text-center">
+                    <label for="exampleInputPassword1">Batch No</label>
+                    <input type="text" class="form-control" id="batch_no" name="batch_no" value="" placeholder="" required>
                 </div>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
@@ -81,17 +59,12 @@
                 </div> <br>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="row form-group">
-                    <div class="crates col-md-4">
+                    <div class="crates col-md-6">
                         <label for="exampleInputPassword1">Total Crates </label>
-                        <input type="number" class="form-control" id="total_crates" value="" name="total_crates" min="2"
+                        <input type="number" class="form-control" id="total_crates" value="1" name="total_crates" readonly
                             placeholder="" required>
                     </div>
-                    <div class="crates col-md-4">
-                        <label for="exampleInputPassword1">Black Crates </label>
-                        <input type="number" class="form-control" id="black_crates" value="" name="black_crates" min="1"
-                            placeholder="" required>
-                    </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <label for="exampleInputPassword1">Total Tare</label>
                         <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.0"
                             readonly>
@@ -162,7 +135,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title"> Beef Deboned output data | <span id="subtext-h1-title"><small> entries
+                    <h3 class="card-title"> transfers data | <span id="subtext-h1-title"><small> today's entries
                                 ordered by
                                 latest</small> </span></h3>
                 </div>
@@ -176,15 +149,13 @@
                                     <th>#</th>
                                     <th>Code </th>
                                     <th>product </th>
-                                    <th>Product Type</th>
-                                    <th>Production Process</th>
                                     <th>Total Crates</th>
-                                    <th>Black Crates</th>
                                     <th>Scale Weight(kgs)</th>
                                     <th>Total Tare</th>
                                     <th>Net Weight(kgs)</th>
                                     <th>Total Pieces</th>
                                     <th>Prod Date</th>
+                                    <th>Received By</th>
                                     <th>Created Date </th>
                                 </tr>
                             </thead>
@@ -193,15 +164,13 @@
                                     <th>#</th>
                                     <th>Code </th>
                                     <th>product </th>
-                                    <th>Product Type</th>
-                                    <th>Production Process</th>
                                     <th>Total Crates</th>
-                                    <th>Black Crates</th>
                                     <th>Scale Weight(kgs)</th>
                                     <th>Total Tare</th>
                                     <th>Net Weight(kgs)</th>
                                     <th>Total Pieces</th>
                                     <th>Prod Date</th>
+                                    <th>Received By</th>
                                     <th>Created Date </th>
                                 </tr>
                             </tfoot>
@@ -209,24 +178,15 @@
                                 @foreach($entries as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $data->item_code }}</td>
+                                        <td>{{ $data->product_code }}</td>
                                         <td>{{ $data->description }}</td>
-                                        @if ($data->product_type == 1)
-                                            <td>Main</td>
-                                        @elseif ($data->product_type == 2)
-                                            <td>By-Product</td>
-                                        @else
-                                            <td>Intake</td>
-                                        @endif
-                                        <td>{{ $data->process }}</td>
-                                        <td>{{ $data->no_of_crates }}</td>
-                                        <td>{{ $data->black_crates }}</td>
-                                        <td>{{ $data->scale_reading }}</td>
-                                        <td>{{ number_format(($data->no_of_crates * 1.8) + ($data->black_crates * 0.2), 2) }}</td>
-                                        <td>{{ number_format($data->net_weight, 2) }}</td>
-                                        <td>{{ $data->no_of_pieces }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($data->production_date)->format('d/m/Y') }}
-                                        </td>
+                                        <td>{{ $data->receiver_total_crates }}</td>
+                                        <td>{{ $data->receiver_total_weight + ($data->receiver_total_crates * 1.8 ) }}</td>
+                                        <td>{{ $data->receiver_total_crates * 1.8 }}</td> 
+                                        <td>{{ $data->receiver_total_weight }}</td> 
+                                        <td>{{ $data->receiver_total_pieces }}</td> 
+                                        <td>{{ $data->production_date }}</td> 
+                                        <td>{{ $data->received_by }}</td> 
                                         <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}
                                         </td>
                                     </tr>
@@ -244,100 +204,6 @@
 </div>
 <!-- slicing ouput data show -->
 
-<!-- Edit Modal -->
-<div id="itemCodeModal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role"
-            action="{{ route('butchery_scale3_update') }}" method="post">
-            @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Edit Scale3 Item: <strong><input style="border:none"
-                                type="text" id="item_name" name="item_name" value="" readonly></strong></h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Product</label>
-                        <select class="form-control select2" name="edit_product" id="edit_product" required>
-                            @foreach($products as $product)
-                                <option value="{{ trim($product->product_code) }}" selected="selected">
-                                    {{ ucwords($product->description) }} - {{ $product->product_code }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="row form-group">
-                        <div class="col-md-6">
-                            <label for="exampleInputPassword1">No. of Crates</label>
-                            <select class="form-control" name="edit_crates" id="edit_crates" required>
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option selected>4</option>
-                            </select>
-                        </div>
-                        <div class="col-md-6">
-                            <label for="exampleInputPassword1">Product Type</label>
-                            <select class="form-control" name="edit_product_type2" id="edit_product_type2"
-                                selected="selected" required>
-                                <option value="1">
-                                    Main Product
-                                </option>
-                                <option value="2">
-                                    By Product
-                                </option>
-                                <option value="3">
-                                    Intake
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
-                            id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
-                    </div>
-                    <div class="form-group">
-                        <label>No. of Pieces</label>
-                        <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control"
-                            id="edit_no_pieces" value="" name="edit_no_pieces" placeholder="">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Production Process</label>
-                        <select selected="selected" class="form-control" name="edit_production_process"
-                            id="edit_production_process">
-
-                        </select>
-                    </div>
-                    <input type="hidden" name="item_id" id="item_id" value="">
-                    <input type="hidden" id="loading_val_edit" value="0">
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
-                            onclick="return validateOnEditSubmit()" type="submit">
-                            <i class="fa fa-save"></i> Update
-                        </button>
-                    </div>
-                </div>
-
-                <div id="loading2" class="collapse">
-                    <div class="row d-flex justify-content-center">
-                        <div class="spinner-border" role="status">
-                            <span class="sr-only">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-<!--End Edit scale1 modal-->
 
 @endsection
 
@@ -345,6 +211,8 @@
 <script>
     $(document).ready(function () {
 
+        getTareweight()
+        getNet()
         setProductionDate() //set production date default
 
         $('.form-prevent-multiple-submits').on('submit', function () {
@@ -380,46 +248,9 @@
             }
         });
 
-        $("body").on("click", "#itemCodeModalShow", function (e) {
-            e.preventDefault();
-
-            var code = $(this).data('code');
-            var item = $(this).data('item');
-            var weight = $(this).data('weight');
-            var no_of_pieces = $(this).data('no_of_pieces');
-            var id = $(this).data('id');
-            var process_code = $(this).data('production_process');
-            var type_id = $(this).data('type_id');
-
-            $('#edit_product').val(code);
-            $('#item_name').val(item);
-            $('#edit_weight').val(weight);
-            $('#edit_no_pieces').val(no_of_pieces)
-            $('#item_id').val(id);
-            $('#edit_production_process').val(process_code);
-            $('#edit_product_type2').val(type_id);
-
-            $('#edit_product').select2('destroy').select2();
-
-            loadEditProductionProcesses(code);
-
-            $('#itemCodeModal').modal('show');
-        });
-
         $('#product').change(function () {
-            var data = $(this).val();
-
-            var desc = data.split(':')[2];
-            var process_code = data.split(':')[3];
-            var process = data.split(':')[6];
-            var product_type_code = data.split(':')[4];
-            var product_type = data.split(':')[5];
-
-            $('#product_type').val(product_type);
-            $('#product_type_code').val(product_type_code);
-            $('#product_name').val(desc);
-            $('#production_process').val(process);
-            $('#production_process_code').val(process_code);
+            $(this).select2('destroy').select2();
+            $("#batch_no").focus();
         });
 
         $(".crates").on("input", function () {
@@ -434,11 +265,10 @@
 
     const getTareweight = () => {
         let total_crates = $('#total_crates').val()
-        let black_crates = $('#black_crates').val()
         let tareweight = 0
 
-        if (parseInt(total_crates) > 0 && parseInt(black_crates)) {
-            tareweight = (parseInt(total_crates) * 1.8) + (parseInt(black_crates) * 0.2)
+        if (parseInt(total_crates) > 0 ) {
+            tareweight = parseInt(total_crates) * 1.8
             let formatted = Math.round((tareweight + Number.EPSILON) * 100) / 100;
             $('#tareweight').val(formatted);
         }
@@ -448,33 +278,12 @@
         $valid = true;
 
         var net = $('#net').val();
-        var product_type = $('#product_type').val();
-        var no_of_pieces = $('#no_of_pieces').val();
-        var process = $('#production_process').val();
-        var process_substring = process.substr(0, process.indexOf(' '));
 
         if (net == "" || net <= 0.00) {
             $valid = false;
             alert("Please ensure you have valid netweight.");
         }
 
-        //check main product pieces
-        if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone') {
-            $valid = false;
-            alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product in deboning process");
-        }
-        return $valid;
-    }
-
-    function validateOnEditSubmit() {
-        $valid = true;
-
-        let loading_val = $('#loading_val_edit').val()
-
-        if (loading_val != 1) {
-            alert('please wait for loading process code to complete')
-            $valid = false;
-        }
         return $valid;
     }
 

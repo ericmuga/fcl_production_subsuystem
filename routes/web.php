@@ -216,6 +216,8 @@ Route::prefix('Beef')->group(function () {
     Route::get('/dashboard', [BeefLambController::class, 'index'])->name('beef_dashboard');
     Route::get('/slicing', [BeefLambController::class, 'getBeefSlicing'])->name('slicing_beef');
     Route::post('/save', [BeefLambController::class, 'saveBeefSlicing'])->name('beef_slicing_save');
+    Route::get('/receiving', [BeefLambController::class, 'getIdtReceiving'])->name('idt_receiving');
+    Route::post('/idt-save', [BeefLambController::class, 'saveIdtReceiving'])->name('save_idt_receiving');
 });
 /*-------------End Beef------------------ */
 

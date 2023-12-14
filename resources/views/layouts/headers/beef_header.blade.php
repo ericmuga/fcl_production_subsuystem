@@ -21,7 +21,14 @@
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                         class="nav-link dropdown-toggle">Weigh</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('slicing_beef') }}" class="dropdown-item">Slicing Beef</a></li>                        
+                        <li><a href="{{ route('slicing_beef') }}" class="dropdown-item">Beef Slicing</a></li>                        
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle">InterCompany IDT</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="{{ route('idt_receiving') }}" class="dropdown-item">Receive IDT</a></li>                        
                     </ul>
                 </li>
                 <li class="nav-item dropdown">

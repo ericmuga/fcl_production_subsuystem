@@ -33,8 +33,9 @@ class BeefLambController extends Controller
 
         $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
-                ->where('section', 'beef_lamb')
-                ->where('scale', 'Beef')
+                ->where('section', 'beef_slicing')
+                ->orWhere('section', 'beef_transfers')
+                ->where('scale', 'idt')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });
@@ -79,7 +80,71 @@ class BeefLambController extends Controller
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 
-            Toastr::success("Deboning beef entry : {$request->item_id} inserted successfully", 'Success');
+            Toastr::success("Slicing beef entry : {$request->item_id} inserted successfully", 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
+            return back();
+        }
+    }
+
+    public function getIdtReceiving(Request $request)
+    {
+        $title = 'InterCompany Transfers';
+
+        $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'beef_slicing')
+                ->orWhere('section', 'beef_transfers')
+                ->where('scale', 'idt')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()->toArray();
+        });
+
+        $products = DB::table('beef_items')
+            ->select('code', 'description')
+            ->get();
+
+        $entries = DB::table('idt_transfers as a')
+            ->join('beef_items as b', 'a.product_code', '=', 'b.code')
+            ->join('users as c', 'a.received_by', '=', 'c.id')
+            ->select('a.id', 'a.product_code', 'b.description', 'a.receiver_total_crates', 'a.receiver_total_pieces', 'a.receiver_total_weight', 'a.batch_no', 'c.username as received_by', 'a.production_date', 'a.created_at')
+            ->where('a.location_code', '1570')
+            ->whereDate('a.created_at', today())
+            ->get();
+
+        return view('beef_lamb.idt-receiving', compact('title', 'products', 'configs', 'entries'));
+    }
+
+    public function saveIdtReceiving(Request $request, Helpers $helpers)
+    {
+        // dd($request->all());
+
+        $user = $helpers->authenticatedUserId();
+
+        $manual = $request->manual_weight == 'on';
+
+        try {
+            //insert 
+            DB::table('idt_transfers')->insert([
+                'product_code' => $request->product,
+                'batch_no' => $request->batch_no,
+                'total_crates' => $request->total_crates,
+                'total_pieces' => $request->no_of_pieces ?? 0,
+                'total_weight' => $request->net,
+                'receiver_total_crates' => $request->total_crates,
+                'receiver_total_pieces' => $request->no_of_pieces ?? 0,
+                'receiver_total_weight' => $request->net,
+                'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
+                'location_code' => '1570',
+                'manual_weight' => $manual,
+                'user_id' => $user,
+                'received_by' => $user,
+            ]);
+
+            Toastr::success("Beef/lamb IDT entry for : {$request->product} inserted successfully", 'Success');
             return redirect()
                 ->back();
         } catch (\Exception $e) {
