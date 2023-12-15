@@ -31,14 +31,10 @@ class BeefLambController extends Controller
     {
         $title = 'Beef';
 
-        $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
-            return DB::table('scale_configs')
-                ->where('section', 'beef_slicing')
-                ->orWhere('section', 'beef_transfers')
-                ->where('scale', 'idt')
-                ->select('scale', 'tareweight', 'comport')
-                ->get()->toArray();
-        });
+        $configs = DB::table('scale_configs')
+            ->where('scale', 'BeefSlicing')
+            ->select('scale', 'tareweight', 'comport')
+            ->get()->toArray();
 
         $products = DB::table('beef_product_processes')
             ->leftJoin('beef_items', 'beef_product_processes.product_code', '=', 'beef_items.code')
@@ -94,14 +90,10 @@ class BeefLambController extends Controller
     {
         $title = 'InterCompany Transfers';
 
-        $configs = Cache::remember('beef_configs', now()->addMinutes(120), function () {
-            return DB::table('scale_configs')
-                ->where('section', 'beef_slicing')
-                ->orWhere('section', 'beef_transfers')
-                ->where('scale', 'idt')
-                ->select('scale', 'tareweight', 'comport')
-                ->get()->toArray();
-        });
+        $configs = DB::table('scale_configs')
+            ->where('scale', 'BeefReceiving')
+            ->select('scale', 'tareweight', 'comport')
+            ->get()->toArray();
 
         $products = DB::table('beef_items')
             ->select('code', 'description')
