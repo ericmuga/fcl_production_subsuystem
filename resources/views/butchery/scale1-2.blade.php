@@ -509,7 +509,6 @@ $arr_products = $products->toArray();
 
             } else {
                 reading.readOnly = true;
-
             }
 
         });
@@ -524,7 +523,6 @@ $arr_products = $products->toArray();
 
             } else {
                 reading2.readOnly = true;
-
             }
 
         });
@@ -538,7 +536,6 @@ $arr_products = $products->toArray();
             var no_carcass = $(this).data('no_carcass');
             var weight = $(this).data('weight');
             var id = $(this).data('id');
-
 
             $('#edit_carcass').val(product);
             $('#item_name1').val(item);

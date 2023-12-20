@@ -102,7 +102,7 @@ class BeefLambController extends Controller
         $entries = DB::table('idt_transfers as a')
             ->join('beef_items as b', 'a.product_code', '=', 'b.code')
             ->join('users as c', 'a.received_by', '=', 'c.id')
-            ->select('a.id', 'a.product_code', 'b.description', 'a.receiver_total_crates', 'a.receiver_total_pieces', 'a.receiver_total_weight', 'a.batch_no', 'c.username as received_by', 'a.production_date', 'a.created_at')
+            ->select('a.id', 'a.product_code', 'a.description as vehicle_no', 'b.description', 'a.receiver_total_crates', 'a.receiver_total_pieces', 'a.receiver_total_weight', 'a.batch_no', 'c.username as received_by', 'a.production_date', 'a.created_at')
             ->where('a.location_code', '1570')
             ->whereDate('a.created_at', today())
             ->get();
@@ -131,6 +131,7 @@ class BeefLambController extends Controller
                 'receiver_total_weight' => $request->net,
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
                 'location_code' => '1570',
+                'description' => $request->description,
                 'manual_weight' => $manual,
                 'user_id' => $user,
                 'received_by' => $user,
@@ -138,7 +139,8 @@ class BeefLambController extends Controller
 
             Toastr::success("Beef/lamb IDT entry for : {$request->product} inserted successfully", 'Success');
             return redirect()
-                ->back();
+                ->back()
+                ->withInput();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);

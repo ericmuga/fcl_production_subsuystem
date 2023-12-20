@@ -27,16 +27,31 @@
                                 @foreach($products as $product)
                                     <option
                                         value="{{ $product->code }}">
-                                        {{ $product->description }}
+                                        {{ $product->code. ' '.$product->description }}
                                     </option>
                                 @endforeach
                             </select>
                         </div>
                     </div>
                 </div>
-                <div class="form-group text-center">
-                    <label for="exampleInputPassword1">Batch No</label>
-                    <input type="text" class="form-control" id="batch_no" name="batch_no" value="" placeholder="" required>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group text-center">
+                            <label for="exampleInputPassword1">Batch No</label>
+                            <input type="text" class="form-control" id="batch_no" name="batch_no" value="" placeholder="" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group text-center">
+                            <label for="exampleInputPassword1">Vehicle No</label>
+                            <select class="form-control select2" name="description" id="description" required>
+                                <option value="">Select Vehicle</option>
+                                <option value="KAQ 714R">KAQ 714R</option>
+                                <option value="KAS 004G">KAS 004G</option>
+                            </select>
+                            <input type="hidden" id="session_vehicle" name="session_vehicle" value="{{ old('description') }}">
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group" style="padding-top: 5%;">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
@@ -61,13 +76,12 @@
                 <div class="row form-group">
                     <div class="crates col-md-6">
                         <label for="exampleInputPassword1">Total Crates </label>
-                        <input type="number" class="form-control" id="total_crates" value="1" name="total_crates" readonly
+                        <input type="number" class="form-control" id="total_crates" value="1" name="total_crates"
                             placeholder="" required>
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Total Tare</label>
-                        <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.0"
-                            readonly>
+                        <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.0" readonly>
                     </div>
                 </div>
                 <div class="form-group">
@@ -147,6 +161,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Vehicle No</th>
                                     <th>Code </th>
                                     <th>product </th>
                                     <th>Total Crates</th>
@@ -162,6 +177,7 @@
                             <tfoot>
                                 <tr>
                                     <th>#</th>
+                                    <th>Vehicle No</th>
                                     <th>Code </th>
                                     <th>product </th>
                                     <th>Total Crates</th>
@@ -178,6 +194,7 @@
                                 @foreach($entries as $data)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $data->vehicle_no }}</td>
                                         <td>{{ $data->product_code }}</td>
                                         <td>{{ $data->description }}</td>
                                         <td>{{ $data->receiver_total_crates }}</td>
@@ -219,6 +236,8 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
+        getSessionVehicle()
+
         let reading = document.getElementById('reading');
         if (($('#old_manual').val()) == "on") {
             $('#manual_weight').prop('checked', true);
@@ -228,7 +247,6 @@
 
         } else {
             reading.readOnly = true;
-
         }
 
         $('#manual_weight').change(function () {
@@ -285,6 +303,16 @@
         }
 
         return $valid;
+    }
+
+    const getSessionVehicle = () => {
+        let old_val = $('#session_vehicle').val()
+
+        if (old_val) {
+            // Select the option with the specified value
+            $('#description').select2('destroy').select2();
+            $("#description").val(old_val).trigger('change');
+        }
     }
 
     //read scale
