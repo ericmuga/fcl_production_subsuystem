@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PostedChoppingLinesExport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ChoppingController extends Controller
 {
@@ -123,6 +127,8 @@ class ChoppingController extends Controller
 
         $table = 'production_lines';
 
+        $date_filter = 2;
+
         $lines = DB::table('production_lines')
             ->where('batches.status', 'posted')
             ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
@@ -131,14 +137,43 @@ class ChoppingController extends Controller
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
                 $join->on($table . '.template_no', '=', 'template_lines.template_no');
             })
-            ->when($filter == '', function ($q) {
-                $q->whereDate('production_lines.created_at', '>=', today()->subDays(10)); // last 5 days
+            ->when($filter == '', function ($q) use ($date_filter) {
+                $q->whereDate('production_lines.created_at', '>=', today()->subDays((int)$date_filter)); // last 5 days
             })
             ->select('production_lines.*', 'template_header.template_name', 'template_lines.description', 'template_lines.percentage', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'template_lines.units_per_100', 'template_lines.location', 'batches.from_batch', 'batches.to_batch', 'batches.status', 'batches.updated_at as batch_update_time')
             ->orderBy('batches.batch_no', 'ASC')
             ->get();
 
-        return view('chopping.production-lines-report', compact('title', 'lines', 'helpers'));
+        return view('chopping.production-lines-report', compact('title', 'lines', 'helpers', 'date_filter'));
+    }
+
+    public function postedLinesReportExport(Request $request)
+    {
+        $title = "Chopping Production Lines";
+
+        $table = 'production_lines';
+
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $lines = DB::table('production_lines')
+            ->where('batches.status', 'posted')
+            ->whereDate('production_lines.created_at', '>=', $from_date)
+            ->whereDate('production_lines.created_at', '<=', $to_date)
+            ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
+            ->join('template_header', 'production_lines.template_no', '=', 'template_header.template_no')
+            ->join('template_lines', function ($join) use ($table) {
+                $join->on($table . '.item_code', '=',  'template_lines.item_code');
+                $join->on($table . '.template_no', '=', 'template_lines.template_no');
+            })
+            ->select('production_lines.batch_no', 'production_lines.item_code', 'template_lines.description', 'template_header.template_name', 'template_lines.type', 'template_lines.main_product', 'template_lines.unit_measure', 'production_lines.quantity', DB::raw('(batches.to_batch - TRY_CAST(batches.from_batch AS DECIMAL)) + 1 as batch_size'), DB::raw('((batches.to_batch - TRY_CAST(batches.from_batch AS DECIMAL)) + 1 )*(production_lines.quantity) as total_qty_used'), 'batches.updated_at as batch_update_time')
+            ->orderBy('batches.batch_no', 'ASC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $lines);
+
+        return Excel::download(new PostedChoppingLinesExport, "Posted Chopping Lines from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function postedLinesReportSumm(Helpers $helpers, $filter = null)

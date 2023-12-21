@@ -19,8 +19,8 @@ class CreateBatchesTable extends Migration
             $table->string('template_no');
             $table->string('status');
             $table->decimal('output_quantity');
-            $table->string('from_batch')->nullable();
-            $table->string('to_batch')->nullable();
+            $table->decimal('from_batch')->nullable();
+            $table->decimal('to_batch')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->integer('closed_by')->nullable();
             $table->integer('posted_by')->nullable();
