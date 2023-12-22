@@ -131,7 +131,7 @@
 
                                     <td>{{ $data->unit_measure }}</td>
                                     <td>{{ $data->location }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($data->batch_update_time)->format('d/m/Y') }}
+                                    <td>{{ \Carbon\Carbon::parse($data->batch_update_time)->format('d/m/Y H:i' ) }}
                                     </td>
                                 </tr>
                             @endforeach
