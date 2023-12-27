@@ -21,7 +21,7 @@ class PostedChoppingLinesExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Batch No', 'Item Code', 'Item Name', 'Temp Name', 'Type', 'Main Product', 'UOM', 'Qty', 'batch Size', 'Total Qty Used', 'Date'
+                'Batch No', 'Recipe No', 'Item Code', 'Item Name', 'Temp Name', 'Type', 'Main Product', 'UOM', 'Qty', 'batch Size', 'Total Qty Used', 'Date'
             ];
     }
 }
