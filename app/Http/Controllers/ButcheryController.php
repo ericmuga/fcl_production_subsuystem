@@ -1086,14 +1086,17 @@ class ButcheryController extends Controller
     public function getSalesReport(Helpers $helpers)
     {
         $title = "Sales-Report";
+
+        $day_filter = 12;
+
         $sales_data = DB::table('sales')
             ->leftJoin('products', 'sales.item_code', '=', 'products.code')
             ->select('sales.*', 'products.description')
             ->orderBy('created_at', 'DESC')
-            ->whereDate('sales.created_at', '>=', today()->subDays(7))
+            ->whereDate('sales.created_at', '>=', today()->subDays((int)$day_filter))
             ->get();
 
-        return view('butchery.sales', compact('title', 'sales_data', 'helpers'));
+        return view('butchery.sales', compact('title', 'sales_data', 'helpers', 'day_filter'));
     }
 
     public function getTransfersReport(Helpers $helpers)

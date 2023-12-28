@@ -6,7 +6,7 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Sales Entries | <span id="subtext-h1-title"><small> view butchery sale for <strong>last 7 days</strong></small>
+                <h3 class="card-title"> Sales Entries | <span id="subtext-h1-title"><small> view butchery sale for <strong>last {{ $day_filter }} days</strong></small>
                     </span></h3>
             </div>
             <!-- /.card-header -->
