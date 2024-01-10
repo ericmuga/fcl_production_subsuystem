@@ -37,17 +37,17 @@ class BeefLambController extends Controller
             ->get()->toArray();
 
         $products = DB::table('beef_product_processes')
-            ->leftJoin('beef_items', 'beef_product_processes.product_code', '=', 'beef_items.code')
+            ->leftJoin('beef_lamb_items', 'beef_product_processes.product_code', '=', 'beef_lamb_items.code')
             ->leftJoin('processes', 'beef_product_processes.process_code', '=', 'processes.process_code')
             ->leftJoin('product_types', 'beef_product_processes.product_type', '=', 'product_types.code')
-            ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
+            ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_lamb_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
             ->get();
 
         $entries = DB::table('beef_slicing')
             ->whereDate('beef_slicing.created_at', today())
-            ->join('beef_items', 'beef_slicing.item_code', '=', 'beef_items.code')
+            ->join('beef_lamb_items', 'beef_slicing.item_code', '=', 'beef_lamb_items.code')
             ->join('processes', 'beef_slicing.process_code', '=', 'processes.process_code')
-            ->select('beef_slicing.*', 'beef_items.description', 'processes.process')
+            ->select('beef_slicing.*', 'beef_lamb_items.description', 'processes.process')
             ->orderByDesc('id')
             ->get();
 
@@ -95,12 +95,12 @@ class BeefLambController extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $products = DB::table('beef_items')
+        $products = DB::table('beef_lamb_items')
             ->select('code', 'description')
             ->get();
 
         $entries = DB::table('idt_transfers as a')
-            ->join('beef_items as b', 'a.product_code', '=', 'b.code')
+            ->join('beef_lamb_items as b', 'a.product_code', '=', 'b.code')
             ->join('users as c', 'a.received_by', '=', 'c.id')
             ->select('a.id', 'a.product_code', 'a.description as vehicle_no', 'b.description', 'a.receiver_total_crates', 'a.receiver_total_pieces', 'a.receiver_total_weight', 'a.batch_no', 'c.username as received_by', 'a.production_date', 'a.created_at')
             ->where('a.location_code', '1570')

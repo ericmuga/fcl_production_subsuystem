@@ -13,7 +13,7 @@ class CreateBeefItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('beef_items', function (Blueprint $table) {
+        Schema::create('beef_lamb_items', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique(); // stands for both unique and indexable
             $table->string('barcode')->nullable();
@@ -32,6 +32,6 @@ class CreateBeefItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('beef_items');
+        Schema::dropIfExists('beef_lamb_items');
     }
 }
