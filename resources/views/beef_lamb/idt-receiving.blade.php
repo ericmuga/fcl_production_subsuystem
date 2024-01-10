@@ -38,7 +38,7 @@
                     <div class="col-md-6">
                         <div class="form-group text-center">
                             <label for="exampleInputPassword1">Batch No</label>
-                            <input type="text" class="form-control" id="batch_no" name="batch_no" value="" placeholder="" required>
+                            <input type="text" class="form-control" id="batch_no" name="batch_no" value="" placeholder="">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -268,7 +268,7 @@
 
         $('#product').change(function () {
             $(this).select2('destroy').select2();
-            $("#batch_no").focus();
+            //$("#batch_no").focus();
         });
 
         $(".crates").on("input", function () {
