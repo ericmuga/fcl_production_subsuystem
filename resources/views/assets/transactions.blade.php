@@ -167,9 +167,9 @@
                                     <td>{{ $e->fa }}</td>
                                     <td>{{ $e->description }}</td>
                                     <td>{{ $e->to_user }}</td>
-                                    <td>{{ $e->to_dept }}</td>
+                                    <td>{{ $e->dept_name }}</td>
                                     <td>{{ $e->from_user }}</td>
-                                    <td>{{ $e->from_dept }}</td>
+                                    <td>{{ $e->dept_name }}</td>
                                     <td>{{ $e->username }}</td>
                                     <td>{{ \Carbon\Carbon::parse($e->created_at)->format('d/m/Y H:i') }}
                                     </td>

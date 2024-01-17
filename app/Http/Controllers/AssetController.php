@@ -23,10 +23,6 @@ class AssetController extends Controller
     {
         $title = "dashboard";
 
-        // $depts = DB::table('view_depts')
-        //     ->select('Code', 'Name')
-        //     ->get()->dd();
-
         $data = DB::table('view_assets')
             ->selectRaw('COUNT(DISTINCT No_) as assets_count, COUNT(DISTINCT Responsible_employee) as users_count, COUNT(DISTINCT Location_code) as depts_count')
             ->first();
@@ -45,11 +41,10 @@ class AssetController extends Controller
         $entries = DB::table('asset_movements')
             ->whereDate('asset_movements.created_at', today())
             ->join('users', 'asset_movements.user_id', '=', 'users.id')
-            ->select('asset_movements.*', 'users.username')
+            ->join('view_depts', 'asset_movements.to_dept', '=', DB::raw('view_depts.Code collate Latvian_BIN'))
+            ->select('asset_movements.*', 'users.username', 'view_depts.Name as dept_name')
             ->orderByDesc('id')
             ->get();
-
-        // dd($entries);
 
         return view('assets.transactions', compact('title', 'helpers', 'entries'));
     }
