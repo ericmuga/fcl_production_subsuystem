@@ -105,7 +105,7 @@
                     <input type="hidden" id="auth_val" value="0">
                     <div class="row form-group text-center" style="padding-top: 5%; padding-left: 40%">
                         <button type="submit" onclick="return validateOnSubmit()" id="save_btn"
-                            class="btn btn-primary btn-lg btn-prevent-multiple-submits disabled"><i
+                            class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                                 class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                     </div>
                 </div>
@@ -307,22 +307,13 @@
     const validateOnSubmit = () => {
         $valid = true;
 
-        var net = $('#net').val();
-        var product_type = $('#product_type').val();
-        var no_of_pieces = $('#no_of_pieces').val();
-        var process = $('#production_process').val();
-        var process_substring = process.substr(0, process.indexOf(' '));
+        let auth_val = parseInt($('#auth_val').val())
 
-        if (net == "" || net <= 0.00) {
+        if (auth_val != 1 ) {
             $valid = false;
-            alert("Please ensure you have valid netweight.");
+            alert("Please validate receiver first.");
         }
 
-        //check main product pieces
-        if (product_type == 'Main Product' && no_of_pieces < 1 && process_substring == 'Debone') {
-            $valid = false;
-            alert("Please ensure you have inputed no_of_pieces,\nThe item is a main product in deboning process");
-        }
         return $valid;
     }
 
@@ -332,8 +323,7 @@
             .then(function (response) {
                 $('#loading').collapse('hide');
                 let faSelect = document.getElementById('fa_select');
-                // let toDeptSelect = document.getElementById('to_dept_select');
-                // let fromDeptSelect = document.getElementById('from_dept_select');
+                let fromDeptSelect = document.getElementById('from_dept_select');
                 // let toUserSelect = document.getElementById('to_user_select');
                 let fromUserSelect = document.getElementById('from_user_select');
 
@@ -343,7 +333,7 @@
                 // Clear existing options and add an empty option
                 faSelect.innerHTML = '<option value="">Select an option</option>';
                 // toDeptSelect.innerHTML = '<option value="">Select an option</option>';
-                // fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
+                fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
                 // toUserSelect.innerHTML = '<option value="">Select an option</option>';
                 fromUserSelect.innerHTML = '<option value="">Select an option</option>';
 
@@ -354,13 +344,13 @@
                         .Description);
 
                     // Check if the value is unique
-                    // if (!uniqueValues.hasOwnProperty(item.Location_code)) {
-                    //     appendOption(toDeptSelect, item.Location_code, item.LocationName);
-                    //     uniqueValues[item.Location_code] = true;
+                    if (!uniqueValues.hasOwnProperty(item.Location_code)) {
+                        // appendOption(toDeptSelect, item.Location_code, item.LocationName);
+                        // uniqueValues[item.Location_code] = true;
 
-                    //     appendOption(fromDeptSelect, item.Location_code, item.LocationName);
-                    //     uniqueValues[item.Location_code] = true;
-                    // }
+                        appendOption(fromDeptSelect, item.Location_code, item.LocationName);
+                        uniqueValues[item.Location_code] = true;
+                    }
                     if (!uniqueValues.hasOwnProperty(item.Responsible_employee)) {
                         // appendOption(toUserSelect, item.Responsible_employee, item
                         //     .Responsible_employee);
@@ -383,16 +373,16 @@
                 $('#loading').collapse('hide');
                 // console.log(response)
                 let toDeptSelect = document.getElementById('to_dept_select');
-                let fromDeptSelect = document.getElementById('from_dept_select');
+                // let fromDeptSelect = document.getElementById('from_dept_select');
 
                 // Clear existing options and add an empty option
                 toDeptSelect.innerHTML = '<option value="">Select an option</option>';
-                fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
+                // fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {                    
                     appendOption(toDeptSelect, item.Code , item.Name);
-                    appendOption(fromDeptSelect, item.Code , item.Name);
+                    // appendOption(fromDeptSelect, item.Code , item.Name);
                 });
             })
             .catch(function (error) {
