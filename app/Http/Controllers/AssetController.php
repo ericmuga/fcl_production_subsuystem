@@ -23,6 +23,10 @@ class AssetController extends Controller
     {
         $title = "dashboard";
 
+        // $depts = DB::table('view_depts')
+        //     ->select('Code', 'Name')
+        //     ->get()->dd();
+
         $data = DB::table('view_assets')
             ->selectRaw('COUNT(DISTINCT No_) as assets_count, COUNT(DISTINCT Responsible_employee) as users_count, COUNT(DISTINCT Location_code) as depts_count')
             ->first();
@@ -56,6 +60,15 @@ class AssetController extends Controller
             return DB::table('view_assets')
                 ->get();
         });
+
+        return response()->json($data);
+    }
+
+    public function fetchDeptsData()
+    {
+        $data = DB::table('view_depts')
+            ->select('Code', 'Name')
+            ->get();
 
         return response()->json($data);
     }

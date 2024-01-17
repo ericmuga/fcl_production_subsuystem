@@ -228,6 +228,7 @@ Route::prefix('asset')->group(function () {
     Route::get('/create', [AssetController::class, 'createMovement'])->name('create_movement');
     Route::post('/save', [AssetController::class, 'saveMovement'])->name('save_movement');
     Route::get('/fetch-data', [AssetController::class, 'fetchData'])->name('assets_fetch_data');
+    Route::get('/fetch-depts', [AssetController::class, 'fetchDeptsData'])->name('assets_fetch_depts');
     Route::get('/fetch-employees', [AssetController::class, 'getAssetEmployeeList'])->name('assets_fetch_employees');
     Route::post('/check-user', [AssetController::class, 'validateUserAssets'])->name('validateUserAsset');
     Route::get('/movement-history', [AssetController::class, 'movementHistory'])->name('movement_history');
