@@ -159,6 +159,20 @@ class ButcheryController extends Controller
     {
         $title = "dashboard-V2";
 
+        $scale2_data = DB::table('butchery_data')
+            ->whereDate('created_at', today())
+            ->select(DB::raw('COALESCE(SUM(net_weight), 0) AS total_net'))
+            ->whereIn('item_code', ['G1100', 'G1101', 'G1102'])
+            ->groupBy('item_code')
+            ->orderBy('item_code')
+            ->pluck('total_net')
+            ->toArray();
+
+        $fat_stripping_total = DB::table('deboned_data')
+            ->whereDate('created_at', today())
+            ->where('process_code', 10)
+            ->sum('net_weight');
+
         $main_items = DB::table('deboned_data')
             ->join('products', 'deboned_data.item_code', '=', 'products.code')
             ->whereDate('deboned_data.created_at', today())
@@ -178,7 +192,7 @@ class ButcheryController extends Controller
             ->select(DB::raw('COALESCE(SUM(deboned_data.net_weight),0) as total_net'), DB::raw('COALESCE(SUM(deboned_data.no_of_pieces),0) as total_pieces'))
             ->get()->toArray();
 
-        return view('butchery.dashboard2', compact('title', 'main_items', 'cumm', 'helpers'));
+        return view('butchery.dashboard2', compact('title', 'main_items', 'cumm', 'helpers', 'scale2_data', 'fat_stripping_total'));
     }
 
     public function scaleOneAndTwo(Helpers $helpers)
@@ -625,6 +639,7 @@ class ButcheryController extends Controller
                         'product_type' => $product_type,
                         'no_of_crates' => $request->no_of_crates - 1,
                         'no_of_pieces' => $request->no_of_pieces,
+                        'narration' => $request->desc,
                         'user_id' => $helpers->authenticatedUserId(),
                         'created_at' => $prod_date,
                     ]);

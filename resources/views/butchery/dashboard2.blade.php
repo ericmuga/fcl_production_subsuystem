@@ -17,6 +17,26 @@
 @section('content')
 <!-- Small boxes (Stat box) -->
 <div class="row">
+    <div class="col-md-4">
+        <h4>Breaking Legs</h4>
+        <div class="progress-group">
+            <span class="float-center"><b>{{ $scale2_data[0]?? 0.00 }}</b><sup style="font-size: 15px"> kgs</sup></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4>Breaking Middles</h4>
+        <div class="progress-group">
+            <span class="float-center"><b>{{ $scale2_data[0]?? 0.00 }}</b><sup style="font-size: 15px"> kgs</sup></span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h4>Breaking Shoulders</h4>
+        <div class="progress-group">
+            <span class="float-center"><b>{{ $scale2_data[0]?? 0.00 }}</b><sup style="font-size: 15px"> kgs</sup></span>
+        </div>
+    </div>    
+</div><hr>
+<div class="row">
     @php
 
         $mainItems = [];
@@ -71,7 +91,7 @@
     @endphp
 
     <div class="col-md-4">
-        <h4>Legs</h4>
+        <h4>Deboning Legs</h4>
         @foreach ($legs as $data)
             <div class="progress-group">
                 {{ $data->item_code.' '.$data->description.'-'.$data->product_type_name }}
@@ -86,7 +106,7 @@
     </div>
 
     <div class="col-md-4">
-        <h4>Middles</h4>
+        <h4>Deboning Middles</h4>
         @foreach ($middles as $data)
             <div class="progress-group">
                 {{ $data->item_code.' '.$data->description.'-'.$data->product_type_name }}
@@ -101,7 +121,7 @@
     </div>
 
     <div class="col-md-4">
-        <h4>Shoulders</h4>
+        <h4>Deboning Shoulders</h4>
         @foreach ($shoulders as $data)
             <div class="progress-group">
                 {{ $data->item_code.' '.$data->description.'-'.$data->product_type_name }}
@@ -133,9 +153,14 @@
 <div class="row">
     <div class="col-md-12">
         <div class="progress-group">
-            Total Weights
+            Total Weights(Inclusive fat Stripping Weights)
+            @php
+            $t1 = $cumm[0]->total_net?: 0;
+            $t2 = $fat_stripping_total;
+            $total = (float)$t1 + (float)$t2;
+            @endphp
             <span class="float-right"><b>{{ $cumm[0]->total_pieces }} </b>|
-                {{ number_format($cumm[0]->total_net, 2) }}<sup style="font-size: 15px">kgs</sup></span>
+                {{ number_format($total, 2) }}<sup style="font-size: 15px">kgs</sup></span>
             <div class="progress progress-sm">
                 <div class="progress-bar {{ $helpers->randomBootstrap() }}" style="width: 100%"></div>
             </div>

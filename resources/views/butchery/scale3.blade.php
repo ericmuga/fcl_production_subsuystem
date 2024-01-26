@@ -111,19 +111,28 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4"
-                        name="no_of_crates" placeholder="" required>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">No. of Crates</label>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4"
+                                name="no_of_crates" placeholder="" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="exampleInputPassword1">No. of pieces </label>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
+                                name="no_of_pieces" placeholder="" required>
+                        </div>
+                    </div>                    
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of pieces </label>
-                    <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
-                        name="no_of_pieces" placeholder="" required>
+                    <label for="exampleInputPassword1">Narration </label>
+                    <input type="text" class="form-control" onClick="this.select();" id="desc" value=""
+                        name="desc" placeholder="any further narration eg. java, jowl..">
                 </div>
-                <div class="form-check">
+                <!-- <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
                     <label class="form-check-label" for="for_transfer"><strong> For Transfer?</strong></label>
-                </div><br>
+                </div><br> -->
                 <div id="transfer_div" class="form-group collapse">
                     <label for="exampleInputPassword1">Transfer To</label>
                     <select class="form-control select2" name="transfer_to" id="transfer_to" required>
@@ -226,6 +235,7 @@
                                     <th>Net Weight(kgs)</th>
                                     <th>No. of Crates</th>
                                     <th>No. of Pieces</th>
+                                    <th>Narration</th>
                                     <th>Edited</th>
                                     <th>Date </th>
                                 </tr>
@@ -241,6 +251,7 @@
                                     <th>Net Weight(kgs)</th>
                                     <th>No. of Crates</th>
                                     <th>No. of Pieces</th>
+                                    <th>Narration</th>
                                     <th>Edited</th>
                                     <th>Date </th>
                                 </tr>
@@ -276,6 +287,7 @@
                                         <td> {{ number_format($data->net_weight, 2) }}</td>
                                         <td> {{ $data->no_of_crates }}</td>
                                         <td> {{ $data->no_of_pieces }}</td>
+                                        <td> {{ $data->narration }}</td>
                                         @if($data->edited == 1)
                                             <td>
                                                 <span class="badge badge-warning">Yes</span>
