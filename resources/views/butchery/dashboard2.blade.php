@@ -26,7 +26,7 @@
     <div class="col-md-4">
         <h4>Breaking Middles</h4>
         <div class="progress-group">
-            <span class="float-center"><b>{{ number_format($scale2_data[1] ?? 0.00, 2') }}</b><sup style="font-size: 15px"> kgs</sup></span>
+            <span class="float-center"><b>{{ number_format($scale2_data[1] ?? 0.00, 2) }}</b><sup style="font-size: 15px"> kgs</sup></span>
         </div>
     </div>
     <div class="col-md-4">
