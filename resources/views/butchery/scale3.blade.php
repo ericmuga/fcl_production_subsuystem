@@ -114,20 +114,20 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label for="exampleInputPassword1">No. of Crates</label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" value="4"
-                                name="no_of_crates" placeholder="" required>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
+                                value="4" name="no_of_crates" placeholder="" required>
                         </div>
                         <div class="col-md-6">
                             <label for="exampleInputPassword1">No. of pieces </label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces" value="0"
-                                name="no_of_pieces" placeholder="" required>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_pieces"
+                                value="0" name="no_of_pieces" placeholder="" required>
                         </div>
-                    </div>                    
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Narration </label>
-                    <input type="text" class="form-control" onClick="this.select();" id="desc" value=""
-                        name="desc" placeholder="any further narration eg. java, jowl..">
+                    <input type="text" class="form-control" onClick="this.select();" id="desc" value="" name="desc"
+                        placeholder="any further narration eg. java, jowl..">
                 </div>
                 <!-- <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="for_transfer" name="for_transfer">
@@ -265,13 +265,14 @@
                                             $createdAtDate = \Carbon\Carbon::parse($data->created_at)->format('Y-m-d');
                                             $todayDate = \Carbon\Carbon::today()->format('Y-m-d');
                                         @endphp
-                                        
+
                                         @if($createdAtDate === $todayDate)
                                             <td id="itemCodeModalShow" data-id="{{ $data->id }}"
                                                 data-weight="{{ number_format($data->actual_weight, 2) }}"
                                                 data-no_of_pieces="{{ $data->no_of_pieces }}"
                                                 data-code="{{ $data->item_code }}"
                                                 data-type_id="{{ $data->type_id }}"
+                                                data-narration="{{ $data->narration }}"
                                                 data-production_process="{{ $data->process_code }}"
                                                 data-item="{{ $data->description }}"><a
                                                     href="#">{{ $data->item_code }}</a>
@@ -365,23 +366,32 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
-                        <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
-                            id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="email">Scale Weight(actual_weight)</label>
+                            <input type="number" onClick="this.select();" class="form-control" name="edit_weight"
+                                id="edit_weight" placeholder="" step="0.01" autocomplete="off" required autofocus>
+                        </div>
+                        <div class="col-md-6">
+                            <label>No. of Pieces</label>
+                            <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control"
+                                id="edit_no_pieces" value="" name="edit_no_pieces" placeholder="">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>No. of Pieces</label>
-                        <input type="number" onClick="this.select();" onfocus="this.value=''" class="form-control"
-                            id="edit_no_pieces" value="" name="edit_no_pieces" placeholder="">
+                    <div class="form-group row">
+                        <label>Narration</label>
+                        <input type="text" onClick="this.select();"
+                            class="form-control" id="edit_narration" value="" name="edit_narration"
+                            placeholder="">
+                        
                     </div>
-                    <div class="form-group">
+                    <div class="row form-group">
                         <label for="exampleInputPassword1">Production Process</label>
                         <select selected="selected" class="form-control" name="edit_production_process"
                             id="edit_production_process">
-
                         </select>
                     </div>
+
                     <input type="hidden" name="item_id" id="item_id" value="">
                     <input type="hidden" id="loading_val_edit" value="0">
                 </div>
@@ -437,6 +447,7 @@
             var item = $(this).data('item');
             var weight = $(this).data('weight');
             var no_of_pieces = $(this).data('no_of_pieces');
+            var narration = $(this).data('narration');
             var id = $(this).data('id');
             var process_code = $(this).data('production_process');
             var type_id = $(this).data('type_id');
@@ -445,6 +456,7 @@
             $('#item_name').val(item);
             $('#edit_weight').val(weight);
             $('#edit_no_pieces').val(no_of_pieces)
+            $('#edit_narration').val(narration)
             $('#item_id').val(id);
             $('#edit_production_process').val(process_code);
             $('#edit_product_type2').val(type_id);

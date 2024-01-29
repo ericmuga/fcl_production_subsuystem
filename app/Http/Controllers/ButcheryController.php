@@ -670,6 +670,7 @@ class ButcheryController extends Controller
                         'product_type' => $request->edit_product_type2,
                         'actual_weight' => $request->edit_weight,
                         'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
+                        'narration' => $request->edit_narration,
                         'no_of_pieces' => $request->edit_no_pieces,
                         'edited' => 1,
                         'updated_at' => Carbon::now(),
