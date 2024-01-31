@@ -323,9 +323,9 @@
             .then(function (response) {
                 $('#loading').collapse('hide');
                 let faSelect = document.getElementById('fa_select');
-                let fromDeptSelect = document.getElementById('from_dept_select');
+                // let fromDeptSelect = document.getElementById('from_dept_select');
                 // let toUserSelect = document.getElementById('to_user_select');
-                let fromUserSelect = document.getElementById('from_user_select');
+                // let fromUserSelect = document.getElementById('from_user_select');
 
                 // Create an object to keep track of unique values
                 let uniqueValues = {};
@@ -333,9 +333,9 @@
                 // Clear existing options and add an empty option
                 faSelect.innerHTML = '<option value="">Select an option</option>';
                 // toDeptSelect.innerHTML = '<option value="">Select an option</option>';
-                fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
+                // fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
                 // toUserSelect.innerHTML = '<option value="">Select an option</option>';
-                fromUserSelect.innerHTML = '<option value="">Select an option</option>';
+                // fromUserSelect.innerHTML = '<option value="">Select an option</option>';
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
@@ -348,17 +348,17 @@
                         // appendOption(toDeptSelect, item.Location_code, item.LocationName);
                         // uniqueValues[item.Location_code] = true;
 
-                        appendOption(fromDeptSelect, item.Location_code, item.LocationName);
-                        uniqueValues[item.Location_code] = true;
+                        // appendOption(fromDeptSelect, item.Location_code, item.LocationName);
+                        // uniqueValues[item.Location_code] = true;
                     }
                     if (!uniqueValues.hasOwnProperty(item.Responsible_employee)) {
                         // appendOption(toUserSelect, item.Responsible_employee, item
                         //     .Responsible_employee);
                         // uniqueValues[item.Responsible_employee] = true;
 
-                        appendOption(fromUserSelect, item.Responsible_employee, item
-                            .Responsible_employee);
-                        uniqueValues[item.Responsible_employee] = true;
+                        // appendOption(fromUserSelect, item.Responsible_employee, item
+                        //     .Responsible_employee);
+                        // uniqueValues[item.Responsible_employee] = true;
                     }
                 });
             })
@@ -373,16 +373,21 @@
                 $('#loading').collapse('hide');
                 // console.log(response)
                 let toDeptSelect = document.getElementById('to_dept_select');
-                // let fromDeptSelect = document.getElementById('from_dept_select');
+                let fromDeptSelect = document.getElementById('from_dept_select');
 
                 // Clear existing options and add an empty option
                 toDeptSelect.innerHTML = '<option value="">Select an option</option>';
-                // fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
+                fromDeptSelect.innerHTML = '<option value="">Select an option</option>';
+
+                // Create an object to keep track of unique values
+                let uniqueValues = {};
 
                 // Append options from Axios response
-                response.data.forEach(function (item) {                    
-                    appendOption(toDeptSelect, item.Code , item.Name);
-                    // appendOption(fromDeptSelect, item.Code , item.Name);
+                response.data.forEach(function (item) {     
+                    if (!uniqueValues.hasOwnProperty(item.Code)) {               
+                        appendOption(toDeptSelect, item.Code , item.Name);
+                        appendOption(fromDeptSelect, item.Code , item.Name);
+                    }
                 });
             })
             .catch(function (error) {
@@ -396,14 +401,23 @@
             .then(function (response) {
                 $('#loading').collapse('hide');
                 let toUserSelect = document.getElementById('to_user_select');
+                let fromUserSelect = document.getElementById('from_user_select');
 
                 // Clear existing options and add an empty option
                 toUserSelect.innerHTML = '<option value="">Select an option</option>';
+                fromUserSelect.innerHTML = '<option value="">Select an option</option>';
+
+                // Create an object to keep track of unique values
+                let uniqueValues = {};
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
-                    appendOption(toUserSelect, item.No_, item
-                        .No_);
+                    if (!uniqueValues.hasOwnProperty(item.No_)) {
+                        appendOption(toUserSelect, item.No_, item
+                            .No_);
+                        appendOption(fromUserSelect, item.No_, item
+                            .No_);
+                    }
                 });
             })
             .catch(function (error) {
