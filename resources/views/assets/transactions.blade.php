@@ -192,6 +192,10 @@
 <script>
     $(document).ready(function () {
 
+        $('.form-prevent-multiple-submits').on('submit', function () {
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
+
         let isMouseDown = false;
         let passwordInput = $("#password");
         let passwordToggleBtn = $("#password-toggle");
