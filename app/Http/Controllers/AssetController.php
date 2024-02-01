@@ -42,7 +42,7 @@ class AssetController extends Controller
             ->whereDate('asset_movements.created_at', today())
             ->join('users', 'asset_movements.user_id', '=', 'users.id')
             ->join('view_depts', 'asset_movements.to_dept', '=', DB::raw('view_depts.Code collate Latvian_BIN'))
-            ->select('asset_movements.*', 'users.username', 'view_depts.Name as dept_name')
+            ->select('asset_movements.*', 'users.username')
             ->orderByDesc('id')
             ->get();
 
