@@ -94,6 +94,7 @@ class AssetController extends Controller
                 'to_user' => $request->to_user,
                 'from_dept' => $request->from_dept,
                 'from_user' => $request->from_user,
+                'authenticated_username' => $request->auth_username,
                 'user_id' => $helpers->authenticatedUserId(),
             ]);
 
@@ -111,9 +112,10 @@ class AssetController extends Controller
     {
         $title = 'Movement History';
 
-        $data = DB::table('asset_movements')
-            ->join('users', 'asset_movements.user_id', '=', 'users.id')
-            ->select('asset_movements.*', 'users.username')
+        $data = DB::table('asset_movements as a')
+            ->join('users', 'a.user_id', '=', 'users.id')
+            ->where('a.status', 1)
+            ->select('a.*', 'users.username')
             ->orderByDesc('id')
             ->get();
 
@@ -140,5 +142,26 @@ class AssetController extends Controller
         });
 
         return response()->json($data);
+    }
+
+    public function cancelMovement(Request $request, Helpers $helpers)
+    {
+        // dd($request->all());
+        try {
+            // update
+            DB::table('asset_movements')
+                ->where('id', $request->item_id)
+                ->update([
+                    'status' => 2, //cancelled
+                    'updated_at' => now(),
+                ]);
+
+            Toastr::success("movement entry for {$request->edit_desc} cancelled successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
     }
 }

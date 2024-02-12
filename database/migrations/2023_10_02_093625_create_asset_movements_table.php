@@ -21,6 +21,8 @@ class CreateAssetMovementsTable extends Migration
             $table->string('to_user'); //receiving user
             $table->string('from_dept');
             $table->string('from_user');
+            $table->string('authenticated_username')->nullable();
+            $table->smallInteger('status')->default(1);
             $table->foreignId('user_id')->constrained('users'); //maker
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

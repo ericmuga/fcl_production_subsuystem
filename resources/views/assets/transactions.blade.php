@@ -103,6 +103,7 @@
                         <span class="text-success" id="succ"></span>
                     </div>
                     <input type="hidden" id="auth_val" value="0">
+                    <input type="hidden" class="form-control" id="auth_user" name="auth_username" value="">
                     <div class="row form-group text-center" style="padding-top: 5%; padding-left: 40%">
                         <button type="submit" onclick="return validateOnSubmit()" id="save_btn"
                             class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
@@ -144,6 +145,8 @@
                                 <th>From User</th>
                                 <th>From Dept</th>
                                 <th>Created By</th>
+                                <th>Autheticated user</th>
+                                <th>Status</th>
                                 <th>Created Date </th>
                             </tr>
                         </thead>
@@ -157,6 +160,8 @@
                                 <th>From User</th>
                                 <th>From Dept</th>
                                 <th>Created By</th>
+                                <th>Autheticated user</th>
+                                <th>Status</th>
                                 <th>Created Date </th>
                             </tr>
                         </tfoot>
@@ -164,13 +169,33 @@
                             @foreach($entries as $e)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $e->fa }}</td>
+                                    @if ($e->status == 1)
+                                        <td id="editIdtModalShow" data-id="{{ $e->id }}"
+                                            data-desc="{{ $e->description }}"
+                                            data-to_user="{{ $e->to_user }}"
+                                            data-to_dept="{{ $e->to_dept }}"
+                                            data-from_user="{{ $e->from_user }}"
+                                            data-from_dept="{{ $e->from_dept }}"
+                                            data-auth_user="{{ $e->authenticated_username }}"
+                                            data-created_by="{{ $e->username }}"><a href="#">{{ $e->fa }}</a>
+                                        </td>
+                                    @else
+                                        <td>{{ $e->fa }}</td>
+                                    @endif
                                     <td>{{ $e->description }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->to_dept }}</td>
                                     <td>{{ $e->from_user }}</td>
                                     <td>{{ $e->from_dept }}</td>
                                     <td>{{ $e->username }}</td>
+                                    <td>{{ $e->authenticated_username }}</td>
+                                    <td>
+                                        @if ($e->status == 2)
+                                        <span class="badge badge-danger">cancelled</span>
+                                        @else
+                                         <span class="badge badge-success">unedited</span>   
+                                        @endif
+                                    </td>
                                     <td>{{ \Carbon\Carbon::parse($e->created_at)->format('d/m/Y H:i') }}
                                     </td>
                                 </tr>
@@ -184,7 +209,97 @@
         <!-- /.card -->
         <!-- /.col -->
     </div>
-</div><br>
+</div>
+
+<!-- Cancel Modal -->
+<div id="editIdtModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <!--Start create user modal-->
+        <form class="form-prevent-multiple-submits" id="form-edit-role"
+            action="{{ route('assets_cancel_trans') }}" method="post">
+            @csrf
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Cancel Asset Movement for Movement No: <strong><input
+                                style="border:none" type="text" id="edit_desc" name="edit_desc" value="" readonly></strong>
+                    </h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="card-group">
+                        <div class="card">
+                            <h5><strong>Transfer To:</strong></h5>
+                            <div class="card-body" style="">
+                                <div class="form-group">
+                                    <div class="row mb-3">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label"> user </label>
+                                        <div class="col-sm-8">
+                                            <input type="text" readonly class="form-control" value="" id="edit_to_user"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label"> Dept </label>
+                                        <div class="col-sm-8">
+                                            <input type="text" readonly class="form-control" value="" id="edit_to_dept"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h5><strong>Transfer From:</strong></h5>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <div class="row mb-3">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label"> user </label>
+                                        <div class="col-sm-8">
+                                            <input type="text" readonly class="form-control" value="" id="edit_from_user"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <label for="inputEmail3" class="col-sm-4 col-form-label"> Dept </label>
+                                        <div class="col-sm-8">
+                                            <input type="text" readonly class="form-control" value="" id="edit_from_dept"
+                                                placeholder="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h5><strong>Authenticating User:</strong></h5>
+                            <div class="card-body text-center form-group">
+                                <div class="row mb-3">
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label"> Username </label>
+                                    <div class="col-sm-8">
+                                        <input type="text" readonly class="form-control" value="" id="edit_auth_user"
+                                            placeholder="">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="item_id" name="item_id" value="">
+                <div class="modal-footer">
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
+                            onclick="return validateOnEditSubmit()" type="submit">
+                            <i class="fa fa-save"></i> Cancel Movement
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!--End Edit scale1 modal-->
 
 @endsection
 
@@ -238,6 +353,28 @@
             $('#from_dept_select').select2('destroy').select2();
             $('#from_user_select').select2('destroy').select2();
         });
+
+        $("body").on("click", "#editIdtModalShow", function (e) {
+            e.preventDefault();
+
+            let id = $(this).data('id');
+            let desc = $(this).data('desc');
+            let to_user = $(this).data('to_user');
+            let to_dept = $(this).data('to_dept');
+            let from_user = $(this).data('from_user');
+            let from_dept = $(this).data('from_dept');
+            let auth_user = $(this).data('auth_user');
+
+            $('#item_id').val(id);
+            $('#edit_desc').val(desc);
+            $('#edit_to_user').val(to_user);
+            $('#edit_to_dept').val(to_dept);
+            $('#edit_from_user').val(from_user);
+            $('#edit_from_dept').val(from_dept);
+            $('#edit_auth_user').val(auth_user);
+
+            $('#editIdtModal').modal('show');
+        });
     });
 
     const setUserMessage = (field_succ, field_err, message_succ, message_err) => {
@@ -270,6 +407,11 @@
         $("#auth_val").val(status);
     }
 
+    const setValidatedUsername = (username) => {
+        $("#auth_user").val(username);
+        $("#receipt_user").prop('disabled', true);
+    }
+
     const validateUser = (username, password) => {
         const url = "/asset/check-user"
 
@@ -288,6 +430,7 @@
                     if (obj.success == true) {
                         setUserMessage('succ', 'err', 'validated receiver', '')
                         setUserValidity(1)
+                        setValidatedUsername(request_data.username)
                         checkValidUserValue()
                     } else {
                         setUserMessage('succ', 'err', '', 'Wrong credentials')

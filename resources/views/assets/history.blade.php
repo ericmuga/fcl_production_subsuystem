@@ -30,6 +30,7 @@
                                 <th>From Employee </th>
                                 <th>Assigned Employee</th>
                                 <th>Employee Dept</th>
+                                <th>Status</th>
                                 <th>Date </th>
                             </tr>
                         </thead>
@@ -42,6 +43,7 @@
                                 <th>From Employee </th>
                                 <th>Assigned Employee</th>
                                 <th>Employee Dept</th>
+                                <th>Status</th>
                                 <th>Date </th>
                         </tfoot>
                         <tbody>
@@ -54,6 +56,13 @@
                                     <td>{{ $e->from_user }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->to_dept }}</td>
+                                    <td>
+                                        @if ($e->status == 2)
+                                        <span class="badge badge-danger">cancelled</span>
+                                        @else
+                                         <span class="badge badge-success">unedited</span>   
+                                        @endif
+                                    </td>
                                     <td>{{ \Carbon\Carbon::parse($e->created_at)->format('d/m/Y H:i') }}
                                 </tr>
                             @endforeach

@@ -227,6 +227,7 @@ Route::prefix('asset')->group(function () {
     Route::get('/dashboard', [AssetController::class, 'index'])->name('assets_dashboard');
     Route::get('/create', [AssetController::class, 'createMovement'])->name('create_movement');
     Route::post('/save', [AssetController::class, 'saveMovement'])->name('save_movement');
+    Route::post('/cancel', [AssetController::class, 'cancelMovement'])->name('assets_cancel_trans');
     Route::get('/fetch-data', [AssetController::class, 'fetchData'])->name('assets_fetch_data');
     Route::get('/fetch-depts', [AssetController::class, 'fetchDeptsData'])->name('assets_fetch_depts');
     Route::get('/fetch-employees', [AssetController::class, 'getAssetEmployeeList'])->name('assets_fetch_employees');
