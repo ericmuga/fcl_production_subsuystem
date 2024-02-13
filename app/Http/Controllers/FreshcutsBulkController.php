@@ -117,7 +117,7 @@ class FreshcutsBulkController extends Controller
                 DB::table('idt_transfers')->insert([
                     'product_code' => $request->product,
                     'location_code' => $location, //transfer to dispatch default
-                    'chiller_code' => $request->chiller_code,
+                    'chiller_code' => $request->chiller_code ?: 'C',
                     'total_pieces' => $request->no_of_pieces ?: 0,
                     'total_weight' => $request->net,
                     'total_crates' => $request->no_of_crates ?: 0,
