@@ -52,7 +52,8 @@ class AssetController extends Controller
     public function fetchData()
     {
         $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
-            return DB::table('view_assets')
+            return DB::table('view_assets as a')
+                ->where('a.FA Class Code', 'CE')
                 ->get();
         });
 
@@ -127,11 +128,12 @@ class AssetController extends Controller
         $title = 'Asset List';
 
         $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
-            return DB::table('view_assets')
+            return DB::table('view_assets as a')
+                ->where('a.FA Class Code', 'CE')
                 ->get();
         });
 
-        return view('assets.history', compact('data', 'title'));
+        return view('assets.asset-list', compact('data', 'title'));
     }
 
     public function getAssetEmployeeList()
