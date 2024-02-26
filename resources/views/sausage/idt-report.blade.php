@@ -26,8 +26,10 @@
                                 <th>Total Crates</th>
                                 <th>Full Crates</th>
                                 <th>Incomplete Crate Pieces</th>
-                                <th>Total Pieces</th>
-                                <th>Total Weight</th>
+                                <th>Issued Pieces</th>
+                                <th>Issued Weight</th>
+                                <th>Received Pieces</th>
+                                <th>Received Weight</th>
                                 <th>Batch No</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
@@ -47,8 +49,10 @@
                                 <th>Total Crates</th>
                                 <th>Full Crates</th>
                                 <th>Incomplete Crate Pieces</th>
-                                <th>Total Pieces</th>
-                                <th>Total Weight</th>
+                                <th>Issued Pieces</th>
+                                <th>Issued Weight</th>
+                                <th>Received Pieces</th>
+                                <th>Received Weight</th>
                                 <th>Batch No</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
@@ -71,6 +75,8 @@
                                 <td>{{ $data->incomplete_crate_pieces }}</td>
                                 <td>{{ $data->total_pieces }}</td>
                                 <td>{{ $data->total_weight }}</td>
+                                <td>{{ number_format($data->receiver_total_pieces, 2) }}</td>
+                                <td>{{ number_format($data->receiver_total_weight, 2) }}</td>
                                 <td>{{ $data->batch_no }}</td>
                                 @if($data->username )
                                     <td>{{ $data->username }}</td>
