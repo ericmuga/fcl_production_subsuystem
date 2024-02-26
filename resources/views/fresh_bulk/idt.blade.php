@@ -376,14 +376,19 @@
             let element_recv = document.getElementById("receiver_div")
 
             // Check if the selected value is '3535' (Despatch)
-            if ($(this).val() == '3535') {
+            if ($(this).val() == '3535' || $(this).val() == '2055') {
                 // Enable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = false;
                 $('#transfer_type').val('');   
                 
-                //hide receiver_div
+                // hide receiver_div
                 element_recv.setAttribute("hidden", "hidden");
                 $('#receiver_id').prop('required', false);
+
+                // remove chiller code when its sausage
+                if ($(this).val() == '2055') {
+                    $('#chiller_code').prop('required', false);
+                }
             } else {
                 // Disable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = true;
