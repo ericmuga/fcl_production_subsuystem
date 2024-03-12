@@ -138,10 +138,8 @@ class AssetController extends Controller
 
     public function getAssetEmployeeList()
     {
-        $data = Cache::remember('asset_employees', now()->addMinutes(120), function () {
-            return DB::table('view_employees')
-                ->get();
-        });
+        $data = DB::table('view_employees')
+            ->get();
 
         return response()->json($data);
     }
