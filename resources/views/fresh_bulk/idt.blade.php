@@ -437,6 +437,24 @@
             transferToControlHandler(product_code)
             fetchTransferToLocations(product_code);
         });
+
+        $(document).on('input change', '#no_of_pieces', function () {
+            let pieces = $(this).val()
+            let product_code = $('#product').val()
+            let qtyMeasure = 5;
+
+            if (product_code == 'J31100268' ) {
+                qtyMeasure=2                    
+            } 
+
+            if (product_code == 'J31100268' || product_code == 'J31100272') {  
+                if (pieces) {                    
+                    let new_weight = weightAutoCalculation(pieces, qtyMeasure)                
+                    //update weight readings
+                    $('#reading').val(new_weight);
+                } 
+            }
+        });
         
         $('#manual_weight').change(function () {
             var manual_weight = document.getElementById('manual_weight');
@@ -511,6 +529,10 @@
         return str.startsWith(character);
     }
 
+    const weightAutoCalculation = (pieces, qty_measure) => {
+        return parseInt(pieces) * parseInt(qty_measure)
+    }
+
     const transferToControlHandler = (product_code) => {
         const transferToSelect = document.getElementById('transfer_to');
 
@@ -568,6 +590,10 @@
         let tare = $('#carriage_type').val()
         let no_of_crates = $('#no_of_crates').val()
         let black_crates = $('#black_crates').val()
+
+        if (tare == null || no_of_crates == null || black_crates == null) {
+            return 0
+        }
 
         if (tare == 1.8 && (no_of_crates == '' || black_crates == '')) {
             alert('please enter total crates and black crates count')
