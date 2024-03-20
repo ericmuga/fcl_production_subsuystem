@@ -30,6 +30,7 @@
                                 <th>From Employee </th>
                                 <th>Assigned Employee</th>
                                 <th>Employee Dept</th>
+                                <th>Authenticated username</th>
                                 <th>Status</th>
                                 <th>Date </th>
                             </tr>
@@ -43,6 +44,7 @@
                                 <th>From Employee </th>
                                 <th>Assigned Employee</th>
                                 <th>Employee Dept</th>
+                                <th>Authenticated username</th>
                                 <th>Status</th>
                                 <th>Date </th>
                         </tfoot>
@@ -56,6 +58,7 @@
                                     <td>{{ $e->from_user }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->to_dept }}</td>
+                                    <td>{{ $e->authenticated_username }}</td>
                                     <td>
                                         @if ($e->status == 2)
                                         <span class="badge badge-danger">cancelled</span>
