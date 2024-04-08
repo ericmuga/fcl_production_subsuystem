@@ -91,6 +91,20 @@ return [
             'prefix_indexes' => true,
         ],
 
+        'main' => [
+            'driver' => env('DB_CONNECTION_MAIN'),
+            'host' => env('DB_HOST_MAIN'),
+            'port' => env('DB_PORT_MAIN'),
+            'database' => env('DB_DATABASE_MAIN'),
+            'username' => env('DB_USERNAME_MAIN'),
+            'password' => env('DB_PASSWORD_MAIN'),
+            'charset' => 'utf8mb4',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'collation' => 'utf8mb4_unicode_ci',
+            // ...
+        ],
+
     ],
 
     /*

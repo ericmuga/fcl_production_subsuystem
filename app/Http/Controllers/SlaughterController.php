@@ -248,6 +248,64 @@ class SlaughterController extends Controller
         return view('slaughter.missing_slapmarks', compact('title', 'slaps', 'helpers'));
     }
 
+    public function pendingEtimsData(Helpers $helpers)
+    {
+        $title = "Purchases for Etims Update";
+
+       $results = Cache::remember('pendings_for_etims', now()->addHours(2), function () {
+            return DB::connection('main')->table('FCL$Purch_ Inv_ Header as a')
+                ->select(
+                DB::raw('a.[Buy-from Vendor No_] as vendor_no'),
+                DB::raw('a.[Buy-from Vendor Name] as vendor_name'),
+                DB::raw('a.[Your Reference] as settlement_no'),
+                DB::raw('SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END) AS totalWeight'),
+                DB::raw('COALESCE(SUM(b.Amount), 0) - 
+                    (SELECT ISNULL(SUM(Amount), 0) 
+                        FROM [FCL$Purch_ Cr_ Memo Line] as c 
+                        INNER JOIN [FCL$Purch_ Cr_ Memo Hdr_] as d 
+                            ON d.No_ = c.[Document No_] 
+                            AND d.[Your Reference] = a.[Your Reference]) AS netAmount'),
+                DB::raw('(COALESCE(SUM(b.Amount), 0) - 
+                    (SELECT ISNULL(SUM(Amount), 0) 
+                        FROM [FCL$Purch_ Cr_ Memo Line] as c 
+                        INNER JOIN [FCL$Purch_ Cr_ Memo Hdr_] as d 
+                            ON d.No_ = c.[Document No_] 
+                            AND d.[Your Reference] = a.[Your Reference])) / 
+                    (SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END)) AS unitPrice')
+            )
+            ->join('FCL$Purch_ Inv_ Line as b', 'a.No_', '=', 'b.Document No_')
+            ->where('a.Vendor Posting Group', '=', 'PIGFARMERS')
+            ->where('a.Buy-from County', '=', '')
+            ->where('a.Posting Date', '>=', '2024-04-01 00:00:00.000')
+            ->groupBy('a.Your Reference', 'a.Buy-from Vendor No_', 'a.Buy-from Vendor No_', 'a.Buy-from Vendor Name', 'a.Your Reference')
+            ->orderBy('a.Buy-from Vendor No_')
+            ->get();
+        });        
+
+        return view('slaughter.pending-etims', compact('title', 'results', 'helpers'));
+    }
+
+    public function updatePendingEtimsData(Request $request, Helpers $helpers)
+    {
+        try {
+            // update
+            info($request->item_name);
+            DB::connection('main')
+                ->table('FCL$Purch_ Inv_ Header')
+                ->where('Your Reference', $request->item_name) // Use column name directly without alias
+                ->update([
+                    'Buy-from County' => $request->cu_inv_no,
+                ]);
+
+            Toastr::success("Purchase Invoice no for  {$request->item_name} updated successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            $helpers->CustomErrorlogger($e->getMessage());
+            return back();
+        }
+    }
+
     public function importedReceipts(Helpers $helpers)
     {
         $title = "receipts";
