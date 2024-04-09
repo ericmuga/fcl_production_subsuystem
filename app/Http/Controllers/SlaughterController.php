@@ -288,14 +288,25 @@ class SlaughterController extends Controller
     public function updatePendingEtimsData(Request $request, Helpers $helpers)
     {
         try {
-            // update
-            info($request->item_name);
-            DB::connection('main')
-                ->table('FCL$Purch_ Inv_ Header')
-                ->where('Your Reference', $request->item_name) // Use column name directly without alias
-                ->update([
-                    'Buy-from County' => $request->cu_inv_no,
-                ]);
+            
+            info($request->item_name.':'.$request->cu_inv_no);            
+            $helpers->forgetCache('pendings_for_etims');
+
+            DB::transaction(function () use ($request, $helpers) {
+                DB::connection('main')
+                    ->table('FCL$Purch_ Inv_ Header')
+                    ->where('Your Reference', $request->item_name) // Use column name directly without alias
+                    ->update([
+                        'Buy-from County' => $request->cu_inv_no,
+                    ]);
+                
+                DB::table('settlement_purchase_invoices')
+                    ->insert([
+                        'settlement_no' => $request->item_name,
+                        'cu_inv_no' => $request->cu_inv_no,
+                        'user_id' => $helpers->authenticatedUserId()
+                    ]);
+            });
 
             Toastr::success("Purchase Invoice no for  {$request->item_name} updated successfully", 'Success');
             return redirect()->back();

@@ -6,7 +6,8 @@
     <div class="col-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Settlements Pending Etims Update| <span id="subtext-h1-title"><small> Update Per settlement</small> </span></h3>
+                <h3 class="card-title">Settlements Pending Etims Update| <span id="subtext-h1-title"><small> Update Per
+                            settlement</small> </span></h3>
             </div>
             <!-- /.card-header -->
             <div class="card-body">
@@ -15,9 +16,9 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Settlement No </th>
                                 <th>Vendor No.</th>
                                 <th>Vendor Name </th>
-                                <th>Settlement No </th>
                                 <th>Total Weight </th>
                                 <th>Unit Price</th>
                                 <th>Net Amount</th>
@@ -27,9 +28,9 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
+                                <th>Settlement No </th>
                                 <th>Vendor No.</th>
                                 <th>Vendor Name </th>
-                                <th>Settlement No </th>
                                 <th>Total Weight </th>
                                 <th>Unit Price</th>
                                 <th>Net Amount</th>
@@ -38,21 +39,21 @@
                         </tfoot>
                         <tbody>
                             @foreach($results as $data)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->vendor_no }}</td>
-                                <td>{{ $data->vendor_name }}</td>
-                                <td>{{ $data->settlement_no }}</td>
-                                <td>{{ $data->totalWeight }}</td>
-                                <td>{{ $data->unitPrice }}</td>
-                                <td>{{ $data->netAmount }}</td>
-                                <td>
-                                    <button type="button" data-settlement_ref="{{ $data->settlement_no }}" 
-                                        class="btn btn-primary btn-sm " id="editScaleModalShow"><i
-                                            class="nav-icon fas fa-edit"></i>
-                                        Edit</button>
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $data->settlement_no }}</td>
+                                    <td>{{ $data->vendor_no }}</td>
+                                    <td>{{ $data->vendor_name }}</td>
+                                    <td>{{ number_format(floatval($data->totalWeight), 2) }}</td>
+                                    <td>{{ number_format(floatval($data->unitPrice), 2) }}</td>
+                                    <td>{{ number_format(floatval($data->netAmount), 2) }}</td>
+                                    <td>
+                                        <button type="button" data-settlement_ref="{{ $data->settlement_no }}"
+                                            class="btn btn-primary btn-sm " id="editScaleModalShow"><i
+                                                class="nav-icon fas fa-edit"></i>
+                                            Edit</button>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -69,12 +70,14 @@
 <div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" class="form-prevent-multiple-submits" action="{{ route('update_pending_etims') }}" method="post">
+        <form id="form-edit-scale" class="form-prevent-multiple-submits"
+            action="{{ route('update_pending_etims') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Update eTims for Settlement: <code><strong><input style="border:none"
-                                    type="text" id="item_name" name="item_name" readonly></strong></code></h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Update eTims for Settlement: <code><strong><input
+                                    style="border:none" type="text" id="item_name" name="item_name"
+                                    readonly></strong></code></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -82,8 +85,8 @@
                 <div class="modal-body">
                     <div class="row">
                         <label for="cu_inv_no">Cu Invoice No:</label>
-                        <input type="text" class="form-control" id="cu_inv_no" name="cu_inv_no" value=""
-                            required>
+                        <input type="text" class="form-control" id="cu_inv_no" name="cu_inv_no" autocomplete="off"
+                            value="" required>
                     </div>
                 </div>
                 <div class="modal-footer">
