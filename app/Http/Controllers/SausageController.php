@@ -464,7 +464,7 @@ class SausageController extends Controller
                 ->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
-            $helpers->CustomErrorlogger($e);
+            $helpers->CustomErrorlogger($e->getMessage(),  __FUNCTION__);
             return back()
                 ->withInput();
         }

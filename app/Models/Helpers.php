@@ -338,8 +338,8 @@ class Helpers
         return 1;
     }
 
-    public function CustomErrorlogger($e)
+    public function CustomErrorlogger($e, $function_name)
     {
-        Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
+        Log::error('An exception occurred in ' .$function_name, ['exception' => $e]);
     }
 }

@@ -312,7 +312,7 @@ class SlaughterController extends Controller
             return redirect()->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
-            $helpers->CustomErrorlogger($e->getMessage());
+            $helpers->CustomErrorlogger($e->getMessage(),  __FUNCTION__);
             return back();
         }
     }
