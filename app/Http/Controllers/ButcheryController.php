@@ -378,11 +378,17 @@ class ButcheryController extends Controller
     {
         try {
             // update
-            DB::transaction(function () use ($request, $helpers) {
+            $process_code = 0; //Behead Pig
+            if ($request->edit_carcass == 'G1031') {
+                $process_code = 1; //Behead sow
+            }
+
+            DB::transaction(function () use ($request, $helpers, $process_code) {
                 DB::table('beheading_data')
                     ->where('id', $request->item_id1)
                     ->update([
                         'item_code' => $request->edit_carcass,
+                        'process_code' => $process_code,
                         'no_of_carcass' => $request->edit_no_carcass,
                         'actual_weight' => $request->edit_weight1,
                         'net_weight' => $request->edit_weight1 - 2.4,
