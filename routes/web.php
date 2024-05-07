@@ -61,6 +61,7 @@ Route::post('/slaughter/save-missing', [SlaughterController::class, 'saveMissing
 Route::get('/slaughter/missing-slaps', [SlaughterController::class, 'missingSlapData'])->name('missing_slap_data');
 Route::get('/slaughter/pending-etims', [SlaughterController::class, 'pendingEtimsData'])->name('pending_etims');
 Route::post('/slaughter/update-pending-etims', [SlaughterController::class, 'updatePendingEtimsData'])->name('update_pending_etims');
+Route::post('/send-sms', [SlaughterController::class, 'sendSmsCurl'])->name('send_sms');
 Route::get('/slaughter/receipts', [SlaughterController::class, 'importedReceipts'])->name('slaughter_receipts');
 Route::post('/slaughter/import-receipts', [SlaughterController::class, 'importReceipts'])->name('slaughter_import_receipts');
 Route::get('/slaughter/data-report', [SlaughterController::class, 'slaughterDataReport'])->name('slaughter_data_report');
