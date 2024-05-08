@@ -365,6 +365,17 @@ class SlaughterController extends Controller
         return $response;
     }
 
+    public function updateSmsSentStatus(Request $request)
+    {
+        $settlementNo = $request->input('settlement_no');
+
+        DB::connection('main')->table('FCL$Purch_ Inv_ Header')
+            ->where('Your Reference', $settlementNo)
+            ->update(['Uncommitted' => true]);
+
+        return response()->json(['success' => true, 'message' => 'SMS status for'.$settlementNo.' updated successfully']);
+    }
+
     public function importedReceipts(Helpers $helpers)
     {
         $title = "receipts";

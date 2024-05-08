@@ -156,7 +156,7 @@
                     <div class="form-group">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button id="sendSms" class="btn btn-warning btn-lg btn-prevent-multiple-submits">
-                            <i class="fa fa-save"></i> Update
+                            <i class="fa fa-save"></i> Confirm Send
                         </button>
                     </div>
                 </div>
@@ -220,7 +220,7 @@
 
             /// Retrieve the stored button element
             let btnElement = $('#btn_elem').data('btnElem');
-            // alert(btnElement)
+
             sendSMS(btnElement);
         });
 
@@ -229,9 +229,23 @@
     const updateButton = (btnElement) => {
         // Update button text
         $(btnElement).text('Resend?');
-        
+
         // Update the <p> tag
         $(btnElement).closest('td').find('p').removeClass('text-warning').addClass('text-success').text('Yes');
+    }
+
+    const updateSmsSentStatus = (settlement_no) => {
+        console.log('to update: '+settlement_no)
+        // Make an Axios request to update the SMS sent status
+        axios.post('/update-sms-sent-status', {
+            settlement_no: settlement_no
+        })
+        .then(response => {
+            console.log('SMS sent status updated successfully:', response.data);
+        })
+        .catch(error => {
+            console.error('Error updating SMS sent status:', error);
+        });
     }
 
     const sendSMS = (btnElement) => {
@@ -268,21 +282,33 @@
 
         console.log(requestBody)
 
+        // Disable the button
+        $('#sendSms').prop('disabled', true);
+
+        // Replace button text with spinner
+        $('#sendSms').html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sending...');
+
         axios.post(url, requestBody)
             .then(response => {
                 if(response.data.ErrorCode == 0) {
                     // Handle success response here
                     console.log('Request successful:', response);
 
+                    // Update button text and re-enable button
+                    $('#sendSms').html('<i class="fa fa-save"></i> Confirm Send').prop('disabled', false);
+
                     // Update the button text or do other actions
                     updateButton(btnElement);
-                    
+                    updateSmsSentStatus(settlementNo);
+
                     $('#sendSMSModal').modal('hide'); 
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                // Handle error here
+
+                // Re-enable the button on error
+                $('#sendSms').prop('disabled', false);
             });
     }
 
