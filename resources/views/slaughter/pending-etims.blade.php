@@ -258,7 +258,7 @@
 
         const sendToNo = document.getElementById('send_to_number').value;
         // const phoneNumberWithCountryCode = '254' + sendToNo.slice(-9);
-        const phoneNumberWithCountryCode = '254724401515';
+        const phoneNumberWithCountryCode = '254720816931';
         const settlementNo = document.getElementById('settlement_ref').value;
         const qty = document.getElementById('weight').value;
         const unitPrice = document.getElementById('price').value;

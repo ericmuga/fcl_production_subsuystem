@@ -305,7 +305,7 @@ class SlaughterController extends Controller
     {
         try {
             
-            info($request->item_name.':'.$request->cu_inv_no);            
+            // info($request->item_name.':'.$request->cu_inv_no);            
             $helpers->forgetCache('pendings_for_etims');
 
             DB::transaction(function () use ($request, $helpers) {
@@ -361,7 +361,7 @@ class SlaughterController extends Controller
         }
         
         curl_close($curl);
-        info($response);
+        // info($response);
         return $response;
     }
 
