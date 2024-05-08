@@ -149,6 +149,7 @@
                         <input type="" id="weight" value="">
                         <input type="" id="price" value="">
                         <input type="" id="amount" value="">
+                        <input type="" name="btn_elem" id="btn_elem" value="">
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -200,24 +201,40 @@
             var weight = $(this).data('weight');
             var unitPrice = $(this).data('unit_price');
             var total = $(this).data('total');
-
+            
             $('#send_to_number').val(phonenumber);
             $('#settlement_ref').val(settlementNo);
             $('#weight').val(weight);
             $('#price').val(unitPrice);
             $('#amount').val(total);
+
+            // Store the button element 
+            $('#btn_elem').data('btnElem', $(this));
             
             $('#sendSMSModal').modal('show');
         });
 
-        $('#sendSms').on("click", function(a){
-            a.preventDefault()
-            sendSMS()
-        })
+        // Button click event handler
+        $(document).on("click", "#sendSms", function(e) {
+            e.preventDefault();
+
+            /// Retrieve the stored button element
+            let btnElement = $('#btn_elem').data('btnElem');
+            // alert(btnElement)
+            sendSMS(btnElement);
+        });
 
     });
 
-    const sendSMS = () => {
+    const updateButton = (btnElement) => {
+        // Update button text
+        $(btnElement).text('Resend?');
+        
+        // Update the <p> tag
+        $(btnElement).closest('td').find('p').removeClass('text-warning').addClass('text-success').text('Yes');
+    }
+
+    const sendSMS = (btnElement) => {
 
         const url = '/send-sms'
         const senderId = "{{ config('app.sms_sender_id')}}"
@@ -226,7 +243,8 @@
         const whatsappNo = "{{ config('app.sms_whatsapp_no') }}"
 
         const sendToNo = document.getElementById('send_to_number').value;
-        const phoneNumberWithCountryCode = '254' + sendToNo.slice(-9);
+        // const phoneNumberWithCountryCode = '254' + sendToNo.slice(-9);
+        const phoneNumberWithCountryCode = '254724401515';
         const settlementNo = document.getElementById('settlement_ref').value;
         const qty = document.getElementById('weight').value;
         const unitPrice = document.getElementById('price').value;
@@ -252,8 +270,15 @@
 
         axios.post(url, requestBody)
             .then(response => {
-                console.log('Request successful:', response);
-                // Handle success response here
+                if(response.data.ErrorCode == 0) {
+                    // Handle success response here
+                    console.log('Request successful:', response);
+
+                    // Update the button text or do other actions
+                    updateButton(btnElement);
+                    
+                    $('#sendSMSModal').modal('hide'); 
+                }
             })
             .catch(error => {
                 console.error('Error:', error);

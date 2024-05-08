@@ -350,14 +350,17 @@ class SlaughterController extends Controller
             CURLOPT_HTTPHEADER => array(
                 'Content-Type: application/json'
             ),
+            CURLOPT_SSL_VERIFYPEER => false, // Disable SSL certificate verification
+            CURLOPT_SSL_VERIFYHOST => false
         ));
 
         $response = curl_exec($curl);
-
-        info($request->all());
-
+        if (curl_errno($curl)) {
+            $error_msg = curl_error($curl);
+            info("CURL Error: {$error_msg}");
+        }
+        
         curl_close($curl);
-        info('response:');
         info($response);
         return $response;
     }
