@@ -257,8 +257,8 @@
         const whatsappNo = "{{ config('app.sms_whatsapp_no') }}"
 
         const sendToNo = document.getElementById('send_to_number').value;
-        // const phoneNumberWithCountryCode = '254' + sendToNo.slice(-9);
-        const phoneNumberWithCountryCode = '254720816931';
+        const phoneNumberWithCountryCode = '254' + sendToNo.slice(-9);
+        // const phoneNumberWithCountryCode = '254721914529';
         const settlementNo = document.getElementById('settlement_ref').value;
         const qty = document.getElementById('weight').value;
         const unitPrice = document.getElementById('price').value;
@@ -268,7 +268,7 @@
         const messageParameters = [
             {
                 Number: `${phoneNumberWithCountryCode}`,
-                Text: `${settlementNo} CONFIRMED. GET eTIMS Invoice on *222#, share by WhatsApp on ${whatsappNo} by 9am.P051521001E, Qty:${qty} Price: ${unitPrice} Amount: ${amount}`
+                Text: `${settlementNo} CONFIRMED. GET eTIMS Invoice on *222#, share by WhatsApp on ${whatsappNo} by 9am.P000592722P, Qty:${qty} Price: ${unitPrice} Amount: ${amount}`
             }
         ];
 
