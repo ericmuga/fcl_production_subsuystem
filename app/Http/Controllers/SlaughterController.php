@@ -252,51 +252,47 @@ class SlaughterController extends Controller
     {
         $title = "Purchases for Etims Update";
 
-       $results = 
-    //    Cache::remember('pendings_for_etims', now()->addHours(2), function () {
-            // return 
-            DB::connection('main')->table('FCL$Purch_ Inv_ Header as a')
-                ->select(
-                    'v.Phone No_ as phonenumber',
-                    'a.Uncommitted as is_sms_sent',
-                    DB::raw('a.[Buy-from Vendor No_] as vendor_no'),
-                    DB::raw('a.[Buy-from Vendor Name] as vendor_name'),
-                    DB::raw('a.[Your Reference] as settlement_no'),
-                    DB::raw('SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END) AS totalWeight'),
-                    DB::raw('COALESCE(SUM(b.Amount), 0) - 
-                        (SELECT ISNULL(SUM(Amount), 0) 
-                            FROM [FCL$Purch_ Cr_ Memo Line] as c 
-                            INNER JOIN [FCL$Purch_ Cr_ Memo Hdr_] as d 
-                                ON d.No_ = c.[Document No_] 
-                                AND RIGHT(d.[Vendor Cr_ Memo No_], 2) <> \'-R\'
-                                AND d.[Your Reference] = a.[Your Reference]) AS netAmount'),
-                        DB::raw('(CASE WHEN SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END) = 0 THEN 0 ELSE
-                            (COALESCE(SUM(b.Amount), 0) - 
-                                (SELECT ISNULL(SUM(Amount), 0) 
-                                    FROM [FCL$Purch_ Cr_ Memo Line] as c 
-                                    INNER JOIN [FCL$Purch_ Cr_ Memo Hdr_] as d 
-                                        ON d.No_ = c.[Document No_] 
-                                        AND d.[Your Reference] = a.[Your Reference])) / 
-                            (SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END)) END) AS unitPrice')
+       $results = DB::connection('main')->table('FCL$Purch_ Inv_ Header as a')
+            ->select(
+                'v.Phone No_ as phonenumber',
+                'a.Uncommitted as is_sms_sent',
+                DB::raw('a.[Buy-from Vendor No_] as vendor_no'),
+                DB::raw('a.[Buy-from Vendor Name] as vendor_name'),
+                DB::raw('a.[Your Reference] as settlement_no'),
+                DB::raw('SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END) AS totalWeight'),
+                DB::raw('COALESCE(SUM(b.Amount), 0) - 
+                    (SELECT ISNULL(SUM(Amount), 0) 
+                        FROM [FCL$Purch_ Cr_ Memo Line] as c 
+                        INNER JOIN [FCL$Purch_ Cr_ Memo Hdr_] as d 
+                            ON d.No_ = c.[Document No_] 
+                            AND RIGHT(d.[Vendor Cr_ Memo No_], 2) <> \'-R\'
+                            AND d.[Your Reference] = a.[Your Reference]) AS netAmount'),
+                    DB::raw('(CASE WHEN SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END) = 0 THEN 0 ELSE
+                        (COALESCE(SUM(b.Amount), 0) - 
+                            (SELECT ISNULL(SUM(Amount), 0) 
+                                FROM [FCL$Purch_ Cr_ Memo Line] as c 
+                                INNER JOIN [FCL$Purch_ Cr_ Memo Hdr_] as d 
+                                    ON d.No_ = c.[Document No_] 
+                                    AND d.[Your Reference] = a.[Your Reference])) / 
+                        (SUM(CASE WHEN b.[Type] <> 1 THEN b.Quantity ELSE 0 END)) END) AS unitPrice')
 
-            )
-            ->join('FCL$Purch_ Inv_ Line as b', 'a.No_', '=', 'b.Document No_')
-            ->join('FCL$Vendor as v', 'a.Pay-to Vendor No_', '=', 'v.No_')
-            ->where('a.Vendor Posting Group', '=', 'PIGFARMERS')
-            ->where('a.Buy-from County', '=', '')
-            ->where('a.Posting Date', '>=', '2024-05-02 00:00:00.000')
-            ->where('a.Your Reference', '<>', '')
-            ->where(function ($query) {
-                $query->whereRaw('(
-                    SELECT COUNT(*) 
-                    FROM [FCL$Purch_ Cr_ Memo Hdr_] as e 
-                    WHERE e.[Vendor Cr_ Memo No_] = CONCAT(a.[Your Reference], \'-R\')
-                ) = 0');
-            })
-            ->groupBy('a.Your Reference', 'a.Buy-from Vendor No_', 'v.Phone No_', 'a.Buy-from Vendor No_', 'a.Buy-from Vendor Name', 'a.Your Reference', 'a.Uncommitted')
-            ->orderBy('a.Buy-from Vendor No_')
-            ->get();
-        // });  
+        )
+        ->join('FCL$Purch_ Inv_ Line as b', 'a.No_', '=', 'b.Document No_')
+        ->join('FCL$Vendor as v', 'a.Pay-to Vendor No_', '=', 'v.No_')
+        ->where('a.Vendor Posting Group', '=', 'PIGFARMERS')
+        ->where('a.Buy-from County', '=', '')
+        ->where('a.Posting Date', '>=', '2024-05-02 00:00:00.000')
+        ->where('a.Your Reference', '<>', '')
+        ->where(function ($query) {
+            $query->whereRaw('(
+                SELECT COUNT(*) 
+                FROM [FCL$Purch_ Cr_ Memo Hdr_] as e 
+                WHERE e.[Vendor Cr_ Memo No_] = CONCAT(a.[Your Reference], \'-R\')
+            ) = 0');
+        })
+        ->groupBy('a.Your Reference', 'a.Buy-from Vendor No_', 'v.Phone No_', 'a.Buy-from Vendor No_', 'a.Buy-from Vendor Name', 'a.Your Reference', 'a.Uncommitted')
+        ->orderBy('a.Buy-from Vendor No_')
+        ->get();
 
         return view('slaughter.pending-etims', compact('title', 'results', 'helpers'));
     }
@@ -364,17 +360,6 @@ class SlaughterController extends Controller
         // info($response);
         return $response;
     }
-
-    // public function updateSmsSentStatus(Request $request)
-    // {
-    //     $settlementNo = $request->input('settlement_no');
-
-    //     DB::connection('main')->table('FCL$Purch_ Inv_ Header')
-    //         ->where('Your Reference', $settlementNo)
-    //         ->update(['Uncommitted' => true]);
-
-    //     return response()->json(['success' => true, 'message' => 'SMS status for'.$settlementNo.' updated successfully']);
-    // }
 
     public function updateSmsSentStatus(Request $request)
     {
