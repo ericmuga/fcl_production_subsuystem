@@ -134,7 +134,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Send SMS: <code><strong><input
-                                    style="border:none" type="text" id="item_name" name="item_name"
+                                    style="border:none" type="text" id="sms_item_name" name=""
                                     readonly></strong></code></h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
@@ -143,14 +143,20 @@
                 <div class="modal-body">
                     <div class="row">
                         <label for="cu_inv_no">Phone No:</label>
-                        <input type="text" class="form-control" id="send_to_number" name="send_to_number" autocomplete="off"
+                        <input type="text" class="form-control" id="send_to_number" name="send_to_number" autocomplete="off" placeholder="07012..format"
                             value="" required>
-                        <input type="" id="settlement_ref" value="">
-                        <input type="" id="weight" value="">
-                        <input type="" id="price" value="">
-                        <input type="" id="amount" value="">
-                        <input type="" name="btn_elem" id="btn_elem" value="">
-                    </div>
+                        <input type="hidden" id="settlement_ref" value="">                        
+                        <input type="hidden" name="btn_elem" id="btn_elem" value="">
+                    </div><hr>
+                    <fieldset>
+                        <legend>Summary:</legend>
+                        <label for="weight">Weight:</label>
+                        <input type="text" style="border:none" id="weight" value="" readonly><br>
+                        <label for="price">Price:</label>
+                        <input type="text" style="border:none" id="price" value="" readonly><br>
+                        <label for="amount">Amount:</label>
+                        <input type="text" style="border:none" id="amount" value="" readonly><br>
+                    </fieldset>
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
@@ -204,6 +210,7 @@
             
             $('#send_to_number').val(phonenumber);
             $('#settlement_ref').val(settlementNo);
+            $('#sms_item_name').val(settlementNo);
             $('#weight').val(weight);
             $('#price').val(unitPrice);
             $('#amount').val(total);
