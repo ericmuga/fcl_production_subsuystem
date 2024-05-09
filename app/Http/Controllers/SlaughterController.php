@@ -365,15 +365,32 @@ class SlaughterController extends Controller
         return $response;
     }
 
+    // public function updateSmsSentStatus(Request $request)
+    // {
+    //     $settlementNo = $request->input('settlement_no');
+
+    //     DB::connection('main')->table('FCL$Purch_ Inv_ Header')
+    //         ->where('Your Reference', $settlementNo)
+    //         ->update(['Uncommitted' => true]);
+
+    //     return response()->json(['success' => true, 'message' => 'SMS status for'.$settlementNo.' updated successfully']);
+    // }
+
     public function updateSmsSentStatus(Request $request)
     {
-        $settlementNo = $request->input('settlement_no');
+        try {
+            $settlementNo = $request->input('settlement_no');
 
-        DB::connection('main')->table('FCL$Purch_ Inv_ Header')
-            ->where('Your Reference', $settlementNo)
-            ->update(['Uncommitted' => true]);
+            DB::connection('main')
+                ->table('FCL$Purch_Inv_Header')
+                ->where('Your Reference', $settlementNo)
+                ->update(['Uncommitted' => true]);
 
-        return response()->json(['success' => true, 'message' => 'SMS status for'.$settlementNo.' updated successfully']);
+            return response()->json(['success' => true, 'message' => 'SMS status for ' . $settlementNo . ' updated successfully']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to update SMS status. Error: ' . $e->getMessage()]);
+        }
     }
 
     public function importedReceipts(Helpers $helpers)
