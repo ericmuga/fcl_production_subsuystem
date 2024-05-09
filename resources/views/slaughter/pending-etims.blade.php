@@ -143,7 +143,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <label for="cu_inv_no">Phone No:</label>
-                        <input type="text" class="form-control" id="send_to_number" name="send_to_number" autocomplete="off" placeholder="07012..format"
+                        <input type="number" class="form-control" id="send_to_number" name="send_to_number" autocomplete="off" placeholder="07012..format"
                             value="" required>
                         <input type="hidden" id="settlement_ref" value="">                        
                         <input type="hidden" name="btn_elem" id="btn_elem" value="">
@@ -225,13 +225,25 @@
         $(document).on("click", "#sendSms", function(e) {
             e.preventDefault();
 
-            /// Retrieve the stored button element
-            let btnElement = $('#btn_elem').data('btnElem');
+            let phoneNumber = $('#send_to_number').val().trim();
 
-            sendSMS(btnElement);
+            // Validate the phone number
+            if (validatePhoneNumber(phoneNumber)) {
+                // Phone number is valid, proceed to send SMS
+                let btnElement = $('#btn_elem').data('btnElem');
+                sendSMS(btnElement);
+            } else {
+                // Phone number is invalid, show error message or handle accordingly
+                alert("Please enter a valid phone number starting with 0 and having exactly 10 digits.");
+            }
         });
-
     });
+
+    const validatePhoneNumber = (phoneNumber) => {
+        // Regular expression to match 10 digits starting with 0
+        var regex = /^0\d{9}$/;
+        return regex.test(phoneNumber);
+    }
 
     const updateButton = (btnElement) => {
         // Update button text
@@ -265,7 +277,7 @@
 
         const sendToNo = document.getElementById('send_to_number').value;
         const phoneNumberWithCountryCode = '254' + sendToNo.slice(-9);
-        // const phoneNumberWithCountryCode = '254721914529';
+        // const phoneNumberWithCountryCode = '254724401515';
         const settlementNo = document.getElementById('settlement_ref').value;
         const qty = document.getElementById('weight').value;
         const unitPrice = document.getElementById('price').value;
