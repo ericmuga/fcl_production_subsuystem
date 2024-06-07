@@ -287,7 +287,7 @@
         const messageParameters = [
             {
                 Number: `${phoneNumberWithCountryCode}`,
-                Text: `${settlementNo} CONFIRMED. GET eTIMS Invoice on *222#, share by WhatsApp on ${whatsappNo} by 9am.P000592722P, Qty:${qty} Price: ${unitPrice} Amount: ${amount}`
+                Text: `Farmers' Choice delivery No. ${settlementNo} CONFIRMED.For payment processing, please get an eTIMS Invoice on *222# and share it back by WhatsApp on ${whatsappNo}. Our Pin:P000592722P, Item:Pigs, Qty:${qty} Price: ${unitPrice} Amount: ${amount}`
             }
         ];
 
