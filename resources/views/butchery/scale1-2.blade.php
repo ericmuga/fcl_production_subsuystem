@@ -48,7 +48,7 @@ $arr_products = $products->toArray();
                         <div class="form-group">
                             <label>No. of Carcasses</label>
                             <input type="number" onClick="this.select();" oninput="adjustTareweight()"
-                                class="form-control" id="no_of_carcass" min="1" value="1" name="no_of_carcass" placeholder="">
+                                class="form-control" id="no_of_carcass" value="1" name="no_of_carcass" placeholder="" required>
                         </div>
                         <div class="form-group">
                             <label>Carcass Type</label>
@@ -405,11 +405,12 @@ $arr_products = $products->toArray();
                         <select class="form-control" name="edit_carcass" id="edit_carcass">
                             <option value="G1030">Baconers</option>
                             <option value="G1031">Sows</option>
+                            <option value="G1035">Pig, Carcass-Side with Tail-Breaking</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label>No. of Carcasses</label>
-                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value=""
+                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value="" min="0.5"
                             name="edit_no_carcass" placeholder="">
                     </div>
                     <div class="form-group">

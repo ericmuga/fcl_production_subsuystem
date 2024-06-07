@@ -277,7 +277,7 @@ class ButcheryController extends Controller
             if ($request->carcass_type == 'G1035') {
                 DB::table('beheading_data')->insert([
                     'item_code' => $request->carcass_type,
-                    'no_of_carcass' => $request->no_of_carcass,
+                    'no_of_carcass' => (int)$request->no_of_carcass / 2,
                     'actual_weight' => $request->reading,
                     'net_weight' => $request->net,
                     'process_code' => '1',
@@ -379,6 +379,7 @@ class ButcheryController extends Controller
         try {
             // update
             $process_code = 0; //Behead Pig
+
             if ($request->edit_carcass == 'G1031') {
                 $process_code = 1; //Behead sow
             }
