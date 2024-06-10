@@ -410,8 +410,8 @@ $arr_products = $products->toArray();
                     </div>
                     <div class="form-group">
                         <label>No. of Carcasses</label>
-                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value="" min="0.5"
-                            name="edit_no_carcass" placeholder="">
+                        <input type="number" onClick="this.select();" class="form-control" id="edit_no_carcass" value=""
+                            name="edit_no_carcass" placeholder="" required>
                     </div>
                     <div class="form-group">
                         <label for="email" class="col-form-label">Scale Weight(actual_weight)</label>
