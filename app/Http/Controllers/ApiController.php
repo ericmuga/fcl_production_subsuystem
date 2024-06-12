@@ -8,10 +8,19 @@ use Illuminate\Support\Facades\DB;
 
 class ApiController extends Controller
 {
+    private function parseDates(Request $request)
+    {
+        return [
+            'from_date' => Carbon::parse($request->from_date),
+            'to_date' => Carbon::parse($request->to_date),
+        ];
+    }
+
     public function getSlaughterData(Request $request)
     {
-        $from_date = Carbon::parse($request->from_date);
-        $to_date = Carbon::parse($request->to_date);
+        $dates = $this->parseDates($request);
+        $from_date = $dates['from_date'];
+        $to_date = $dates['to_date'];
 
         $columns = [
             'receipt_no', 'slapmark', 'item_code', 'vendor_no', 'vendor_name', 
@@ -31,8 +40,9 @@ class ApiController extends Controller
 
     public function missingSlapData(Request $request)
     {
-        $from_date = Carbon::parse($request->from_date);
-        $to_date = Carbon::parse($request->to_date);
+        $dates = $this->parseDates($request);
+        $from_date = $dates['from_date'];
+        $to_date = $dates['to_date'];
 
         $columns = [
             'a.slapmark', 'a.item_code', 'a.actual_weight', 'a.net_weight', 'a.settlement_weight','a.meat_percent','a.classification_code','b.username as created_by', 'a.created_at'
