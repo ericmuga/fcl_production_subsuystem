@@ -27,6 +27,8 @@ return [
     'sms_client_id' => env('SMS_CLIENT_ID', ''),
     'sms_whatsapp_no' => env('SMS_WHATSAPP_NO', ''),
 
+    'valid_bearer_token' => env('VALID_BEARER_TOKEN', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,5 +46,17 @@ class Handler extends ExceptionHandler
             Toastr::warning('Sorry, Seems the page has expired. Please login again', 'Warning');
             return redirect()->route('login');
         }
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof ThrottleRequestsException) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Too many requests. Please try again later.',
+            ], 429);
+        }
+
+        return parent::render($request, $exception);
     }
 }

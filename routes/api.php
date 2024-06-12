@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\SausageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,3 +22,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/barcodes-insert', [SausageController::class, 'insertBarcodes']);
 Route::post('/last-insert', [SausageController::class, 'lastInsert']);
+
+//public Apis
+Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
+    Route::post('/v1/fetch-slaughter-data', [ApiController::class, 'getSlaughterData']);
+});
