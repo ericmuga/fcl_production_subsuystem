@@ -26,4 +26,5 @@ Route::post('/last-insert', [SausageController::class, 'lastInsert']);
 //public Apis
 Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
     Route::post('/v1/fetch-slaughter-data', [ApiController::class, 'getSlaughterData']);
+    Route::post('/v1/fetch-missing-slaps', [ApiController::class, 'missingSlapData']);
 });
