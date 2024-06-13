@@ -19,6 +19,7 @@ class ApiController extends Controller
     public function getSlaughterData(Request $request)
     {
         $dates = $this->parseDates($request);
+
         $from_date = $dates['from_date'];
         $to_date = $dates['to_date'];
 
@@ -41,21 +42,84 @@ class ApiController extends Controller
     public function missingSlapData(Request $request)
     {
         $dates = $this->parseDates($request);
+
         $from_date = $dates['from_date'];
         $to_date = $dates['to_date'];
 
         $columns = [
-            'a.slapmark', 'a.item_code', 'a.actual_weight', 'a.net_weight', 'a.settlement_weight','a.meat_percent','a.classification_code','b.username as created_by', 'a.created_at'
+            'a.slapmark', 'a.item_code', 'a.actual_weight', 'a.net_weight', 'a.settlement_weight','a.meat_percent','a.classification_code', 'a.created_at'
         ];
 
         $slaps = DB::table('missing_slap_data as a')
             ->whereDate('a.created_at', '>=', $from_date)
             ->whereDate('a.created_at', '<=', $to_date)
-            ->join('users as b', 'a.user_id', '=', 'b.id')
             ->select($columns)
             ->orderByDesc('a.created_at')
             ->get();
 
         return response()->json($slaps);
+    }
+
+    public function getBeheadingData(Request $request)
+    {
+        $dates = $this->parseDates($request);
+
+        $from_date = $dates['from_date'];
+        $to_date = $dates['to_date'];
+
+        $columns = [
+            'item_code','no_of_carcass','actual_weight','net_weight','process_code','return_entry', 'a.created_at'
+        ];
+
+        $beheading_data = DB::table('beheading_data as a')
+            ->whereDate('a.created_at', '>=', $from_date)
+            ->whereDate('a.created_at', '<=', $to_date)
+            ->select($columns)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json($beheading_data);
+    }
+
+    public function getBrakingData(Request $request)
+    {
+        $dates = $this->parseDates($request);
+
+        $from_date = $dates['from_date'];
+        $to_date = $dates['to_date'];
+
+        $columns = [
+            'carcass_type','item_code','actual_weight','net_weight','process_code','product_type','no_of_items', 'created_at'
+        ];
+
+        $butchery_data = DB::table('butchery_data as a')
+            ->whereDate('a.created_at', '>=', $from_date)
+            ->whereDate('a.created_at', '<=', $to_date)
+            ->select($columns)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json($butchery_data);
+    }
+
+    public function getDeboningData(Request $request)
+    {
+        $dates = $this->parseDates($request);
+
+        $from_date = $dates['from_date'];
+        $to_date = $dates['to_date'];
+
+        $columns = [
+            'item_code','actual_weight','net_weight','process_code','product_type','no_of_pieces','no_of_crates','splitted','narration', 'created_at'
+        ];
+
+        $deboning_data = DB::table('deboned_data as a')
+            ->whereDate('a.created_at', '>=', $from_date)
+            ->whereDate('a.created_at', '<=', $to_date)
+            ->select($columns)
+            ->orderByDesc('created_at')
+            ->get();
+
+        return response()->json($deboning_data);
     }
 }
