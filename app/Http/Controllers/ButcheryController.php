@@ -647,6 +647,7 @@ class ButcheryController extends Controller
                         'no_of_crates' => $request->no_of_crates - 1,
                         'no_of_pieces' => $request->no_of_pieces,
                         'narration' => $request->desc,
+                        'batch_no' => $request->batch_no,
                         'user_id' => $helpers->authenticatedUserId(),
                         'created_at' => $prod_date,
                     ]);

@@ -103,12 +103,18 @@
 
         <div class="card ">
             <div class="card-body text-center">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Production Date</label>
-                    <select class="form-control" name="prod_date" id="prod_date" required>
-                        <option selected value="today">Today</option>
-                        <option value="yesterday">Yesterday</option>
-                    </select>
+                <div class="form-group row">
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Production Date</label>
+                        <select class="form-control" name="prod_date" id="prod_date" required>
+                            <option selected value="today">Today</option>
+                            <option value="yesterday">Yesterday</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="exampleInputPassword1">Batch No </label>
+                        <input type="text" class="form-control" onClick="this.select();" id="batch_no" value="" name="batch_no">
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="row">
@@ -380,10 +386,9 @@
                     </div>
                     <div class="form-group row">
                         <label>Narration</label>
-                        <input type="text" onClick="this.select();"
-                            class="form-control" id="edit_narration" value="" name="edit_narration"
-                            placeholder="">
-                        
+                        <input type="text" onClick="this.select();" class="form-control" id="edit_narration" value=""
+                            name="edit_narration" placeholder="">
+
                     </div>
                     <div class="row form-group">
                         <label for="exampleInputPassword1">Production Process</label>
