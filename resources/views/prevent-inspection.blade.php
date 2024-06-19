@@ -33,8 +33,20 @@
 
     function detectDevTools() {
         console.log('Checking for dev tools');
-        if (window.outerWidth - window.innerWidth > 100 || window.outerHeight - window.innerHeight > 100) {
+
+        // Check based on dimensions
+        if (window.outerWidth - window.innerWidth > 160 || window.outerHeight - window.innerHeight > 160) {
             disablePage();
+            return;
+        }
+
+        // Check based on timing
+        const start = new Date();
+        debugger;
+        const end = new Date();
+        if (end - start > 100) {
+            disablePage();
+            return;
         }
     }
 
