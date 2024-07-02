@@ -9,11 +9,11 @@
             @csrf
             <div class="card-group">
                 <div class="card">
-                    <div class="card-body" style="">
-                        <div class="form-group">
-                            <label for="inputEmail3" class="col-sm-4 col-form-label">Recipe No</label>
-                            <div class="col-sm-8">
-                                <select class="form-control select2" name="temp_no" id="temp_no" required>
+                    <div class="card-body text-center">
+                        <div class="row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Recipe No </label>
+                            <div class="col-sm-9">
+                                <select class="form-control select2" name="template_no" id="template_no" required>
                                     <option value="">Select template</option>
                                     @foreach($templates as $tm)
                                         <option
@@ -23,39 +23,31 @@
                                     @endforeach
                                 </select>
                             </div>
-                            {{-- <div class="col-md-2">
-                                    <div class="col-sm-9">
-                                        <button type="submit" class="btn btn-success "><i
-                                                class="fa fa-play single-click" aria-hidden="true"></i> Start Chopping
-                                            Run</button>
-                                    </div>
-                                </div>
-                                <div class="col-md-5">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">Current Chopping No</label>
-                                    <div class="col-sm-8">
-                                        <input type="number" class="form-control" id="no_of_crates" value=""
-                                            name="no_of_crates" min="1" placeholder="">
-                                    </div>
-                                </div> --}}
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body text-center form-group">
                         <div class="div" style="padding-top: ">
-                            <button type="submit" class="btn btn-success "><i class="fa fa-play single-click"
-                                    aria-hidden="true"></i> Start Chopping
+                            <button type="button" id="startChoppingRunBtn" class="btn btn-success "><i
+                                    class="fa fa-play single-click" aria-hidden="true"></i> Start Chopping
                                 Run</button>
+                            <div id="spinner" class="spinner-border text-success" role="status"
+                                style="display: none; margin-left: 10px;">
+                                <span class="sr-only">running...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-body text-center form-group">
-                        <label for="inputEmail3" class="col-sm-4 col-form-label">Recipe No</label>
-                        <div class="div" style="padding-top: ">
-
-                            <input type="number" class="form-control" id="no_of_crates" value="" name="no_of_crates"
-                                min="1" placeholder="">
+                        <div class="row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Chopping No: </label>
+                            <div class="col-sm-9">
+                                <select class="form-control select2" name="chopping_no" id="chopping_no" required>
+                                    <option value="">Select chopping</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,16 +80,18 @@
                     <div class="card-body text-center">
                         <div class="form-group">
                             <div class="row align-items-center">
-                                {{-- <div class="col-md-4 d-flex align-items-center" style="padding-top: 5%">
-                                    <button type="button" class="btn btn-info"><i class="fa fa-times"
-                                            aria-hidden="true"></i> Weigh</button>
-                                </div> --}}
-                                <div class="col-md-8">
+                                <div class="col-md-4" style="padding-top: 5%">
+                                    <button type="button" id="weigh" value="" class="btn btn-primary"><i
+                                            class="fas fa-balance-scale"></i>
+                                        Weigh</button> <br>
+                                    <small>Reading comport: <strong>7</strong></small>
+                                </div>
+                                <div class="col-md-5">
                                     <label for="exampleInputEmail1">Scale Reading</label>
                                     <input type="number" step="0.01" class="form-control" id="reading" name="reading"
                                         value="0.00" oninput="getNet()" placeholder="" readonly>
                                 </div>
-                                <div class="col-md-4 d-flex align-items-center" style="padding-top: 5%">
+                                <div class="col-md-3 d-flex align-items-center" style="padding-top: 5%">
                                     <button type="button" class="btn btn-info"><i class="fa fa-times"
                                             aria-hidden="true"></i> Reset</button>
                                 </div>
@@ -272,12 +266,87 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
+        let oldManual = $('#old_manual').val();
+        let manualWeightCheckbox = $('#manual_weight');
+        let readingInput = $('#reading');
+
+        // Check the old_manual value on page load
+        if (oldManual === 'on') {
+            manualWeightCheckbox.prop('checked', true);
+            readingInput.prop('readonly', false);
+            readingInput.val('');
+            readingInput.focus();
+        }
+
+        manualWeightCheckbox.change(function () {
+            if (this.checked) {
+                readingInput.prop('readonly', false);
+                readingInput.val('');
+                readingInput.focus();
+            } else {
+                readingInput.prop('readonly', true);
+            }
+        });
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
+        document.getElementById('startChoppingRunBtn').addEventListener('click', event => {
+            event.preventDefault();
+            const templateNo = $('#template_no').val();
+
+            if (!templateNo) {
+                alert('Please select a template.');
+                return;
+            }
+
+            const userConfirmed = confirm(
+                `Do you want to create a new chopping run for template number ${templateNo}?`);
+
+            if (userConfirmed) {
+                makeChoppingRunRequest(templateNo);
+            } else {
+                return false;
+            }
+        });
+
     });
+
+    const makeChoppingRunRequest = (templateNo) => {
+        const spinner = document.getElementById('spinner');
+        spinner.style.display = 'inline-block';
+
+        // Truncate the templateNo string before the hyphen
+        const truncatedTemplateNo = templateNo.split('-')[0];
+
+        axios.post('/v2/chopping/make/run', {
+                template_no: truncatedTemplateNo
+            })
+            .then(response => {
+                console.log(response);
+                let selectedChoppingNo = response.data.data;
+
+                // Find the <select> element
+                let selectElement = document.getElementById('chopping_no');
+
+                // Loop through the options and set the selected attribute for the matching value
+                for (let i = 0; i < selectElement.options.length; i++) {
+                    if (selectElement.options[i].value === selectedChoppingNo) {
+                        selectElement.options[i].setAttribute('selected', 'selected');
+                        break; // Exit the loop once the option is found and selected
+                    }
+                }
+                // Handle success, maybe show a success message
+            })
+            .catch(error => {
+                console.error(error);
+                // Handle error, maybe show an error message
+            })
+            .finally(() => {
+                spinner.style.display = 'none';
+            });
+    };
 
 </script>
 @endsection

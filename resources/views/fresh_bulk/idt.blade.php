@@ -429,7 +429,6 @@
 
         } else {
             reading.readOnly = true;
-
         }
 
         $(document).on('change', '#product', function () {

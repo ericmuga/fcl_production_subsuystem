@@ -361,4 +361,48 @@ class ChoppingController extends Controller
 
         return view('chopping.weigh', compact('title', 'templates'));
     }
+
+    public function makeChoppingRun(Request $request, Helpers $helpers)
+    {
+        // Validate the request data if necessary
+        $validatedData = $request->validate([
+            // 'field_name' => 'validation_rules',
+        ]);
+
+        info($request->template_no);
+
+        try {
+            $templateNo = $request->input('template_no');
+
+            // Get the count of existing runs for the same template_no and date
+            $count = DB::table('choppings')
+                        ->where('chopping_id', 'LIKE', $templateNo . '%')
+                        ->whereDate('created_at', today())
+                        ->count();
+
+            // Calculate the next incremental number
+            $incrementalNumber = $count + 1;
+            $choppingId = $templateNo .'-'.$incrementalNumber;
+
+            // Create a new ChoppingRun entry
+            $insert = DB::table('choppings')->insert([
+                'chopping_id' => $choppingId,
+                'user_id' => $helpers->authenticatedUserId()
+            ]);
+
+            // Return a JSON response indicating success
+            return response()->json([
+                'success' => true,
+                'data' => $choppingId,
+                'message' => 'Chopping run started successfully!',
+            ], 200);
+        } catch (\Exception $e) {
+            // Return a JSON response indicating failure
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to start chopping run!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }
