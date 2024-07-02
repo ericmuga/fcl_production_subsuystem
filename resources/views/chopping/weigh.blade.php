@@ -151,7 +151,7 @@
         <div class="row">
             <div class="col text-center">
                 <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#stopModal">
-                    <i class="fa fa-stop-circle single-click" aria-hidden="true"></i> Stop Chopping Run
+                    <i class="fa fa-stop-circle single-click" aria-hidden="true"></i> Complete Chopping Run
                 </button>
             </div>
         </div>
@@ -163,7 +163,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="stopModalLabel">Stop Chopping Run</h5>
+                <h5 class="modal-title" id="stopModalLabel">Complete Chopping Run</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -172,13 +172,13 @@
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="stopReason">Reason for stopping</label>
-                        <textarea class="form-control" id="stopReason" name="stop_reason" rows="3" required></textarea>
+                        <label for="stopReason">Chopping Run No</label>
+                        <input class="form-control" id="stopReason" name="stop_reason" required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Stop Run</button>
+                    <button type="submit" class="btn btn-danger">Complete Run</button>
                 </div>
             </form>
         </div>
