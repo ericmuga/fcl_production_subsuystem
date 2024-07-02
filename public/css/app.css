@@ -1950,6 +1950,14 @@ textarea.form-control {
   padding-left: 0;
   margin-right: 0.75rem;
 }
+
+.center-page {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .form-check-inline .form-check-input {
   position: static;
   margin-top: 0;

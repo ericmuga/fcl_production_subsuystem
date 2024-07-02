@@ -199,10 +199,6 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        // $('.batch').on("input", function () {
-        //     getBatchSize()
-        // })
-
         $('#temp_no').change(function () {
             var temp_no = $(this).val();
             var output = $('#output_product').val(temp_no.substring(temp_no.indexOf('-') + 1));
@@ -210,48 +206,6 @@
             $('#from_batch').focus()
         });
     });
-
-    // const getBatchSize = () => {
-    //     let from_batch = $('#from_batch').val()
-    //     let to_batch = $('#to_batch').val()
-    //     let batch_size = 0
-
-    //     if (from_batch != '' && to_batch != '') {
-    //         batch_size = (parseInt(to_batch) - parseInt(from_batch)) + 1
-    //     }
-
-    //     $('#batch_size').val(batch_size)
-
-    //     validateBatchSize(batch_size)
-    // }
-
-    // const validateBatchSize = (batch_size) => {
-
-    //     if (batch_size < 1) {
-    //         // batch is not valid, set message
-    //         setBatchValidityMessage('succ', 'err', '', 'invalid batch')
-    //     } else {
-    //         setBatchValidityMessage('succ', 'err', '', '')
-    //     }
-    // }
-
-    // const setBatchValidityMessage = (field_succ, field_err, message_succ, message_err) => {
-    //     document.getElementById(field_succ).innerHTML = message_succ
-    //     document.getElementById(field_err).innerHTML = message_err
-    // }
-
-    // const validateOnSubmit = () => {
-    //     let status = true
-
-    //     let batch_size = $("#batch_size").val();
-
-    //     if (batch_size == '' || batch_size < 1) {
-    //         status = false
-    //         alert("please ensure you have valid batch size before submitting")
-    //     }
-
-    //     return status
-    // }
 
 </script>
 @endsection

@@ -190,6 +190,11 @@ Route::get('chopping/lines-report-summ/{filter?}', [ChoppingController::class, '
 Route::post('chopping/batch/update', [ChoppingController::class, 'updateBatchItems'])->name('chopping_update_batch');
 Route::post('chopping/batch/close', [ChoppingController::class, 'closeOrPostBatch'])->name('chopping_close_batch');
 
+#chopping v2
+Route::prefix('v2/chopping')->group(function () {
+    Route::get('/weigh', [ChoppingController::class, 'weigh'])->name('v2_chopping_weigh');
+});
+
 /*-------------End Spices------------------ */
 
 /*-------------Start Despatch------------------ */

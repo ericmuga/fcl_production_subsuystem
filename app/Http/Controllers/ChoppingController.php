@@ -344,4 +344,21 @@ class ChoppingController extends Controller
 
         return $sum_qty;
     }
+
+    public function weigh(Helpers $helpers, $filter = null)
+    {
+        $title = "Chopping-V2";
+
+        $date_filter = today()->subDays(7);
+
+        $templates = DB::table('template_header')
+            ->where('template_lines.main_product', 'Yes')
+            ->Join('template_lines', 'template_header.template_no', '=', 'template_lines.template_no')
+            ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
+            ->get();
+
+        // $weighings = DB::  
+
+        return view('chopping.weigh', compact('title', 'templates'));
+    }
 }
