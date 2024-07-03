@@ -74,6 +74,10 @@
                                     <select class="form-control select2" name="product" id="product" required>
                                         <option value="">Select product</option>
                                     </select>
+                                    <div id="loadTemplateProductsSpinner" class="spinner-border text-success"
+                                        role="status" style="display: none; margin-left: 10px;">
+                                        <span class="sr-only">Loading...</span>
+                                    </div>
                                 </div>
                             </div>
                             <input type="hidden" value="2500" name="location_code">
@@ -307,39 +311,40 @@
 
     });
 
-    // const loadOpenChoppings = (templateNo) => {
-    //     const loadSpinner = document.getElementById('loadOpenChoppingsSpinner');
-    //     loadSpinner.style.display = 'inline-block';
-    //     axios.get('/v2/chopping/fetch-open-runs', {
-    //             params: {
-    //                 template_no: templateNo
-    //             }
-    //         })
-    //         .then(response => {
-    //             console.log(response)
-    //             if (response.data.success) {
-    //                 const runs = response.data.data;
-    //                 const selectElement = document.getElementById('chopping_no');
+    const loadTemplateProducts = (templateNo) => {
+        const loadSpinner = document.getElementById('loadTemplateProductsSpinner');
+        loadSpinner.style.display = 'inline-block';
 
-    //                 // Clear the existing options
-    //                 selectElement.innerHTML = '<option value="">Select chopping</option>';
+        axios.get('/v2/chopping/fetch-products', {
+                params: {
+                    template_no: templateNo
+                }
+            })
+            .then(response => {
+                console.log(response)
+                if (response.data.success) {
+                    const products = response.data.data;
+                    const selectElement = document.getElementById('product');
 
-    //                 // Populate the select element with new options
-    //                 runs.forEach(run => {
-    //                     const option = document.createElement('option');
-    //                     option.value = run.chopping_id;
-    //                     option.textContent = run.chopping_id;
-    //                     selectElement.appendChild(option);
-    //                 });
-    //             }
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //         })
-    //         .finally(() => {
-    //             loadSpinner.style.display = 'none';
-    //         });
-    // }
+                    // Clear the existing options
+                    selectElement.innerHTML = '<option value="">Select product</option>';
+
+                    // Populate the select element with new options
+                    products.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.item_code;
+                        option.textContent = product.item_code + ' '+ product.description;
+                        selectElement.appendChild(option);
+                    });
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            })
+            .finally(() => {
+                loadSpinner.style.display = 'none';
+            });
+    };
 
     const loadOpenChoppings = (templateNo) => {
         const loadSpinner = document.getElementById('loadOpenChoppingsSpinner');
@@ -371,6 +376,9 @@
                     if (selectedChoppingNo) {
                         selectElement.value = selectedChoppingNo;
                     }
+
+                    // Load template products
+                    loadTemplateProducts(templateNo);
                 }
             })
             .catch(error => {
@@ -406,28 +414,6 @@
         });
     }
 
-    // const makeChoppingRunRequest = (templateNo) => {
-    //     const spinner = document.getElementById('spinner');
-    //     spinner.style.display = 'inline-block';
-
-    //     // Truncate the templateNo string before the hyphen
-    //     const truncatedTemplateNo = templateNo.split('-')[0];
-
-    //     axios.post('/v2/chopping/make/run', {
-    //             template_no: truncatedTemplateNo
-    //         })
-    //         .then(response => {
-    //             console.log(response);
-    //             let selectedChoppingNo = response.data.data;
-    //         })
-    //         .catch(error => {
-    //             console.error(error);
-    //             // Handle error, maybe show an error message
-    //         })
-    //         .finally(() => {
-    //             spinner.style.display = 'none';
-    //         });
-    // };
     const makeChoppingRunRequest = (templateNo) => {
         const spinner = document.getElementById('spinner');
         spinner.style.display = 'inline-block';

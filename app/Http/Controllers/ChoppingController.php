@@ -7,6 +7,7 @@ use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
@@ -420,6 +421,25 @@ class ChoppingController extends Controller
         return response()->json([
             'success' => true,
             'data' => $runs
+        ]);        
+    }
+
+    public function fetchTemplateProducts(Request $request)
+    {
+        $templateNo = $request->input('template_no');
+        $cacheKey = 'template_lines_' . $templateNo;
+
+        $products = Cache::remember($cacheKey, 1440, function () use ($templateNo) {
+            return DB::table('template_lines')
+                ->where('template_no', 'LIKE', $templateNo . '%')
+                ->where('item_code', 'LIKE', 'G%')
+                ->select('item_code', 'description', 'type')
+                ->get();
+        });
+
+        return response()->json([
+            'success' => true,
+            'data' => $products
         ]);        
     }
 }
