@@ -47,6 +47,10 @@
                                 <select class="form-control select2" name="chopping_no" id="chopping_no" required>
                                     <option value="">Select chopping</option>
                                 </select>
+                                <div id="loadOpenChoppingsSpinner" class="spinner-border text-success" role="status"
+                                    style="display: none; margin-left: 10px;">
+                                    <span class="sr-only">Loading...</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,27 +270,7 @@
 @section('scripts')
 <script>
     $(document).ready(function () {
-        let oldManual = $('#old_manual').val();
-        let manualWeightCheckbox = $('#manual_weight');
-        let readingInput = $('#reading');
-
-        // Check the old_manual value on page load
-        if (oldManual === 'on') {
-            manualWeightCheckbox.prop('checked', true);
-            readingInput.prop('readonly', false);
-            readingInput.val('');
-            readingInput.focus();
-        }
-
-        manualWeightCheckbox.change(function () {
-            if (this.checked) {
-                readingInput.prop('readonly', false);
-                readingInput.val('');
-                readingInput.focus();
-            } else {
-                readingInput.prop('readonly', true);
-            }
-        });
+        checkManualWeights()
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
@@ -311,8 +295,139 @@
             }
         });
 
+        $('#template_no').change(function () {
+            const templateNo = $(this).val();
+            const truncatedTemplateNo = templateNo.split('-')[0]
+            if (!templateNo) {
+                alert('Please select a template.');
+                return;
+            }
+            loadOpenChoppings(truncatedTemplateNo)
+        });
+
     });
 
+    // const loadOpenChoppings = (templateNo) => {
+    //     const loadSpinner = document.getElementById('loadOpenChoppingsSpinner');
+    //     loadSpinner.style.display = 'inline-block';
+    //     axios.get('/v2/chopping/fetch-open-runs', {
+    //             params: {
+    //                 template_no: templateNo
+    //             }
+    //         })
+    //         .then(response => {
+    //             console.log(response)
+    //             if (response.data.success) {
+    //                 const runs = response.data.data;
+    //                 const selectElement = document.getElementById('chopping_no');
+
+    //                 // Clear the existing options
+    //                 selectElement.innerHTML = '<option value="">Select chopping</option>';
+
+    //                 // Populate the select element with new options
+    //                 runs.forEach(run => {
+    //                     const option = document.createElement('option');
+    //                     option.value = run.chopping_id;
+    //                     option.textContent = run.chopping_id;
+    //                     selectElement.appendChild(option);
+    //                 });
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error(error);
+    //         })
+    //         .finally(() => {
+    //             loadSpinner.style.display = 'none';
+    //         });
+    // }
+
+    const loadOpenChoppings = (templateNo) => {
+        const loadSpinner = document.getElementById('loadOpenChoppingsSpinner');
+        loadSpinner.style.display = 'inline-block';
+
+        axios.get('/v2/chopping/fetch-open-runs', {
+                params: {
+                    template_no: templateNo
+                }
+            })
+            .then(response => {
+                if (response.data.success) {
+                    const runs = response.data.data;
+                    const selectElement = document.getElementById('chopping_no');
+
+                    // Clear the existing options
+                    selectElement.innerHTML = '<option value="">Select chopping</option>';
+
+                    // Populate the select element with new options
+                    runs.forEach(run => {
+                        const option = document.createElement('option');
+                        option.value = run.chopping_id;
+                        option.textContent = run.chopping_id;
+                        selectElement.appendChild(option);
+                    });
+
+                    // Set the newly created chopping as selected
+                    const selectedChoppingNo = response.data.selectedChoppingNo;
+                    if (selectedChoppingNo) {
+                        selectElement.value = selectedChoppingNo;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            })
+            .finally(() => {
+                loadSpinner.style.display = 'none';
+            });
+    };
+
+
+    const checkManualWeights = () => {
+        let oldManual = $('#old_manual').val();
+        let manualWeightCheckbox = $('#manual_weight');
+        let readingInput = $('#reading');
+
+        // Check the old_manual value on page load
+        if (oldManual === 'on') {
+            manualWeightCheckbox.prop('checked', true);
+            readingInput.prop('readonly', false);
+            readingInput.val('');
+            readingInput.focus();
+        }
+
+        manualWeightCheckbox.change(function () {
+            if (this.checked) {
+                readingInput.prop('readonly', false);
+                readingInput.val('');
+                readingInput.focus();
+            } else {
+                readingInput.prop('readonly', true);
+            }
+        });
+    }
+
+    // const makeChoppingRunRequest = (templateNo) => {
+    //     const spinner = document.getElementById('spinner');
+    //     spinner.style.display = 'inline-block';
+
+    //     // Truncate the templateNo string before the hyphen
+    //     const truncatedTemplateNo = templateNo.split('-')[0];
+
+    //     axios.post('/v2/chopping/make/run', {
+    //             template_no: truncatedTemplateNo
+    //         })
+    //         .then(response => {
+    //             console.log(response);
+    //             let selectedChoppingNo = response.data.data;
+    //         })
+    //         .catch(error => {
+    //             console.error(error);
+    //             // Handle error, maybe show an error message
+    //         })
+    //         .finally(() => {
+    //             spinner.style.display = 'none';
+    //         });
+    // };
     const makeChoppingRunRequest = (templateNo) => {
         const spinner = document.getElementById('spinner');
         spinner.style.display = 'inline-block';
@@ -327,17 +442,13 @@
                 console.log(response);
                 let selectedChoppingNo = response.data.data;
 
-                // Find the <select> element
-                let selectElement = document.getElementById('chopping_no');
-
-                // Loop through the options and set the selected attribute for the matching value
-                for (let i = 0; i < selectElement.options.length; i++) {
-                    if (selectElement.options[i].value === selectedChoppingNo) {
-                        selectElement.options[i].setAttribute('selected', 'selected');
-                        break; // Exit the loop once the option is found and selected
-                    }
-                }
-                // Handle success, maybe show a success message
+                //Append the new option and select it
+                const selectElement = document.getElementById('chopping_no');
+                const option = document.createElement('option');
+                option.value = selectedChoppingNo;
+                option.textContent = selectedChoppingNo;
+                option.selected = true;
+                selectElement.appendChild(option);
             })
             .catch(error => {
                 console.error(error);

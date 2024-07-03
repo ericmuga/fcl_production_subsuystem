@@ -194,6 +194,7 @@ Route::post('chopping/batch/close', [ChoppingController::class, 'closeOrPostBatc
 Route::prefix('v2/chopping')->group(function () {
     Route::get('/weigh', [ChoppingController::class, 'weigh'])->name('v2_chopping_weigh');
     Route::post('/make/run', [ChoppingController::class, 'makeChoppingRun']);
+    Route::get('/fetch-open-runs', [ChoppingController::class, 'fetchOpenRuns']);
 });
 
 /*-------------End Spices------------------ */

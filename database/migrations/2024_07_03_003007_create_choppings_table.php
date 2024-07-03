@@ -17,6 +17,7 @@ class CreateChoppingsTable extends Migration
             $table->id();
             $table->string('chopping_id')->index();
             $table->foreignId('user_id')->constrained('users'); //maker
+            $table->tinyInteger('status')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
