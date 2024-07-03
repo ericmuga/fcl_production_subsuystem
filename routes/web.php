@@ -192,10 +192,11 @@ Route::post('chopping/batch/close', [ChoppingController::class, 'closeOrPostBatc
 
 #chopping v2
 Route::prefix('v2/chopping')->group(function () {
-    Route::get('/weigh', [ChoppingController::class, 'weigh'])->name('v2_chopping_weigh');
+    Route::get('/weigh', [ChoppingController::class, 'weigh'])->name('chopping_weigh');
     Route::post('/make/run', [ChoppingController::class, 'makeChoppingRun']);
     Route::get('/fetch-open-runs', [ChoppingController::class, 'fetchOpenRuns']);
     Route::get('/fetch-products', [ChoppingController::class, 'fetchTemplateProducts']);
+    Route::post('/save-weighings', [ChoppingController::class, 'saveChoppingWeights'])->name('save_chopping_weights');
 });
 
 /*-------------End Spices------------------ */

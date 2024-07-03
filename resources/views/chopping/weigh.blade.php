@@ -62,7 +62,7 @@
 
     <div class="div">
         <form id="form-save-weights" class="form-prevent-multiple-submits"
-            action="{{ route('beef_slicing_save') }}" method="post">
+            action="{{ route('save_chopping_weights') }}" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -112,7 +112,7 @@
                         <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="exampleInputPassword1">Previous Reading</label>
-                                <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
+                                <input type="number" class="form-control" id="previous_reading" name="previous_reading" value="0.00" step=".01"
                                     placeholder="" readonly>
                             </div>
                             <div class="col-md-4">
@@ -316,6 +316,28 @@
         });
 
     });
+
+    const getNet = () => {
+        let reading = parseFloat($('#reading').val());
+        let prev_reading = parseFloat($('#previous_reading').val());
+        let tareweight = parseFloat($('#tareweight').val());
+
+        let netWeight = 0.00;
+
+        // Ensure the values are numbers
+        if (isNaN(reading)) reading = 0.00;
+        if (isNaN(prev_reading)) prev_reading = 0.00;
+        if (isNaN(tareweight)) tareweight = 0.00;
+
+        if (prev_reading === 0.00) {
+            netWeight = reading - tareweight;
+        } else {
+            netWeight = reading - prev_reading;
+        }
+
+        netWeight = netWeight.toFixed(2);
+        $('#net').val(netWeight);
+    };
 
     const loadTemplateProducts = (templateNo) => {
         const loadSpinner = document.getElementById('loadTemplateProductsSpinner');
