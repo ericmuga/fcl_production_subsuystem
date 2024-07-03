@@ -134,7 +134,7 @@
                         <div class="row form-group justify-content-center">
                             <div class="col-md-6">
                                 <label for="exampleInputPassword1">Batch No</label>
-                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no">
+                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required>
                             </div>
                         </div>
                         <div class="form-group" style="padding-top: 5%">
@@ -306,7 +306,13 @@
                 alert('Please select a template.');
                 return;
             }
+            $('#batch_no').val('')
             loadOpenChoppings(truncatedTemplateNo)
+        });
+
+        $('#chopping_no').change(function () {
+            let choppingNo = $(this).val();
+            $('#batch_no').val(choppingNo)
         });
 
     });
@@ -321,7 +327,6 @@
                 }
             })
             .then(response => {
-                console.log(response)
                 if (response.data.success) {
                     const products = response.data.data;
                     const selectElement = document.getElementById('product');
@@ -428,6 +433,7 @@
                 console.log(response);
                 let selectedChoppingNo = response.data.data;
 
+                $('#batch_no').val(selectedChoppingNo)
                 //Append the new option and select it
                 const selectElement = document.getElementById('chopping_no');
                 const option = document.createElement('option');
