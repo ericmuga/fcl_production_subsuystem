@@ -3,9 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="div">
-        <form id="form-chopping-weigh" class="form-prevent-multiple-submits"
-            action=""
-            method="post">
+        <form id="form-chopping-weigh" class="form-prevent-multiple-submits" action="" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -61,8 +59,7 @@
     <br>
 
     <div class="div">
-        <form id="form-save-weights" class="form-prevent-multiple-submits"
-            action="" method="post">
+        <form id="form-save-weights" class="form-prevent-multiple-submits" action="" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -103,7 +100,8 @@
                                     <button type="button" class="btn btn-warning btn-sm" id="setPrev">
                                         <i class="fa fa-plus" aria-hidden="true"></i> Prev
                                     </button>
-                                    <button type="button" class="btn btn-info btn-sm" id="resetButton" style="margin-left: 10px;">
+                                    <button type="button" class="btn btn-info btn-sm" id="resetButton"
+                                        style="margin-left: 10px;">
                                         <i class="fa fa-times" aria-hidden="true"></i> Reset
                                     </button>
                                 </div>
@@ -116,8 +114,8 @@
                         <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="exampleInputPassword1">Previous Reading</label>
-                                <input type="number" class="form-control" id="previous_reading" name="previous_reading" value="0.00" step=".01" oninput="getNet()"
-                                    placeholder="" readonly>
+                                <input type="number" class="form-control" id="previous_reading" name="previous_reading"
+                                    value="0.00" step=".01" oninput="getNet()" placeholder="" readonly>
                             </div>
                             <div class="col-md-4">
                                 <label for="exampleInputPassword1">Van Tare Weight</label>
@@ -138,15 +136,15 @@
                         <div class="row form-group justify-content-center">
                             <div class="col-md-6">
                                 <label for="exampleInputPassword1">Batch No</label>
-                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required readonly>
+                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required
+                                    readonly>
                             </div>
                         </div>
                         <div class="form-group" style="padding-top: 5%">
-                            <button type="button" id="save_btn"
-                                class="btn btn-primary btn-lg"><i
+                            <button type="button" id="save_btn" class="btn btn-primary btn-lg"><i
                                     class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
-                            <div id="saveWeightsSpinner" class="spinner-border text-success"
-                                role="status" style="display: none; margin-top: 2%;">
+                            <div id="saveWeightsSpinner" class="spinner-border text-success" role="status"
+                                style="display: none; margin-top: 2%;">
                                 <span class="sr-only">Loading...</span>
                             </div>
                         </div>
@@ -184,26 +182,25 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="form-stop-run" action="{{ route('close_chopping_run') }}" method="post" class="form-prevent-multiple-submits">
+            <form id="form-stop-run" action="{{ route('close_chopping_run') }}" method="post"
+                class="form-prevent-multiple-submits">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="complete_run_number">Chopping Run No</label>
-                        <input class="form-control" id="complete_run_number" name="complete_run_number" readonly required>
+                        <input class="form-control" id="complete_run_number" name="complete_run_number" readonly
+                            required>
                     </div>
                     <div class="form-group">
                         <label for="batch_size">Batch Size Run No</label>
                         <select class="form-control select2" name="batch_size" id="batch_size" required>
                             <option value="">Select Batch Size</option>
-                                <option
-                                    value="0">Quarter Batch
-                                </option>
-                                <option
-                                    value="0">Half Batch
-                                </option>
-                                <option selected
-                                    value="0">Full Batch
-                                </option>
+                            <option value="0.25">Quarter Batch
+                            </option>
+                            <option value="0.5">Half Batch
+                            </option>
+                            <option selected value="1">Full Batch
+                            </option>
                         </select>
                     </div>
                 </div>
@@ -232,8 +229,9 @@
     <hr>
     <div class="card">
         <div class="card-header">
-            <h3 class="card-title"> Production Lines Entries | <span id="subtext-h1-title"><small> showing
-                        <strong>{{ $filter?? 'All' }}</strong> entries
+            <h3 class="card-title"> Closed Chopping Runs Registry | <span id="subtext-h1-title"><small> showing
+                        <strong>{{ $filter?? 'todays' }}</strong>
+                        entries
                         ordered by
                         latest</small> </span></h3>
         </div>
@@ -244,48 +242,36 @@
                     <thead>
                         <tr>
                             <th>#</th>
-                            <th>Batch No</th>
-                            <th>Template No</th>
-                            <th>Template</th>
-                            <th>Status</th>
-                            <th>Output Product</th>
-                            <th>From Batch</th>
-                            <th>To Batch</th>
-                            <th>Output Quantity</th>
-                            <th>Date</th>
+                            <th>Run No</th>
+                            <th>Template Name</th>
+                            <th>Created By</th>
+                            <th>Created Time</th>
+                            <th>Closed Time</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
                             <th>#</th>
-                            <th>Batch No</th>
-                            <th>Template No</th>
-                            <th>Template</th>
-                            <th>Status</th>
-                            <th>Output Product</th>
-                            <th>From Batch</th>
-                            <th>To Batch</th>
-                            <th>Output Quantity</th>
-                            <th>Date</th>
+                            <th>Run No</th>
+                            <th>Template Name</th>
+                            <th>Created By</th>
+                            <th>Created Time</th>
+                            <th>Closed Time</th>
+                        </tr>
                         </tr>
                     </tfoot>
                     <tbody>
-                        {{-- @foreach($batches as $data)
+                        @foreach($choppings as $data)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                        <td><a
-                                href="{{ route('chopping_production_lines', [$data->batch_no, $data->from_batch]) }}">{{ $data->batch_no }}</a>
-                        </td>
-                        <td>{{ $data->template_no }}</td>
-                        <td>{{ $data->template_name }}</td>
-                        <td>{{ $data->template_output }}</td>
-                        <td>{{ $data->from_batch }}</td>
-                        <td>{{ $data->to_batch }}</td>
-                        <td>{{ $data->output_quantity }}</td>
-                        <td>{{ $data->username }}</td>
-                        <td>{{ $helpers->amPmDate($data->created_at) }}</td>
-                        </tr>
-                        @endforeach--}}
+                                <td><a href="{{ route('chopping_lines', $data->chopping_id) }}">{{ $data->chopping_id }}</a>
+                                </td>
+                                <td>{{ $data->template_name }}</td>
+                                <td>{{ $data->username }}</td>
+                                <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>{{ $helpers->amPmDate($data->updated_at) }}</td>
+                            </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -308,12 +294,12 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        document.getElementById('form-stop-run').addEventListener('submit', function(event) {
+        document.getElementById('form-stop-run').addEventListener('submit', function (event) {
             const completeRunNumber = document.getElementById('complete_run_number').value;
 
             if (!completeRunNumber) {
                 alert('Closing batch number is required.');
-                event.preventDefault();  // Prevent form submission
+                event.preventDefault(); // Prevent form submission
                 $(".btn-prevent-multiple-submits").attr('disabled', false);
             }
 
@@ -335,7 +321,8 @@
             // Disable the button to prevent multiple clicks
             button.disabled = true;
 
-            const userConfirmed = confirm(`Do you want to create a new chopping run for template number ${templateNo}?`);
+            const userConfirmed = confirm(
+                `Do you want to create a new chopping run for template number ${templateNo}?`);
 
             if (userConfirmed) {
                 makeChoppingRunRequest(templateNo).finally(() => {
@@ -395,12 +382,12 @@
             $('#complete_run_number').val(choppingNo)
         });
 
-        $('#setPrev').on('click', function() {
+        $('#setPrev').on('click', function () {
             let currentReading = $('#reading').val();
             $('#previous_reading').val(currentReading).trigger('input');
         });
 
-        $('#resetButton').on('click', function() {
+        $('#resetButton').on('click', function () {
             $('#reading').val('').focus();
             $('#previous_reading').val('0.00').trigger('input');
         });
@@ -423,9 +410,9 @@
             if (prev_reading > 0) {
                 netWeight = reading - prev_reading;
             } else {
-                netWeight = reading - tareweight;            
+                netWeight = reading - tareweight;
             }
-        }        
+        }
 
         netWeight = netWeight.toFixed(2);
         $('#net').val(netWeight);
@@ -440,12 +427,12 @@
             })
             .then(response => {
                 console.log(response)
-                if (response.data.success) {
+                // if (response.data.success) {
 
-                    // alert(response.data.message)
-                    // Redirect to the named route
-                    window.location.href = redirectToUrl;
-                }
+                //     // alert(response.data.message)
+                //     // Redirect to the named route
+                //     window.location.href = redirectToUrl;
+                // }
             })
             .catch(error => {
                 console.error(error);
@@ -455,7 +442,7 @@
             });
     }
 
-    const saveWeighLines = (product, batchNo, reading, net, saveBtn) => {        
+    const saveWeighLines = (product, batchNo, reading, net, saveBtn) => {
         const loadSpinner = document.getElementById('saveWeightsSpinner');
         loadSpinner.style.display = 'inline-block';
 
@@ -478,11 +465,11 @@
                 loadSpinner.style.display = 'none';
                 // Unselect the selected product option using Select2 method
                 $('#product').val(null).trigger('change');
-                
+
                 // Re-enable the button after the request is complete
                 saveBtn.disabled = false;
             });
-        }
+    }
 
     const loadTemplateProducts = (templateNo) => {
         const loadSpinner = document.getElementById('loadTemplateProductsSpinner');
@@ -505,7 +492,7 @@
                     products.forEach(product => {
                         const option = document.createElement('option');
                         option.value = product.item_code;
-                        option.textContent = product.item_code + ' '+ product.description;
+                        option.textContent = product.item_code + ' ' + product.description;
                         selectElement.appendChild(option);
                     });
                 }

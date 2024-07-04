@@ -358,9 +358,18 @@ class ChoppingController extends Controller
             ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
             ->get();
 
-        // $weighings = DB::  
+        $choppings = DB::table('choppings as a')
+            ->Join('users as b', 'a.user_id', '=', 'b.id')
+            ->join('template_header as c', function ($join) {
+                $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id + '-') - 1)"), '=', 'c.template_no');
+            })
+            ->where('a.status', 1)
+            ->whereDate('a.created_at', today())
+            ->select('a.*', 'b.username', 'c.template_name')
+            ->orderByDesc('a.id')
+            ->get(); 
 
-        return view('chopping.weigh', compact('title', 'templates'));
+        return view('chopping.weigh', compact('title', 'templates', 'choppings', 'helpers'));
     }
 
     public function makeChoppingRun(Request $request, Helpers $helpers)
@@ -471,25 +480,72 @@ class ChoppingController extends Controller
     {
         try {
             //update status to closed...
-            DB::table('choppings')
-                ->where('chopping_id', $request->complete_run_number)
-                ->whereDate('created_at', today())
-                ->update([
-                        'status' => 1
+            DB::transaction(function () use ($request) {
+                // Update chopping status
+                DB::table('choppings')
+                    ->where('chopping_id', $request->complete_run_number)
+                    ->whereDate('created_at', today())
+                    ->update([
+                        'status' => 1,
+                        'updated_at' => now()
                     ]);
 
-            return response()->json([
-                'success' => true,
-                'data' => $request->complete_run_number,
-                'message' => 'Batch '.$request->complete_run_number.' closed successfully!',
-            ], 200);
+                $parts = explode('-', $request->complete_run_number);
+                $chopping_id = $parts[0];
+
+                // Fetch template lines starting with 'H' and insert into chopping_lines
+                $spices = DB::table('template_lines')
+                    ->where('item_code', 'like', 'H%')
+                    ->where('template_no', $chopping_id)
+                    ->select('item_code', 'units_per_100')
+                    ->get();
+
+                foreach ($spices as $sp) {
+                    DB::table('chopping_lines')->insert([
+                        'chopping_id' => $request->complete_run_number,
+                        'item_code' => $sp->item_code,
+                        'weight' => (float)$sp->units_per_100 / (float)$request->batch_size,
+                    ]);
+                }
+            });
+
+            // return response()->json([
+            //     'success' => true,
+            //     'data' => $request->complete_run_number,
+            //     'message' => 'Batch '.$request->complete_run_number.' closed successfully!',
+            // ], 200);
+
+            Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
+            return redirect()
+                ->route('chopping_weigh');
             
         } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to close batch '.$request->complete_run_number.'!',
-                'error' => $e->getMessage(),
-            ], 500);
+            // return response()->json([
+            //     'success' => false,
+            //     'message' => 'Failed to close batch '.$request->complete_run_number.'!',
+            //     'error' => $e->getMessage(),
+            // ], 500);
+            Toastr::error($e->getMessage(), 'Error!');
+            info($e->getMessage());
+            return back();
         }
+    }
+
+    public function choppingLines($run_no)
+    {
+        $title = "Chopping Run Lines";
+
+        $lines = DB::table('chopping_lines as a')
+            ->leftJoin('template_lines as b', function($join) {
+                $join->on('a.item_code', '=', 'b.item_code')
+                     ->whereRaw('b.id = (SELECT TOP 1 id FROM template_lines WHERE item_code = b.item_code)');
+            })
+            ->where('a.chopping_id', $run_no)
+            ->select('a.*', 'b.description')
+            ->orderByDesc('a.id')
+            ->get();
+
+
+        return view('chopping.weigh-lines', compact('title', 'lines', 'run_no'));
     }
 }
