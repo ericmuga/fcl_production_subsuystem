@@ -116,7 +116,7 @@
                         <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="exampleInputPassword1">Previous Reading</label>
-                                <input type="number" class="form-control" id="previous_reading" name="previous_reading" value="0.00" step=".01"
+                                <input type="number" class="form-control" id="previous_reading" name="previous_reading" value="0.00" step=".01" oninput="getNet()"
                                     placeholder="" readonly>
                             </div>
                             <div class="col-md-4">
@@ -351,6 +351,7 @@
 
         document.getElementById('save_btn').addEventListener('click', event => {
             event.preventDefault();
+            const saveBtn = event.target;
             const reading = $('#reading').val();
             const product = $('#product').val();
             const batchNo = $('#batch_no').val();
@@ -371,7 +372,10 @@
                 return;
             }
 
-            saveWeighLines(product, batchNo, reading, net)
+            // Disable the button to prevent multiple submissions
+            saveBtn.disabled = true;
+
+            saveWeighLines(product, batchNo, reading, net, saveBtn);
         });
 
         $('#template_no').change(function () {
@@ -393,12 +397,12 @@
 
         $('#setPrev').on('click', function() {
             let currentReading = $('#reading').val();
-            $('#previous_reading').val(currentReading);
+            $('#previous_reading').val(currentReading).trigger('input');
         });
 
         $('#resetButton').on('click', function() {
-            $('#reading').val('0.00');
-            $('#previous_reading').val('0.00');
+            $('#reading').val('').focus();
+            $('#previous_reading').val('0.00').trigger('input');
         });
 
     });
@@ -415,11 +419,13 @@
         if (isNaN(prev_reading)) prev_reading = 0.00;
         if (isNaN(tareweight)) tareweight = 0.00;
 
-        if (prev_reading === 0.00) {
-            netWeight = reading - tareweight;
-        } else {
-            netWeight = reading - prev_reading;
-        }
+        if (reading > 0) {
+            if (prev_reading > 0) {
+                netWeight = reading - prev_reading;
+            } else {
+                netWeight = reading - tareweight;            
+            }
+        }        
 
         netWeight = netWeight.toFixed(2);
         $('#net').val(netWeight);
@@ -449,7 +455,7 @@
             });
     }
 
-    const saveWeighLines = (product, batchNo, reading, net) => {        
+    const saveWeighLines = (product, batchNo, reading, net, saveBtn) => {        
         const loadSpinner = document.getElementById('saveWeightsSpinner');
         loadSpinner.style.display = 'inline-block';
 
@@ -460,9 +466,9 @@
                 net: net
             })
             .then(response => {
-                console.log(response)
+                console.log(response);
                 if (response.data.success) {
-                    $('#previous_reading').val(response.data.reading)
+                    $('#previous_reading').val(response.data.reading).trigger('input');
                 }
             })
             .catch(error => {
@@ -470,8 +476,13 @@
             })
             .finally(() => {
                 loadSpinner.style.display = 'none';
+                // Unselect the selected product option using Select2 method
+                $('#product').val(null).trigger('change');
+                
+                // Re-enable the button after the request is complete
+                saveBtn.disabled = false;
             });
-    }
+        }
 
     const loadTemplateProducts = (templateNo) => {
         const loadSpinner = document.getElementById('loadTemplateProductsSpinner');
