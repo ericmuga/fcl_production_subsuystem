@@ -370,8 +370,6 @@ class ChoppingController extends Controller
             // 'field_name' => 'validation_rules',
         ]);
 
-        info($request->template_no);
-
         try {
             $templateNo = $request->input('template_no');
 
@@ -441,5 +439,31 @@ class ChoppingController extends Controller
             'success' => true,
             'data' => $products
         ]);        
+    }
+
+    public function saveChoppingWeights(Request $request)
+    {
+        try {
+            //code...
+            $insert = DB::table('chopping_lines')->insert([
+                        'chopping_id' => $request->batch,
+                        'item_code' => $request->product,
+                        'weight' => $request->net,
+                    ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $request->batch,
+                'reading' => $request->reading,
+                'message' => 'Chopping weight inserted successfully!',
+            ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to insert chopping run item!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 }

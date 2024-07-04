@@ -197,6 +197,7 @@ Route::prefix('v2/chopping')->group(function () {
     Route::get('/fetch-open-runs', [ChoppingController::class, 'fetchOpenRuns']);
     Route::get('/fetch-products', [ChoppingController::class, 'fetchTemplateProducts']);
     Route::post('/save-weighings', [ChoppingController::class, 'saveChoppingWeights'])->name('save_chopping_weights');
+    Route::post('/close-run', [ChoppingController::class, 'closeChoppingRun'])->name('close_chopping_run');
 });
 
 /*-------------End Spices------------------ */

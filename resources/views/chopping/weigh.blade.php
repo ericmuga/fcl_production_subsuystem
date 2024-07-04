@@ -143,8 +143,12 @@
                         </div>
                         <div class="form-group" style="padding-top: 5%">
                             <button type="button" id="save_btn"
-                                class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                                class="btn btn-primary btn-lg"><i
                                     class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
+                            <div id="saveWeightsSpinner" class="spinner-border text-success"
+                                role="status" style="display: none; margin-top: 2%;">
+                                <span class="sr-only">Loading...</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,17 +184,18 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="form-stop-run" action="" method="post">
+            <form id="form-stop-run" action="{{ route('close_chopping_run') }}" method="post" class="form-prevent-multiple-submits">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="stopReason">Chopping Run No</label>
-                        <input class="form-control" id="stopReason" name="stop_reason" required>
+                        <label for="complete_run_number">Chopping Run No</label>
+                        <input class="form-control" id="complete_run_number" name="complete_run_number" readonly required>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-danger">Complete Run</button>
+                    <button type="submit" class="btn btn-danger btn-prevent-multiple-submits"><i
+                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Close Run</button>
                 </div>
             </form>
         </div>
@@ -313,7 +318,27 @@
 
         document.getElementById('save_btn').addEventListener('click', event => {
             event.preventDefault();
-            alert('save clicked')
+            const reading = $('#reading').val();
+            const product = $('#product').val();
+            const batchNo = $('#batch_no').val();
+            const net = $('#net').val();
+
+            if (!product) {
+                alert('Please select a product first.');
+                return;
+            }
+
+            if (!batchNo) {
+                alert('Please indicate the chopping run number.');
+                return;
+            }
+
+            if (!parseFloat(net) > 0) {
+                alert('Please ensure Net weight is valid.');
+                return;
+            }
+
+            saveWeighLines(product, batchNo, reading, net)
         });
 
         $('#template_no').change(function () {
@@ -330,6 +355,7 @@
         $('#chopping_no').change(function () {
             let choppingNo = $(this).val();
             $('#batch_no').val(choppingNo)
+            $('#complete_run_number').val(choppingNo)
         });
 
         $('#setPrev').on('click', function() {
@@ -365,6 +391,30 @@
         netWeight = netWeight.toFixed(2);
         $('#net').val(netWeight);
     };
+
+    const saveWeighLines = (product, batchNo, reading, net) => {        
+        const loadSpinner = document.getElementById('saveWeightsSpinner');
+        loadSpinner.style.display = 'inline-block';
+
+        axios.post('/v2/chopping/save-weighings', {
+                product: product,
+                batch: batchNo,
+                reading: reading,
+                net: net
+            })
+            .then(response => {
+                console.log(response)
+                if (response.data.success) {
+                    $('#previous_reading').val(response.data.reading)
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            })
+            .finally(() => {
+                loadSpinner.style.display = 'none';
+            });
+    }
 
     const loadTemplateProducts = (templateNo) => {
         const loadSpinner = document.getElementById('loadTemplateProductsSpinner');
@@ -442,7 +492,6 @@
                 loadSpinner.style.display = 'none';
             });
     };
-
 
     const checkManualWeights = () => {
         let oldManual = $('#old_manual').val();
