@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="div">
         <form id="form-chopping-weigh" class="form-prevent-multiple-submits"
-            action="{{ route('chopping_batch_save', 'filter') }}"
+            action=""
             method="post">
             @csrf
             <div class="card-group">
@@ -62,7 +62,7 @@
 
     <div class="div">
         <form id="form-save-weights" class="form-prevent-multiple-submits"
-            action="{{ route('save_chopping_weights') }}" method="post">
+            action="" method="post">
             @csrf
             <div class="card-group">
                 <div class="card">
@@ -75,7 +75,7 @@
                                         <option value="">Select product</option>
                                     </select>
                                     <div id="loadTemplateProductsSpinner" class="spinner-border text-success"
-                                        role="status" style="display: none; margin-left: 10px;">
+                                        role="status" style="display: none; margin-left: 2%;">
                                         <span class="sr-only">Loading...</span>
                                     </div>
                                 </div>
@@ -94,14 +94,18 @@
                                         Weigh</button> <br>
                                     <small>Reading comport: <strong>7</strong></small>
                                 </div>
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <label for="exampleInputEmail1">Scale Reading</label>
                                     <input type="number" step="0.01" class="form-control" id="reading" name="reading"
                                         value="0.00" oninput="getNet()" placeholder="" readonly>
                                 </div>
-                                <div class="col-md-3 d-flex align-items-center" style="padding-top: 5%">
-                                    <button type="button" class="btn btn-info"><i class="fa fa-times"
-                                            aria-hidden="true"></i> Reset</button>
+                                <div class="col-md-4 d-flex align-items-center" style="padding-top: 5%">
+                                    <button type="button" class="btn btn-warning btn-sm" id="setPrev">
+                                        <i class="fa fa-plus" aria-hidden="true"></i> Prev
+                                    </button>
+                                    <button type="button" class="btn btn-info btn-sm" id="resetButton" style="margin-left: 10px;">
+                                        <i class="fa fa-times" aria-hidden="true"></i> Reset
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -134,11 +138,11 @@
                         <div class="row form-group justify-content-center">
                             <div class="col-md-6">
                                 <label for="exampleInputPassword1">Batch No</label>
-                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required>
+                                <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required readonly>
                             </div>
                         </div>
                         <div class="form-group" style="padding-top: 5%">
-                            <button type="submit" onclick="return validateOnSubmit()"
+                            <button type="button" id="save_btn"
                                 class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
                                     class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
                         </div>
@@ -282,6 +286,7 @@
 
         document.getElementById('startChoppingRunBtn').addEventListener('click', event => {
             event.preventDefault();
+            const button = event.target;
             const templateNo = $('#template_no').val();
 
             if (!templateNo) {
@@ -289,14 +294,26 @@
                 return;
             }
 
-            const userConfirmed = confirm(
-                `Do you want to create a new chopping run for template number ${templateNo}?`);
+            // Disable the button to prevent multiple clicks
+            button.disabled = true;
+
+            const userConfirmed = confirm(`Do you want to create a new chopping run for template number ${templateNo}?`);
 
             if (userConfirmed) {
-                makeChoppingRunRequest(templateNo);
+                makeChoppingRunRequest(templateNo).finally(() => {
+                    // Re-enable the button after the request is completed
+                    button.disabled = false;
+                });
             } else {
+                // Re-enable the button if the user cancels the action
+                button.disabled = false;
                 return false;
             }
+        });
+
+        document.getElementById('save_btn').addEventListener('click', event => {
+            event.preventDefault();
+            alert('save clicked')
         });
 
         $('#template_no').change(function () {
@@ -313,6 +330,16 @@
         $('#chopping_no').change(function () {
             let choppingNo = $(this).val();
             $('#batch_no').val(choppingNo)
+        });
+
+        $('#setPrev').on('click', function() {
+            let currentReading = $('#reading').val();
+            $('#previous_reading').val(currentReading);
+        });
+
+        $('#resetButton').on('click', function() {
+            $('#reading').val('0.00');
+            $('#previous_reading').val('0.00');
         });
 
     });
@@ -448,7 +475,7 @@
         // Truncate the templateNo string before the hyphen
         const truncatedTemplateNo = templateNo.split('-')[0];
 
-        axios.post('/v2/chopping/make/run', {
+        return axios.post('/v2/chopping/make/run', {
                 template_no: truncatedTemplateNo
             })
             .then(response => {
