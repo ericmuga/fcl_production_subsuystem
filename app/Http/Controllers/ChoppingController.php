@@ -469,7 +469,6 @@ class ChoppingController extends Controller
 
     public function closeChoppingRun(Request $request)
     {
-        info($request->all());
         try {
             //update status to closed...
             DB::table('choppings')
