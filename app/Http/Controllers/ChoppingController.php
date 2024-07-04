@@ -466,4 +466,31 @@ class ChoppingController extends Controller
             ], 500);
         }
     }
+
+    public function closeChoppingRun(Request $request)
+    {
+        info($request->all());
+        try {
+            //update status to closed...
+            DB::table('choppings')
+                ->where('chopping_id', $request->complete_run_number)
+                ->whereDate('created_at', today())
+                ->update([
+                        'status' => 1
+                    ]);
+
+            return response()->json([
+                'success' => true,
+                'data' => $request->complete_run_number,
+                'message' => 'Batch '.$request->complete_run_number.' closed successfully!',
+            ], 200);
+            
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to close batch '.$request->complete_run_number.'!',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

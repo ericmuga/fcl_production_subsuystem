@@ -191,11 +191,30 @@
                         <label for="complete_run_number">Chopping Run No</label>
                         <input class="form-control" id="complete_run_number" name="complete_run_number" readonly required>
                     </div>
+                    <div class="form-group">
+                        <label for="batch_size">Batch Size Run No</label>
+                        <select class="form-control select2" name="batch_size" id="batch_size" required>
+                            <option value="">Select Batch Size</option>
+                                <option
+                                    value="0">Quarter Batch
+                                </option>
+                                <option
+                                    value="0">Half Batch
+                                </option>
+                                <option selected
+                                    value="0">Full Batch
+                                </option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger btn-prevent-multiple-submits"><i
                             class="fa fa-paper-plane single-click" aria-hidden="true"></i> Close Run</button>
+                    <div id="closeRunSpinner" class="spinner-border text-success" role="status"
+                        style="display: none; margin-left: 10px;">
+                        <span class="sr-only">running...</span>
+                    </div>
                 </div>
             </form>
         </div>
@@ -287,6 +306,20 @@
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
+
+        document.getElementById('form-stop-run').addEventListener('submit', function(event) {
+            const completeRunNumber = document.getElementById('complete_run_number').value;
+
+            if (!completeRunNumber) {
+                alert('Closing batch number is required.');
+                event.preventDefault();  // Prevent form submission
+                $(".btn-prevent-multiple-submits").attr('disabled', false);
+            }
+
+            const redirectToUrl = "{{ route('chopping_weigh') }}";
+            closeChoppingRun(completeRunNumber, redirectToUrl)
+
         });
 
         document.getElementById('startChoppingRunBtn').addEventListener('click', event => {
@@ -391,6 +424,30 @@
         netWeight = netWeight.toFixed(2);
         $('#net').val(netWeight);
     };
+
+    const closeChoppingRun = (runNumber, redirectToUrl) => {
+        const loadSpinner = document.getElementById('closeRunSpinner');
+        loadSpinner.style.display = 'inline-block';
+
+        axios.post('/v2/chopping/close-run', {
+                runNumber: runNumber
+            })
+            .then(response => {
+                console.log(response)
+                if (response.data.success) {
+
+                    // alert(response.data.message)
+                    // Redirect to the named route
+                    window.location.href = redirectToUrl;
+                }
+            })
+            .catch(error => {
+                console.error(error);
+            })
+            .finally(() => {
+                loadSpinner.style.display = 'none';
+            });
+    }
 
     const saveWeighLines = (product, batchNo, reading, net) => {        
         const loadSpinner = document.getElementById('saveWeightsSpinner');
@@ -532,6 +589,7 @@
                 let selectedChoppingNo = response.data.data;
 
                 $('#batch_no').val(selectedChoppingNo)
+                $('#complete_run_number').val(selectedChoppingNo)
                 //Append the new option and select it
                 const selectElement = document.getElementById('chopping_no');
                 const option = document.createElement('option');
