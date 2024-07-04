@@ -366,7 +366,7 @@
                 return;
             }
 
-            if (!parseFloat(net) > 0) {
+            if (parseFloat(net) < 0) {
                 alert('Please ensure Net weight is valid.');
                 return;
             }
