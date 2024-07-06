@@ -476,10 +476,72 @@ class ChoppingController extends Controller
         }
     }
 
+    // public function closeChoppingRun(Request $request)
+    // {
+    //     try {
+    //         //update status to closed...
+    //         DB::transaction(function () use ($request) {
+    //             // Update chopping status
+    //             DB::table('choppings')
+    //                 ->where('chopping_id', $request->complete_run_number)
+    //                 ->whereDate('created_at', today())
+    //                 ->update([
+    //                     'status' => 1,
+    //                     'updated_at' => now()
+    //                 ]);
+
+    //             $parts = explode('-', $request->complete_run_number);
+    //             $chopping_id = $parts[0];
+
+    //             // Fetch template lines starting with 'H' and insert into chopping_lines
+    //             $spices = DB::table('template_lines')
+    //                 ->where('item_code', 'like', 'H%')
+    //                 ->where('template_no', $chopping_id)
+    //                 ->select('item_code', 'units_per_100')
+    //                 ->get();
+
+    //             foreach ($spices as $sp) {
+    //                 DB::table('chopping_lines')->insert([
+    //                     'chopping_id' => $request->complete_run_number,
+    //                     'item_code' => $sp->item_code,
+    //                     'weight' => (float)$sp->units_per_100 / (float)$request->batch_size,
+    //                 ]);
+    //             }
+
+    //             // Fetch the 'Output' item
+    //             $output = DB::table('template_lines')
+    //                 ->where('type', 'Output')
+    //                 ->where('template_no', $chopping_id)
+    //                 ->first();
+
+    //             $totalInsertedWeight = DB::table('chopping_lines')
+    //                 ->where('chopping_id', $request->complete_run_number)
+    //                 ->whereDate('created_at', today())
+    //                 ->sum('weight');
+
+    //             if ($output) {
+    //                 DB::table('chopping_lines')->insert([
+    //                     'chopping_id' => $request->complete_run_number,
+    //                     'item_code' => $output->item_code,
+    //                     'weight' => $totalInsertedWeight,
+    //                 ]);
+    //             }
+    //         });
+
+    //         Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
+    //         return redirect()
+    //             ->route('chopping_weigh');
+            
+    //     } catch (\Exception $e) {
+    //         Toastr::error($e->getMessage(), 'Error!');
+    //         info($e->getMessage());
+    //         return back();
+    //     }
+    // }
+
     public function closeChoppingRun(Request $request)
     {
         try {
-            //update status to closed...
             DB::transaction(function () use ($request) {
                 // Update chopping status
                 DB::table('choppings')
@@ -493,19 +555,24 @@ class ChoppingController extends Controller
                 $parts = explode('-', $request->complete_run_number);
                 $chopping_id = $parts[0];
 
-                // Fetch template lines starting with 'H' and insert into chopping_lines
+                // Fetch template lines starting with 'H' and calculate weight
                 $spices = DB::table('template_lines')
                     ->where('item_code', 'like', 'H%')
                     ->where('template_no', $chopping_id)
                     ->select('item_code', 'units_per_100')
                     ->get();
 
+                $choppingLines = [];
                 foreach ($spices as $sp) {
-                    DB::table('chopping_lines')->insert([
+                    $choppingLines[] = [
                         'chopping_id' => $request->complete_run_number,
                         'item_code' => $sp->item_code,
                         'weight' => (float)$sp->units_per_100 / (float)$request->batch_size,
-                    ]);
+                    ];
+                }
+
+                if (!empty($choppingLines)) {
+                    DB::table('chopping_lines')->insert($choppingLines);
                 }
 
                 // Fetch the 'Output' item
@@ -514,24 +581,23 @@ class ChoppingController extends Controller
                     ->where('template_no', $chopping_id)
                     ->first();
 
-                $totalInsertedWeight = DB::table('chopping_lines')
-                    ->where('chopping_id', $request->complete_run_number)
-                    ->whereDate('created_at', today())
-                    ->sum('weight');
-
                 if ($output) {
+                    $totalInsertedWeight = DB::table('chopping_lines')
+                        ->where('chopping_id', $request->complete_run_number)
+                        ->whereDate('created_at', today())
+                        ->sum('weight');
+
                     DB::table('chopping_lines')->insert([
                         'chopping_id' => $request->complete_run_number,
                         'item_code' => $output->item_code,
                         'weight' => $totalInsertedWeight,
+                        'output' => 1
                     ]);
                 }
             });
 
             Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
-            return redirect()
-                ->route('chopping_weigh');
-            
+            return redirect()->route('chopping_weigh');
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             info($e->getMessage());

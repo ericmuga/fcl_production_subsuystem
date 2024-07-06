@@ -18,6 +18,7 @@ class CreateChoppingLinesTable extends Migration
             $table->string('chopping_id');
             $table->string('item_code');
             $table->decimal('weight')->nullable();
+            $table->tinyInteger('output')->default(0);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
