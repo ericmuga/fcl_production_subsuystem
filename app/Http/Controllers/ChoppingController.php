@@ -507,6 +507,25 @@ class ChoppingController extends Controller
                         'weight' => (float)$sp->units_per_100 / (float)$request->batch_size,
                     ]);
                 }
+
+                // Fetch the 'Output' item
+                $output = DB::table('template_lines')
+                    ->where('type', 'Output')
+                    ->where('template_no', $chopping_id)
+                    ->first();
+
+                $totalInsertedWeight = DB::table('chopping_lines')
+                    ->where('chopping_id', $request->complete_run_number)
+                    ->whereDate('created_at', today())
+                    ->sum('weight');
+
+                if ($output) {
+                    DB::table('chopping_lines')->insert([
+                        'chopping_id' => $request->complete_run_number,
+                        'item_code' => $output->item_code,
+                        'weight' => $totalInsertedWeight,
+                    ]);
+                }
             });
 
             Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
