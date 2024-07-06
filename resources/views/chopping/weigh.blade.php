@@ -431,7 +431,7 @@
                 net: net
             })
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 if (response.data.success) {
                     $('#previous_reading').val(response.data.reading).trigger('input');
                 }
@@ -503,10 +503,10 @@
 
                     // Populate the select element with new options
                     runs.forEach(run => {
-                        console.log(run)
+                        // console.log(run)
                         const option = document.createElement('option');
                         option.value = run.chopping_id;
-                        option.textContent = run.chopping_id + ': '+ run.run_date;
+                        option.textContent = run.chopping_id;
                         selectElement.appendChild(option);
                     });
 
@@ -563,7 +563,7 @@
                 template_no: truncatedTemplateNo
             })
             .then(response => {
-                console.log(response);
+                // console.log(response);
                 let selectedChoppingNo = response.data.data;
 
                 $('#batch_no').val(selectedChoppingNo)

@@ -423,13 +423,7 @@ class ChoppingController extends Controller
                     ->where('status', 0)
                     ->whereDate('created_at', '>=', today()->subDays(1))
                     ->where('chopping_id', 'LIKE', $templateNo . '%')
-                    ->select('chopping_id', DB::raw("
-                        CASE 
-                            WHEN CONVERT(date, created_at) = CONVERT(date, GETDATE()) THEN 'Today'
-                            WHEN CONVERT(date, created_at) = CONVERT(date, DATEADD(day, -1, GETDATE())) THEN 'Yesterday'
-                            ELSE CONVERT(varchar, CONVERT(date, created_at)) 
-                        END as run_date
-                    "))
+                    ->select('chopping_id')
                     ->get();
 
         return response()->json([
