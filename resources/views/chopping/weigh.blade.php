@@ -493,6 +493,7 @@
                 }
             })
             .then(response => {
+                
                 if (response.data.success) {
                     const runs = response.data.data;
                     const selectElement = document.getElementById('chopping_no');
@@ -502,9 +503,10 @@
 
                     // Populate the select element with new options
                     runs.forEach(run => {
+                        console.log(run)
                         const option = document.createElement('option');
                         option.value = run.chopping_id;
-                        option.textContent = run.chopping_id;
+                        option.textContent = run.chopping_id + ': '+ run.run_date;
                         selectElement.appendChild(option);
                     });
 
@@ -566,7 +568,7 @@
 
                 $('#batch_no').val(selectedChoppingNo)
                 $('#complete_run_number').val(selectedChoppingNo)
-                
+
                 //Append the new option and select it
                 const selectElement = document.getElementById('chopping_no');
                 const option = document.createElement('option');
