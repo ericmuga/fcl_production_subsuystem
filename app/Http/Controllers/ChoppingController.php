@@ -509,22 +509,11 @@ class ChoppingController extends Controller
                 }
             });
 
-            // return response()->json([
-            //     'success' => true,
-            //     'data' => $request->complete_run_number,
-            //     'message' => 'Batch '.$request->complete_run_number.' closed successfully!',
-            // ], 200);
-
             Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
             return redirect()
                 ->route('chopping_weigh');
             
         } catch (\Exception $e) {
-            // return response()->json([
-            //     'success' => false,
-            //     'message' => 'Failed to close batch '.$request->complete_run_number.'!',
-            //     'error' => $e->getMessage(),
-            // ], 500);
             Toastr::error($e->getMessage(), 'Error!');
             info($e->getMessage());
             return back();

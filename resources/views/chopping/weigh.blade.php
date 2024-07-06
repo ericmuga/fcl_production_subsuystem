@@ -164,7 +164,7 @@
     <div class=" center-page">
         <div class="row">
             <div class="col text-center">
-                <button type="button" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#stopModal">
+                <button type="button" id="modalLauncherBtn" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#stopModal">
                     <i class="fa fa-stop-circle single-click" aria-hidden="true"></i> Complete Chopping Run
                 </button>
             </div>
@@ -190,6 +190,7 @@
                         <label for="complete_run_number">Chopping Run No</label>
                         <input class="form-control" id="complete_run_number" name="complete_run_number" readonly
                             required>
+                        <span class="text-danger" id="err1"></span>
                     </div>
                     <div class="form-group">
                         <label for="batch_size">Batch Size Run No</label>
@@ -207,7 +208,7 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button type="submit" class="btn btn-danger btn-prevent-multiple-submits"><i
-                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Close Run</button>
+                            class="fa fa-paper-plane" aria-hidden="true"></i> Close Run</button>
                     <div id="closeRunSpinner" class="spinner-border text-success" role="status"
                         style="display: none; margin-left: 10px;">
                         <span class="sr-only">running...</span>
@@ -289,24 +290,12 @@
 <script>
     $(document).ready(function () {
         checkManualWeights()
-
+        
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        document.getElementById('form-stop-run').addEventListener('submit', function (event) {
-            const completeRunNumber = document.getElementById('complete_run_number').value;
-
-            if (!completeRunNumber) {
-                alert('Closing batch number is required.');
-                event.preventDefault(); // Prevent form submission
-                $(".btn-prevent-multiple-submits").attr('disabled', false);
-            }
-
-            const redirectToUrl = "{{ route('chopping_weigh') }}";
-            closeChoppingRun(completeRunNumber, redirectToUrl)
-
-        });
+        document.getElementById('modalLauncherBtn').addEventListener('click', checkClosingRunNumber);
 
         document.getElementById('startChoppingRunBtn').addEventListener('click', event => {
             event.preventDefault();
@@ -418,28 +407,17 @@
         $('#net').val(netWeight);
     };
 
-    const closeChoppingRun = (runNumber, redirectToUrl) => {
-        const loadSpinner = document.getElementById('closeRunSpinner');
-        loadSpinner.style.display = 'inline-block';
-
-        axios.post('/v2/chopping/close-run', {
-                runNumber: runNumber
-            })
-            .then(response => {
-                console.log(response)
-                // if (response.data.success) {
-
-                //     // alert(response.data.message)
-                //     // Redirect to the named route
-                //     window.location.href = redirectToUrl;
-                // }
-            })
-            .catch(error => {
-                console.error(error);
-            })
-            .finally(() => {
-                loadSpinner.style.display = 'none';
-            });
+    const checkClosingRunNumber = () => {
+        const completeRunNumber = document.getElementById('complete_run_number').value;
+        const errorSpan = document.getElementById('err1');
+        
+        if (!completeRunNumber) {
+            errorSpan.textContent = "Error: Closing Run number is required.";
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        } else {
+            errorSpan.textContent = "";
+            $(".btn-prevent-multiple-submits").attr('disabled', false);
+        }
     }
 
     const saveWeighLines = (product, batchNo, reading, net, saveBtn) => {
