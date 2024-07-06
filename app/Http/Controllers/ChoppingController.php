@@ -421,7 +421,7 @@ class ChoppingController extends Controller
         // Filter the open runs based on the provided template_no
         $runs = DB::table('choppings')
                     ->where('status', 0)
-                    ->whereDate('created_at', today())
+                    ->whereDate('created_at', '>=', today()->subDays(1))
                     ->where('chopping_id', 'LIKE', $templateNo . '%')
                     ->get();
 

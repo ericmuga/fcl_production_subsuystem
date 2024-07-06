@@ -566,6 +566,7 @@
 
                 $('#batch_no').val(selectedChoppingNo)
                 $('#complete_run_number').val(selectedChoppingNo)
+                
                 //Append the new option and select it
                 const selectElement = document.getElementById('chopping_no');
                 const option = document.createElement('option');
