@@ -30,4 +30,5 @@ Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
     Route::post('/v1/fetch-beheading-data', [ApiController::class, 'getBeheadingData']);
     Route::post('/v1/fetch-breaking-data', [ApiController::class, 'getBrakingData']);
     Route::post('/v1/fetch-deboning-data', [ApiController::class, 'getDeboningData']);
+    Route::post('/v1/fetch-chopping-data', [ApiController::class, 'getChoppingData']);
 });

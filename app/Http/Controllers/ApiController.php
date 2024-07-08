@@ -148,4 +148,33 @@ class ApiController extends Controller
 
         return response()->json($deboning_data);
     }
+
+    public function getChoppingData(Request $request)
+    {
+        $validator = $this->validateDateRange($request);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'Validation Error',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        $dates = $this->parseDates($request->from_date, $request->to_date);
+
+        $columns = [
+            'a.chopping_id', 'a.item_code', 'a.weight', 'a.output as is_output', 'a.created_at'
+        ];
+
+        $chopping_data = DB::table('chopping_lines as a')
+            ->join('choppings as b', 'a.chopping_id', '=', 'b.chopping_id')
+            ->where('b.status', '=', 1)
+            ->whereDate('a.created_at', '>=', $dates['from_date'])
+            ->whereDate('a.created_at', '<=', $dates['to_date'])
+            ->select($columns)
+            ->orderByDesc('a.chopping_id')
+            ->get();
+
+        return response()->json($chopping_data);
+    }
 }

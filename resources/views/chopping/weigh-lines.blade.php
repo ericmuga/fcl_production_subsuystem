@@ -39,6 +39,11 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->item_code }}</td>
                                     <td>{{ $data->description }}</td>
+                                    <td>
+                                        <span class="badge {{ $data->output == 1 ? 'badge-info' : 'badge-success' }}">
+                                            {{ $data->output == 1 ? 'Output' : 'Input' }}
+                                        </span>
+                                    </td>
                                     <td>{{ number_format($data->weight, 2) }}</td>
                                 </tr>
                             @endforeach
