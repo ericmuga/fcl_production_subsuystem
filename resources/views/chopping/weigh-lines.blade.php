@@ -22,6 +22,7 @@
                                 <th>#</th>
                                 <th>Item No</th>
                                 <th>Item Name</th>
+                                <th>Item Type</th>
                                 <th>Weight</th>
                             </tr>
                         </thead>
@@ -30,6 +31,7 @@
                                 <th>#</th>
                                 <th>Item No</th>
                                 <th>Item Name</th>
+                                <th>Item Type</th>
                                 <th>Weight</th>
                             </tr>
                         </tfoot>

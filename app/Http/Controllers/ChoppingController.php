@@ -526,6 +526,12 @@ class ChoppingController extends Controller
                     DB::table('chopping_lines')->insert($choppingLines);
                 }
 
+                // Ensure all lines are inserted before calculating the total weight
+                DB::commit();
+
+                // Re-open the transaction for the remaining operations
+                DB::beginTransaction();
+
                 // Fetch the 'Output' item
                 $output = DB::table('template_lines')
                     ->where('type', 'Output')
@@ -533,10 +539,15 @@ class ChoppingController extends Controller
                     ->first();
 
                 if ($output) {
+                    $todayStart = today();
+                    $tomorrowStart = $todayStart->copy()->addDay();
+                    $allowanceEnd = $tomorrowStart->copy()->addMinutes(30);
+
                     $totalInsertedWeight = DB::table('chopping_lines')
                         ->where('chopping_id', $request->complete_run_number)
                         ->whereDate('created_at', today())
-                        ->sum('weight');
+                        ->whereBetween('created_at', [$todayStart, $allowanceEnd])
+                        ->sum('weight'); 
 
                     DB::table('chopping_lines')->insert([
                         'chopping_id' => $request->complete_run_number,
