@@ -358,16 +358,28 @@ class ChoppingController extends Controller
             ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
             ->get();
 
+        // $choppings = DB::table('choppings as a')
+        //     ->Join('users as b', 'a.user_id', '=', 'b.id')
+        //     ->join('template_header as c', function ($join) {
+        //         $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id + '-') - 1)"), '=', 'c.template_no');
+        //     })
+        //     ->where('a.status', 1)
+        //     ->whereDate('a.created_at', today())
+        //     ->select('a.*', 'b.username', 'c.template_name')
+        //     ->orderByDesc('a.id')
+        //     ->get(); 
+
         $choppings = DB::table('choppings as a')
-            ->Join('users as b', 'a.user_id', '=', 'b.id')
+            ->join('users as b', 'a.user_id', '=', 'b.id')
             ->join('template_header as c', function ($join) {
                 $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id + '-') - 1)"), '=', 'c.template_no');
             })
+            ->leftJoin('users as d', 'a.closed_by', '=', 'd.id') // Join with users table again for closed_by
             ->where('a.status', 1)
             ->whereDate('a.created_at', today())
-            ->select('a.*', 'b.username', 'c.template_name')
+            ->select('a.*', 'b.username as creator_username', 'c.template_name', 'd.username as closer_username') // Select the username for the closer
             ->orderByDesc('a.id')
-            ->get(); 
+            ->get();
 
         return view('chopping.weigh', compact('title', 'templates', 'choppings', 'helpers'));
     }
@@ -477,16 +489,17 @@ class ChoppingController extends Controller
         }
     }
 
-    public function closeChoppingRun(Request $request)
+    public function closeChoppingRun(Request $request, Helpers $helpers)
     {
         try {
-            DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request, $helpers) {
                 // Update chopping status
                 DB::table('choppings')
                     ->where('chopping_id', $request->complete_run_number)
                     ->whereDate('created_at', today())
                     ->update([
                         'status' => 1,
+                        'closed_by' => $helpers->authenticatedUserId(),
                         'updated_at' => now()
                     ]);
 

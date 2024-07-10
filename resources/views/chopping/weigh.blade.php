@@ -247,6 +247,7 @@
                             <th>Template Name</th>
                             <th>Created By</th>
                             <th>Created Time</th>
+                            <th>Closed By</th>
                             <th>Closed Time</th>
                         </tr>
                     </thead>
@@ -257,6 +258,7 @@
                             <th>Template Name</th>
                             <th>Created By</th>
                             <th>Created Time</th>
+                            <th>Closed By</th>
                             <th>Closed Time</th>
                         </tr>
                         </tr>
@@ -268,8 +270,9 @@
                                 <td><a href="{{ route('chopping_lines', $data->chopping_id) }}">{{ $data->chopping_id }}</a>
                                 </td>
                                 <td>{{ $data->template_name }}</td>
-                                <td>{{ $data->username }}</td>
+                                <td>{{ $data->creator_username }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>{{ $data->closer_username}}</td>
                                 <td>{{ $helpers->amPmDate($data->updated_at) }}</td>
                             </tr>
                         @endforeach
