@@ -430,10 +430,13 @@ class ChoppingController extends Controller
     {
         $templateNo = $request->input('template_no');
 
-        // Filter the open runs based on the provided template_no
+        $todayStart = today();
+        $tomorrowStart = $todayStart->copy()->addDay();
+        $allowanceEnd = $tomorrowStart->copy()->addMinutes(30);
+
         $runs = DB::table('choppings')
                     ->where('status', 0)
-                    ->whereDate('created_at', '>=', today()->subDays(1))
+                    ->whereBetween('created_at', [$todayStart, $allowanceEnd])
                     ->where('chopping_id', 'LIKE', $templateNo . '%')
                     ->select('chopping_id')
                     ->get();
