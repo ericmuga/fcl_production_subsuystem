@@ -525,6 +525,15 @@ class ChoppingController extends Controller
                     ];
                 }
 
+                // Special condition for chopping_id '1230L83' or '1230L73'
+                if (in_array($chopping_id, ['1230L83', '1230L73'])) {
+                    $choppingLines[] = [
+                        'chopping_id' => $request->complete_run_number,
+                        'item_code' => 'G8900',
+                        'weight' => 9 / (float)$request->batch_size,
+                    ];
+                }
+
                 if (!empty($choppingLines)) {
                     DB::table('chopping_lines')->insert($choppingLines);
                 }
