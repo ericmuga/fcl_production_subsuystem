@@ -530,7 +530,7 @@ class ChoppingController extends Controller
                     $choppingLines[] = [
                         'chopping_id' => $request->complete_run_number,
                         'item_code' => 'G8900',
-                        'weight' => 9 / (float)$request->batch_size,
+                        'weight' => (9 / (float)$request->batch_size) * 2,
                     ];
                 }
 
