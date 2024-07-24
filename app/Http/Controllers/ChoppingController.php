@@ -358,16 +358,14 @@ class ChoppingController extends Controller
             ->select('template_header.template_no', 'template_header.template_name', 'template_lines.description as template_output')
             ->get();
 
-        // $choppings = DB::table('choppings as a')
-        //     ->Join('users as b', 'a.user_id', '=', 'b.id')
-        //     ->join('template_header as c', function ($join) {
-        //         $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id + '-') - 1)"), '=', 'c.template_no');
-        //     })
-        //     ->where('a.status', 1)
-        //     ->whereDate('a.created_at', today())
-        //     ->select('a.*', 'b.username', 'c.template_name')
-        //     ->orderByDesc('a.id')
-        //     ->get(); 
+        $scale_configs = DB::table('scale_configs')
+            ->where('section', 'chopping')
+            ->select('scale', 'comport', 'tareweight', 'ip_address')
+            ->get()
+            ->keyBy('scale')
+            ->toArray();
+
+        // dd($scale_configs);
 
         $choppings = DB::table('choppings as a')
             ->join('users as b', 'a.user_id', '=', 'b.id')
@@ -381,7 +379,7 @@ class ChoppingController extends Controller
             ->orderByDesc('a.id')
             ->get();
 
-        return view('chopping.weigh', compact('title', 'templates', 'choppings', 'helpers'));
+        return view('chopping.weigh', compact('title', 'templates', 'choppings', 'helpers', 'scale_configs'));
     }
 
     public function makeChoppingRun(Request $request, Helpers $helpers)
@@ -521,7 +519,7 @@ class ChoppingController extends Controller
                     $choppingLines[] = [
                         'chopping_id' => $request->complete_run_number,
                         'item_code' => $sp->item_code,
-                        'weight' => (float)$sp->units_per_100 / (float)$request->batch_size,
+                        'weight' => ((float)$sp->units_per_100 / (float)$request->batch_size) * 2,
                     ];
                 }
 

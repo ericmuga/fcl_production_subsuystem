@@ -85,12 +85,16 @@
                     <div class="card-body text-center">
                         <div class="form-group">
                             <div class="row align-items-center">
-                                <div class="col-md-4" style="padding-top: 5%">
-                                    <button type="button" id="weigh" value="" class="btn btn-primary"><i
+                                <div class="col-md-4" style="padding-top:">
+                                    <button type="button" id="weigh_fresh" onclick="getWeightV2('fresh')" value="" class="btn btn-primary btn-lg"><i
                                             class="fas fa-balance-scale"></i>
-                                        Weigh</button> <br>
-                                    <small>Reading comport: <strong>7</strong></small>
-                                </div>
+                                        Fresh</button> <br>
+                                    <small>Reading comport: <strong>{{ $scale_configs['Fresh']->comport }}</strong></small>
+                                    <button type="button" id="weigh_cont" onclick="getWeightV2('cont')"value="" class="btn btn-primary btn-lg"><i
+                                            class="fas fa-balance-scale"></i>
+                                        Con'tl</button> <br>
+                                    <small>Reading comport: <strong>{{ $scale_configs['Continentals']->comport }}</strong></small>
+                                </div>                                
                                 <div class="col-md-4">
                                     <label for="exampleInputEmail1">Scale Reading</label>
                                     <input type="number" step="0.01" class="form-control" id="reading" name="reading"
@@ -106,6 +110,10 @@
                                     </button>
                                 </div>
                             </div>
+                            <input type="hidden" id="fresh_url" value="{{ $scale_configs['Fresh']->ip_address.config('app.get_weight_endpoint').'/'. $scale_configs['Fresh']->comport }}">
+                            <input type="hidden" id="cont_url" value="{{ $scale_configs['Continentals']->ip_address.config('app.get_weight_endpoint').'/'. $scale_configs['Continentals']->comport }}">
+
+                            <div class="form-group error"></div>
                         </div>
                         <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
@@ -409,6 +417,72 @@
         netWeight = netWeight.toFixed(2);
         $('#net').val(netWeight);
     };
+
+    const getWeightV2 = (scaleType) => {
+        let url;
+        let button;
+
+        if (scaleType === 'fresh') {
+            url = document.getElementById('fresh_url').value;
+            button = document.getElementById('weigh_fresh');
+        } else if (scaleType === 'cont') {
+            url = document.getElementById('cont_url').value;
+            button = document.getElementById('weigh_cont');
+        } else {
+            console.error('Invalid scale type');
+            return;
+        }
+
+        const fullUrl = 'http://' + url;
+        console.log('full URL:', fullUrl);
+
+        // Disable the button and change its label
+        button.disabled = true;
+        const originalLabel = button.innerHTML;
+        button.innerHTML = '<strong>Reading...</strong>';
+
+        // Clear any previous error message
+        document.querySelector('.form-group.error').innerHTML = '';
+
+        // Set a timeout to abort the request if it takes longer than 5 seconds
+        const source = axios.CancelToken.source();
+        const timeoutId = setTimeout(() => {
+            source.cancel('No response received from scale');
+            console.error('No response received from scale');
+            // Re-enable the button and revert the label
+            button.disabled = false;
+            button.innerHTML = originalLabel;
+            // Display the error message
+            document.querySelector('.form-group.error').innerHTML = '<div class="alert alert-danger small-alert">No response received from scale</div>';
+        }, 5000);
+
+        axios.get(fullUrl, { cancelToken: source.token })
+            .then(function (response) {
+                console.log(response.data);
+                clearTimeout(timeoutId); // Clear the timeout
+                if (response.data.success) {
+                    // Set the value of the input field with id="reading"
+                    document.getElementById('reading').value = parseFloat(response.data.response).toFixed(2);
+                } else {
+                    console.error('API call was not successful.');
+                    document.querySelector('.form-group.error').innerHTML = '<div class="alert alert-danger small-alert">API call was not successful.</div>';
+                }
+            })
+            .catch(function (error) {
+                if (axios.isCancel(error)) {
+                    console.log(error.message);
+                    document.querySelector('.form-group.error').innerHTML = '<div class="alert alert-danger small-alert">' + error.message + '</div>';
+                } else {
+                    console.log('There was an error making the request: ' + error.message);
+                    document.querySelector('.form-group.error').innerHTML = '<div class="alert alert-danger small-alert">Error on request: ' + error.message + '</div>';
+                }
+            })
+            .finally(function () {
+                // Re-enable the button and revert the label
+                button.disabled = false;
+                button.innerHTML = originalLabel;
+            });
+    }
 
     const checkClosingRunNumber = () => {
         const completeRunNumber = document.getElementById('complete_run_number').value;
