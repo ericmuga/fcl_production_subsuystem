@@ -28,6 +28,8 @@ return [
     'sms_whatsapp_no' => env('SMS_WHATSAPP_NO', ''),
 
     'valid_bearer_token' => env('VALID_BEARER_TOKEN', ''),
+    'comport_list_endpoint' => env('COMPORT_LIST_ENDPOINT', ''),
+    'get_weight_endpoint' => env('GET_WEIGHT_ENDPOINT', ''),
 
     /*
     |--------------------------------------------------------------------------

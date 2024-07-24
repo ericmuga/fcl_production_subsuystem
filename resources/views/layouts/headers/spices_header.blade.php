@@ -122,6 +122,16 @@
                         <!-- End Level two -->
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle">Settings</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="{{ route('butchery_scale_settings', 'chopping') }}"
+                                class="dropdown-item">Scale
+                                settings </a></li>
+                        <li class="dropdown-divider"></li>
+                    </ul>
+                </li>
             </ul>
 
             <!-- SEARCH FORM -->

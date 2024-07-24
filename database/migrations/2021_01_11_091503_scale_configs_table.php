@@ -15,11 +15,12 @@ class ScaleConfigsTable extends Migration
     {
         Schema::create('scale_configs', function (Blueprint $table) {
             $table->id();
-            $table->string('scale', 20);
+            $table->string('scale', 20)->unique();
             $table->string('comport', 20);
             $table->string('baudrate', 20);
             $table->float('tareweight', 8, 2);
             $table->string('section', 50);
+            $table->string('ip_address')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();

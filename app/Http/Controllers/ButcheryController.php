@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-use PhpParser\Node\Stmt\TryCatch;
 
 class ButcheryController extends Controller
 {
@@ -972,11 +971,12 @@ class ButcheryController extends Controller
 
         $layout = $lay;
 
-        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers', 'layout'));
+        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers', 'layout', 'filter'));
     }
 
     public function UpdateScalesettings(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         try {
             // forget configs cache
             $helpers->optimizeCache();
@@ -986,11 +986,10 @@ class ButcheryController extends Controller
                 ->where('id', $request->item_id)
                 ->update([
                     'comport' => $request->edit_comport,
-                    'baudrate' => $request->edit_baud,
+                    'ip_address' => $request->edit_ip_address,
                     'tareweight' => $request->edit_tareweight,
                     'updated_at' => Carbon::now(),
                 ]);
-
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
