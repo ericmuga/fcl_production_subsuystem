@@ -86,11 +86,11 @@
                         <div class="form-group">
                             <div class="row align-items-center">
                                 <div class="col-md-4" style="padding-top:">
-                                    <button type="button" id="weigh_fresh" onclick="getWeightV2('fresh')" value="" class="btn btn-primary btn-lg"><i
+                                    <button type="button" id="weigh_fresh" onclick="getWeightV2('fresh')" value="" class="btn btn-primary"><i
                                             class="fas fa-balance-scale"></i>
                                         Fresh</button> <br>
                                     <small>Reading comport: <strong>{{ $scale_configs['Fresh']->comport }}</strong></small>
-                                    <button type="button" id="weigh_cont" onclick="getWeightV2('cont')"value="" class="btn btn-primary btn-lg"><i
+                                    <button type="button" id="weigh_cont" onclick="getWeightV2('cont')"value="" class="btn btn-primary"><i
                                             class="fas fa-balance-scale"></i>
                                         Con'tl</button> <br>
                                     <small>Reading comport: <strong>{{ $scale_configs['Continentals']->comport }}</strong></small>
