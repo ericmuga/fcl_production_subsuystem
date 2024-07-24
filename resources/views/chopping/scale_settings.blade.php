@@ -199,10 +199,8 @@
             url: "{{ url('butchery/comport-list-api-service') }}",
             dataType: 'JSON',
             success: function (data) {
-                console.log(data);
 
                 var obj = JSON.parse(data);
-                console.log(obj.success);
 
                 if (obj.success == true) {
 
@@ -266,7 +264,6 @@
 
         axios.get(fullUrl)
             .then(function (response) {
-                console.log(response.data); // Log the response data to the console
                 if (response.data.success) {
                     // Clear any previous error messages
                     displayError('');
