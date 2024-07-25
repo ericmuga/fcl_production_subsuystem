@@ -117,6 +117,11 @@
                                         </li>
                                     </ul>
                                 </li>
+                                <li class="dropdown-divider"></li>
+                                <li>
+                                    <a tabindex="-1" href="{{ route('chopping_v2_report') }}"
+                                        class="dropdown-item"> Chopping V2 Lines</a>
+                                </li>
                             </ul>
                         </li>
                         <!-- End Level two -->

@@ -365,8 +365,6 @@ class ChoppingController extends Controller
             ->keyBy('scale')
             ->toArray();
 
-        // dd($scale_configs);
-
         $choppings = DB::table('choppings as a')
             ->join('users as b', 'a.user_id', '=', 'b.id')
             ->join('template_header as c', function ($join) {
@@ -592,7 +590,26 @@ class ChoppingController extends Controller
             ->orderBy('a.id', 'asc')
             ->get();
 
-
         return view('chopping.weigh-lines', compact('title', 'lines', 'run_no'));
+    }
+
+    public function choppingLinesReport(Request $request)
+    {
+        $title = 'Chopping Lines report';
+
+        $lines = DB::table('chopping_lines as a')
+            ->leftJoin('template_lines as b', function($join) {
+                $join->on('a.item_code', '=', 'b.item_code')
+                    ->whereRaw('b.id = (SELECT TOP 1 id FROM template_lines WHERE item_code = b.item_code)');
+            })
+            ->leftJoin(DB::raw('(SELECT id, template_no, template_name FROM template_header) as c'), function($join) {
+                $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id) - 1)"), '=', 'c.template_no');
+            })
+            ->whereDate('a.created_at', today())
+            ->select('a.*', 'b.description', 'c.template_name')
+            ->orderBy('a.id', 'asc')
+            ->get();
+
+        return view('chopping.lines-report', compact('title', 'lines'));
     }
 }
