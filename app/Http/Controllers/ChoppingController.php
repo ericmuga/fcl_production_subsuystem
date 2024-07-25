@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ChoppingV2LinesExport;
 use App\Exports\PostedChoppingLinesExport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
@@ -605,11 +606,45 @@ class ChoppingController extends Controller
             ->leftJoin(DB::raw('(SELECT id, template_no, template_name FROM template_header) as c'), function($join) {
                 $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id) - 1)"), '=', 'c.template_no');
             })
-            ->whereDate('a.created_at', today())
+            ->whereDate('a.created_at', today()) // today
             ->select('a.*', 'b.description', 'c.template_name')
             ->orderBy('a.id', 'asc')
             ->get();
 
         return view('chopping.lines-report', compact('title', 'lines'));
+    }
+
+    public function choppingLinesV2Export(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $lines = DB::table('chopping_lines as a')
+            ->leftJoin('template_lines as b', function($join) {
+                $join->on('a.item_code', '=', 'b.item_code')
+                    ->whereRaw('b.id = (SELECT TOP 1 id FROM template_lines WHERE item_code = b.item_code)');
+            })
+            ->leftJoin(DB::raw('(SELECT id, template_no, template_name FROM template_header) as c'), function($join) {
+                $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id) - 1)"), '=', 'c.template_no');
+            })
+            ->whereDate('a.created_at', '>=', $from_date)
+            ->whereDate('a.created_at', '<=', $to_date)
+            ->select(
+                'a.chopping_id', 
+                'c.template_name', 
+                'a.item_code', 
+                'b.description', 
+                DB::raw("CASE WHEN a.output = 1 THEN 'Output' ELSE 'Input' END as output_type"),
+                'a.weight', 
+                'a.batch_no', 
+                'a.created_at'
+            )
+            ->orderBy('a.chopping_id', 'asc')
+            ->get();
+
+        $exports = Session::put('session_export_data', $lines);
+
+        return Excel::download(new ChoppingV2LinesExport, "Chopping Lines v2 from- {$request->from_date} to {$request->to_date} $ext");
     }
 }

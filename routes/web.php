@@ -200,6 +200,7 @@ Route::prefix('v2/chopping')->group(function () {
     Route::post('/close-run', [ChoppingController::class, 'closeChoppingRun'])->name('close_chopping_run');
     Route::get('lines/{batch_no}', [ChoppingController::class, 'choppingLines'])->name('chopping_lines');
     Route::get('/lines-report', [ChoppingController::class, 'choppingLinesReport'])->name('chopping_v2_report');
+    Route::post('/lines-export', [ChoppingController::class, 'choppingLinesV2Export'])->name('chopping_v2_export');
 });
 
 /*-------------End Spices------------------ */
