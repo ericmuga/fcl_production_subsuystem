@@ -507,8 +507,18 @@ class ChoppingController extends Controller
                 $chopping_id = $parts[0];
 
                 // Fetch template lines starting with 'H' and calculate weight
+                $item_list = [
+                        'G2103', 'G2107', 'G2109', 'G2110', 'G2111', 'G2113', 'G2114', 'G2115', 
+                        'G2116', 'G2117', 'G2118', 'G2119', 'G2120', 'G2121', 'G2122', 'G2123', 
+                        'G2125', 'G2126', 'G2127', 'G2128', 'G2129', 'G2130', 'G2131', 'G2132', 
+                        'G2133', 'G2137', 'G2139', 'G2140', 'G2141', 'G2142', 'G2143', 'G2145', 
+                        'G2146', 'G2147', 'G2148', 'G2151', 'G2157', 'G2158', 'G2162', 'G2165', 
+                        'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176'
+                ];
+                
                 $spices = DB::table('template_lines')
                     ->where('item_code', 'like', 'H%')
+                    ->orWhereIn('item_code', $item_list)
                     ->where('template_no', $chopping_id)
                     ->select('item_code', 'units_per_100')
                     ->get();
