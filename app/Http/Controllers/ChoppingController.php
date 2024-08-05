@@ -515,10 +515,10 @@ class ChoppingController extends Controller
                         'G2146', 'G2147', 'G2148', 'G2151', 'G2157', 'G2158', 'G2162', 'G2165', 
                         'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176'
                 ];
-                
+
                 $spices = DB::table('template_lines')
                     ->where('item_code', 'like', 'H%')
-                    ->orWhereIn('item_code', $item_list)
+                    // ->orWhereIn('item_code', $item_list)
                     ->where('template_no', $chopping_id)
                     ->select('item_code', 'units_per_100')
                     ->get();
