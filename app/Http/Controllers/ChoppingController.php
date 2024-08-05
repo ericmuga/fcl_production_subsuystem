@@ -517,8 +517,10 @@ class ChoppingController extends Controller
                 ];
 
                 $spices = DB::table('template_lines')
-                    ->where('item_code', 'like', 'H%')
-                    // ->orWhereIn('item_code', $item_list)
+                    ->where(function ($query) use ($chopping_id, $item_list) {
+                        $query->where('item_code', 'like', 'H%')
+                            ->orWhereIn('item_code', $item_list);
+                    })
                     ->where('template_no', $chopping_id)
                     ->select('item_code', 'units_per_100')
                     ->get();
