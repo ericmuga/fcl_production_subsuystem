@@ -84,6 +84,7 @@
                         <th>Weight(kgs)</th>
                         <th>Net Weight(kgs)</th>
                         <th>Narration</th>
+                        <th>Batch No</th>
                         <th>No. of Crates</th>
                         <th>No. of pieces</th>
                         <th>Date </th>
@@ -100,6 +101,7 @@
                         <th>Weight(kgs)</th>
                         <th>Net Weight(kgs)</th>
                         <th>Narration</th>
+                        <th>Batch No</th>
                         <th>No. of Crates</th>
                         <th>No. of pieces</th>
                         <th>Date </th>
@@ -117,6 +119,7 @@
                         <td> {{ number_format($data->actual_weight, 2) }}</td>
                         <td> {{ number_format($data->net_weight, 2) }}</td>
                         <td> {{ $data->narration }}</td>
+                        <td> {{ $data->batch_no }}</td>
                         <td> {{ $data->no_of_crates }}</td>
                         <td> {{ $data->no_of_pieces }}</td>
                         <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
