@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
+
 class ApiController extends Controller
 {
     private function parseDates($from_date, $to_date)
@@ -176,5 +178,49 @@ class ApiController extends Controller
             ->get();
 
         return response()->json($chopping_data);
+    }
+
+    public function saveSlaughterReceipts(Request $request)
+    {
+        // Validate the request data for an array of receipts
+        $validator = Validator::make($request->all(), [
+            '*.receipt_no' => 'required|string|max:20',
+            '*.item_no' => 'required|string|max:20',
+            '*.item_description' => 'required|string|max:100',
+            '*.tag' => 'nullable|string|max:20',
+            '*.vendor_no' => 'required|string|max:20',
+            '*.vendor_name' => 'required|string|max:100',
+            '*.receipt_date' => 'required|date',
+            '*.qty' => 'required|numeric',
+            '*.bin' => 'nullable|string|max:10',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        try {
+            // Loop through each receipt line in the request
+            foreach ($request->all() as $receipt) {
+                // Insert each receipt into the database
+                DB::table('receipts')->insert([
+                    'enrolment_no' => $receipt['receipt_no'],   // Assuming receipt_no is used as enrolment_no
+                    'vendor_tag' => $receipt['tag'],
+                    'receipt_no' => $receipt['receipt_no'],
+                    'vendor_no' => $receipt['vendor_no'],
+                    'vendor_name' => $receipt['vendor_name'],
+                    'receipt_date' => $receipt['receipt_date'],
+                    'item_code' => $receipt['item_no'],
+                    'description' => $receipt['item_description'],
+                    'received_qty' => $receipt['qty'],
+                    'slaughter_date' => $receipt['slaughter_date'] ?? now(), // Use slaughter_date or default to current date
+                    'user_id' => 1,  // Assuming user_id is 1 for now
+                ]);
+            }
+
+            return response()->json(['message' => 'Receipts created successfully'], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to create receipts', 'details' => $e->getMessage()], 500);
+        }
     }
 }
