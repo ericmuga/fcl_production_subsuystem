@@ -208,25 +208,32 @@ class ApiController extends Controller
         try {
             // Loop through each receipt line in the request
             foreach ($request->all() as $receipt) {
-                // Insert each receipt into the database
-                DB::table('receipts')->insert([
-                    'enrolment_no' => $receipt['receipt_no'],   // Assuming receipt_no is used as enrolment_no
-                    'vendor_tag' => $receipt['tag'],
-                    'receipt_no' => $receipt['receipt_no'],
-                    'vendor_no' => $receipt['vendor_no'],
-                    'vendor_name' => $receipt['vendor_name'],
-                    'receipt_date' => $receipt['receipt_date'],
-                    'item_code' => $receipt['item_no'],
-                    'description' => $receipt['item_description'],
-                    'received_qty' => $receipt['qty'],
-                    'slaughter_date' => $receipt['slaughter_date'] ?? now(), // Use slaughter_date or default to current date
-                    'user_id' => 1,  // Assuming user_id is 1 for now
-                ]);
-            }
+                // Check if a record with the same enrolment_no and slaughter_date already exists
+                $existingReceipt = DB::table('receipts')
+                    ->where('enrolment_no', $receipt['receipt_no'])
+                    ->where('slaughter_date', $receipt['slaughter_date'] ?? now())
+                    ->first();
 
-            return response()->json(['message' => 'Receipts created successfully'], 201);
+                if (!$existingReceipt) {
+                    // Insert the receipt into the database only if it does not exist
+                    DB::table('receipts')->insert([
+                        'enrolment_no' => $receipt['receipt_no'],  // Assuming receipt_no is used as enrolment_no
+                        'vendor_tag' => $receipt['tag'],
+                        'receipt_no' => $receipt['receipt_no'],
+                        'vendor_no' => $receipt['vendor_no'],
+                        'vendor_name' => $receipt['vendor_name'],
+                        'receipt_date' => $receipt['receipt_date'],
+                        'item_code' => $receipt['item_no'],
+                        'description' => $receipt['item_description'],
+                        'received_qty' => $receipt['qty'],
+                        'slaughter_date' => $receipt['slaughter_date'] ?? now(),  // Use slaughter_date or default to current date
+                        'user_id' => null,  // Assuming user_id is 1 for now
+                    ]);
+                }
+            }
+            return response()->json(['success' => true, 'message' => 'Receipts created successfully', 'timestamp' => now()], 201);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to create receipts', 'details' => $e->getMessage()], 500);
+            return response()->json(['success' => false, 'error' => 'Failed to create receipts', 'details' => $e->getMessage(), 'timestamp' => now()], 500);
         }
     }
 
