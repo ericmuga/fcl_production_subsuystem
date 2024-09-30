@@ -32,3 +32,7 @@ Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
     Route::post('/v1/fetch-deboning-data', [ApiController::class, 'getDeboningData']);
     Route::post('/v1/fetch-chopping-data', [ApiController::class, 'getChoppingData']);
 });
+
+//without token APIS
+Route::post('/v1/save/slaughter-receipts', [ApiController::class, 'saveSlaughterReceipts']);
+Route::post('/v1/push/slaughter-lines', [ApiController::class, 'pushSlaughterLines']);
