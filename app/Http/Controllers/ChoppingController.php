@@ -506,7 +506,7 @@ class ChoppingController extends Controller
                 $parts = explode('-', $request->complete_run_number);
                 $chopping_id = $parts[0];
 
-                // Fetch template lines starting with 'H' and calculate weight
+                // Fetch template lines starting with 'H'or 'G' which are considered spices and calculate weight
                 $item_list = [
                         'G2103', 'G2107', 'G2109', 'G2110', 'G2111', 'G2113', 'G2114', 'G2115', 
                         'G2116', 'G2117', 'G2118', 'G2119', 'G2120', 'G2121', 'G2122', 'G2123', 
