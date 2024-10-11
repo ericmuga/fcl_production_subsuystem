@@ -32,6 +32,11 @@ return [
     'get_weight_endpoint' => env('GET_WEIGHT_ENDPOINT', ''),
     'manual_weights_usernames' => env('MANUAL_WEIGHTS_USERNAMES', ''),
 
+    'rabbitmq_host' => env('RABBITMQ_HOST', 'localhost'),
+    'rabbitmq_port' => env('RABBITMQ_PORT', ''),
+    'rabbitmq_user' => env('RABBITMQ_USER', ''),
+    'rabbitmq_password' => env('RABBITMQ_PASSWORD', ''),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Message\AMQPMessage;
 
 class SlaughterController extends Controller
 {
@@ -178,12 +180,12 @@ class SlaughterController extends Controller
     {
         try {
             // try save
-            // dd($request->all());
             $manual_weight = 0;
             if ($request->manual_weight == 'on') {
                 $manual_weight = 1;
             }
-            DB::table('slaughter_data')->insert([
+
+            $data = [
                 'receipt_no' => $request->receipt_no,
                 'slapmark' => $request->slapmark,
                 'item_code' => $request->carcass_type,
@@ -197,7 +199,10 @@ class SlaughterController extends Controller
                 'classification_code' => $request->classification_code,
                 'manual_weight' => $manual_weight,
                 'user_id' => $helpers->authenticatedUserId(),
-            ]);
+            ];
+
+            // Publish data to RabbitMQ
+            $this->publishToQueue($data);
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
@@ -208,6 +213,29 @@ class SlaughterController extends Controller
             return back()
                 ->withInput();
         }
+    }
+
+    private function publishToQueue($data)
+    {
+        $connection = new AMQPStreamConnection(
+            config('app.rabbitmq_host'),
+            config('app.rabbitmq_port'),
+            config('app.rabbitmq_user'),
+            config('app.rabbitmq_password')
+        );
+
+        $channel = $connection->channel();
+
+        $channel->queue_declare('weigh_data_queue', false, true, false, false);
+
+        $msg = new AMQPMessage(json_encode($data), [
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
+        ]);
+
+        $channel->basic_publish($msg, '', 'weigh_data_queue');
+
+        $channel->close();
+        $connection->close();
     }
 
     public function saveMissingSlapData(Request $request, Helpers $helpers)
