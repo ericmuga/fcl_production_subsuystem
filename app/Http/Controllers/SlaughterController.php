@@ -23,11 +23,22 @@ use Illuminate\Support\Facades\Validator;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+if (!defined('SOCKET_EAGAIN')) {
+    define('SOCKET_EAGAIN', 11);
+}
+
+if (!defined('SOCKET_EWOULDBLOCK')) {
+    define('SOCKET_EWOULDBLOCK', 11);
+}
+
+if (!defined('SOCKET_EINTR')) {
+    define('SOCKET_EINTR', 4);
+}
 class SlaughterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('session_check')->except('importReceiptsFromQueue');
     }
 
     public function index(Helpers $helpers)
@@ -176,6 +187,23 @@ class SlaughterController extends Controller
         return response()->json($result);
     }
 
+    private function getRabbitMQConnection()
+    {
+        try {
+            $connection = new AMQPStreamConnection(
+                config('app.rabbitmq_host'),
+                config('app.rabbitmq_port'),
+                config('app.rabbitmq_user'),
+                config('app.rabbitmq_password')
+            );
+            Log::info('RabbitMQ connection established successfully.');
+            return $connection;
+        } catch (\Exception $e) {
+            Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
+            throw $e;
+        }
+    }
+
     public function saveWeighData(Request $request, Helpers $helpers)
     {
         try {
@@ -217,13 +245,7 @@ class SlaughterController extends Controller
 
     private function publishToQueue($data)
     {
-        $connection = new AMQPStreamConnection(
-            config('app.rabbitmq_host'),
-            config('app.rabbitmq_port'),
-            config('app.rabbitmq_user'),
-            config('app.rabbitmq_password')
-        );
-
+        $connection = $this->getRabbitMQConnection();
         $channel = $connection->channel();
 
         $channel->queue_declare('weigh_data_queue', false, true, false, false);
@@ -486,6 +508,66 @@ class SlaughterController extends Controller
             Toastr::error($e->getMessage(), 'Error Occurred. Wrong Data format!. Records not saved!');
             return back()
                 ->withInput();
+        }
+    }
+
+    public function importReceiptsFromQueue(Helpers $helpers)
+    {
+        // forgetCache data
+        $helpers->forgetCache('lined_up');
+        $helpers->forgetCache('weigh_receipts');
+        $helpers->forgetCache('imported_receipts');
+
+        try {
+            $connection = new AMQPStreamConnection(
+                config('app.rabbitmq_host'),
+                config('app.rabbitmq_port'),
+                config('app.rabbitmq_user'),
+                config('app.rabbitmq_password')
+            );
+            Log::info('RabbitMQ connection established successfully.');
+
+            $channel = $connection->channel();
+            $channel->queue_declare('receipts_queue', false, true, false, false);
+
+            $callback = function ($msg) use ($helpers) {
+                $data = json_decode($msg->body, true);
+
+                DB::transaction(function () use ($data, $helpers) {
+                    foreach ($data as $row) {
+                        DB::table('receipts')->updateOrInsert(
+                            [
+                                'enrolment_no' => $row['enrolment_no'],
+                                'vendor_tag' => $row['vendor_tag'],
+                                'slaughter_date' => $row['slaughter_date'],
+                            ],
+                            [
+                                'receipt_no' => $row['receipt_no'],
+                                'vendor_no' => $row['vendor_no'],
+                                'vendor_name' => $row['vendor_name'],
+                                'receipt_date' => $row['receipt_date'],
+                                'item_code' => $row['item_code'],
+                                'description' => $row['description'],
+                                'received_qty' => $row['received_qty'],
+                                'user_id' => $helpers->authenticatedUserId(),
+                            ]
+                        );
+                    }
+                });
+
+                info('Slaughter Receipts Queue processed successfully');
+            };
+
+            $channel->basic_consume('receipts_queue', '', false, true, false, false, $callback);
+
+            while ($channel->is_consuming()) {
+                $channel->wait();
+            }
+
+            $channel->close();
+            $connection->close();
+        } catch (\Exception $e) {
+            Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
         }
     }
 
