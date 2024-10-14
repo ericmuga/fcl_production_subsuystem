@@ -273,7 +273,6 @@ class SlaughterController extends Controller
         if ($this->rabbitMQChannel === null) {
             $connection = $this->getRabbitMQConnection();
             $this->rabbitMQChannel = $connection->channel();
-            $this->rabbitMQChannel->queue_declare('weigh_data_queue', false, true, false, false);
         }
         return $this->rabbitMQChannel;
     }
