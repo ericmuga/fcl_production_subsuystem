@@ -686,4 +686,59 @@ class SlaughterController extends Controller
 
         return view('slaughter.change_password', compact('title'));
     }
+
+    public function disease(Helpers $helpers)
+    {
+        $title = "disease";
+        
+        $diseaseCodes = Cache::remember('diseaseCodes', now()->addMinutes(120), function () {
+            return DB::table('disease_list')
+                ->get();
+        });
+
+        $itemCodes = Cache::remember('item_codes', now()->addMinutes(120), function () {
+            return DB::table('carcass_types')
+                ->get();
+        });
+
+        $diseaseEntries = DB::table('disease_entries as a')
+                ->join('users as b', 'a.user_id', '=', 'b.id')
+                ->select('a.*', 'b.username as user_name')
+                ->whereDate('a.created_at', '>=', Carbon::yesterday())
+                ->orderByDesc('id')
+                ->take(1000)
+                ->get();
+
+        $receipts = DB::table('receipts')
+                ->whereDate('slaughter_date', '>=', today()->subDays(1))
+                ->select('vendor_tag', 'receipt_no')
+                ->get();
+
+
+        return view('slaughter.disease', compact('title', 'diseaseCodes', 'itemCodes', 'receipts', 'diseaseEntries','helpers'));
+    }
+
+    public function recordDisease(Request $request, Helpers $helpers)
+    {
+        try {
+            $data = [
+                'receipt_no' => $request->receipt_no,
+                'slapmark' => $request->slapmark,
+                'item_code' => $request->item_code,
+                'disease_code' => $request->disease_code,
+                'user_id' => $helpers->authenticatedUserId(),
+            ];
+
+            DB::table('disease_entries')->insert($data);
+
+            Toastr::success('record added successfully', 'Success');
+            return redirect()
+                ->back()
+                ->withInput();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
 }
