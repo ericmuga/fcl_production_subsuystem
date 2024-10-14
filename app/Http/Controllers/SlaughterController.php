@@ -192,7 +192,7 @@ class SlaughterController extends Controller
         try {
             $connection = new AMQPStreamConnection(
                 '172.16.0.6', // RabbitMQ host
-                15672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
+                5672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
                 'EKaranja',  // RabbitMQ user
                 'switcher@Tekken250$' // RabbitMQ password
             );
