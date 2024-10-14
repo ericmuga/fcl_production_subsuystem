@@ -702,7 +702,7 @@ class SlaughterController extends Controller
         });
 
         $diseaseEntries = DB::table('disease_entries as a')
-                ->join('users as b', 'a.user_id', '=', 'b.id')
+                ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
                 ->select('a.*', 'b.username as user_name')
                 ->whereDate('a.created_at', '>=', Carbon::yesterday())
                 ->orderByDesc('id')
