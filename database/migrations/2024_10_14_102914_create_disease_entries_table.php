@@ -15,6 +15,8 @@ class CreateDiseaseEntriesTable extends Migration
     {
         Schema::create('disease_entries', function (Blueprint $table) {
             $table->id();
+            $table->string('disease_code', 20); 
+            $table->foreign('disease_code')->references('disease_code')->on('disease_list');
             $table->string('receipt_no', 20);
             $table->string('slapmark', 20);
             $table->string('item_code', 20);
