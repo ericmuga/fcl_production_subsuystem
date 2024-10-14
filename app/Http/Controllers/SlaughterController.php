@@ -191,10 +191,10 @@ class SlaughterController extends Controller
     {
         try {
             $connection = new AMQPStreamConnection(
-                config('app.rabbitmq_host'),
-                config('app.rabbitmq_port'),
-                config('app.rabbitmq_user'),
-                config('app.rabbitmq_password')
+                '172.16.0.6', // RabbitMQ host
+                15672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
+                'EKaranja',  // RabbitMQ user
+                'switcher@Tekken250$' // RabbitMQ password
             );
             Log::info('RabbitMQ connection established successfully.');
             return $connection;
@@ -227,7 +227,7 @@ class SlaughterController extends Controller
                 'classification_code' => $request->classification_code,
                 'manual_weight' => $manual_weight,
                 'user_id' => $helpers->authenticatedUserId(),
-                'imported' => false, // Set imported to false initially
+                'is_imported' => false, // Set imported to false initially
             ];
 
             DB::table('slaughter_data')->insert($data);
