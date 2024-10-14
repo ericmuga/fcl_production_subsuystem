@@ -254,10 +254,10 @@ class SlaughterController extends Controller
         if ($this->rabbitMQConnection === null) {
             try {
                 $this->rabbitMQConnection = new AMQPStreamConnection(
-                    config('rabbitmq.host'), // RabbitMQ host
-                    config('rabbitmq.port'), // RabbitMQ port (default for AMQP is 5672)
-                    config('rabbitmq.user'), // RabbitMQ user
-                    config('rabbitmq.password') // RabbitMQ password
+                    config('app.rabbitmq_host'), // RabbitMQ host
+                    config('app.rabbitmq_port'), // RabbitMQ port (default for AMQP is 5672)
+                    config('app.rabbitmq_user'), // RabbitMQ user
+                    config('app.rabbitmq_password') // RabbitMQ password
                 );
                 Log::info('RabbitMQ connection established successfully.');
             } catch (\Exception $e) {
