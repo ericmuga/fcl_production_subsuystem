@@ -282,13 +282,13 @@ class SlaughterController extends Controller
         $channel = $this->getRabbitMQChannel();
 
         // Declare the exchange if it does not exist
-        $channel->exchange_declare(config('app.rabbitmq_exchange_name'), 'direct', false, true, false);
+        $channel->exchange_declare('fcl.exchange.direct', 'direct', false, true, false);
 
         $msg = new AMQPMessage(json_encode($data), [
             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
         ]);
 
-        $channel->basic_publish($msg, config('app.rabbitmq_exchange_name'), config('app.rabbitmq_routing_key'));
+        $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
     }
 
     public function __destruct()
