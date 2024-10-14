@@ -227,7 +227,10 @@ class SlaughterController extends Controller
                 'classification_code' => $request->classification_code,
                 'manual_weight' => $manual_weight,
                 'user_id' => $helpers->authenticatedUserId(),
+                'imported' => false, // Set imported to false initially
             ];
+
+            DB::table('slaughter_data')->insert($data);
 
             // Publish data to RabbitMQ
             $this->publishToQueue($data);
@@ -519,14 +522,7 @@ class SlaughterController extends Controller
         $helpers->forgetCache('imported_receipts');
 
         try {
-            $connection = new AMQPStreamConnection(
-                config('app.rabbitmq_host'),
-                config('app.rabbitmq_port'),
-                config('app.rabbitmq_user'),
-                config('app.rabbitmq_password')
-            );
-            Log::info('RabbitMQ connection established successfully.');
-
+            $connection = $this->getRabbitMQConnection();
             $channel = $connection->channel();
             $channel->queue_declare('receipts_queue', false, true, false, false);
 
@@ -552,13 +548,21 @@ class SlaughterController extends Controller
                                 'user_id' => $helpers->authenticatedUserId(),
                             ]
                         );
+
+                        // Update the imported column to true
+                        DB::table('slaughter_data')
+                            ->where('receipt_no', $row['receipt_no'])
+                            ->update(['imported' => true]);
                     }
                 });
 
-                info('Slaughter Receipts Queue processed successfully');
+                // Acknowledge the message
+                $msg->ack();
+
+                Log::info('Receipts processed successfully.');
             };
 
-            $channel->basic_consume('receipts_queue', '', false, true, false, false, $callback);
+            $channel->basic_consume('receipts_queue', '', false, false, false, false, $callback);
 
             while ($channel->is_consuming()) {
                 $channel->wait();
@@ -568,6 +572,7 @@ class SlaughterController extends Controller
             $connection->close();
         } catch (\Exception $e) {
             Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
+            Toastr::error($e->getMessage(), 'Error Occurred. Wrong Data format!. Records not saved!');
         }
     }
 

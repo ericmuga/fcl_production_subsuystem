@@ -26,6 +26,7 @@ class SlaughterDataTable extends Migration
             $table->double('settlement_weight', 8, 2);
             $table->string('classification_code', 20)->nullable();
             $table->tinyInteger('manual_weight')->default(0);
+            $table->tinyInteger('is_imported')->default(0);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
