@@ -187,22 +187,22 @@ class SlaughterController extends Controller
         return response()->json($result);
     }
 
-    private function getRabbitMQConnection()
-    {
-        try {
-            $connection = new AMQPStreamConnection(
-                '172.16.0.6', // RabbitMQ host
-                5672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
-                'EKaranja',  // RabbitMQ user
-                'switcher@Tekken250$' // RabbitMQ password
-            );
-            Log::info('RabbitMQ connection established successfully.');
-            return $connection;
-        } catch (\Exception $e) {
-            Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
-            throw $e;
-        }
-    }
+    // private function getRabbitMQConnection()
+    // {
+    //     try {
+    //         $connection = new AMQPStreamConnection(
+    //             '172.16.0.6', // RabbitMQ host
+    //             5672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
+    //             'EKaranja',  // RabbitMQ user
+    //             'switcher@Tekken250$' // RabbitMQ password
+    //         );
+    //         Log::info('RabbitMQ connection established successfully.');
+    //         return $connection;
+    //     } catch (\Exception $e) {
+    //         Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
+    //         throw $e;
+    //     }
+    // }
 
     public function saveWeighData(Request $request, Helpers $helpers)
     {
@@ -246,21 +246,60 @@ class SlaughterController extends Controller
         }
     }
 
+    private $rabbitMQConnection = null;
+    private $rabbitMQChannel = null;
+
+    private function getRabbitMQConnection()
+    {
+        if ($this->rabbitMQConnection === null) {
+            try {
+                $this->rabbitMQConnection = new AMQPStreamConnection(
+                    '172.16.0.6', // RabbitMQ host
+                    5672,        // RabbitMQ port (default for AMQP is 5672)
+                    'EKaranja',  // RabbitMQ user
+                    'switcher@Tekken250$' // RabbitMQ password
+                );
+                Log::info('RabbitMQ connection established successfully.');
+            } catch (\Exception $e) {
+                Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
+                throw $e;
+            }
+        }
+        return $this->rabbitMQConnection;
+    }
+
+    private function getRabbitMQChannel()
+    {
+        if ($this->rabbitMQChannel === null) {
+            $connection = $this->getRabbitMQConnection();
+            $this->rabbitMQChannel = $connection->channel();
+            $this->rabbitMQChannel->queue_declare('weigh_data_queue', false, true, false, false);
+        }
+        return $this->rabbitMQChannel;
+    }
+
     private function publishToQueue($data)
     {
-        $connection = $this->getRabbitMQConnection();
-        $channel = $connection->channel();
+        $channel = $this->getRabbitMQChannel();
 
-        $channel->queue_declare('weigh_data_queue', false, true, false, false);
+        // Declare the exchange if it does not exist
+        $channel->exchange_declare('fcl.exchange.direct', 'direct', false, true, false);
 
         $msg = new AMQPMessage(json_encode($data), [
             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
         ]);
 
-        $channel->basic_publish($msg, '', 'weigh_data_queue');
+        $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
+    }
 
-        $channel->close();
-        $connection->close();
+    public function __destruct()
+    {
+        if ($this->rabbitMQChannel !== null) {
+            $this->rabbitMQChannel->close();
+        }
+        if ($this->rabbitMQConnection !== null) {
+            $this->rabbitMQConnection->close();
+        }
     }
 
     public function saveMissingSlapData(Request $request, Helpers $helpers)
