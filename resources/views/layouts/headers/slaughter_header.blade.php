@@ -17,6 +17,13 @@
                 <li class="nav-item">
                     <a href="{{ route('slaughter_dashboard') }}" class="nav-link">Dashboard</a>
                 </li>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle">Lariage</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="{{ route('slaughter_disease') }}" class="dropdown-item">Disease/Death</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item">
                     <a href="{{ route('slaughter_weigh') }}" class="nav-link">Weigh</a>
                 </li>

@@ -72,9 +72,11 @@ Route::post('export-slaughter-for-nav', [SlaughterController::class, 'exportSlau
 Route::get('/slaughter/scale-settings', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
 Route::post('/slaughter/update/scale-settings', [SlaughterController::class, 'UpdateScalesettings'])->name('slaughter_update_scale_settings');
 Route::get('/slaughter/password', [SlaughterController::class, 'changePassword'])->name('slaughter_change_password');
+Route::post('/slaughter/record-disease', [SlaughterController::class, 'recordDisease'])->name('record_disease');
 
 //queues
 Route::get('/import-receipts-from-queue', [SlaughterController::class, 'importReceiptsFromQueue']);
+Route::get('/slaughter/disease', [SlaughterController::class, 'disease'])->name('slaughter_disease');
 /*-------------End Slaughter------------------ */
 
 
