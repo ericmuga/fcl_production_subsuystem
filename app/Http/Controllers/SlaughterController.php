@@ -254,10 +254,10 @@ class SlaughterController extends Controller
         if ($this->rabbitMQConnection === null) {
             try {
                 $this->rabbitMQConnection = new AMQPStreamConnection(
-                    '172.16.0.6', // RabbitMQ host
-                    5672,        // RabbitMQ port (default for AMQP is 5672)
-                    'EKaranja',  // RabbitMQ user
-                    'switcher@Tekken250$' // RabbitMQ password
+                    config('rabbitmq.host'), // RabbitMQ host
+                    config('rabbitmq.port'), // RabbitMQ port (default for AMQP is 5672)
+                    config('rabbitmq.user'), // RabbitMQ user
+                    config('rabbitmq.password') // RabbitMQ password
                 );
                 Log::info('RabbitMQ connection established successfully.');
             } catch (\Exception $e) {
@@ -282,13 +282,13 @@ class SlaughterController extends Controller
         $channel = $this->getRabbitMQChannel();
 
         // Declare the exchange if it does not exist
-        $channel->exchange_declare('fcl.exchange.direct', 'direct', false, true, false);
+        $channel->exchange_declare(config('app.rabbitmq_exchange_name'), 'direct', false, true, false);
 
         $msg = new AMQPMessage(json_encode($data), [
             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
         ]);
 
-        $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
+        $channel->basic_publish($msg, config('app.rabbitmq_exchange_name'), config('app.rabbitmq_routing_key'));
     }
 
     public function __destruct()

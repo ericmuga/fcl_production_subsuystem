@@ -36,6 +36,8 @@ return [
     'rabbitmq_port' => env('RABBITMQ_PORT', ''),
     'rabbitmq_user' => env('RABBITMQ_USER', ''),
     'rabbitmq_password' => env('RABBITMQ_PASSWORD', ''),
+    'rabbitmq_exchange_name' => env('EXCHANGE_NAME', ''),
+    'rabbitmq_slaughter_routing_key' => env('SLAUGHTER_LINE_ROUTING_KEY', ''),
 
     /*
     |--------------------------------------------------------------------------
