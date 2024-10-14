@@ -18,8 +18,6 @@ class CreateDiseaseEntriesTable extends Migration
             $table->string('receipt_no', 20);
             $table->string('slapmark', 20);
             $table->string('item_code', 20);
-            $table->string('vendor_no', 20);
-            $table->string('vendor_name', 100);
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
