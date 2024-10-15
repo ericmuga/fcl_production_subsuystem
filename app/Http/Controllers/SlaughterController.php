@@ -294,7 +294,12 @@ class SlaughterController extends Controller
         $channel->basic_consume($queue, '', false, false, false, false, $callback);
 
         while (count($channel->callbacks)) {
-            $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+            try {
+                $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+            } catch (\PhpAmqpLib\Exception\AMQPTimeoutException $e) {
+                // Handle the timeout exception if needed
+                Log::info('No messages in the queue. Waiting for new messages...');
+            }
         }
     }
 
