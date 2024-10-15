@@ -53,6 +53,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- toastr -->
     <link rel="stylesheet" href="{{ asset('assets/toastr.min.css') }}">
+
+    @yield('styles') 
 </head>
 
 <body class="hold-transition layout-top-nav">
