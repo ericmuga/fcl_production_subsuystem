@@ -38,7 +38,7 @@ class SlaughterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except(['importReceiptsFromQueue', 'consumeFromQueue']);
+        $this->middleware('session_check')->except(['importReceiptsFromQueue', 'consumeFromQueue', 'publishDummyData']);
     }
 
     public function index(Helpers $helpers)
@@ -226,6 +226,10 @@ class SlaughterController extends Controller
             Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
+        } catch (\PhpAmqpLib\Exception\AMQPChannelClosedException $e) {
+            // Handle the channel closed exception
+            Log::error('Channel connection is closed: ' . $e->getMessage());
+            return; // Exit the function if the channel is closed
         }
     }
 
@@ -277,9 +281,9 @@ class SlaughterController extends Controller
     public function consumeFromQueue()
     {
         $channel = $this->getRabbitMQChannel();
+        $queue = 'slaughter_receipts.wms';
 
         // Declare the queue if it does not exist
-        $queue = 'slaughter_receipts.wms';
         $channel->queue_declare($queue, false, true, false, false);
 
         $callback = function ($msg) {
@@ -288,19 +292,54 @@ class SlaughterController extends Controller
             Log::info('Slaughter receipts Received: ' . json_encode($data));
             
             // Acknowledge the message
-            $msg->ack();
+            $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
         };
 
         $channel->basic_consume($queue, '', false, false, false, false, $callback);
 
-        while (count($channel->callbacks)) {
+        while (true) {
             try {
-                $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+                while (count($channel->callbacks)) {
+                    $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+                }
             } catch (\PhpAmqpLib\Exception\AMQPTimeoutException $e) {
                 // Handle the timeout exception if needed
                 Log::info('No messages in the queue. Waiting for new messages...');
+                // Do not break the loop; continue waiting for new messages
+            } catch (\PhpAmqpLib\Exception\AMQPChannelClosedException $e) {
+                // Handle the channel closed exception
+                Log::error('Channel connection is closed: ' . $e->getMessage());
+                // Optionally, you can try to reconnect here
+                break; // Exit the inner loop if the channel is closed
             }
+
+            // Sleep for a short period before restarting the loop
+            sleep(1);
         }
+
+        // Close the channel and connection after consuming messages
+        $channel->close();
+        $this->rabbitMQConnection->close();
+    }
+
+    public function publishDummyData(request $request)
+    {
+        $channel = $this->getRabbitMQChannel();
+
+        // Declare the exchange if it does not exist
+        $exchange = 'fcl.exchange.direct';
+        $channel->exchange_declare($exchange, 'direct', false, true, false);
+
+        $data = $request->all();
+
+        $msg = new AMQPMessage(json_encode($data), [
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
+        ]);
+
+        $channel->basic_publish($msg, $exchange, 'slaughter_receipts.wms');
+
+        Log::info('Dummy data published to slaughter_receipts.wms exchange.');
+        return 1;
     }
 
     public function __destruct()
