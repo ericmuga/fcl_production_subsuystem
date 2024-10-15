@@ -23,7 +23,7 @@
         <div class="modal-body">
             <div class="form-group">
                 <label for="item_code">Animal Type</label>
-                <select class="form-control" name="item_code" id="item_code" required>
+                <select class="form-control select2" name="item_code" id="item_code" required>
                     @foreach($itemCodes as $itemCode)
                         <option value="{{ $itemCode->code }}">{{ $itemCode->code }} {{ $itemCode->description }}</option>
                     @endforeach
@@ -44,7 +44,7 @@
             </div>
             <div class="form-group">
                 <label for="disease_code">Disease Code</label>
-                <select class="form-control" name="disease_code" id="disease_code" required>
+                <select class="form-control select2" name="disease_code" id="disease_code" required>
                     @foreach($diseaseCodes as $diseaseCode)
                         <option value="{{ $diseaseCode->disease_code }}">{{ $diseaseCode->disease_code }} {{ $diseaseCode->description }}</option>
                     @endforeach
