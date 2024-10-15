@@ -38,7 +38,7 @@ class SlaughterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except('importReceiptsFromQueue');
+        $this->middleware('session_check')->except(['importReceiptsFromQueue', 'consumeFromQueue']);
     }
 
     public function index(Helpers $helpers)
@@ -139,13 +139,13 @@ class SlaughterController extends Controller
     public function loadWeighMoreDataAjax(Request $request)
     {
         $total_per_slap = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::today())
+            ->whereDate('slaughter_date', '>=', today()->subDays(1))
             ->where('vendor_tag', $request->slapmark)
             ->where('item_code', $request->carcass_type)
             ->sum('receipts.received_qty');
 
         $total_per_vendor = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::today())
+            ->whereDate('slaughter_date', '>=', today()->subDays(1))
             ->where('vendor_no', $request->vendor_no)
             ->sum('receipts.received_qty');
 
@@ -186,23 +186,6 @@ class SlaughterController extends Controller
 
         return response()->json($result);
     }
-
-    // private function getRabbitMQConnection()
-    // {
-    //     try {
-    //         $connection = new AMQPStreamConnection(
-    //             '172.16.0.6', // RabbitMQ host
-    //             5672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
-    //             'EKaranja',  // RabbitMQ user
-    //             'switcher@Tekken250$' // RabbitMQ password
-    //         );
-    //         Log::info('RabbitMQ connection established successfully.');
-    //         return $connection;
-    //     } catch (\Exception $e) {
-    //         Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
-    //         throw $e;
-    //     }
-    // }
 
     public function saveWeighData(Request $request, Helpers $helpers)
     {
@@ -289,6 +272,30 @@ class SlaughterController extends Controller
         ]);
 
         $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
+    }
+
+    public function consumeFromQueue()
+    {
+        $channel = $this->getRabbitMQChannel();
+
+        // Declare the queue if it does not exist
+        $queue = 'slaughter_receipts.wms';
+        $channel->queue_declare($queue, false, true, false, false);
+
+        $callback = function ($msg) {
+            $data = json_decode($msg->body, true);
+            // Process the message here
+            Log::info('Slaughter receipts Received: ' . json_encode($data));
+            
+            // Acknowledge the message
+            $msg->ack();
+        };
+
+        $channel->basic_consume($queue, '', false, false, false, false, $callback);
+
+        while (count($channel->callbacks)) {
+            $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+        }
     }
 
     public function __destruct()
