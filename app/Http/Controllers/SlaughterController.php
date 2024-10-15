@@ -281,21 +281,47 @@ class SlaughterController extends Controller
     public function consumeFromQueue()
     {
         $channel = $this->getRabbitMQChannel();
-        $queue = 'slaughter_receipts.wms';
 
-        // Declare the queue if it does not exist
-        $channel->queue_declare($queue, false, true, false, false);
+        // Declare the queues if they do not exist
+        $queues = [
+            'slaughter_receipts.wms',
+            // 'another_queue_name',
+            // 'yet_another_queue_name'
+        ];
 
-        $callback = function ($msg) {
-            $data = json_decode($msg->body, true);
-            // Process the message here
-            Log::info('Slaughter receipts Received: ' . json_encode($data));
-            
-            // Acknowledge the message
-            $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
-        };
+        foreach ($queues as $queue) {
+            $channel->queue_declare($queue, false, true, false, false);
+        }
 
-        $channel->basic_consume($queue, '', false, false, false, false, $callback);
+        // Define callback functions for each queue
+        $callbacks = [
+            'slaughter_receipts.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Slaughter receipts Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            },
+            'another_queue_name' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Another queue message Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            },
+            'yet_another_queue_name' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Yet another queue message Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            }
+        ];
+
+        // Start consuming messages from each queue
+        foreach ($queues as $queue) {
+            $channel->basic_consume($queue, '', false, false, false, false, $callbacks[$queue]);
+        }
 
         while (true) {
             try {
