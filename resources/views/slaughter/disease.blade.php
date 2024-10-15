@@ -85,7 +85,7 @@
                         <tbody>
                             @foreach($diseaseEntries as $diseaseEntry)
                             <tr>
-                                <td>{{ $diseaseEntry->id }}</td>
+                                <td>{{ $loop->iteration }}</td>
                                 <td>{{ $diseaseEntry->slapmark }}</td>
                                 <td>{{ $diseaseEntry->disease_code }}</td>
                                 <td>{{ $diseaseEntry->created_at }}</td>
