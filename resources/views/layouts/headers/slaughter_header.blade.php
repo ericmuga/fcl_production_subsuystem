@@ -19,7 +19,7 @@
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">Lariage</a>
+                        class="nav-link dropdown-toggle">Lairage</a>
                     <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
                         <li><a href="{{ route('slaughter_disease') }}" class="dropdown-item">Disease/Death</a></li>
                     </ul>
