@@ -82,7 +82,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Animal Type</th>
                                     <th scope="col">Count</th>
-                                    <th scope="col">Edit Flag</th>
+                                    <th scope="col">Edited</th>
                                     <th scope="col">Time Posted</th>
                                     <th scope="col">User</th>
                                 </tr>
@@ -93,8 +93,16 @@
                                         <th scope="row">{{ $index + 1 }}</th>
                                         <td>{{ $transfer->product_code }}</td>
                                         <td>{{ $transfer->total_pieces }}</td>
-                                        <td>{{ $transfer->edited }}</td>
-                                        <td>{{ $transfer->created_at }}</td>
+                                        @if($transfer->edited == 0)
+                                            <td>
+                                                <span class="badge badge-success">No</span>
+                                            </td>
+                                        @else
+                                            <td>
+                                                <span class="badge badge-warning">Yes</span>
+                                            </td>
+                                        @endif
+                                        <td>{{ $helpers->dateToHumanFormat($transfer->created_at) }}</td>
                                         <td>{{ $transfer->id }}</td>
                                     </tr>
                                 @endforeach
