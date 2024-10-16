@@ -12,7 +12,7 @@
 <div class="container">
     <div class="row mb-2">
 
-        <div class="col-12 col-md-8">
+        <div class="col-12 col-lg-8">
             <div class="card">
                 <h3 class="card-header">
                 Record Transfer
@@ -28,7 +28,7 @@
                         </select>
                     </div>
             
-                    <div class="container">
+                    <div class="form-group">
                         <label for="total_pieces">count</label>
                         <div class="row my-3 transfer-number-input justify-content-center">
                             <div class="col col-3 col-lg-4 col-xl-2">
@@ -56,7 +56,7 @@
             </div>
          </div>
 
-        <div class="col-12 col-md-4">
+        <div class="col-12 col-lg-4">
             <div class="card">
                 <h3 class="card-header">Todays Transfers Summary</h3>
                 <ul class="list-group list-group-flush">
