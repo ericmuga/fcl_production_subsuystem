@@ -1,0 +1,25 @@
+.transfer-number-input, .transfer-number-input *{
+    height: clamp(50px, 28vh, 250px);
+    font-size: clamp(45px, 25vh, 225px);
+    line-height: 1;
+}
+
+.transfer-number-input .btn {
+    padding: 0;
+}
+
+.transfer-number-input .form-control, .transfer-number-input .btn {
+    flex-grow: 0;
+    flex-shrink: 0;
+    flex-basis: 2ch;
+}
+
+::-webkit-inner-spin-button { 
+	display: none; 
+}
+
+@media (max-width: 576px) {
+    .transfer-number-input .btn{
+        font-size: 45px;
+    }
+}

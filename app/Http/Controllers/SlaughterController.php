@@ -856,4 +856,73 @@ class SlaughterController extends Controller
                 ->withInput();
         }
     }
+
+    public function lairageTransfers(Helpers $helpers)
+    {
+        $title = "lairage transfers";
+        
+        $itemCodes = Cache::remember('item_codes', now()->addMinutes(120), function () {
+            return DB::table('carcass_types')
+                ->get();
+        });
+
+        $transfers = DB::table('idt_transfers as transfers')
+                ->where('transfers.transfer_from', '1000')
+                ->whereDate('transfers.created_at', Carbon::today())
+                ->leftJoin('users as users', 'transfers.user_id', '=', 'users.id')
+                ->select('transfers.*', 'users.username')
+                ->orderByDesc('transfers.id')
+                ->take(1000)
+                ->get();
+
+        return view('slaughter.lairage_transfers', compact('title', 'itemCodes', 'transfers', 'helpers'));
+    }
+
+    public function saveLairageTransfer(Request $request, Helpers $helpers)
+    {
+        try {
+            // try save
+            DB::table('idt_transfers')->insert([
+                'product_code' => $request->product_code,
+                'location_code' => '1010',
+                'total_pieces' => $request->total_pieces,
+                'total_weight' => '0',
+                'batch_no' => '0',
+                'with_variance' => '0',
+                'transfer_from' => '1000',
+                'transfer_type' => '1',
+                'user_id' => $helpers->authenticatedUserId(),
+            ]);
+
+            Toastr::success('Transfer to slaughter recorded successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
+    public function updateLairageTransfer(Request $request,Helpers $helpers)
+    {
+        try {
+            // try save
+            DB::table('idt_transfers')
+                ->where('id', $request->transfer_id)
+                ->update([
+                    'product_code' => $request->edit_product_code,
+                    'updated_at' => Carbon::now(),
+                    'edited' => 1,
+                    'edited_by' => $helpers->authenticatedUserId(),
+                ]);
+            Toastr::success('Updated transfer record successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
 }
