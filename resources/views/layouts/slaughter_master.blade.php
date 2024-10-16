@@ -167,8 +167,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 "autoWidth": false,
                 "lengthChange": true,
                 "lengthMenu": [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
-                // "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"],
-                "buttons": ["excel", "csv", "pdf", "colvis"]
+                "buttons": [
+                    {
+                        extend: 'excelHtml5',
+                        exportOptions: {
+                            columns: ':not(.no-export)' // Exclude columns with 'no-export' class
+                        }
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        exportOptions: {
+                            columns: ':not(.no-export)' // Exclude columns with 'no-export' class
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        exportOptions: {
+                            columns: ':not(.no-export)' // Exclude columns with 'no-export' class
+                        }
+                    },
+                    "colvis"
+                ],
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
         });
 
