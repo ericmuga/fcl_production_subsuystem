@@ -17,7 +17,7 @@
                 <h3 class="card-header">
                 Record Transfer
                 </h3>
-                <form class="card-body" action="{{ route('save_idt_lairage') }}" method="POST">
+                <form id="record_transfer_form" class="card-body form-prevent-multiple-submits" action="{{ route('save_idt_lairage') }}" method="POST">
                     @csrf
                     <div class="form-group flex-grow-0">
                         <label for="product_code">Animal Type</label>
@@ -43,7 +43,7 @@
                         </div>
                     </div>
                         
-                <button type="submit" class="btn btn-primary btn-lg d-block mx-auto">Transfer</button>
+                <button type="submit" class="btn btn-primary btn-lg d-block mx-auto btn-prevent-multiple-submits">Transfer</button>
                 </form>
             </div>
          </div>
@@ -128,7 +128,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form id="edit_transfer_form" action="{{ route('update_idt_lairage') }}" method="POST">
+                <form id="edit_transfer_form" class="form-prevent-multiple-submits" action="{{ route('update_idt_lairage') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <input type="hidden" name="transfer_id" id="transfer_id">
@@ -145,11 +145,10 @@
                             <span class="font-weight-bold">Count</span>
                             <span id="editing_count"></span>
                         </p>
-                        <input type="hidden" name="edit_transfer_id" id="edit_transfer_id" value="1">
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary btn-prevent-multiple-submits">Save changes</button>
                     </div>
                 </form>
             </div>
@@ -168,6 +167,10 @@
 @section('scripts')
 
 <script>
+
+    $('.form-prevent-multiple-submits').on('submit', function () {
+        $(".btn-prevent-multiple-submits").attr('disabled', true);
+    });
 
     const number_input = document.querySelector('#total_pieces');
     const minus_button = document.querySelector('#count-reducer');
