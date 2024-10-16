@@ -75,7 +75,7 @@
                                     <th scope="col">Animal Type</th>
                                     <th scope="col">Count</th>
                                     <th scope="col">Edited</th>
-                                    <th scope="col">Time Posted</th>
+                                    <th scope="col">Date Posted</th>
                                     <th scope="col">User</th>
                                     <th scope="col" class="no-export">Edit</th>
                                 </tr>
