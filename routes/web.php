@@ -75,7 +75,8 @@ Route::get('/slaughter/password', [SlaughterController::class, 'changePassword']
 Route::get('/slaughter/disease', [SlaughterController::class, 'disease'])->name('slaughter_disease');
 Route::post('/slaughter/record-disease', [SlaughterController::class, 'recordDisease'])->name('record_disease');
 Route::get('/slaughter/lairage_transfers', [SlaughterController::class, 'lairageTransfers'])->name('lairage_transfers');
-Route::post('/save/idt_lairage', [SlaughterController::class, 'saveLairageTransfer'])->name('save_idt_lairage');
+Route::post('idt_lairage/save', [SlaughterController::class, 'saveLairageTransfer'])->name('save_idt_lairage');
+Route::post('idt_lairage/update', [SlaughterController::class, 'updateLairageTransfer'])->name('update_idt_lairage');
 //queues
 Route::get('/import-receipts-from-queue', [SlaughterController::class, 'importReceiptsFromQueue']);
 /*-------------End Slaughter------------------ */

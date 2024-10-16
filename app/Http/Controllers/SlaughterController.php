@@ -826,4 +826,26 @@ class SlaughterController extends Controller
                 ->withInput();
         }
     }
+
+    public function updateLairageTransfer(Request $request,Helpers $helpers)
+    {
+        try {
+            // try save
+            DB::table('idt_transfers')
+                ->where('id', $request->transfer_id)
+                ->update([
+                    'product_code' => $request->edit_product_code,
+                    'updated_at' => Carbon::now(),
+                    'edited' => 1,
+                    'edited_by' => $helpers->authenticatedUserId(),
+                ]);
+            Toastr::success('Updated transfer record successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
 }

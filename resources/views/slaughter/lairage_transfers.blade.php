@@ -77,6 +77,7 @@
                                     <th scope="col">Edited</th>
                                     <th scope="col">Time Posted</th>
                                     <th scope="col">User</th>
+                                    <th scope="col" class="no-export">Edit</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -96,6 +97,19 @@
                                         @endif
                                         <td>{{ $helpers->dateToHumanFormat($transfer->created_at) }}</td>
                                         <td>{{ $transfer->username }}</td>
+                                        <td class="no-export">
+                                            <button
+                                                type="button" 
+                                                class="btn btn-primary"
+                                                data-toggle="modal"
+                                                data-target="#editTransferModal"
+                                                data-transfer-id={{ $transfer->id }}
+                                                data-product-code={{ $transfer->product_code }}
+                                                data-editing-count={{ $transfer->total_pieces }}
+                                            >
+                                                <i class="fas fa-pencil-alt"></i>
+                                            </button>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -105,7 +119,44 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Edit Transfer Modal -->
+    <div class="modal fade" id="editTransferModal" tabindex="-1" role="dialog" aria-labelledby="editTransferModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editTransferModalLabel">Edit Transfer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="edit_transfer_form" action="{{ route('update_idt_lairage') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <input type="hidden" name="transfer_id" id="transfer_id">
+                        <div class="form-group">
+                            <label for="edit_product_code">Animal Type</label>
+                            <select id="edit_product_code" name="edit_product_code" class="form-control" required>
+                                <option value="" disabled selected>Select Animal Type</option>
+                                <option value="G0101">G0101 Baconer</option>
+                                <option value="G0102">G0102 Sow</option>
+                                <option value="G0104">G0104 Suckling</option>
+                            </select>
+                        </div>
+                        <p>
+                            <span class="font-weight-bold">Count</span>
+                            <span id="editing_count"></span>
+                        </p>
+                        <input type="hidden" name="edit_transfer_id" id="edit_transfer_id" value="1">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
 </div>
 
@@ -135,6 +186,30 @@
     plus_button.addEventListener('click', () => {
         number_input.value = parseInt(number_input.value) + 1;
     });
+
+    $('#editTransferModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        editingTransferId = button.data('transfer-id'); // Extract info from data-* attributes
+        var modal = $(this);
+        modal.find('#transfer_id').val(editingTransferId);
+    });
+
+    document.querySelectorAll('button[data-target="#editTransferModal"]').forEach(button => {
+        button.addEventListener('click', function () {
+            var transferId = this.getAttribute('data-transfer-id');
+            var productCode = this.getAttribute('data-product-code');
+            var editingCount = this.getAttribute('data-editing-count');
+            document.getElementById('edit_transfer_id').value = transferId;
+            document.getElementById('editing_count').innerHTML = String(editingCount);
+        });
+    });
+
+    $('#editTransferModal').on('hidden.bs.modal', function () {
+        document.getElementById('edit_transfer_form').reset();
+        document.getElementById('editing_count').innerHTML = '';
+    });
+
+
 
 </script>
 
