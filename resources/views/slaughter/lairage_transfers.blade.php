@@ -98,17 +98,15 @@
                                         <td>{{ $helpers->dateToHumanFormat($transfer->created_at) }}</td>
                                         <td>{{ $transfer->username }}</td>
                                         <td class="no-export">
-                                            <button
-                                                type="button" 
-                                                class="btn btn-primary"
+                                            <i
+                                                class="fa fa-pencil-alt"
                                                 data-toggle="modal"
                                                 data-target="#editTransferModal"
                                                 data-transfer-id={{ $transfer->id }}
                                                 data-product-code={{ $transfer->product_code }}
                                                 data-editing-count={{ $transfer->total_pieces }}
                                             >
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </button>
+                                            </i>
                                         </td>
                                     </tr>
                                 @endforeach
