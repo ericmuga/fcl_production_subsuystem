@@ -42,15 +42,7 @@
                             </div>
                         </div>
                     </div>
-            
-                    <input type="hidden" name="transfer_from" id="transfer_from" value="1000" required>
-                    <input type="hidden" name="location_code" id="location_code" value="1010" required>
-                    <input type="hidden" name="crates_valid" id="crates_valid" value="1" required>
-                    <input type="hidden" name="total_crates" id="total_crates" value="0" required>
-                    <input type="hidden" name="full_crates" id="full_crates" value="0" required>
-                    <input type="hidden" name="incomplete_crate_pieces" id="incomplete_crate_pieces" value="0" required>
-                    
-            
+                        
                 <button type="submit" class="btn btn-primary btn-lg d-block mx-auto">Transfer</button>
                 </form>
             </div>
