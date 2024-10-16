@@ -38,7 +38,7 @@ class SlaughterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except('importReceiptsFromQueue');
+        $this->middleware('session_check')->except(['importReceiptsFromQueue', 'consumeFromQueue', 'publishDummyData']);
     }
 
     public function index(Helpers $helpers)
@@ -139,13 +139,13 @@ class SlaughterController extends Controller
     public function loadWeighMoreDataAjax(Request $request)
     {
         $total_per_slap = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::today())
+            ->whereDate('slaughter_date', '>=', today()->subDays(1))
             ->where('vendor_tag', $request->slapmark)
             ->where('item_code', $request->carcass_type)
             ->sum('receipts.received_qty');
 
         $total_per_vendor = DB::table('receipts')
-            ->whereDate('slaughter_date', Carbon::today())
+            ->whereDate('slaughter_date', '>=', today()->subDays(1))
             ->where('vendor_no', $request->vendor_no)
             ->sum('receipts.received_qty');
 
@@ -187,23 +187,6 @@ class SlaughterController extends Controller
         return response()->json($result);
     }
 
-    // private function getRabbitMQConnection()
-    // {
-    //     try {
-    //         $connection = new AMQPStreamConnection(
-    //             '172.16.0.6', // RabbitMQ host
-    //             5672,        // RabbitMQ port (default for AMQP is 5672)http://172.16.0.6:15672/
-    //             'EKaranja',  // RabbitMQ user
-    //             'switcher@Tekken250$' // RabbitMQ password
-    //         );
-    //         Log::info('RabbitMQ connection established successfully.');
-    //         return $connection;
-    //     } catch (\Exception $e) {
-    //         Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
-    //         throw $e;
-    //     }
-    // }
-
     public function saveWeighData(Request $request, Helpers $helpers)
     {
         try {
@@ -243,6 +226,10 @@ class SlaughterController extends Controller
             Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
+        } catch (\PhpAmqpLib\Exception\AMQPChannelClosedException $e) {
+            // Handle the channel closed exception
+            Log::error('Channel connection is closed: ' . $e->getMessage());
+            return; // Exit the function if the channel is closed
         }
     }
 
@@ -289,6 +276,96 @@ class SlaughterController extends Controller
         ]);
 
         $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
+    }
+
+    public function consumeFromQueue()
+    {
+        $channel = $this->getRabbitMQChannel();
+
+        // Declare the queues if they do not exist
+        $queues = [
+            'slaughter_receipts.wms',
+            // 'another_queue_name',
+            // 'yet_another_queue_name'
+        ];
+
+        foreach ($queues as $queue) {
+            $channel->queue_declare($queue, false, true, false, false);
+        }
+
+        // Define callback functions for each queue
+        $callbacks = [
+            'slaughter_receipts.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Slaughter receipts Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            },
+            'another_queue_name' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Another queue message Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            },
+            'yet_another_queue_name' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Yet another queue message Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            }
+        ];
+
+        // Start consuming messages from each queue
+        foreach ($queues as $queue) {
+            $channel->basic_consume($queue, '', false, false, false, false, $callbacks[$queue]);
+        }
+
+        while (true) {
+            try {
+                while (count($channel->callbacks)) {
+                    $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+                }
+            } catch (\PhpAmqpLib\Exception\AMQPTimeoutException $e) {
+                // Handle the timeout exception if needed
+                Log::info('No messages in the queue. Waiting for new messages...');
+                // Do not break the loop; continue waiting for new messages
+            } catch (\PhpAmqpLib\Exception\AMQPChannelClosedException $e) {
+                // Handle the channel closed exception
+                Log::error('Channel connection is closed: ' . $e->getMessage());
+                // Optionally, you can try to reconnect here
+                break; // Exit the inner loop if the channel is closed
+            }
+
+            // Sleep for a short period before restarting the loop
+            sleep(1);
+        }
+
+        // Close the channel and connection after consuming messages
+        $channel->close();
+        $this->rabbitMQConnection->close();
+    }
+
+    public function publishDummyData(request $request)
+    {
+        $channel = $this->getRabbitMQChannel();
+
+        // Declare the exchange if it does not exist
+        $exchange = 'fcl.exchange.direct';
+        $channel->exchange_declare($exchange, 'direct', false, true, false);
+
+        $data = $request->all();
+
+        $msg = new AMQPMessage(json_encode($data), [
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
+        ]);
+
+        $channel->basic_publish($msg, $exchange, 'slaughter_receipts.wms');
+
+        Log::info('Dummy data published to slaughter_receipts.wms exchange.');
+        return 1;
     }
 
     public function __destruct()

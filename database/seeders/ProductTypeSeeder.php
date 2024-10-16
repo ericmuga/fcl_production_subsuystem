@@ -14,17 +14,19 @@ class ProductTypeSeeder extends Seeder
      */
     public function run()
     {
-        $types =
-        [
+        $types = [
             [
-                'code' => '1',
-                'description' => 'Main Product',
+            'code' => '1',
+            'description' => 'Main Product',
             ],
             [
-                'code' => '2',
-                'description' => 'By Product',
+            'code' => '2',
+            'description' => 'By Product',
             ],
-
+            [
+            'code' => '3',
+            'description' => 'Intake',
+            ],
         ];
 
         DB::table('product_types')->insert($types);

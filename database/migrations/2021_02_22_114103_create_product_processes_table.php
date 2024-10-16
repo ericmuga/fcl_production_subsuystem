@@ -15,7 +15,7 @@ class CreateProductProcessesTable extends Migration
     {
         Schema::create('product_processes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products');
+            $table->string('product_code');
             $table->integer('process_code');
             $table->integer('product_type');
             $table->timestamp('created_at')->useCurrent();

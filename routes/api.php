@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\SausageController;
+use App\Http\Controllers\SlaughterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -36,3 +37,5 @@ Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
 //without token APIS
 Route::post('/v1/save/slaughter-receipts', [ApiController::class, 'saveSlaughterReceipts']);
 Route::post('/v1/push/slaughter-lines', [ApiController::class, 'pushSlaughterLines']);
+Route::post('/v1/listen/slaughter-receipts', [SlaughterController::class, 'consumeFromQueue']);
+Route::post('/v1/publish-dummy-receipts', [SlaughterController::class, 'publishDummyData']);
