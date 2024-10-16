@@ -95,7 +95,7 @@
                                             </td>
                                         @endif
                                         <td>{{ $helpers->dateToHumanFormat($transfer->created_at) }}</td>
-                                        <td>{{ $transfer->id }}</td>
+                                        <td>{{ $transfer->username }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>

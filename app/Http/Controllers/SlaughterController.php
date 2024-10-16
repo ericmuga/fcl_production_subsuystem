@@ -789,10 +789,12 @@ class SlaughterController extends Controller
                 ->get();
         });
 
-        $transfers = DB::table('idt_transfers')
-                ->where('transfer_from', '1000')
-                ->whereDate('created_at', Carbon::today())
-                ->orderByDesc('id')
+        $transfers = DB::table('idt_transfers as transfers')
+                ->where('transfers.transfer_from', '1000')
+                ->whereDate('transfers.created_at', Carbon::today())
+                ->leftJoin('users as users', 'transfers.user_id', '=', 'users.id')
+                ->select('transfers.*', 'users.username')
+                ->orderByDesc('transfers.id')
                 ->take(1000)
                 ->get();
 
