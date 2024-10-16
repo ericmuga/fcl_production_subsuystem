@@ -244,10 +244,10 @@ $sessionUsername = strtolower(Session::get('session_userName'));
 
             if ($('#product').val() != null && $('#product_type').val() != null) {
                 let product = $('#product').val()
-                let product_id = product.substring(0, product.indexOf("-"));
+                let product_code = product.substring(product.indexOf("-") + 1);
                 let product_type = $('#product_type').val()
 
-                loadProductProcesses(product_id, product_type)
+                loadProductProcesses(product_code, product_type)
             }
         });
     })
@@ -259,7 +259,7 @@ $sessionUsername = strtolower(Session::get('session_userName'));
         }
     }
 
-    const loadProductProcesses = (prod_id, prod_type) => {
+    const loadProductProcesses = (prod_code, prod_type) => {
         $(".check_group").prop("checked", false);
 
         $('#loading').collapse('show'); 
@@ -267,7 +267,7 @@ $sessionUsername = strtolower(Session::get('session_userName'));
         const url = '/products/processes_ajax/edit'
 
         const request_data = {
-            product_id: prod_id,
+            product_code: prod_code,
             product_type: prod_type,
         }
 

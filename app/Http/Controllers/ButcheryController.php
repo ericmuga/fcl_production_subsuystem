@@ -569,7 +569,7 @@ class ButcheryController extends Controller
         $products = Cache::remember('all_products_scale3', now()->addMinutes(480), function () {
             return DB::table('products')
                 ->where('product_processes.process_code', '!=', 15) //excluding marination products
-                ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+                ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
                 ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
                 ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_types.code as product_type_code', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
@@ -698,7 +698,7 @@ class ButcheryController extends Controller
     public function getProductDetailsAjax(Request $request)
     {
         $data = DB::table('products')
-            ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+            ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
             ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
             ->where('products.code', $request->product_code)
             ->where('processes.shortcode', $request->shortcode)
@@ -711,10 +711,8 @@ class ButcheryController extends Controller
 
     public function getProductProcessesAjax(Request $request)
     {
-        $product_id = DB::table('products')->where('code', $request->product_code)->value('id');
-
         $processes = DB::table('product_processes')
-            ->where('product_id', $product_id)
+            ->where('product_code', $request->product_code)
             ->select('process_code')
             ->get();
 
@@ -756,7 +754,7 @@ class ButcheryController extends Controller
             DB::transaction(function () use ($request) {
                 // delete existing processes of same product process
                 DB::table('product_processes')
-                    ->where('product_id', strtok($request->product,  '-'))
+                    ->where('product_code', explode('-', $request->product)[1] ?? null)
                     ->where('product_type', $request->product_type)
                     ->delete();
 
@@ -765,7 +763,7 @@ class ButcheryController extends Controller
 
                     DB::table('product_processes')->insert(
                         [
-                            'product_id' => strtok($request->product,  '-'),
+                            'product_code' => explode('-', $request->product)[1] ?? null,
                             'process_code' => $code,
                             'product_type' => $request->product_type,
                         ]
@@ -815,7 +813,7 @@ class ButcheryController extends Controller
     {
         $processes = DB::table('product_processes')
             ->select('process_code')
-            ->where('product_id', $request->product_id)
+            ->where('product_code', $request->product_code)
             ->where('product_type', $request->product_type)
             ->get()->toArray();
 
@@ -1154,7 +1152,7 @@ class ButcheryController extends Controller
 
         $products = Cache::remember('deboning_list_scale3', now()->addMinutes(120), function () {
             return DB::table('products')
-                ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+                ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
                 ->select('product_processes.id', 'products.id as product_id', DB::raw('TRIM(products.code) as code'), 'products.description', 'product_processes.product_type', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
                 ->orderBy('products.code')
@@ -1179,7 +1177,7 @@ class ButcheryController extends Controller
         $products = Cache::remember('marination_products', now()->addMinutes(120), function () {
             return  DB::table('products')
                 ->where('processes.process_code', '15')
-                ->join('product_processes', 'product_processes.product_id', '=', 'products.id')
+                ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
                 ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
                 ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
                 ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_processes.process_code', 'product_processes.product_type as product_type_code', 'processes.process', 'processes.shortcode')
