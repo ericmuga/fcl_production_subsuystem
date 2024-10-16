@@ -52,7 +52,7 @@
             <div class="card">
                 <h3 class="card-header">Todays Transfers Summary</h3>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Baconners: {{ $transfers->where('product_code', 'G0101')->sum('total_pieces') }}</li>
+                    <li class="list-group-item">Baconers: {{ $transfers->where('product_code', 'G0101')->sum('total_pieces') }}</li>
                     <li class="list-group-item">Sow: {{ $transfers->where('product_code', 'G0102')->sum('total_pieces') }}</li>
                     <li class="list-group-item">Suckling: {{ $transfers->where('product_code', 'G0104')->sum('total_pieces') }}</li>
                     <li class="list-group-item">Total Transferred: {{ $transfers->sum('total_pieces') }}</li>
