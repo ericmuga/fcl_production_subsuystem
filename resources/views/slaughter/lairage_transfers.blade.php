@@ -5,13 +5,10 @@
     <link rel="stylesheet" href="/css/transfers.css">
 @endsection
 
-
-
 @section('content')
 
-<div class="container">
+<div class="container-fluid">
     <div class="row mb-2">
-
         <div class="col-12 col-lg-8">
             <div class="card">
                 <h3 class="card-header">
