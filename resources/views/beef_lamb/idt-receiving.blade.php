@@ -397,5 +397,10 @@
         return num < 10 ? `0${num}` : num;
     }
 
+    //Date picker
+    $('#reservationdate').datetimepicker({
+        format : "DD/MM/YYYY"
+    });
+
 </script>
 @endsection

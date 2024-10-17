@@ -189,18 +189,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
             $('.select2').select2()
         });
 
-        const today = new Date();
-
-        $('#reservationdate').datetimepicker({
-
-            format : "DD/MM/YYYY",
-
-            maxDate: today,
-
-            setDate: new Date()
-
-        });
-
     </script>
     @if (app()->environment('production'))
         @include('prevent-inspection')

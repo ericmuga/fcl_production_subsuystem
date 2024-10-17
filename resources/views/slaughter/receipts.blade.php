@@ -123,3 +123,17 @@
     <!-- /.col -->
 </div>
 @endsection
+
+
+@section('scripts')
+
+<script>
+    //Date picker        
+    var dateToday = new Date();
+    $('#reservationdate').datetimepicker({
+        format: 'L',
+        minDate: dateToday,
+    });
+</script>
+
+@endsection
