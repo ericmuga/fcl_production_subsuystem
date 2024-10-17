@@ -563,7 +563,6 @@ class SlaughterController extends Controller
 
     public function importReceipts(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'file' => 'required|mimes:csv,txt',
             'slaughter_date' => 'required',
@@ -580,7 +579,7 @@ class SlaughterController extends Controller
         }
 
         // upload
-        $database_date = Carbon::createFromFormat('d/m/Y', $request->slaughter_date);
+        $database_date = Carbon::parse($request->slaughter_date);
 
         // forgetCache data
         $helpers->forgetCache('lined_up');
