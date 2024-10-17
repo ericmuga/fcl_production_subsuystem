@@ -5,13 +5,10 @@
     <link rel="stylesheet" href="/css/transfers.css">
 @endsection
 
-
-
 @section('content')
 
-<div class="container">
+<div class="container-fluid">
     <div class="row mb-2">
-
         <div class="col-12 col-lg-8">
             <div class="card">
                 <h3 class="card-header">
@@ -43,7 +40,7 @@
                         </div>
                     </div>
                         
-                <button type="submit" class="btn btn-primary btn-lg d-block mx-auto btn-prevent-multiple-submits">Transfer</button>
+                <button type="submit" style="padding: 2%" class="btn btn-success btn-lg d-block mx-auto btn-prevent-multiple-submits"><i class="fa fa-paper-plane" aria-hidden="true"></i> Slaughter To Transfer</button>
                 </form>
             </div>
          </div>

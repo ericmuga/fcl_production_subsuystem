@@ -385,6 +385,11 @@ $to_split = \Session::get('data');
         });
     });
 
+    //Date picker
+    $('#reservationdate').datetimepicker({
+        format : "DD/MM/YYYY"
+    });
+
 </script>
 
 @if( Session::get('splitting_table') == 'show' )

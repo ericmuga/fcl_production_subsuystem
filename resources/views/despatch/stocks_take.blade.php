@@ -344,5 +344,12 @@
         });
     });
 
+    const today = new Date();
+    $('#reservationdate').datetimepicker({
+        format : "DD/MM/YYYY",
+        maxDate: today,
+        setDate: new Date()
+    });
+
 </script>
 @endsection
