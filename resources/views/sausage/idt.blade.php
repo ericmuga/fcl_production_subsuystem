@@ -845,5 +845,12 @@
         return num < 10 ? `0${num}` : num;
     }
 
+    const today = new Date();
+    //Date picker        
+    $('#reservationdate').datetimepicker({
+        format : "DD/MM/YYYY",
+        maxDate: today,
+    });
+
 </script>
 @endsection
