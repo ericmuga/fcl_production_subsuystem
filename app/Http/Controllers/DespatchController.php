@@ -66,7 +66,7 @@ class DespatchController extends Controller
             ->where('idt_transfers.received_by', '=', null)
             ->whereIn('idt_transfers.location_code', ['3535', '3600'])
             ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
-            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(($username == 'pnjuguna' || $username == 'skinyua') ? 20 : 2)) // 20 days supervisors like pngjuguna, others 1 day back only.
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2)) // 20 days for supervisors, others 2 days back only.
             ->when($filter == 'sausage', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '2055'); // from sausage only
             })
