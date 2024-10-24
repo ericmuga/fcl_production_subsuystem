@@ -13,7 +13,7 @@ class CreateMessagePushStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('message_push_status', function (Blueprint $table) {
+        Schema::create('message_push_statuses', function (Blueprint $table) {
             $table->id();
             $table->string('queue');          // The queue name
             $table->text('message');          // The message payload
@@ -30,6 +30,6 @@ class CreateMessagePushStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('message_push_status');
+        Schema::dropIfExists('message_push_statuses');
     }
 }
