@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\SlaughterController;
+use App\Models\Helpers;
 use Illuminate\Console\Command;
 
 class ConsumeQueue extends Command
@@ -38,8 +39,8 @@ class ConsumeQueue extends Command
      */
     public function handle()
     {
-        $controller = new SlaughterController();
-        $controller->consumeFromQueue();
+        $helpers = new Helpers();
+        $helpers->consumeFromQueue();
         return 0;
     }
 }

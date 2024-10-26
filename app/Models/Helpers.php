@@ -342,4 +342,130 @@ class Helpers
     {
         Log::error('An exception occurred in ' .$function_name, ['exception' => $e]);
     }
+
+    //Rabbit MQ
+    private function publishToQueue($data)
+    {
+        $channel = $this->getRabbitMQChannel();
+
+        // Declare the exchange if it does not exist
+        $channel->exchange_declare('fcl.exchange.direct', 'direct', false, true, false);
+
+        $msg = new AMQPMessage(json_encode($data), [
+            'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
+        ]);
+
+        $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
+    }
+
+    private $rabbitMQConnection = null;
+    private $rabbitMQChannel = null;
+
+    private function getRabbitMQConnection()
+    {
+        if ($this->rabbitMQConnection === null) {
+            try {
+                $this->rabbitMQConnection = new AMQPStreamConnection(
+                    config('app.rabbitmq_host'), // RabbitMQ host
+                    config('app.rabbitmq_port'), // RabbitMQ port (default for AMQP is 5672)
+                    config('app.rabbitmq_user'), // RabbitMQ user
+                    config('app.rabbitmq_password') // RabbitMQ password
+                );
+                Log::info('RabbitMQ connection established successfully.');
+            } catch (\Exception $e) {
+                Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
+                throw $e;
+            }
+        }
+        return $this->rabbitMQConnection;
+    }
+
+    private function getRabbitMQChannel()
+    {
+        if ($this->rabbitMQChannel === null) {
+            $connection = $this->getRabbitMQConnection();
+            $this->rabbitMQChannel = $connection->channel();
+        }
+        return $this->rabbitMQChannel;
+    }
+
+    public function __destruct()
+    {
+        if ($this->rabbitMQChannel !== null) {
+            $this->rabbitMQChannel->close();
+        }
+        if ($this->rabbitMQConnection !== null) {
+            $this->rabbitMQConnection->close();
+        }
+    }
+
+    public function consumeFromQueue()
+    {
+        $channel = $this->getRabbitMQChannel();
+
+        // Declare the queues if they do not exist
+        $queues = [
+            'slaughter_receipts.wms',
+            // 'another_queue_name',
+            // 'yet_another_queue_name'
+        ];
+
+        foreach ($queues as $queue) {
+            $channel->queue_declare($queue, false, true, false, false);
+        }
+
+        // Define callback functions for each queue
+        $callbacks = [
+            'slaughter_receipts.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Slaughter receipts Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            },
+            'another_queue_name' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Another queue message Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            },
+            'yet_another_queue_name' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Process the message here
+                Log::info('Yet another queue message Received: ' . json_encode($data));
+                // Acknowledge the message
+                $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+            }
+        ];
+
+        // Start consuming messages from each queue
+        foreach ($queues as $queue) {
+            $channel->basic_consume($queue, '', false, false, false, false, $callbacks[$queue]);
+        }
+
+        while (true) {
+            try {
+                while (count($channel->callbacks)) {
+                    $channel->wait(null, false, 5); // Wait for a message with a timeout of 5 seconds
+                }
+            } catch (\PhpAmqpLib\Exception\AMQPTimeoutException $e) {
+                // Handle the timeout exception if needed
+                Log::info('No messages in the queue. Waiting for new messages...');
+                // Do not break the loop; continue waiting for new messages
+            } catch (\PhpAmqpLib\Exception\AMQPChannelClosedException $e) {
+                // Handle the channel closed exception
+                Log::error('Channel connection is closed: ' . $e->getMessage());
+                // Optionally, you can try to reconnect here
+                break; // Exit the inner loop if the channel is closed
+            }
+
+            // Sleep for a short period before restarting the loop
+            sleep(1);
+        }
+
+        // Close the channel and connection after consuming messages
+        $channel->close();
+        $this->rabbitMQConnection->close();
+    }
 }
