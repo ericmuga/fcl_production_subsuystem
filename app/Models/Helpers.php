@@ -344,7 +344,7 @@ class Helpers
     }
 
     //Rabbit MQ
-    private function publishToQueue($data)
+    public function publishToQueue($data)
     {
         $channel = $this->getRabbitMQChannel();
 
