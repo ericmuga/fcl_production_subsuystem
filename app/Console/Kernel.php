@@ -27,8 +27,14 @@ class Kernel extends ConsoleKernel
     {
         $schedule->call(function () {
             $rabbitMQService = app(RabbitMQService::class);
-            $rabbitMQService->retryPendingMessages();
+            if (method_exists($rabbitMQService, 'retryPendingMessages')) {
+                $rabbitMQService->retryPendingMessages();
+            } else {
+                \Log::error('Method retryPendingMessages does not exist in RabbitMQService');
+            }
         })->everyTenMinutes();
+
+        $schedule->command('queue:consume')->everyTenMinutes();
     }
 
     /**
