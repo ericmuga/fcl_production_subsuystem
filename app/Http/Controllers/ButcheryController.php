@@ -274,20 +274,21 @@ class ButcheryController extends Controller
                 return redirect()->back();
             }
 
-            // Set process code and adjust data if carcass type requires special handling
+            // Adjust process code and carcass number for beheading data based on carcass type
             $processCode = $carcassType === 'G1031' ? 1 : 0;
             $noOfCarcass = $carcassType === 'G1035' ? (int)$noOfCarcass / 2 : $noOfCarcass;
 
-            // Insert beheading data
-            DB::table('beheading_data')->insert(array_merge($baseData, [
+            // Define complete data for beheading, including any adjustments
+            $beheadingData = array_merge($baseData, [
                 'no_of_carcass' => $noOfCarcass,
                 'process_code' => $processCode,
-            ]));
+            ]);
 
-            // Publish to queue if necessary
-            if ($carcassType !== 'G1035') {
-                $helpers->publishToQueue($baseData, 'production_data_order_beheading.bc');
-            }
+            // Insert beheading data
+            DB::table('beheading_data')->insert($beheadingData);
+
+            // Publish the entire beheading data to the queue
+            $helpers->publishToQueue($beheadingData, 'production_data_order_beheading.bc');
 
             Toastr::success('Record inserted successfully', 'Success');
             return redirect()->back();
