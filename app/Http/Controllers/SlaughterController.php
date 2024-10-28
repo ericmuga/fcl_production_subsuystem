@@ -216,7 +216,7 @@ class SlaughterController extends Controller
             DB::table('slaughter_data')->insert($data);
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data);
+            $helpers->publishToQueue($data, 'slaughter_line.bc');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
