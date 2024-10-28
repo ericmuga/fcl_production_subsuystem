@@ -346,7 +346,7 @@ class Helpers
     }
 
     //Rabbit MQ
-    public function publishToQueue($data)
+    public function publishToQueue($data, $queue_name)
     {
         $channel = $this->getRabbitMQChannel();
 
@@ -357,7 +357,7 @@ class Helpers
             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT
         ]);
 
-        $channel->basic_publish($msg, 'fcl.exchange.direct', 'slaughter_line.bc');
+        $channel->basic_publish($msg, 'fcl.exchange.direct', $queue_name);
     }
 
     private $rabbitMQConnection = null;

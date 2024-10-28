@@ -252,53 +252,48 @@ class ButcheryController extends Controller
     public function saveScaleOneData(Request $request, Helpers $helpers)
     {
         try {
-            // insert sales substr($string, 0, -1);
-            if ($request->carcass_type == "G1032" || $request->carcass_type == "G1033" || $request->carcass_type == "G1034") {
+            $userId = $helpers->authenticatedUserId();
+            $carcassType = $request->carcass_type;
+            $noOfCarcass = $request->no_of_carcass;
+            $actualWeight = $request->reading;
+            $netWeight = $request->net;
 
-                DB::table('sales')->insert([
-                    'item_code' => $request->carcass_type,
-                    'no_of_carcass' => $request->no_of_carcass,
-                    'actual_weight' => $request->reading,
-                    'net_weight' => $request->net,
-                    'process_code' => 0, //process behead pig by default
-                    'user_id' => $helpers->authenticatedUserId(),
-                ]);
+            // Define base data for insertion
+            $baseData = [
+                'item_code' => $carcassType,
+                'no_of_carcass' => $noOfCarcass,
+                'actual_weight' => $actualWeight,
+                'net_weight' => $netWeight,
+                'user_id' => $userId,
+            ];
 
-                Toastr::success('sale recorded successfully', 'Success');
+            if (in_array($carcassType, ['G1032', 'G1033', 'G1034'])) {
+                // Insert sale data for specific carcass types
+                DB::table('sales')->insert(array_merge($baseData, ['process_code' => 0]));
+                Toastr::success('Sale recorded successfully', 'Success');
                 return redirect()->back();
             }
-            // insert beheading data
-            $process_code = 0; //Behead Pig
-            if ($request->carcass_type == 'G1031') {
-                $process_code = 1; //Behead sow
+
+            // Set process code and adjust data if carcass type requires special handling
+            $processCode = $carcassType === 'G1031' ? 1 : 0;
+            $noOfCarcass = $carcassType === 'G1035' ? (int)$noOfCarcass / 2 : $noOfCarcass;
+
+            // Insert beheading data
+            DB::table('beheading_data')->insert(array_merge($baseData, [
+                'no_of_carcass' => $noOfCarcass,
+                'process_code' => $processCode,
+            ]));
+
+            // Publish to queue if necessary
+            if ($carcassType !== 'G1035') {
+                $helpers->publishToQueue($baseData, 'production_data_order_beheading.bc');
             }
 
-            if ($request->carcass_type == 'G1035') {
-                DB::table('beheading_data')->insert([
-                    'item_code' => $request->carcass_type,
-                    'no_of_carcass' => (int)$request->no_of_carcass / 2,
-                    'actual_weight' => $request->reading,
-                    'net_weight' => $request->net,
-                    'process_code' => '1',
-                    'user_id' => $helpers->authenticatedUserId(),
-                ]);
-            } else {
-                DB::table('beheading_data')->insert([
-                    'item_code' => $request->carcass_type,
-                    'no_of_carcass' => $request->no_of_carcass,
-                    'actual_weight' => $request->reading,
-                    'net_weight' => $request->net,
-                    'process_code' => $process_code,
-                    'user_id' => $helpers->authenticatedUserId(),
-                ]);
-            }
-
-            Toastr::success('record inserted successfully', 'Success');
+            Toastr::success('Record inserted successfully', 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
-            return back()
-                ->withInput();
+            return back()->withInput();
         }
     }
 
