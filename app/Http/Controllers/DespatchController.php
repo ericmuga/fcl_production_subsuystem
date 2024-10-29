@@ -58,6 +58,8 @@ class DespatchController extends Controller
 
         $username = Session::get('session_userName');
 
+        // dd($username);
+
         $query = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
