@@ -470,4 +470,15 @@ class Helpers
         $channel->close();
         $this->rabbitMQConnection->close();
     }
+
+    public function getProcessName($process_code)
+    {
+        $process_codes_list = Cache::rememberForever('process_codes_list', function () {
+            return DB::table('processes')->select('process_code', 'process')->get();
+        });
+
+        $process_codes_map = $process_codes_list->pluck('process', 'process_code');
+
+        return $process_codes_map[$process_code] ?? 'Unknown';
+    }
 }

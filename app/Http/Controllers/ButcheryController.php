@@ -287,18 +287,8 @@ class ButcheryController extends Controller
             // Insert beheading data
             DB::table('beheading_data')->insert($beheadingData);
 
-            $process_codes_list = Cache::rememberForever('process_codes_list', function () {
-                return DB::table('processes')->select('process_code', 'process')->get();
-            });
-
             // Map process_code to process name
-            $process_codes_map = $process_codes_list->pluck('process', 'process_code');
-
-            // Replace process_code with process name in beheading data
-            $beheadingData = [$beheadingData]; // Wrap in an array
-            foreach ($beheadingData as &$data) {
-                $data['process_name'] = $process_codes_map[$data['process_code']] ?? 'Unknown';
-            }
+            $beheadingData['process_name'] = $helpers->getProcessName($beheadingData['process_code']);
 
             // Publish the entire beheading data to the queue
             $helpers->publishToQueue($beheadingData, 'production_data_order_beheading.bc');
@@ -346,14 +336,7 @@ class ButcheryController extends Controller
                 }
 
                 // Map process_code to process name
-                $process_codes_list = Cache::rememberForever('process_codes_list', function () {
-                    return DB::table('processes')->select('process_code', 'process')->get();
-                });
-
-                $process_codes_map = $process_codes_list->pluck('process', 'process_code');
-
-                // Replace process_code with process name in butchery data
-                $data['process_name'] = $process_codes_map[$data['process_code']] ?? 'Unknown';
+                $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
                 // Publish to the queue
                 $helpers->publishToQueue($data, 'production_data_order_breaking.bc');
@@ -627,14 +610,7 @@ class ButcheryController extends Controller
                 $data['created_at'] = $prod_date;
 
                 // Map process_code to process name
-                $process_codes_list = Cache::rememberForever('process_codes_list', function () {
-                    return DB::table('processes')->select('process_code', 'process')->get();
-                });
-
-                $process_codes_map = $process_codes_list->pluck('process', 'process_code');
-
-                // Replace process_code with process name in butchery data
-                $data['process_name'] = $process_codes_map[$data['process_code']] ?? 'Unknown';
+                $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
                 // Publish to the queue
                 $helpers->publishToQueue($data, 'production_data_order_deboning.bc');
