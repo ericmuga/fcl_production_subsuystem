@@ -424,9 +424,14 @@ class Helpers
                 try {
                     Log::info('Slaughter Receipts received for inserts'. json_encode($data));
 
-                    $this->insertReceiptData($data);            
-                    // Acknowledge the message
-                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    $insertResult = $this->insertReceiptData($data);            
+                    if ($insertResult == true) {
+                        // Acknowledge the message
+                        $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    } else {
+                        // Log the error and do not acknowledge the message
+                        Log::error('Failed to insert receipt data, message not acknowledged.');
+                    }
                 } catch (\Exception $e) {
                     // Log the error
                     Log::error('Failed to insert receipt data: ' . $e->getMessage());
@@ -518,9 +523,10 @@ class Helpers
                 );
             }
             Log::info('Receipt data inserted successfully.');
+            return true;
         } catch (\Exception $e) {
             Log::error('Failed to insert receipt data: ' . $e->getMessage());
-            return back();
+            return false;
         }
 
     }
