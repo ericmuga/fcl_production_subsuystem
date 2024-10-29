@@ -401,7 +401,8 @@ class Helpers
             false,
             false,
             new \PhpAmqpLib\Wire\AMQPTable([
-                'x-dead-letter-exchange' => 'fcl.exchange.dlx'
+                'x-dead-letter-exchange' => 'fcl.exchange.dlx',
+                'x-dead-letter-routing-key' => $queue_name
             ])
         );
     }
