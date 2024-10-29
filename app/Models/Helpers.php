@@ -423,10 +423,10 @@ class Helpers
 
                 try {
                     $this->insertReceiptData($data);
-                    // Log the received message
-                    Log::info('Slaughter receipts Received: ' . json_encode($data));
+                    // Log the received message                    
+                    Log::info($data);
                     // Acknowledge the message
-                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    // $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
                 } catch (\Exception $e) {
                     // Log the error
                     Log::error('Failed to insert receipt data: ' . $e->getMessage());
@@ -498,20 +498,22 @@ class Helpers
 
         try {
             // insert data
-            DB::table('receipts')->insert([
-                'enrolment_no' => $data['ReceiptNo'],
-                'vendor_tag' => $data['Slapmark'],
-                'receipt_no' => $data['ReceiptNo'],
-                'vendor_no' => $data['FarmerNo'],
-                'vendor_name' => $data['FarmerName'],
-                'receipt_date' => Carbon::parse($data['ReceiptDate'])->format('d/m/y'), // e.g., 29/10/24
-                'item_code' => $data['Item'],
-                'description' => $data['ItemDescription'],
-                'received_qty' => $data['ReceivedQty'],
-                'user_id' => 1,
-                'slaughter_date' => Carbon::now()->format('Y-m-d 00:00:00.000'), // e.g., 2024-10-29 00:00:00.000
-            ]);
-            Log::success('Receipt data inserted successfully.', 'Success');
+            foreach ($data['receiptLines'] as $line) {
+                DB::table('receipts')->insert([
+                    'enrolment_no' => $line['ReceiptNo'],
+                    'vendor_tag' => $line['Slapmark'],
+                    'receipt_no' => $line['ReceiptNo'],
+                    'vendor_no' => $line['FarmerNo'],
+                    'vendor_name' => $line['FarmerName'],
+                    'receipt_date' => Carbon::parse($line['ReceiptDate'])->format('d/m/y'), // e.g., 29/10/24
+                    'item_code' => $line['Item'],
+                    'description' => $line['ItemDescription'],
+                    'received_qty' => $line['ReceivedQty'],
+                    'user_id' => 1,
+                    'slaughter_date' => Carbon::now()->format('Y-m-d 00:00:00.000'), // e.g., 2024-10-29 00:00:00.000
+                ]);
+            }
+            Log::info('Receipt data inserted successfully.'.json_encode($data), 'Success');
         } catch (\Exception $e) {
             Log::error($e->getMessage(), 'Error!');
             return back();
