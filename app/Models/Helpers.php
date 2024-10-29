@@ -517,7 +517,7 @@ class Helpers
                     ]
                 );
             }
-            Log::info('Receipt data inserted successfully.'.json_encode($data), 'Success');
+            Log::info('Receipt data inserted successfully.');
         } catch (\Exception $e) {
             Log::error($e->getMessage(), 'Error!');
             return back();
