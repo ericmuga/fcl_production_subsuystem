@@ -316,69 +316,56 @@ class ButcheryController extends Controller
         $user_id = $helpers->authenticatedUserId();
 
         try {
+            $item_code = $request->item_code;
+
+            $data = [
+                'item_code' => $item_code,
+                'no_of_pieces' => $request->no_of_items,
+                'actual_weight' => $request->reading2,
+                'net_weight' => $request->net2,
+                'user_id' => $user_id,
+            ];
+
             if ($request->for_sale == 'on') {
-                # save for sale
-                $item_code = $request->item_code;
-
                 if ($request->carcass_type == 'G1031') {
-                    # insert sow
-                    $item_code = $helpers->getSowItemCodeConversion($request->item_code);
+                    $data['item_code'] = $helpers->getSowItemCodeConversion($item_code);
                 }
+                $data['no_of_carcass'] = 0;
+                $data['process_code'] = 0; // process behead pig by default
 
-                DB::table('sales')->insert([
-                    'item_code' => $item_code,
-                    'no_of_pieces' => $request->no_of_items,
-                    // 'no_of_carcass' => $helpers->numberOfSalesCarcassesCalculation(
-                    //     $request->no_of_items
-                    // ),
-                    'no_of_carcass' => 0,
-                    'actual_weight' => $request->reading2,
-                    'net_weight' => $request->net2,
-                    'process_code' => 0, //process behead pig by default
-                    'user_id' => $user_id,
-                ]);
-
-                Toastr::success('sale recorded successfully', 'Success');
-                return redirect()->back();
+                DB::table('sales')->insert($data);
+                Toastr::success('Sale recorded successfully', 'Success');
+                return redirect()->back()->withInput();
             } else {
-                # save for production
+                $data['carcass_type'] = $request->carcass_type;
+                $data['process_code'] = $request->carcass_type == 'G1031' ? '3' : '2';
+                $data['product_type'] = $request->product_type;
+
                 if ($request->carcass_type == 'G1031') {
-                    # insert sow
-                    $item_code = $helpers->getSowItemCodeConversion($request->item_code);
-
-                    DB::table('butchery_data')->insert([
-                        'carcass_type' =>  $request->carcass_type,
-                        'item_code' => $item_code,
-                        'actual_weight' => $request->reading2,
-                        'net_weight' => $request->net2,
-                        'no_of_items' => $request->no_of_items,
-                        'process_code' => '3',
-                        'product_type' => $request->product_type,
-                        'user_id' => $user_id,
-                    ]);
-                } else {
-                    #insert for baconer
-                    DB::table('butchery_data')->insert([
-                        'carcass_type' =>  $request->carcass_type,
-                        'item_code' =>  $request->item_code,
-                        'actual_weight' => $request->reading2,
-                        'net_weight' => $request->net2,
-                        'no_of_items' => $request->no_of_items,
-                        'process_code' => '2',
-                        'product_type' => $request->product_type,
-                        'user_id' => $user_id,
-                    ]);
+                    $data['item_code'] = $helpers->getSowItemCodeConversion($item_code);
                 }
-            }
 
-            Toastr::success('record inserted successfully', 'Success');
-            return redirect()
-                ->back()
-                ->withInput();
+                // Map process_code to process name
+                $process_codes_list = Cache::rememberForever('process_codes_list', function () {
+                    return DB::table('processes')->select('process_code', 'process')->get();
+                });
+
+                $process_codes_map = $process_codes_list->pluck('process', 'process_code');
+
+                // Replace process_code with process name in butchery data
+                $data['process_name'] = $process_codes_map[$data['process_code']] ?? 'Unknown';
+
+                // Publish to the queue
+                $helpers->publishToQueue($data, 'production_data_order_breaking.bc');
+
+                DB::table('butchery_data')->insert($data);
+                Toastr::success('Record inserted successfully', 'Success');
+            }
+            return redirect()->back()->withInput();
+
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
-            return back()
-                ->withInput();
+            return back()->withInput();
         }
     }
 
@@ -609,67 +596,57 @@ class ButcheryController extends Controller
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
+            $product_type = match ($request->product_type) {
+                "By Product" => 2,
+                "Intake" => 3,
+                default => 1,
+            };
 
-            $product_type = 1;
-            if ($request->product_type == "By Product") {
-                $product_type = 2;
-            } elseif ($request->product_type == "Intake") {
-                $product_type = 3;
-            }
+            $prod_date = $request->prod_date === "yesterday" ? today()->subDays(1) : now();
+            $item_code = explode('-', $request->product)[1];
 
-            $prod_date = now();
-            if ($request->prod_date == "yesterday") {
-                $prod_date = today()->subDays(1);
-            }
+            $data = [
+                'item_code' => $item_code,
+                'actual_weight' => $request->reading,
+                'net_weight' => $request->net,
+                'process_code' => (int)$request->production_process_code,
+                'product_type' => $product_type,
+                'no_of_crates' => $request->no_of_crates - 1,
+                'no_of_pieces' => $request->no_of_pieces,
+                'user_id' => $helpers->authenticatedUserId(),
+            ];
 
-            $item = explode('-', $request->product);
-            $item_code = $item[1];
-
-            if ($request->for_transfer == 'on') {
-                # transfers
-                DB::table('butchery_transfers')->insert([
-                    'item_code' => $item_code,
-                    'actual_weight' => $request->reading,
-                    'net_weight' => $request->net,
-                    'process_code' => (int)$request->production_process_code,
-                    'product_type' => $product_type,
-                    'no_of_crates' => $request->no_of_crates - 1,
-                    'no_of_pieces' => $request->no_of_pieces,
-                    'transfer_to' => $request->transfer_to,
-                    'user_id' => $helpers->authenticatedUserId(),
-                ]);
-
+            if ($request->for_transfer === 'on') {
+                $data['transfer_to'] = $request->transfer_to;
+                DB::table('butchery_transfers')->insert($data);
                 Toastr::success("Transfer record {$request->product} inserted successfully", 'Success');
-                return redirect()
-                    ->back()
-                    ->withInput();
+                return redirect()->back()->withInput();
             } else {
-                DB::transaction(function () use ($request, $helpers, $item_code, $product_type, $prod_date) {
-                    # insert record
-                    DB::table('deboned_data')->insert([
-                        'item_code' => $item_code,
-                        'actual_weight' => $request->reading,
-                        'net_weight' => $request->net,
-                        'process_code' => (int)$request->production_process_code,
-                        'product_type' => $product_type,
-                        'no_of_crates' => $request->no_of_crates - 1,
-                        'no_of_pieces' => $request->no_of_pieces,
-                        'narration' => $request->desc,
-                        'batch_no' => $request->batch_no,
-                        'user_id' => $helpers->authenticatedUserId(),
-                        'created_at' => $prod_date,
-                    ]);
+                $data['narration'] = $request->desc;
+                $data['batch_no'] = $request->batch_no;
+                $data['created_at'] = $prod_date;
+
+                // Map process_code to process name
+                $process_codes_list = Cache::rememberForever('process_codes_list', function () {
+                    return DB::table('processes')->select('process_code', 'process')->get();
                 });
 
+                $process_codes_map = $process_codes_list->pluck('process', 'process_code');
+
+                // Replace process_code with process name in butchery data
+                $data['process_name'] = $process_codes_map[$data['process_code']] ?? 'Unknown';
+
+                // Publish to the queue
+                $helpers->publishToQueue($data, 'production_data_order_deboning.bc');
+
+                DB::transaction(fn() => DB::table('deboned_data')->insert($data));
                 Toastr::success("Deboning record {$request->product} inserted successfully", 'Success');
-                return redirect()
-                    ->back()
-                    ->withInput();
             }
+
+            return redirect()->back()->withInput();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
-            return back()
-                ->withInput();
+            return back()->withInput();
         }
     }
 
