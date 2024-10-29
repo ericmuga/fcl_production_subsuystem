@@ -617,13 +617,14 @@ class ButcheryController extends Controller
                 $data['batch_no'] = $request->batch_no;
                 $data['created_at'] = $prod_date;
 
+                DB::transaction(fn() => DB::table('deboned_data')->insert($data));
+
                 // Map process_code to process name
                 $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
                 // Publish to the queue
                 $helpers->publishToQueue($data, 'production_data_order_deboning.bc');
 
-                DB::transaction(fn() => DB::table('deboned_data')->insert($data));
                 Toastr::success("Deboning record {$request->product} inserted successfully", 'Success');
             }
 
