@@ -499,19 +499,23 @@ class Helpers
         try {
             // insert data
             foreach ($data['receiptLines'] as $line) {
-                DB::table('receipts')->insert([
-                    'enrolment_no' => $line['ReceiptNo'],
-                    'vendor_tag' => $line['Slapmark'],
-                    'receipt_no' => $line['ReceiptNo'],
-                    'vendor_no' => $line['FarmerNo'],
-                    'vendor_name' => $line['FarmerName'],
-                    'receipt_date' => Carbon::parse($line['ReceiptDate'])->format('d/m/y'), // e.g., 29/10/24
-                    'item_code' => $line['Item'],
-                    'description' => $line['ItemDescription'],
-                    'received_qty' => $line['ReceivedQty'],
-                    'user_id' => 1,
-                    'slaughter_date' => Carbon::now()->format('Y-m-d 00:00:00.000'), // e.g., 2024-10-29 00:00:00.000
-                ]);
+                DB::table('receipts')->updateOrInsert(
+                    [
+                        'enrolment_no' => $line['ReceiptNo'],
+                        'vendor_tag' => $line['Slapmark']
+                    ],
+                    [
+                        'receipt_no' => $line['ReceiptNo'],
+                        'vendor_no' => $line['FarmerNo'],
+                        'vendor_name' => $line['FarmerName'],
+                        'receipt_date' => Carbon::parse($line['ReceiptDate'])->format('d/m/y'), // e.g., 29/10/24
+                        'item_code' => $line['Item'],
+                        'description' => $line['ItemDescription'],
+                        'received_qty' => $line['ReceivedQty'],
+                        'user_id' => 1,
+                        'slaughter_date' => Carbon::now()->format('Y-m-d 00:00:00.000'), // e.g., 2024-10-29 00:00:00.000
+                    ]
+                );
             }
             Log::info('Receipt data inserted successfully.'.json_encode($data), 'Success');
         } catch (\Exception $e) {
