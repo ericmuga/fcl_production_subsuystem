@@ -21,33 +21,9 @@ class UserSeeder extends Seeder
             // slaughter user
             [
                 'username' => 'EKaranja',
-                'email' => Str::random(10).'@gmail.com',
+                'email' => 'ekaranja@farmerschoice.co.ke',
                 'password' => Hash::make('1234'),
                 'section' => 'slaughter',
-            ],
-            [
-                'username' => 'User1',
-                'email' => Str::random(10).'@gmail.com',
-                'password' => Hash::make('1234'),
-                'section' => 'butchery',
-            ],
-            [
-                'username' => 'User2',
-                'email' => Str::random(10).'@gmail.com',
-                'password' => Hash::make('1234'),
-                'section' => 'admin',
-            ],
-            [
-                'username' => 'User3',
-                'email' => Str::random(10).'@gmail.com',
-                'password' => Hash::make('1234'),
-                'section' => 'admin',
-            ],
-            [
-                'username' => 'User4',
-                'email' => Str::random(10).'@gmail.com',
-                'password' => Hash::make('1234'),
-                'section' => 'admin',
             ]
         ];
 
