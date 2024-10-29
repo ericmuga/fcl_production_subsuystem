@@ -24,7 +24,7 @@ class ReceiptsTable extends Migration
             $table->string('item_code', 20);
             $table->string('description');
             $table->integer('received_qty');
-            $table->foreignId('user_id')->constrained('users');
+            $table->bigInteger('user_id');
             $table->timestamp('slaughter_date');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
