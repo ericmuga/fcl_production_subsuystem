@@ -422,11 +422,11 @@ class Helpers
                 $data = json_decode($msg->body, true);
 
                 try {
-                    $this->insertReceiptData($data);
-                    // Log the received message                    
-                    Log::info($data);
+                    Log::info('Slaughter Receipts received for inserts'. json_encode($data));
+
+                    $this->insertReceiptData($data);            
                     // Acknowledge the message
-                    // $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
                 } catch (\Exception $e) {
                     // Log the error
                     Log::error('Failed to insert receipt data: ' . $e->getMessage());
