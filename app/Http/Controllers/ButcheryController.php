@@ -310,7 +310,7 @@ class ButcheryController extends Controller
 
             $data = [
                 'item_code' => $item_code,
-                'no_of_pieces' => $request->no_of_items,
+                'no_of_items' => $request->no_of_items,
                 'actual_weight' => $request->reading2,
                 'net_weight' => $request->net2,
                 'user_id' => $user_id,
@@ -320,10 +320,16 @@ class ButcheryController extends Controller
                 if ($request->carcass_type == 'G1031') {
                     $data['item_code'] = $helpers->getSowItemCodeConversion($item_code);
                 }
-                $data['no_of_carcass'] = 0;
-                $data['process_code'] = 0; // process behead pig by default
 
-                DB::table('sales')->insert($data);
+                DB::table('sales')->insert([
+                    'item_code' => $item_code,
+                    'no_of_pieces' => $request->no_of_items,
+                    'actual_weight' => $request->reading2,
+                    'net_weight' => $request->net2,
+                    'user_id' => $user_id,
+                    'no_of_carcass' => 0,
+                    'process_code' => 0,
+                ]);
                 Toastr::success('Sale recorded successfully', 'Success');
                 return redirect()->back()->withInput();
             } else {
@@ -335,13 +341,15 @@ class ButcheryController extends Controller
                     $data['item_code'] = $helpers->getSowItemCodeConversion($item_code);
                 }
 
+                //insert into db
+                DB::table('butchery_data')->insert($data);
+
                 // Map process_code to process name
                 $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
                 // Publish to the queue
                 $helpers->publishToQueue($data, 'production_data_order_breaking.bc');
-
-                DB::table('butchery_data')->insert($data);
+                
                 Toastr::success('Record inserted successfully', 'Success');
             }
             return redirect()->back()->withInput();
