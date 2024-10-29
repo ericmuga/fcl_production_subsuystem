@@ -34,7 +34,7 @@ class Kernel extends ConsoleKernel
             }
         })->everyTenMinutes();
 
-        $schedule->command('queue:consume')->everyTenMinutes();
+        $schedule->command('queue:consume')->everyMinute();
     }
 
     /**
