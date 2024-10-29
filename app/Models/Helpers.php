@@ -391,6 +391,21 @@ class Helpers
         return $this->rabbitMQChannel;
     }
 
+    public function declareQueue($queue_name)
+    {
+        $this->rabbitMQChannel->queue_declare(
+            $queue_name,
+            false,
+            true,
+            false,
+            false,
+            false,
+            new \PhpAmqpLib\Wire\AMQPTable([
+                'x-dead-letter-exchange' => 'fcl.exchange.dlx'
+            ])
+        );
+    }
+
     public function __destruct()
     {
         if ($this->rabbitMQChannel !== null) {
@@ -405,15 +420,16 @@ class Helpers
     {
         $channel = $this->getRabbitMQChannel();
 
-        // Declare the queues if they do not exist
+        // List of queues to declare and consume from
         $queues = [
             'slaughter_receipts.wms',
             // 'another_queue_name',
             // 'yet_another_queue_name'
         ];
 
+        // Declare each queue using the declareQueue function
         foreach ($queues as $queue) {
-            $channel->queue_declare($queue, false, true, false, false);
+            $this->declareQueue($queue);
         }
 
         // Define callback functions for each queue
@@ -422,9 +438,9 @@ class Helpers
                 $data = json_decode($msg->body, true);
 
                 try {
-                    Log::info('Slaughter Receipts received for inserts'. json_encode($data));
+                    Log::info('Slaughter Receipts received for inserts: ' . json_encode($data));
 
-                    $insertResult = $this->insertReceiptData($data);            
+                    $insertResult = $this->insertReceiptData($data);
                     if ($insertResult == true) {
                         // Acknowledge the message
                         $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
@@ -440,14 +456,14 @@ class Helpers
             'another_queue_name' => function ($msg) {
                 $data = json_decode($msg->body, true);
                 // Process the message here
-                Log::info('Another queue message Received: ' . json_encode($data));
+                Log::info('Another queue message received: ' . json_encode($data));
                 // Acknowledge the message
                 $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
             },
             'yet_another_queue_name' => function ($msg) {
                 $data = json_decode($msg->body, true);
                 // Process the message here
-                Log::info('Yet another queue message Received: ' . json_encode($data));
+                Log::info('Yet another queue message received: ' . json_encode($data));
                 // Acknowledge the message
                 $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
             }
