@@ -519,7 +519,7 @@ class Helpers
             }
             Log::info('Receipt data inserted successfully.');
         } catch (\Exception $e) {
-            Log::error($e->getMessage(), 'Error!');
+            Log::error('Failed to insert receipt data: ' . $e->getMessage());
             return back();
         }
 
