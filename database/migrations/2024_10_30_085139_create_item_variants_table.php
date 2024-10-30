@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMessagePushStatusTable extends Migration
+class CreateItemVariantsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,12 @@ class CreateMessagePushStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('message_push_status', function (Blueprint $table) {
+        Schema::create('item_variants', function (Blueprint $table) {
             $table->id();
-            $table->string('queue');          // The queue name
-            $table->text('message');          // The message payload
-            $table->enum('status', ['pending', 'failed', 'sent'])->default('pending');
+            $table->string('code', 50);
+            $table->text('description');
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -30,6 +28,6 @@ class CreateMessagePushStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('message_push_status');
+        Schema::dropIfExists('item_variants');
     }
 }
