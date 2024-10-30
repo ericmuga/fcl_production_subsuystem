@@ -25,16 +25,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            $rabbitMQService = app(RabbitMQService::class);
-            if (method_exists($rabbitMQService, 'retryPendingMessages')) {
-                $rabbitMQService->retryPendingMessages();
-            } else {
-                \Log::error('Method retryPendingMessages does not exist in RabbitMQService');
-            }
-        })->everyTenMinutes();
+        // $schedule->call(function () {
+        //     $rabbitMQService = app(RabbitMQService::class);
+        //     if (method_exists($rabbitMQService, 'retryPendingMessages')) {
+        //         $rabbitMQService->retryPendingMessages();
+        //     } else {
+        //         \Log::error('Method retryPendingMessages does not exist in RabbitMQService');
+        //     }
+        // })->everyTenMinutes();
 
-        // $schedule->command('queue:work --once')->everyMinute();
+        // $schedule->command('queue:consume')->everyMinute();
     }
 
     /**
