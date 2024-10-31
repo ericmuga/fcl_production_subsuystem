@@ -38,3 +38,9 @@ Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
 Route::post('/v1/save/slaughter-receipts', [ApiController::class, 'saveSlaughterReceipts']);
 Route::post('/v1/push/slaughter-lines', [ApiController::class, 'pushSlaughterLines']);
 Route::post('/v1/publish-dummy-receipts', [SlaughterController::class, 'publishDummyData']);
+
+//run queue
+Route::get('/start-queue', function () {
+    Artisan::call('queue:consume');
+    return response()->json(['status' => 'Queue started']);
+});
