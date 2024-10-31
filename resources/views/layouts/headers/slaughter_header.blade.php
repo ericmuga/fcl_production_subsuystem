@@ -26,8 +26,14 @@
                         <li><a href="{{ route('lairage_transfers') }}" class="dropdown-item">Transfers</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ route('slaughter_weigh') }}" class="nav-link">Weigh</a>
+                <li class="nav-item dropdown">
+                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                        class="nav-link dropdown-toggle">Weigh</a>
+                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+                        <li><a href="{{ route('slaughter_weigh') }}" class="dropdown-item">Carcass</a></li>
+                        <li class="dropdown-divider"></li>
+                        <li><a href="{{ route('weigh_offals') }}" class="dropdown-item">Offals</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
