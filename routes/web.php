@@ -8,6 +8,7 @@ use App\Http\Controllers\ChoppingController;
 use App\Http\Controllers\Despatch;
 use App\Http\Controllers\DespatchController;
 use App\Http\Controllers\FreshcutsBulkController;
+use App\Http\Controllers\GenericController;
 use App\Http\Controllers\HighCare1Controller;
 use App\Http\Controllers\HighCare2Controller;
 use App\Http\Controllers\ItemController;
@@ -77,6 +78,8 @@ Route::post('/slaughter/record-disease', [SlaughterController::class, 'recordDis
 Route::get('/slaughter/lairage_transfers', [SlaughterController::class, 'lairageTransfers'])->name('lairage_transfers');
 Route::post('idt_lairage/save', [SlaughterController::class, 'saveLairageTransfer'])->name('save_idt_lairage');
 Route::post('idt_lairage/update', [SlaughterController::class, 'updateLairageTransfer'])->name('update_idt_lairage');
+Route::get('slaughter/offals', [SlaughterController::class, 'weighOffals'])->name('weigh_offals');
+Route::post('slaughter/save-offals', [SlaughterController::class, 'saveOffalsWeight'])->name('save_offals_weight');
 //queues
 Route::get('/import-receipts-from-queue', [SlaughterController::class, 'importReceiptsFromQueue']);
 /*-------------End Slaughter------------------ */
