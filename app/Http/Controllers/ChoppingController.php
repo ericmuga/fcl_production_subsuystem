@@ -7,6 +7,7 @@ use App\Exports\PostedChoppingLinesExport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -63,7 +64,8 @@ class ChoppingController extends Controller
     public function choppingSaveBatch(Request $request, Helpers $helpers)
     {
         $temp_no = strtok($request->temp_no,  '-');
-        $batch_no = 'ch-' . $request->batch_no;
+        $uniqueNumber = now()->format('YmdHis') . mt_rand(10, 99);
+        $batch_no = 'ch-' . $uniqueNumber;
 
         try {
             //insert batch
