@@ -426,6 +426,7 @@ class Helpers
         $queues = [
             'slaughter_receipts.wms',
             'master_data_items.wms',
+            'master_data_locations.wms',
             // 'yet_another_queue_name'
         ];
 
@@ -482,6 +483,35 @@ class Helpers
                 } catch (\Exception $e) {
                     // Log the error and do not acknowledge the message
                     Log::error('Failed to insert master data items, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_locations.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data items to the database
+                Log::info('Master Data Locations received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['locations'] as $location) {
+                        DB::table('stock_locations')->updateOrInsert(
+                            [
+                                'location_code' => $location['code']
+                            ],
+                            [
+                                'description' => $location['name']
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Locations data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert master data locations, message not acknowledged.');
                     Log::error('Insert Error: ' . $e->getMessage());
                     // Negative acknowledgment (NACK) the message
                     $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
