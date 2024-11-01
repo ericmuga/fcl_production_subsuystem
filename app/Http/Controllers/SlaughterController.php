@@ -639,6 +639,7 @@ class SlaughterController extends Controller
 
         $scale_settings = DB::table('scale_configs')
             ->where('section', 'slaughter')
+            ->orWhere('section', 'offals')
             ->get();
 
         return view('slaughter.scale_settings', compact('title', 'scale_settings', 'helpers'));
@@ -794,6 +795,66 @@ class SlaughterController extends Controller
             Toastr::success('Updated transfer record successfully', 'Success');
             return redirect()
                 ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return back()
+                ->withInput();
+        }
+    }
+
+    public function weighOffals(Helpers $helpers)
+    {
+        $title = "Weigh Offals";
+        
+        $productCodes = [
+            'G6001' => 'Offals(Lungs ,spleens)',
+            'G1240' => 'Pork maw',
+            'G1241' => 'Small Intestines',
+            'G6002' => 'Blood',
+            'G1239' => 'Pork Liver',
+        ];
+
+        $configs = Cache::remember('weigh_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'offals')
+                ->select('tareweight', 'comport')
+                ->get()->toArray();
+        });
+
+        
+        $offalsData = DB::table('offals')
+            ->whereDate('offals.created_at', Carbon::today())
+            ->leftJoin('products', 'offals.product_code', '=', 'products.code')
+            ->select('offals.*', 'products.description')
+            ->orderBy('offals.created_at', 'DESC')
+            ->get();
+
+        return view('slaughter.weigh_offals', compact('title', 'productCodes', 'offalsData', 'configs', 'helpers'));
+    }
+
+    public function saveOffalsWeight(Request $request, Helpers $helpers)
+    {
+        try {
+            $manual_weight = 0;
+            if ($request->manual_weight == 'on') {
+                $manual_weight = 1;
+            }
+
+
+            $data = [
+                'product_code'=> $request->product_code,
+                'scale_reading'=> $request->reading,
+                'net_weight'=> $request->net_weight,
+                'is_manual'=> $manual_weight,
+                'user_id' => $helpers->authenticatedUserId(),
+            ];
+
+            DB::table('offals')->insert($data);
+
+            Toastr::success('record added successfully', 'Success');
+            return redirect()
+                ->back()
+                ->withInput();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
             return back()
