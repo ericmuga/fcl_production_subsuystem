@@ -430,8 +430,6 @@ class Helpers
             'master_data_products.wms',
             'master_data_family.wms',
             'master_data_disease_list.wms',
-            'master_data_recipe_header.wms',
-            'master_data_recipe_lines.wms',
             'master_data_assets.wms',
             // 'yet_another_queue_name'
         ];
@@ -600,6 +598,44 @@ class Helpers
                             ],
                             [
                                 'description' => $disease['description']
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Disease data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert master data disease, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_assets.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data assets to the database
+                Log::info('Master Data Assets received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['assets'] as $asset) {
+                        DB::table('assets')->updateOrInsert(
+                            [
+                                'fa_code' => $asset['Fa_Code']
+                            ],
+                            [
+                                'no' => $asset['No_'],
+                                'description' => $asset['Description'],
+                                'chassis' => $asset['Chassis'],
+                                'engine_no' => $asset['Engine_No'],
+                                'fa_class_code' => $asset['FA_Class_Code'],
+                                'make_brand' => $asset['Make_Brand'],
+                                'comments' => $asset['Comments'],
+                                'responsible_employee' => $asset['Responsible_employee'],
+                                'location_code' => $asset['Location_code'],
+                                'location_name' => $asset['LocationName']
                             ]
                         );
                     }
