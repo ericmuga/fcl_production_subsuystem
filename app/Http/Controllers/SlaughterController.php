@@ -213,7 +213,12 @@ class SlaughterController extends Controller
                 'is_imported' => false, // Set imported to false initially
             ];
 
-            DB::table('slaughter_data')->insert($data);
+            // DB::table('slaughter_data')->insert($data);
+            $id = DB::table('slaughter_data')->insertGetId($data);
+
+            // Add the ID and timestamps to the data array for queueing
+            $data['id'] = $id;
+            $data['timestamp'] = now()->toDateTimeString();
 
             // Publish data to RabbitMQ
             $helpers->publishToQueue($data, 'slaughter_line.bc');
