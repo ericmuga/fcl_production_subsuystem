@@ -427,6 +427,10 @@ class Helpers
             'slaughter_receipts.wms',
             'master_data_items.wms',
             'master_data_locations.wms',
+            'master_data_products.wms',
+            'master_data_family.wms',
+            'master_data_disease_list.wms',
+            'master_data_assets.wms',
             // 'yet_another_queue_name'
         ];
 
@@ -512,6 +516,137 @@ class Helpers
                 } catch (\Exception $e) {
                     // Log the error and do not acknowledge the message
                     Log::error('Failed to insert master data locations, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_products.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data products to the database
+                Log::info('Master Data Products received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['products'] as $product) {
+                        DB::table('products')->updateOrInsert(
+                            [
+                                'code' => $product['code']
+                            ],
+                            [
+                                'description' => $product['description'],
+                                'unit_of_measure' => $product['unit_of_measure'],
+                                'product_type' => $product['product_type'],
+                                'process_type' => $product['process_type']
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Products data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert master data products, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_family.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data families to the database
+                Log::info('Master Data Families received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['families'] as $family) {
+                        DB::table('family')->updateOrInsert(
+                            [
+                                'family_no' => $family['family_no']
+                            ],
+                            [
+                                'item_no' => $family['item_no'],
+                                'family_description' => $family['family_description'],
+                                'item_type' => $family['item_type'],
+                                'process_code' => $family['process_code']
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Families data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert master data families, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_disease_list.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data disease_list to the database
+                Log::info('Master Data Diseases received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['diseases'] as $disease) {
+                        DB::table('disease_list')->updateOrInsert(
+                            [
+                                'disease_code' => $disease['disease_code']
+                            ],
+                            [
+                                'description' => $disease['description']
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Disease data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert master data disease, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_assets.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data assets to the database
+                Log::info('Master Data Assets received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['assets'] as $asset) {
+                        DB::table('assets')->updateOrInsert(
+                            [
+                                'fa_code' => $asset['Fa_Code']
+                            ],
+                            [
+                                'no' => $asset['No_'],
+                                'description' => $asset['Description'],
+                                'chassis' => $asset['Chassis'],
+                                'engine_no' => $asset['Engine_No'],
+                                'fa_class_code' => $asset['FA_Class_Code'],
+                                'make_brand' => $asset['Make_Brand'],
+                                'comments' => $asset['Comments'],
+                                'responsible_employee' => $asset['Responsible_employee'],
+                                'location_code' => $asset['Location_code'],
+                                'location_name' => $asset['LocationName']
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Disease data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert master data disease, message not acknowledged.');
                     Log::error('Insert Error: ' . $e->getMessage());
                     // Negative acknowledgment (NACK) the message
                     $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
