@@ -14,7 +14,7 @@
                     <div class="form-group mb-3">
                         <label for="product_code">Product Name</label>
                         <select class="custom-select" id="product_code" name="product_code" required>
-                            <option selected>Choose...</option>
+                            <option value="">Choose...</option>
                             @foreach ($productCodes as $key => $value)
                                 <option value={{ $key }}>{{ $key }} {{ $value }}</option>
                             @endforeach
@@ -47,8 +47,13 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="reading">Reading</label>
-                        <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
-                            onchange="updateNetWeight()" placeholder="" readonly required>
+                        <input type="number" step="0.01" class="form-control" id="reading" name="reading" value=""
+                            oninput="updateNetWeight()" placeholder="" readonly required>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
+                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                     </div>
 
                     <div class="row">
@@ -67,14 +72,9 @@
                             <div class="form-group">
                                 <label for="net_weight">Net-Weight</label>
                                 <input type="number" class="form-control" id="net_weight" name="net_weight"
-                                    value="0.00" readonly required>
+                                    value="" readonly required>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
-                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                     </div>
 
                     <button type="submit" id="btn_save" class="btn btn-primary btn-lg btn-prevent-multiple-submits mt-3">
@@ -114,12 +114,11 @@
                 <div class="card-body">
                     <div class="hidden" hidden>{{ $i = 1 }}</div>
                     <div class="table-responsive">
-                        <table id="example1" class="table table-striped table-bordered table-hover table-responsive">
+                        <table id="example1" class="table table-striped table-bordered table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Product Code</th>
-                                    <th>Product Description</th>
                                     <th>Net Weight (kgs)</th>
                                     <th>Scale Reading (kgs)</th>
                                     <th>Manually Recorded</th>
@@ -131,7 +130,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Product Code</th>
-                                    <th>Product Description</th>
                                     <th>Net Weight (kgs)</th>
                                     <th>Scale Reading (kgs)</th>
                                     <th>Manually Recorded</th>
@@ -142,14 +140,21 @@
                             <tbody>
                                 @foreach($offalsData as $data)
                                 <tr>
-                                    <td>{{ $loop->iteration}}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->description }}</td>
                                     <td>{{ number_format($data->net_weight, 2) }}</td>
                                     <td>{{ number_format($data->scale_reading, 2) }}</td>
-                                    <td>{{ $data->is_manual }}</td>
-                                    <td>{{ $data->user_id }}</td>
-                                    <td>{{ $data->created_at }}</td>
+                                    @if($data->is_manual == 0)
+                                        <td>
+                                            <span class="badge badge-success">No</span>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <span class="badge badge-warning">Yes</span>
+                                        </td>
+                                    @endif
+                                    <td>{{ $data->username }}</td>
+                                    <td>{{  $helpers->dateToHumanFormat($data->created_at) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>

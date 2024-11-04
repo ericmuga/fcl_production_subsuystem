@@ -10,6 +10,7 @@ use App\Models\Helpers;
 use App\Models\MissingSlapData;
 use App\Models\Receipt;
 use App\Models\SlaughterData;
+use App\Models\Offals;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -829,8 +830,8 @@ class SlaughterController extends Controller
         
         $offalsData = DB::table('offals')
             ->whereDate('offals.created_at', Carbon::today())
-            ->leftJoin('products', 'offals.product_code', '=', 'products.code')
-            ->select('offals.*', 'products.description')
+            ->leftJoin('users', 'offals.user_id', '=', 'users.id')
+            ->select('offals.*', 'users.username as username')
             ->orderBy('offals.created_at', 'DESC')
             ->get();
 
@@ -845,16 +846,13 @@ class SlaughterController extends Controller
                 $manual_weight = 1;
             }
 
-
-            $data = [
+            Offals::create([
                 'product_code'=> $request->product_code,
                 'scale_reading'=> $request->reading,
                 'net_weight'=> $request->net_weight,
                 'is_manual'=> $manual_weight,
                 'user_id' => $helpers->authenticatedUserId(),
-            ];
-
-            DB::table('offals')->insert($data);
+            ]);
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
