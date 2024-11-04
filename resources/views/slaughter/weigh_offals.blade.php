@@ -189,9 +189,12 @@
                 reading.readOnly = false;
                 reading.focus();
                 $('#reading').val("");
+                $('#net_weight').val("");
 
             } else {
                 reading.readOnly = true;
+                $('#reading').val("");
+                $('#net_weight').val("");
             }
 
         });

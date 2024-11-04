@@ -88,7 +88,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $diseaseEntry->slapmark }}</td>
                                 <td>{{ $diseaseEntry->disease_code }}</td>
-                                <td>{{ $diseaseEntry->created_at }}</td>
+                                <td>{{ $helpers->dateToHumanFormat($diseaseEntry->created_at) }}</td>
                                 <td>{{ $diseaseEntry->user_name }}</td>
                             </tr>
                             @endforeach
