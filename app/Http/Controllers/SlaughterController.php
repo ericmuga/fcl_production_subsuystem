@@ -728,6 +728,8 @@ class SlaughterController extends Controller
 
             DB::table('disease_entries')->insert($data);
 
+            $helpers->publishToQueue($data, 'disease_entries.bc');
+
             Toastr::success('record added successfully', 'Success');
             return redirect()
                 ->back()
