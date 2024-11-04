@@ -10,6 +10,7 @@ use App\Models\Helpers;
 use App\Models\MissingSlapData;
 use App\Models\Receipt;
 use App\Models\SlaughterData;
+use App\Models\Offals;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -845,16 +846,13 @@ class SlaughterController extends Controller
                 $manual_weight = 1;
             }
 
-
-            $data = [
+            Offals::create([
                 'product_code'=> $request->product_code,
                 'scale_reading'=> $request->reading,
                 'net_weight'=> $request->net_weight,
                 'is_manual'=> $manual_weight,
                 'user_id' => $helpers->authenticatedUserId(),
-            ];
-
-            DB::table('offals')->insert($data);
+            ]);
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
