@@ -18,7 +18,7 @@ class CreateTemplateHeaderTable extends Migration
             $table->string('template_no')->unique();
             $table->string('template_name');
             $table->tinyInteger('blocked')->default(0);
-            $table->foreignId('user_id')->constrained('users');
+            $table->bigInteger('user_id');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
         });
