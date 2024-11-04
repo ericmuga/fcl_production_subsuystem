@@ -51,6 +51,11 @@
                             oninput="updateNetWeight()" placeholder="" readonly required>
                     </div>
 
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
+                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
+                    </div>
+
                     <div class="row">
                         <div class="col-6">
                             <div class="form-group">
@@ -70,11 +75,6 @@
                                     value="0.00" readonly required>
                             </div>
                         </div>
-                    </div>
-
-                    <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
-                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                     </div>
 
                     <button type="submit" id="btn_save" class="btn btn-primary btn-lg btn-prevent-multiple-submits mt-3">
