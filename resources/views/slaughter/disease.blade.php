@@ -24,6 +24,7 @@
             <div class="form-group">
                 <label for="item_code">Animal Type</label>
                 <select class="form-control select2" name="item_code" id="item_code" required>
+                    <option value="">Select Animal Type</option>
                     @foreach($itemCodes as $itemCode)
                         <option value="{{ $itemCode->code }}">{{ $itemCode->code }} {{ $itemCode->description }}</option>
                     @endforeach
@@ -32,6 +33,7 @@
             <div class="form-group">
                 <label for="slapmark">Slapmark</label>
                 <select class="form-control select2" name="slapmark" id="slapmark" required>
+                    <option value="">Select Slapmark</option>
                     @foreach($receipts as $receipt)
                     @if (old('slapmark') == $receipt->vendor_tag)
                     <option value="{{ $receipt->vendor_tag }}" selected>{{ ucwords($receipt->vendor_tag) }}
@@ -45,6 +47,7 @@
             <div class="form-group">
                 <label for="disease_code">Disease Code</label>
                 <select class="form-control select2" name="disease_code" id="disease_code" required>
+                    <option value="">Select Disease Code</option>
                     @foreach($diseaseCodes as $diseaseCode)
                         <option value="{{ $diseaseCode->disease_code }}">{{ $diseaseCode->disease_code }} {{ $diseaseCode->description }}</option>
                     @endforeach
