@@ -65,7 +65,7 @@
                 <h3 class="card-header">Transfer to Slaughter Entries Recorded Today</h3>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="example1" class="table table-striped">
+                        <table id="example1" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
