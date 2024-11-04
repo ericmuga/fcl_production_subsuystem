@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <label for="reading">Reading</label>
                         <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
-                            onchange="updateNetWeight()" placeholder="" readonly required>
+                            oninput="updateNetWeight()" placeholder="" readonly required>
                     </div>
 
                     <div class="row">
