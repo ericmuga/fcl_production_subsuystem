@@ -359,6 +359,7 @@ class Helpers
         ]);
 
         $channel->basic_publish($msg, 'fcl.exchange.direct', $queue_name);
+        Log::info('Message published to queue: ' . $queue_name);
     }
 
     private $rabbitMQConnection = null;
