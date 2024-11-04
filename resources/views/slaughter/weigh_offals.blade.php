@@ -119,7 +119,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Product Code</th>
-                                    <th>Product Description</th>
                                     <th>Net Weight (kgs)</th>
                                     <th>Scale Reading (kgs)</th>
                                     <th>Manually Recorded</th>
@@ -131,7 +130,6 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Product Code</th>
-                                    <th>Product Description</th>
                                     <th>Net Weight (kgs)</th>
                                     <th>Scale Reading (kgs)</th>
                                     <th>Manually Recorded</th>
@@ -142,14 +140,13 @@
                             <tbody>
                                 @foreach($offalsData as $data)
                                 <tr>
-                                    <td>{{ $loop->iteration}}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->description }}</td>
                                     <td>{{ number_format($data->net_weight, 2) }}</td>
                                     <td>{{ number_format($data->scale_reading, 2) }}</td>
                                     <td>{{ $data->is_manual }}</td>
-                                    <td>{{ $data->user_id }}</td>
-                                    <td>{{ $data->created_at }}</td>
+                                    <td>{{ $data->username }}</td>
+                                    <td>{{  $helpers->dateToHumanFormat($data->created_at) }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
