@@ -80,7 +80,7 @@
                             <tbody>
                                 @foreach($transfers as $index => $transfer)
                                     <tr>
-                                        <th scope="row">{{ $index + 1 }}</th>
+                                        <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $transfer->product_code }}</td>
                                         <td>{{ $transfer->total_pieces }}</td>
                                         @if($transfer->edited == 0)
