@@ -830,8 +830,8 @@ class SlaughterController extends Controller
         
         $offalsData = DB::table('offals')
             ->whereDate('offals.created_at', Carbon::today())
-            ->leftJoin('products', 'offals.product_code', '=', 'products.code')
-            ->select('offals.*', 'products.description')
+            ->leftJoin('users', 'offals.user_id', '=', 'users.id')
+            ->select('offals.*', 'users.username as username')
             ->orderBy('offals.created_at', 'DESC')
             ->get();
 
