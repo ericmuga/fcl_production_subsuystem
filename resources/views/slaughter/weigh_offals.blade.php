@@ -14,7 +14,7 @@
                     <div class="form-group mb-3">
                         <label for="product_code">Product Name</label>
                         <select class="custom-select" id="product_code" name="product_code" required>
-                            <option selected>Choose...</option>
+                            <option value="">Choose...</option>
                             @foreach ($productCodes as $key => $value)
                                 <option value={{ $key }}>{{ $key }} {{ $value }}</option>
                             @endforeach
@@ -47,7 +47,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="reading">Reading</label>
-                        <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
+                        <input type="number" step="0.01" class="form-control" id="reading" name="reading" value=""
                             oninput="updateNetWeight()" placeholder="" readonly required>
                     </div>
 
@@ -72,7 +72,7 @@
                             <div class="form-group">
                                 <label for="net_weight">Net-Weight</label>
                                 <input type="number" class="form-control" id="net_weight" name="net_weight"
-                                    value="0.00" readonly required>
+                                    value="" readonly required>
                             </div>
                         </div>
                     </div>
