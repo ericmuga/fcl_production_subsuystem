@@ -1,114 +1,91 @@
-<nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
-    <div class="container-fluid">
-        <a href="{{ route('butchery_dashboard') }}" class="navbar-brand">
-            <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
-                class="brand-image" style="">
-            <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
-        </a>
+@extends('layouts.headers.template_header')
 
-        <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse"
-            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+@section('main-link')
+<a href="{{ route('butchery_dashboard') }}" class="navbar-brand">
+    <img src="{{ asset('assets/img/fcl1.png') }}" alt="FCL Calibra Logo"
+        class="brand-image" style="">
+    <span class="brand-text font-weight-light"><strong> FCL Weight Management System</strong></span>
+</a>
+@endsection
 
-        <div class="collapse navbar-collapse order-3" id="navbarCollapse">
-            <!-- Left navbar links -->
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a href="{{ route('butchery_dashboard') }}" class="nav-link">Dashboard</a>
-                </li>
-                <li class="nav-item">
-                    <a href="{{ route('butchery_dashboardv2') }}" class="nav-link">Dashboard V2</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">Weigh</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_scale1_2') }}" class="dropdown-item">Scale 1-2
-                                Beheading & breaking </a></li>
-                        <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('butchery_scale3') }}" class="dropdown-item">Scale 3
-                                Deboning </a></li>
-                        <li class="dropdown-divider"></li>
-                        <li><a href="{{ route('weigh_marination') }}" class="dropdown-item">Scale 4
-                                Marination </a></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">Data Management</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
-                            </a></li>
-                        <li class="dropdown-divider"></li>
-                        <li>
-                            <a href="{{ route('butchery_split_weights') }}" class="dropdown-item">Weight Splitting
-                            </a>
-                        </li>
-                        <li class="dropdown-divider"></li>
+@section('navlist')
+<!-- Left navbar links -->
+<ul class="navbar-nav">
+    <li class="nav-item">
+        <a href="{{ route('butchery_dashboard') }}" class="nav-link">Dashboard</a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ route('butchery_dashboardv2') }}" class="nav-link">Dashboard V2</a>
+    </li>
+    <li class="nav-item dropdown">
+        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Weigh</a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a href="{{ route('butchery_scale1_2') }}" class="dropdown-item">Scale 1-2
+                    Beheading & breaking </a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="{{ route('butchery_scale3') }}" class="dropdown-item">Scale 3
+                    Deboning </a></li>
+            <li class="dropdown-divider"></li>
+            <li><a href="{{ route('weigh_marination') }}" class="dropdown-item">Scale 4
+                    Marination </a></li>
+        </ul>
+    </li>
+    <li class="nav-item dropdown">
+        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Data Management</a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
+                </a></li>
+            <li class="dropdown-divider"></li>
+            <li>
+                <a href="{{ route('butchery_split_weights') }}" class="dropdown-item">Weight Splitting
+                </a>
+            </li>
+            <li class="dropdown-divider"></li>
 
-                        <!-- Level two dropdown-->
-                        <li class="dropdown-submenu dropdown-hover">
-                            <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
-                                aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
-                            <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                                <li>
-                                    <a tabindex="-1" href="{{ route('butchery_beheading_report') }}" class="dropdown-item"> Beheading Report</a>
-                                </li>
-                                <li class="dropdown-divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="{{ route('butchery_breaking_report') }}" class="dropdown-item"> Breaking Report</a>
-                                </li>
-                                <li class="dropdown-divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="{{ route('butchery_deboning_report') }}" class="dropdown-item"> Deboning Report</a>
-                                </li>
-                                <li class="dropdown-divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="{{ route('butchery_sales_report') }}" class="dropdown-item"> Sales Report</a>
-                                </li>
-                                <li class="dropdown-divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="{{ route('butchery_transfers_report') }}" class="dropdown-item"> Transfers Report</a>
-                                </li>
-                                <li class="dropdown-divider"></li>
-                                <li>
-                                    <a tabindex="-1" href="{{ route('butchery_scale3_list') }}" class="dropdown-item"> Scale3 Products</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <!-- End Level two -->
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-                        class="nav-link dropdown-toggle">Settings</a>
-                    <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                        <li><a href="{{ route('butchery_scale_settings', 'butchery') }}"
-                                class="dropdown-item">Scale
-                                settings </a></li>
-                        <li class="dropdown-divider"></li>
-                    </ul>
-                </li>
-            </ul>
-
-            <!-- SEARCH FORM -->
-            <form class="form-inline ml-0 ml-md-3">
-                <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" placeholder="Search"
-                        aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <!-- Right navbar links -->
-        @include('layouts.partials.right_nav')
-    </div>
-</nav>
-
-@include('layouts.partials.logout')
+            <!-- Level two dropdown-->
+            <li class="dropdown-submenu dropdown-hover">
+                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
+                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+                    <li>
+                        <a tabindex="-1" href="{{ route('butchery_beheading_report') }}" class="dropdown-item"> Beheading Report</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('butchery_breaking_report') }}" class="dropdown-item"> Breaking Report</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('butchery_deboning_report') }}" class="dropdown-item"> Deboning Report</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('butchery_sales_report') }}" class="dropdown-item"> Sales Report</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('butchery_transfers_report') }}" class="dropdown-item"> Transfers Report</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('butchery_scale3_list') }}" class="dropdown-item"> Scale3 Products</a>
+                    </li>
+                </ul>
+            </li>
+            <!-- End Level two -->
+        </ul>
+    </li>
+    <li class="nav-item dropdown">
+        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Settings</a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a href="{{ route('butchery_scale_settings', 'butchery') }}"
+                    class="dropdown-item">Scale
+                    settings </a></li>
+            <li class="dropdown-divider"></li>
+        </ul>
+    </li>
+</ul>
+@endsection

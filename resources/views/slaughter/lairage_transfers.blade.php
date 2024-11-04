@@ -65,7 +65,7 @@
                 <h3 class="card-header">Transfer to Slaughter Entries Recorded Today</h3>
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="example1" class="table table-striped">
+                        <table id="example1" class="table table-striped table-bordered">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -80,7 +80,7 @@
                             <tbody>
                                 @foreach($transfers as $index => $transfer)
                                     <tr>
-                                        <th scope="row">{{ $index + 1 }}</th>
+                                        <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $transfer->product_code }}</td>
                                         <td>{{ $transfer->total_pieces }}</td>
                                         @if($transfer->edited == 0)
@@ -95,15 +95,18 @@
                                         <td>{{ $helpers->dateToHumanFormat($transfer->created_at) }}</td>
                                         <td>{{ $transfer->username }}</td>
                                         <td class="no-export">
-                                            <i
-                                                class="fa fa-pencil-alt"
-                                                data-toggle="modal"
-                                                data-target="#editTransferModal"
-                                                data-transfer-id={{ $transfer->id }}
-                                                data-product-code={{ $transfer->product_code }}
-                                                data-editing-count={{ $transfer->total_pieces }}
-                                            >
-                                            </i>
+                                            <button class="btn btn-primary">
+                                                <i
+                                                    class="fa fa-pencil-alt"
+                                                    data-toggle="modal"
+                                                    data-target="#editTransferModal"
+                                                    data-transfer-id={{ $transfer->id }}
+                                                    data-product-code={{ $transfer->product_code }}
+                                                    data-editing-count={{ $transfer->total_pieces }}
+                                                    role="button"
+                                                >
+                                                </i>
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
