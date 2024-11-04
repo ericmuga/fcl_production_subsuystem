@@ -285,7 +285,11 @@ class ButcheryController extends Controller
             ]);
 
             // Insert beheading data
-            DB::table('beheading_data')->insert($beheadingData);
+            $id = DB::table('beheading_data')->insertGetId($beheadingData);
+
+            // Add the ID and timestamps to the data array for queueing
+            $beheadingData['id'] = $id;
+            $beheadingData['timestamp'] = now()->toDateTimeString();
 
             // Map process_code to process name
             $beheadingData['process_name'] = $helpers->getProcessName($beheadingData['process_code']);
@@ -342,7 +346,11 @@ class ButcheryController extends Controller
                 }
 
                 //insert into db
-                DB::table('butchery_data')->insert($data);
+                $id = DB::table('butchery_data')->insertGetId($data);
+
+                // Add the ID and timestamps to the data array for queueing
+                $data['id'] = $id;
+                $data['timestamp'] = now()->toDateTimeString();
 
                 // Map process_code to process name
                 $data['process_name'] = $helpers->getProcessName($data['process_code']);
@@ -617,7 +625,11 @@ class ButcheryController extends Controller
                 $data['batch_no'] = $request->batch_no;
                 $data['created_at'] = $prod_date;
 
-                DB::transaction(fn() => DB::table('deboned_data')->insert($data));
+                $id = DB::table('deboned_data')->insertGetId($data);
+
+                // Add the ID and timestamps to the data array for queueing
+                $data['id'] = $id;
+                $data['timestamp'] = now()->toDateTimeString();
 
                 // Map process_code to process name
                 $data['process_name'] = $helpers->getProcessName($data['process_code']);
@@ -1174,7 +1186,7 @@ class ButcheryController extends Controller
 
         try {
             //saving...
-            DB::table('deboned_data')->insert([
+            $data = [
                 'item_code' => $item[0],
                 'actual_weight' => $request->reading,
                 'net_weight' => $request->net,
@@ -1184,8 +1196,20 @@ class ButcheryController extends Controller
                 'no_of_crates' => $request->no_of_crates,
                 'user_id' => $helpers->authenticatedUserId(),
                 'created_at' => Carbon::parse($request->marination_date),
+            ];
 
-            ]);
+            $id = DB::table('deboned_data')->insertGetId($data);
+
+            // Add the ID and timestamps to the data array for queueing
+            $data['id'] = $id;
+            $data['timestamp'] = now()->toDateTimeString();
+
+            // Map process_code to process name
+            $data['process_name'] = $helpers->getProcessName($data['process_code']);
+
+            // Publish to the queue
+            $helpers->publishToQueue($data, 'production_data_order_marination.bc');
+
             Toastr::success("Item {$item[0]} recorded successfully", 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
