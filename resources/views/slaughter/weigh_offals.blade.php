@@ -144,7 +144,15 @@
                                     <td>{{ $data->product_code }}</td>
                                     <td>{{ number_format($data->net_weight, 2) }}</td>
                                     <td>{{ number_format($data->scale_reading, 2) }}</td>
-                                    <td>{{ $data->is_manual }}</td>
+                                    @if($data->is_manual == 0)
+                                        <td>
+                                            <span class="badge badge-success">No</span>
+                                        </td>
+                                    @else
+                                        <td>
+                                            <span class="badge badge-warning">Yes</span>
+                                        </td>
+                                    @endif
                                     <td>{{ $data->username }}</td>
                                     <td>{{  $helpers->dateToHumanFormat($data->created_at) }}</td>
                                 </tr>
