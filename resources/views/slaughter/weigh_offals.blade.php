@@ -150,7 +150,7 @@
                                         </td>
                                     @else
                                         <td>
-                                            <span class="badge badge-warning">Yes</span>
+                                            <span class="badge badge-danger">Yes</span>
                                         </td>
                                     @endif
                                     <td>{{ $data->username }}</td>
