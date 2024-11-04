@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="div">
-    <button class="btn btn-primary " data-toggle="modal" data-target="#recordDiseaseModal">
+    <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#recordDiseaseModal">
         Record Disease/Death
     </button>
 </div>
