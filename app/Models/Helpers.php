@@ -432,6 +432,7 @@ class Helpers
             'master_data_family.wms',
             'master_data_disease_list.wms',
             'master_data_assets.wms',
+            'master_data_recipe.wms',
             // 'yet_another_queue_name'
         ];
 
@@ -648,6 +649,58 @@ class Helpers
                 } catch (\Exception $e) {
                     // Log the error and do not acknowledge the message
                     Log::error('Failed to insert master data disease, message not acknowledged.');
+                    Log::error('Insert Error: ' . $e->getMessage());
+                    // Negative acknowledgment (NACK) the message
+                    $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+                }
+            },
+            'master_data_recipe.wms' => function ($msg) {
+                $data = json_decode($msg->body, true);
+                // Save the master data assets to the database
+                Log::info('Master Data Recipe Headers received for inserts: ' . json_encode($data));
+                try {
+                    // insert data
+                    foreach ($data['headers'] as $header) {
+                        DB::table('template_header')->updateOrInsert(
+                            [
+                                'template_no' => $header['template_no']
+                            ],
+                            [
+                                'template_name' => $header['template_name'],
+                                'blocked' => $header['blocked'],
+                                'user_id' => null
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Recipe headers data inserted successfully.');
+
+                    foreach ($data['lines'] as $line) {
+                        DB::table('template_lines')->updateOrInsert(
+                            [
+                                'template_no' => $line['template_no'],
+                                'item_code' => $line['item_code']
+                            ],
+                            [
+                                'description' => $line['description'],
+                                'percentage' => $line['percentage'],
+                                'units_per_100' => $line['units_per_100'],
+                                'type' => $line['type'],
+                                'main_product' => $line['main_product'],
+                                'shortcode' => $line['shortcode'],
+                                'unit_measure' => $line['unit_measure'],
+                                'location' => $line['location'],
+                            ]
+                        );
+                    }
+                    // Log the success message
+                    Log::info('Recipe lines data inserted successfully.');
+                    // Acknowledge the message
+                    $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+                    Log::info('Message acknowledged.');
+                } catch (\Exception $e) {
+                    // Log the error and do not acknowledge the message
+                    Log::error('Failed to insert recipe data disease, message not acknowledged.');
                     Log::error('Insert Error: ' . $e->getMessage());
                     // Negative acknowledgment (NACK) the message
                     $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
