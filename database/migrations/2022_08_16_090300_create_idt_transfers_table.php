@@ -38,7 +38,6 @@ class CreateIdtTransfersTable extends Migration
             $table->float('receiver_incomplete_crate_pieces')->nullable();
             $table->float('receiver_total_pieces')->nullable();
             $table->decimal('receiver_total_weight')->nullable();
-            $table->integer('edited_by')->nullable();
             $table->date('production_date')->nullable();
             $table->tinyInteger('manual_weight')->nullable();
             $table->tinyInteger('edited')->default(0);
