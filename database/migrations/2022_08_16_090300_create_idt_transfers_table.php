@@ -29,14 +29,15 @@ class CreateIdtTransfersTable extends Migration
             $table->string('with_variance');
             $table->smallInteger('transfer_type');
             $table->string('transfer_from');
+            $table->integer('black_crates')->default(0);
+            $table->bigInteger('received_by')->nullable(); 
+            $table->bigInteger('edited_by')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->float('receiver_total_crates')->nullable();
             $table->float('receiver_full_crates')->nullable();
             $table->float('receiver_incomplete_crate_pieces')->nullable();
             $table->float('receiver_total_pieces')->nullable();
             $table->decimal('receiver_total_weight')->nullable();
-            $table->integer('received_by')->nullable();
-            $table->integer('edited_by')->nullable();
             $table->date('production_date')->nullable();
             $table->tinyInteger('manual_weight')->nullable();
             $table->tinyInteger('edited')->default(0);
