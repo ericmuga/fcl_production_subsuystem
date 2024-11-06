@@ -108,6 +108,10 @@ class DespatchController extends Controller
             return back();
         }
 
+        $transfer = DB::table('idt_transfers')
+            ->where('id', $request->item_id)
+            ->first();
+
         try {
             // try update
             DB::table('idt_transfers')
@@ -124,6 +128,20 @@ class DespatchController extends Controller
                     'updated_at' => now(),
                 ]);
 
+            $data = [
+                'product_code' => $transfer->product_code,
+                'transfer_from_location' => $transfer->transfer_from,
+                'transfer_to_location' => $transfer->location_code,
+                'receiver_total_pieces' => $request->pieces ?? 0,
+                'receiver_total_weight' => $request->weight,
+                'received_by' => $helpers->authenticatedUserId(),
+                'production_date' => $transfer->production_date,
+                'with_variance' => $request->valid_match,
+            ];
+
+            // Publish data to RabbitMQ
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()
                 ->back();
@@ -136,6 +154,10 @@ class DespatchController extends Controller
 
     public function receiveTransferFreshcuts(Request $request, Helpers $helpers)
     {
+        $transfer = DB::table('idt_transfers')
+            ->where('id', $request->item_id)
+            ->first();
+
         try {
             // try update
             DB::table('idt_transfers')
@@ -148,6 +170,20 @@ class DespatchController extends Controller
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
+
+                $data = [
+                    'product_code' => $transfer->product_code,
+                    'transfer_from_location' => $transfer->transfer_from,
+                    'transfer_to_location' => $transfer->location_code,
+                    'receiver_total_pieces' => $request->pieces ?? 0,
+                    'receiver_total_weight' => $request->weight,
+                    'received_by' => $helpers->authenticatedUserId(),
+                    'production_date' => $transfer->production_date,
+                    'with_variance' => $request->valid_match,
+                ];
+    
+                // Publish data to RabbitMQ
+                $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()
