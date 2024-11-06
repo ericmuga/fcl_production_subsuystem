@@ -446,7 +446,10 @@ class SausageController extends Controller
 
     public function updateReceiveIdt(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
+        $transfer = DB::table('idt_transfers')
+            ->where('id', $request->item_id)
+            ->first();
+
         try {
             // try update
             DB::table('idt_transfers')
@@ -458,6 +461,20 @@ class SausageController extends Controller
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
+
+            $data = [
+                'product_code' => $transfer->product_code,
+                'transfer_from_location' => $transfer->transfer_from,
+                'transfer_to_location' => $transfer->location_code,
+                'receiver_total_pieces' => $request->f_no_of_pieces ?? 0,
+                'receiver_total_weight' => $request->net,
+                'received_by' => $helpers->authenticatedUserId(),
+                'production_date' => $transfer->production_date,
+                'with_variance' => $request->valid_match,
+            ];
+
+            // Publish data to RabbitMQ
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()

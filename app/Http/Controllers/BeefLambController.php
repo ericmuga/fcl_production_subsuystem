@@ -137,6 +137,20 @@ class BeefLambController extends Controller
                 'received_by' => $user,
             ]);
 
+            $data = [
+                'product_code' => $request->product,
+                'transfer_from_location' => ??,
+                'transfer_to_location' => 1570,
+                'receiver_total_pieces' => $request->no_of_pieces ?? 0,
+                'receiver_total_weight' => $request->net,
+                'received_by' => $helpers->authenticatedUserId(),
+                'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
+                'with_variance' => 0,
+            ];
+
+            // Publish data to RabbitMQ
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+
             Toastr::success("Beef/lamb IDT entry for : {$request->product} inserted successfully", 'Success');
             return redirect()
                 ->back()
