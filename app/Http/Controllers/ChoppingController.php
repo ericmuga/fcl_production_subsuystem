@@ -581,6 +581,14 @@ class ChoppingController extends Controller
                 }
             });
 
+            $savedLines = DB::table('chopping_lines')
+                ->where('chopping_id', $request->complete_run_number)
+                ->get();
+
+            foreach ($savedLines as $line) {
+                $helpers->publishToQueue($line, 'production_data_order_chopping.bc');
+            } 
+
             Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
             return redirect()->route('chopping_weigh');
         } catch (\Exception $e) {
