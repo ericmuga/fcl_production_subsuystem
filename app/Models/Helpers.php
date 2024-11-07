@@ -732,8 +732,15 @@ class Helpers
             } catch (\PhpAmqpLib\Exception\AMQPChannelClosedException $e) {
                 // Handle the channel closed exception
                 Log::error('Channel connection is closed: ' . $e->getMessage());
-                // Optionally, you can try to reconnect here
-                break; // Exit the inner loop if the channel is closed
+                // Reconnect the channel
+                $channel = $this->getRabbitMQChannel();
+                foreach ($queues as $queue) {
+                    $channel->basic_consume($queue, '', false, false, false, false, $callbacks[$queue]);
+                }
+            } catch (\Exception $e) {
+                // Handle any other exceptions
+                Log::error('An unexpected error occurred: ' . $e->getMessage());
+                break; // Exit the loop on unexpected errors
             }
 
             // Sleep for a short period before restarting the loop
@@ -741,8 +748,12 @@ class Helpers
         }
 
         // Close the channel and connection after consuming messages
-        $channel->close();
-        $this->rabbitMQConnection->close();
+        if ($channel !== null) {
+            $channel->close();
+        }
+        if ($this->rabbitMQConnection !== null) {
+            $this->rabbitMQConnection->close();
+        }
     }
 
     public function getProcessName($process_code)
