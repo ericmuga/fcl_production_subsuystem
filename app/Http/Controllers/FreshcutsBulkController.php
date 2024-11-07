@@ -112,8 +112,8 @@ class FreshcutsBulkController extends Controller
 
         try {
             // try save
-            if ($location == '2055' || $location == '2500') {
-                # save for sausage/curing
+            if ($location == '2055') {
+                # save for sausage
                 DB::table('idt_transfers')->insert([
                     'product_code' => $request->product,
                     'location_code' => $location, //transfer to dispatch default
@@ -137,6 +137,46 @@ class FreshcutsBulkController extends Controller
                     'received_by' => $request->receiver_id,
                     'with_variance' => 1,
                 ]);
+                
+            } elseif ($location == '2500') {
+                # save for curing
+                DB::table('idt_transfers')->insert([
+                    'product_code' => $request->product,
+                    'location_code' => $location, //transfer to dispatch default
+                    'chiller_code' => $request->chiller_code ?: 'C',
+                    'total_pieces' => $request->no_of_pieces ?: 0,
+                    'total_weight' => $request->net,
+                    'total_crates' => $request->no_of_crates ?: 0,
+                    'black_crates' => $request->black_crates,
+                    'full_crates' => $request->no_of_crates ?: 0,
+                    'incomplete_crate_pieces' => 0,
+                    'transfer_type' => $request->transfer_type,
+                    'transfer_from' => '1570',
+                    'description' => $desc,
+                    'order_no' => $request->order_no,
+                    'batch_no' => $request->batch_no,
+                    'user_id' => $helpers->authenticatedUserId(),
+
+                    //receiver
+                    'receiver_total_pieces' => $request->no_of_pieces ?: 0,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => $request->receiver_id,
+                    'with_variance' => 1,
+                ]);
+
+                $data = [
+                    'product_code' => $request->product,
+                    'transfer_from_location' => 1570,
+                    'transfer_to_location' => 2055,
+                    'receiver_total_pieces' => $request->no_of_pieces ?: 0,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => $helpers->authenticatedUserId(),
+                    'production_date' => today(),
+                ];
+    
+                // Publish data to RabbitMQ
+                $helpers->publishToQueue($data, 'production_data_transfer.bc');
+
             } else {
                 //for despatch
                 DB::table('idt_transfers')->insert([
