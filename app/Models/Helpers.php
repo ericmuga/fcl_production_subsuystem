@@ -13,6 +13,18 @@ use Illuminate\Support\Facades\Session;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
 
+if (!defined('PhpAmqpLib\Wire\IO\SOCKET_EINTR')) {
+    define('PhpAmqpLib\Wire\IO\SOCKET_EINTR', 4); // Common value for EINTR on Unix-like systems
+}
+
+if (!defined('PhpAmqpLib\Wire\IO\SOCKET_EWOULDBLOCK')) {
+    define('PhpAmqpLib\Wire\IO\SOCKET_EWOULDBLOCK', 11); // Common value for EWOULDBLOCK
+}
+
+if (!defined('PhpAmqpLib\Wire\IO\SOCKET_EAGAIN')) {
+    define('PhpAmqpLib\Wire\IO\SOCKET_EAGAIN', 11); // Common value for EAGAIN
+}
+
 class Helpers
 {
     public function authenticatedUserId()
