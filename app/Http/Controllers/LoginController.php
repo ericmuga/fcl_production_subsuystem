@@ -94,6 +94,9 @@ class LoginController extends Controller
         // regenerate session to prevent session fixation
         $request->session()->regenerate();
 
+        //Log username into session
+        Session::put('session_username', $request->username);
+
         # Redirecting
         Toastr::success('Successful login', 'Success');
         return redirect()->route('home');

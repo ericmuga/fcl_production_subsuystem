@@ -30,7 +30,7 @@
                 @php
                     $allowedUsernames = explode(',', config('app.manual_weights_usernames'));
                     $allowedUsernames = array_map('strtolower', $allowedUsernames);  
-                    $sessionUsername = strtolower(Session::get('session_userName'));
+                    $sessionUsername = strtolower(Session::get('session_username'));
                 @endphp
 
                 @if (in_array($sessionUsername, $allowedUsernames))
