@@ -271,6 +271,16 @@ class ButcheryController extends Controller
                 // Insert sale data for specific carcass types
                 DB::table('sales')->insert(array_merge($baseData, ['process_code' => 0]));
                 Toastr::success('Sale recorded successfully', 'Success');
+                $transfer = [
+                    'product_code' => $carcassType,
+                    'transfer_from_location' => 1570,
+                    'transfer_to_location' => 3535,
+                    'receiver_total_pieces' => $request->no_of_carcass,
+                    'receiver_total_weight' => $request->net,
+                    'production_date' => today(),
+                    'with_variance' => 0,
+                ];
+                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
                 return redirect()->back();
             }
 
