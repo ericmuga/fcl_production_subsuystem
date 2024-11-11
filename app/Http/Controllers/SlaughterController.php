@@ -472,7 +472,7 @@ class SlaughterController extends Controller
             DB::transaction(function () use ($request, $helpers, $database_date) {
 
                 //delete existing records of same slaughter date
-                DB::table('receipts')->where('slaughter_date', $database_date)->delete();
+                // DB::table('receipts')->where('slaughter_date', $database_date)->delete();
 
                 $fileD = fopen($request->file, "r");
                 // $column = fgetcsv($fileD); // skips first row as header
@@ -483,10 +483,13 @@ class SlaughterController extends Controller
 
                 foreach ($rowData as $key => $row) {
 
-                    DB::table('receipts')->insert(
+                    DB::table('receipts')->updateOrInsert(
                         [
                             'enrolment_no' => $row[0],
                             'vendor_tag' => $row[1],
+                            'slaughter_date' => $database_date,
+                        ],
+                        [
                             'receipt_no' => $row[2],
                             'vendor_no' => $row[3],
                             'vendor_name' => $row[4],
