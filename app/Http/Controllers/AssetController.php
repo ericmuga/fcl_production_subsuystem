@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -15,7 +16,7 @@ class AssetController extends Controller
 
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
         view()->share('layout', $this->layout);
     }
 
@@ -96,7 +97,7 @@ class AssetController extends Controller
                 'from_dept' => $request->from_dept,
                 'from_user' => $request->from_user,
                 'authenticated_username' => $request->auth_username,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             Toastr::success("Asset Movement entry to user : {$request->to_user} inserted successfully", 'Success');

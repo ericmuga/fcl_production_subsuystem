@@ -17,12 +17,27 @@ class LoginController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check', ['only' => ['getSectionRedirect', 'getLogout', 'users', 'updateUser', 'getUserPermissionsAxios']]);
+        $this->middleware('auth', ['only' => ['getSectionRedirect', 'getLogout', 'users', 'updateUser', 'getUserPermissionsAxios']]);
     }
 
-    public function getLogin()
+    public function home()
     {
-        return view('auth.login');
+        if (Auth::check()) {
+            $title = "Navigation";
+
+            $user_permissions = DB::table('user_permissions')
+                ->join('permissions', 'user_permissions.permission_code', '=', 'permissions.code')
+                ->where('user_permissions.user_id', Session::get('session_userId'))
+                ->select('permissions.*')
+                ->get();
+
+            return view('layouts.router', compact('title', 'user_permissions'));
+           
+        } else {
+            // If user is not logged in render the login page
+            $title = 'Login';
+            return view('auth.login', compact('title'));
+        }
     }
 
     public function processLogin(Request $request, Helpers $helpers)
@@ -67,62 +82,34 @@ class LoginController extends Controller
             return back();
         }
 
-        # login successful
-        if (!DB::table('users')->where('username', '=', $request->username)->exists()) {
-            # user not in db, add user
-            $new_user = $helpers->addUser($request->username);
+        // auth check successful, check if user exists, else create
+        $user = User::firstOrCreate(
+            ['username' => $request->username],
+            ['email' => strtolower($request->username) . "@farmerschoice.co.ke", 'role' => 'user']
+        );
 
-            if ($new_user != 1) {
-                # failed add user to db
-                Toastr::error($new_user, 'Error!');
-                return back();
-            }
-        }
+        // Log in the user
+        Auth::login($user);
 
-        $user = DB::table('users')->where('username', $request->username)->first();
-
-        # Check if session exists and log out the previous session
-        $previous_session = $user->session;
-
-        if ($previous_session) {
-            \Session::getHandler()->destroy($previous_session);
-        }
-
-        Session::put('session_userId', $user->id);
-        Session::put('session_userName', $user->username);
-        Session::put('session_role', $user->role);
-        Session::put('live_session_id', sha1(microtime()));
-
-        DB::table('users')
-            ->where('id', $user->id)
-            ->update([
-                'session' => Session::get('live_session_id'),
-                'updated_at' => now(),
-            ]);
+        // regenerate session to prevent session fixation
+        $request->session()->regenerate();
 
         # Redirecting
         Toastr::success('Successful login', 'Success');
-        return $this->getSectionRedirect();
+        return redirect()->route('home');
     }
 
-    public function getSectionRedirect()
+    public function getLogout(Request $request)
     {
-        $title = "Redirecting";
-
-        $user_permissions = DB::table('user_permissions')
-            ->join('permissions', 'user_permissions.permission_code', '=', 'permissions.code')
-            ->where('user_permissions.user_id', Session::get('session_userId'))
-            ->select('permissions.*')
-            ->get();
-
-        return view('layouts.router', compact('title', 'user_permissions'));
-    }
-
-    public function getLogout()
-    {
-        Session::flush();
-        Toastr::success('Successful logout', 'Success');
-        return redirect()->route('login');
+        Log::info('User logged out', ['username' => Auth::user()->username]);
+        Auth::logout();
+    
+        $request->session()->invalidate();
+    
+        $request->session()->regenerateToken();
+    
+        Toastr::success('Logout successful', 'Success');
+        return redirect()->route('home');
     }
 
     public function users(Helpers $helpers)

@@ -10,6 +10,7 @@ use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +22,7 @@ class DespatchController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except(['']);
+        $this->middleware('auth')->except(['']);
     }
 
     public function index()
@@ -123,7 +124,7 @@ class DespatchController extends Controller
                     'receiver_incomplete_crate_pieces' => $request->incomplete_pieces,
                     'receiver_total_pieces' => $request->pieces,
                     'receiver_total_weight' => $request->weight,
-                    'received_by' => $helpers->authenticatedUserId(),
+                    'received_by' => Auth::id(),
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
@@ -134,7 +135,7 @@ class DespatchController extends Controller
                 'transfer_to_location' => $transfer->location_code,
                 'receiver_total_pieces' => $request->pieces ?? 0,
                 'receiver_total_weight' => $request->weight,
-                'received_by' => $helpers->authenticatedUserId(),
+                'received_by' => Auth::id(),
                 'production_date' => $transfer->production_date,
                 'with_variance' => $request->valid_match,
             ];
@@ -166,7 +167,7 @@ class DespatchController extends Controller
                     'chiller_code' => $request->chiller_code,
                     'receiver_total_pieces' => $request->f_no_of_pieces,
                     'receiver_total_weight' => $request->net,
-                    'received_by' => $helpers->authenticatedUserId(),
+                    'received_by' => Auth::id(),
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
@@ -177,7 +178,7 @@ class DespatchController extends Controller
                     'transfer_to_location' => $transfer->location_code,
                     'receiver_total_pieces' => $request->pieces ?? 0,
                     'receiver_total_weight' => $request->weight,
-                    'received_by' => $helpers->authenticatedUserId(),
+                    'received_by' => Auth::id(),
                     'production_date' => $transfer->production_date,
                     'with_variance' => $request->valid_match,
                 ];
