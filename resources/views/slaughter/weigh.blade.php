@@ -29,13 +29,18 @@
                 </div>
                 @php
                     $allowedUsernames = explode(',', config('app.manual_weights_usernames'));
-                    $allowedUsernames = array_map('strtolower', $allowedUsernames);                    
+                    $allowedUsernames = array_map('strtolower', $allowedUsernames);  
+                    $sessionUsername = strtolower(Session::get('session_userName'));
                 @endphp
-                @if (in_array(strtolower(Session::get('session_userName')), $allowedUsernames))
+
+                @if (in_array($sessionUsername, $allowedUsernames))
                     <div class="form-check">
                         <input type="checkbox" class="form-check-input" id="manual_weight">
                         <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                     </div>
+                @else
+                    {{-- Debugging message for testing --}}
+                    <script>console.log("Session username not allowed:", "{{ $sessionUsername }}");</script>
                 @endif 
                 <br>
                 <div class="form-group"
