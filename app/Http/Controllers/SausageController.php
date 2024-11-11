@@ -9,6 +9,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Faker\Core\Barcode;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -20,7 +21,7 @@ class SausageController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except(['insertBarcodes', 'lastInsert']);
+        $this->middleware('auth')->except(['insertBarcodes', 'lastInsert']);
     }
 
     public function index()
@@ -331,7 +332,7 @@ class SausageController extends Controller
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch . $request->batch_no,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             Toastr::success('IDT Transfer recorded successfully', 'Success');
@@ -371,7 +372,7 @@ class SausageController extends Controller
                 DB::table('idt_changelogs')->insert([
                     'table_name' => 'idt_transfers',
                     'item_id' => $request->item_id,
-                    'changed_by' => $helpers->authenticatedUserId(),
+                    'changed_by' => Auth::id(),
                     'total_pieces' => (int)$request->pieces_edit,
                     'total_weight' => $request->weight_edit,
                     'previous_pieces' => (int)$request->old_pieces,
@@ -457,7 +458,7 @@ class SausageController extends Controller
                 ->update([
                     'receiver_total_pieces' => $request->f_no_of_pieces,
                     'receiver_total_weight' => $request->net,
-                    'received_by' => $helpers->authenticatedUserId(),
+                    'received_by' => Auth::id(),
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
@@ -468,7 +469,7 @@ class SausageController extends Controller
                 'transfer_to_location' => $transfer->location_code,
                 'receiver_total_pieces' => $request->f_no_of_pieces ?? 0,
                 'receiver_total_weight' => $request->net,
-                'received_by' => $helpers->authenticatedUserId(),
+                'received_by' => Auth::id(),
                 'production_date' => $transfer->production_date,
                 'with_variance' => $request->valid_match,
             ];

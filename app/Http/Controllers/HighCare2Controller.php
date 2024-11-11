@@ -8,7 +8,7 @@ class HighCare2Controller extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except([]);
+        $this->middleware('auth')->except([]);
     }
 
     public function index()

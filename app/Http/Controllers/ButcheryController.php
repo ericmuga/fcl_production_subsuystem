@@ -27,7 +27,7 @@ class ButcheryController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
     }
 
     public function index(Helpers $helpers)
@@ -252,7 +252,7 @@ class ButcheryController extends Controller
     public function saveScaleOneData(Request $request, Helpers $helpers)
     {
         try {
-            $userId = $helpers->authenticatedUserId();
+            $userId = Auth::id();
             $carcassType = $request->carcass_type;
             $noOfCarcass = $request->no_of_carcass;
             $actualWeight = $request->reading;
@@ -271,6 +271,16 @@ class ButcheryController extends Controller
                 // Insert sale data for specific carcass types
                 DB::table('sales')->insert(array_merge($baseData, ['process_code' => 0]));
                 Toastr::success('Sale recorded successfully', 'Success');
+                $transfer = [
+                    'product_code' => $carcassType,
+                    'transfer_from_location' => 1570,
+                    'transfer_to_location' => 3535,
+                    'receiver_total_pieces' => $request->no_of_carcass,
+                    'receiver_total_weight' => $request->net,
+                    'production_date' => today(),
+                    'with_variance' => 0,
+                ];
+                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
                 return redirect()->back();
             }
 
@@ -307,7 +317,7 @@ class ButcheryController extends Controller
 
     public function saveScaleTwoData(Request $request, Helpers $helpers)
     {
-        $user_id = $helpers->authenticatedUserId();
+        $user_id = Auth::id();
 
         try {
             $item_code = $request->item_code;
@@ -477,8 +487,21 @@ class ButcheryController extends Controller
                     'process_code' => 0, //process behead pig by default
                     'returned' => 2,
                     'net_weight' => -1 * abs($request->return_weight - (2.4 * $request->return_no_carcass)),
-                    'user_id' => $helpers->authenticatedUserId(),
+                    'user_id' => Auth::id(),
                 ]);
+
+                //publish sales returns to queue as transfers
+                $transfer = [
+                    'product_code' => $request->return_item_code,
+                    'transfer_from_location' => 3535,
+                    'transfer_to_location' => 1570,
+                    'receiver_total_pieces' => $request->return_no_carcass,
+                    'receiver_total_weight' => $request->return_weight,
+                    'production_date' => today(),
+                    'with_variance' => 0,
+                ];
+                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
+
             });
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
@@ -612,7 +635,7 @@ class ButcheryController extends Controller
                 'product_type' => $product_type,
                 'no_of_crates' => $request->no_of_crates - 1,
                 'no_of_pieces' => $request->no_of_pieces,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ];
 
             if ($request->for_transfer === 'on') {
@@ -1194,7 +1217,7 @@ class ButcheryController extends Controller
                 'product_type' => $item[1],
                 'no_of_pieces' => '0',
                 'no_of_crates' => $request->no_of_crates,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
                 'created_at' => Carbon::parse($request->marination_date),
             ];
 

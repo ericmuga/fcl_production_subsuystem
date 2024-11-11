@@ -9,6 +9,7 @@ use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -18,7 +19,7 @@ class ChoppingController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
     }
 
     public function batchLists(Helpers $helpers, $filter = null)
@@ -76,7 +77,7 @@ class ChoppingController extends Controller
                     'output_quantity' => 0,
                     'status' => $request->status,
                     'from_batch' => $request->from_batch,
-                    'user_id' => $helpers->authenticatedUserId(),
+                    'user_id' => Auth::id(),
                 ]);
 
                 // get template lines
@@ -303,7 +304,7 @@ class ChoppingController extends Controller
                             'to_batch' => $request->to_batch,
                             'status' => 'closed',
                             'output_quantity' => $this->getQuantityTotal($request->batch_no, $batch_size, $request->main_item),
-                            'closed_by' => $helpers->authenticatedUserId(),
+                            'closed_by' => Auth::id(),
                             'updated_at' => now(),
                         ]);
                     break;
@@ -318,7 +319,7 @@ class ChoppingController extends Controller
                                 ->where('batch_no', $request->batch_no)
                                 ->update([
                                     'status' => 'posted',
-                                    'posted_by' => $helpers->authenticatedUserId(),
+                                    'posted_by' => Auth::id(),
                                     'updated_at' => now(),
                                 ]);
                         }
@@ -406,7 +407,7 @@ class ChoppingController extends Controller
             // Create a new ChoppingRun entry
             $insert = DB::table('choppings')->insert([
                 'chopping_id' => $choppingId,
-                'user_id' => $helpers->authenticatedUserId()
+                'user_id' => Auth::id(),
             ]);
 
             // Return a JSON response indicating success
@@ -501,7 +502,7 @@ class ChoppingController extends Controller
                     ->whereDate('created_at', today())
                     ->update([
                         'status' => 1,
-                        'closed_by' => $helpers->authenticatedUserId(),
+                        'closed_by' => Auth::id(),
                         'updated_at' => now()
                     ]);
 

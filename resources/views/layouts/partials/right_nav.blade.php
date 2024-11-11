@@ -2,11 +2,11 @@
     <li class="nav-item dropdown no-arrow">
         <a class="nav-link dropdown-toggle" style="color:black" href="#" id="userDropdown" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-user-circle"></i> {{ Session::get('session_userName') }}
+            <i class="fas fa-user-circle"></i> {{ auth()->user()->username }}
         </a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('redirect_page') }}" class="dropdown-item"><i
+                <a href="{{ route('home') }}" class="dropdown-item"><i
                         class="fas fa-exchange-alt"></i> Switch
                     Interphase
                 </a>

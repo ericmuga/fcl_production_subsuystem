@@ -32,7 +32,7 @@ class ReceiptsImport implements ToModel
             'item_code' => $row[6],
             'description' => $row[7],
             'received_qty' => $row[8],
-            'user_id' => $helpers->authenticatedUserId(),
+            'user_id' => Auth::id(),
             'slaughter_date' => $slaughter_date,
         ]);
     }
