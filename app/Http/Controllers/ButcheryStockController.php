@@ -9,7 +9,7 @@ class ButcheryStockController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
     }
 
     public function index()

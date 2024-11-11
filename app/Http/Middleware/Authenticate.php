@@ -17,7 +17,7 @@ class Authenticate extends Middleware
     {
         if (! $request->expectsJson()) {
             Toastr::warning('Your Session has expired. Please login again','Warning');
-            return route('login');
+            return route('home');
         }
     }
 }

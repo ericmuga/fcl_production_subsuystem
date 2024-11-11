@@ -6,6 +6,7 @@ use App\Models\Helpers;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +15,7 @@ class HighCare1Controller extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except([]);
+        $this->middleware('auth')->except([]);
     }
 
     public function index()
@@ -137,7 +138,7 @@ class HighCare1Controller extends Controller
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
                 'description' => $request->desc_all,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
                 'filter1' => 'bulk',
             ]);
 
@@ -205,7 +206,7 @@ class HighCare1Controller extends Controller
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             Toastr::success('IDT Transfer recorded successfully', 'Success');
@@ -259,7 +260,7 @@ class HighCare1Controller extends Controller
                 ->update([
                     'receiver_total_pieces' => $request->f_no_of_pieces,
                     'receiver_total_weight' => $request->net,
-                    'received_by' => $helpers->authenticatedUserId(),
+                    'received_by' => Auth::id(),
                     'with_variance' => $request->valid_match,
                     'updated_at' => now(),
                 ]);
@@ -271,7 +272,7 @@ class HighCare1Controller extends Controller
                 'transfer_to_location' => $transfer->location_code,
                 'receiver_total_pieces' => $request->f_no_of_pieces ?? 0,
                 'receiver_total_weight' => $request->net,
-                'received_by' => $helpers->authenticatedUserId(),
+                'received_by' => Auth::id(),
                 'production_date' => $transfer->production_date,
                 'with_variance' => $request->valid_match,
             ];

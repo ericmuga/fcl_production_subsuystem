@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -27,11 +28,6 @@ if (!defined('PhpAmqpLib\Wire\IO\SOCKET_EAGAIN')) {
 
 class Helpers
 {
-    public function authenticatedUserId()
-    {
-        return Session::get('session_userId');
-    }
-
     public function validateUserPassword()
     {
         if (Hash::check("param1", "param2")) {
@@ -304,7 +300,7 @@ class Helpers
             'table_name' => $table_name,
             'item_id' => $item_id,
             'entry_type' => $entry_type,
-            'user_id' => $this->authenticatedUserId(),
+            'user_id' => Auth::id(),
         ]);
     }
 

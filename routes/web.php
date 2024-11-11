@@ -41,9 +41,8 @@ Route::group(['middleware' => ['web', 'session_check']], function(){
 });
 
 /*-------------auth------------------ */
-Route::get('/', [LoginController::class, 'getLogin'])->name('login');
+Route::get('/', [LoginController::class, 'home'])->name('home');
 Route::post('/', [LoginController::class, 'processlogin'])->name('process_login');
-Route::get('/redirecting', [LoginController::class, 'getSectionRedirect'])->name('redirect_page');
 Route::get('/logout', [LoginController::class, 'getLogout'])->name('logout');
 Route::get('/users', [LoginController::class, 'users'])->name('users');
 Route::post('/user/permissions_axios/edit', [LoginController::class, 'getUserPermissionsAxios']);

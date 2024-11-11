@@ -6,6 +6,7 @@ use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -16,7 +17,7 @@ class BeefLambController extends Controller
 
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
         view()->share('layout', $this->layout);
     }
 
@@ -73,7 +74,7 @@ class BeefLambController extends Controller
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
                 'location_code' => '1570',
                 'manual_weight' => $manual,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             Toastr::success("Slicing beef entry : {$request->item_id} inserted successfully", 'Success');
@@ -114,7 +115,7 @@ class BeefLambController extends Controller
     {
         // dd($request->all());
 
-        $user = $helpers->authenticatedUserId();
+        $user = Auth::id();
 
         $manual = $request->manual_weight == 'on';
 
@@ -143,7 +144,7 @@ class BeefLambController extends Controller
                 'transfer_to_location' => 1570,
                 'receiver_total_pieces' => $request->no_of_pieces ?? 0,
                 'receiver_total_weight' => $request->net,
-                'received_by' => $helpers->authenticatedUserId(),
+                'received_by' => Auth::id(),
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
                 'with_variance' => 0,
             ];

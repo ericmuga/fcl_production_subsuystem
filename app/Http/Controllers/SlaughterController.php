@@ -39,7 +39,7 @@ class SlaughterController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check')->except(['importReceiptsFromQueue', 'publishDummyData']);
+        $this->middleware('auth')->except(['importReceiptsFromQueue', 'publishDummyData']);
     }
 
     public function index(Helpers $helpers)
@@ -210,7 +210,7 @@ class SlaughterController extends Controller
                 'meat_percent' => $request->meat_percent,
                 'classification_code' => $request->classification_code,
                 'manual_weight' => $manual_weight,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
                 'is_imported' => false, // Set imported to false initially
             ];
 
@@ -271,7 +271,7 @@ class SlaughterController extends Controller
             $new->settlement_weight = $request->ms_settlement_weight;
             $new->meat_percent = $request->ms_meat_pc;
             $new->classification_code = isset($request->ms_classification) ? $request->ms_classification : null;
-            $new->user_id = $helpers->authenticatedUserId();
+            $new->user_id = Auth::id();
             $new->save();
 
             Toastr::success('record added successfully', 'Success');
@@ -365,7 +365,7 @@ class SlaughterController extends Controller
                     ->insert([
                         'settlement_no' => $request->item_name,
                         'cu_inv_no' => $request->cu_inv_no,
-                        'user_id' => $helpers->authenticatedUserId()
+                        'user_id' => Auth::id(),
                     ]);
             });
 
@@ -497,7 +497,8 @@ class SlaughterController extends Controller
                             'item_code' => $row[6],
                             'description' => $row[7],
                             'received_qty' => $row[8],
-                            'user_id' => $helpers->authenticatedUserId(),
+                            'user_id' => Auth::id(),
+                            'slaughter_date' => $database_date,
                         ]
                     );
                 }
@@ -543,7 +544,7 @@ class SlaughterController extends Controller
                                 'item_code' => $row['item_code'],
                                 'description' => $row['description'],
                                 'received_qty' => $row['received_qty'],
-                                'user_id' => $helpers->authenticatedUserId(),
+                                'user_id' => Auth::id(),
                             ]
                         );
 
@@ -725,7 +726,7 @@ class SlaughterController extends Controller
                 'slapmark' => $request->slapmark,
                 'item_code' => $request->item_code,
                 'disease_code' => $request->disease_code,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ];
 
             DB::table('disease_entries')->insert($data);
@@ -777,7 +778,7 @@ class SlaughterController extends Controller
                 'with_variance' => '0',
                 'transfer_from' => '1000',
                 'transfer_type' => '1',
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             Toastr::success('Transfer to slaughter recorded successfully', 'Success');
@@ -800,7 +801,7 @@ class SlaughterController extends Controller
                     'product_code' => $request->edit_product_code,
                     'updated_at' => Carbon::now(),
                     'edited' => 1,
-                    'edited_by' => $helpers->authenticatedUserId(),
+                    'edited_by' => Auth::id(),
                 ]);
             Toastr::success('Updated transfer record successfully', 'Success');
             return redirect()
@@ -855,7 +856,7 @@ class SlaughterController extends Controller
                 'scale_reading'=> $request->reading,
                 'net_weight'=> $request->net_weight,
                 'is_manual'=> $manual_weight,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             Toastr::success('record added successfully', 'Success');

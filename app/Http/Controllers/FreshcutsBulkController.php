@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +13,7 @@ class FreshcutsBulkController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
     }
     public function index()
     {
@@ -129,7 +130,7 @@ class FreshcutsBulkController extends Controller
                     'description' => $desc,
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
-                    'user_id' => $helpers->authenticatedUserId(),
+                    'user_id' => Auth::id(),
 
                     //receiver
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
@@ -155,7 +156,7 @@ class FreshcutsBulkController extends Controller
                     'description' => $desc,
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
-                    'user_id' => $helpers->authenticatedUserId(),
+                    'user_id' => Auth::id(),
 
                     //receiver
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
@@ -170,7 +171,7 @@ class FreshcutsBulkController extends Controller
                     'transfer_to_location' => 2055,
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
                     'receiver_total_weight' => $request->net,
-                    'received_by' => $helpers->authenticatedUserId(),
+                    'received_by' => Auth::id(),
                     'production_date' => today(),
                 ];
     
@@ -194,7 +195,7 @@ class FreshcutsBulkController extends Controller
                     'description' => $desc,
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
-                    'user_id' => $helpers->authenticatedUserId()
+                    'user_id' => Auth::id(),
                 ]);
             }
 
@@ -234,7 +235,7 @@ class FreshcutsBulkController extends Controller
                 DB::table('idt_changelogs')->insert([
                     'table_name' => 'idt_transfers',
                     'item_id' => $request->item_id,
-                    'changed_by' => $helpers->authenticatedUserId(),
+                    'changed_by' => Auth::id(),
                     'total_pieces' => 0,
                     'total_weight' => 0,
                     'previous_pieces' => 0,

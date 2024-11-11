@@ -6,6 +6,7 @@ use App\Models\Helpers;
 use App\Models\TemplateHeader;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +15,7 @@ class SpicesController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('session_check');
+        $this->middleware('auth');
     }
 
     public function index()
@@ -144,7 +145,7 @@ class SpicesController extends Controller
                     'item_code' => $request->item_code,
                     'quantity' => $request->quantity,
                     'status' => '1',
-                    'user_id' => $helpers->authenticatedUserId(),
+                    'user_id' => Auth::id(),
                 ]);
             });
 
@@ -203,7 +204,7 @@ class SpicesController extends Controller
                     //get Template no from header
                     $template = TemplateHeader::firstOrCreate(
                         ['template_no' =>  $row[0]],
-                        ['template_name' => $row[0], 'user_id' => $helpers->authenticatedUserId()],
+                        ['template_name' => $row[0], 'user_id' => Auth::id()],
                     );
 
                     DB::table('template_lines')->insert(
@@ -265,7 +266,7 @@ class SpicesController extends Controller
                     //get Template no from header
                     // $item = TemplateHeader::firstOrCreate(
                     //     ['template_no' =>  $row[0]],
-                    //     ['template_name' => $row[0], 'user_id' => $helpers->authenticatedUserId()],
+                    //     ['template_name' => $row[0], 'user_id' => Auth::id()],
                     // );
 
                     DB::table('spices_stock')->insert(
@@ -299,7 +300,7 @@ class SpicesController extends Controller
                 'template_no' => $temp_no,
                 'output_quantity' => $request->output_qty,
                 'status' => $request->status,
-                'user_id' => $helpers->authenticatedUserId(),
+                'user_id' => Auth::id(),
             ]);
 
             // get template lines
@@ -416,7 +417,7 @@ class SpicesController extends Controller
                     ->where('batch_no', $request->batch_no)
                     ->update([
                         'status' => 'closed',
-                        'closed_by' => $helpers->authenticatedUserId(),
+                        'closed_by' => Auth::id(),
                         'updated_at' => now(),
                     ]);
             } elseif ($request->filter == 'post') {
@@ -429,7 +430,7 @@ class SpicesController extends Controller
                             ->where('batch_no', $request->batch_no)
                             ->update([
                                 'status' => 'posted',
-                                'posted_by' => $helpers->authenticatedUserId(),
+                                'posted_by' => Auth::id(),
                                 'updated_at' => now(),
                             ]);
 
@@ -441,7 +442,7 @@ class SpicesController extends Controller
                                 'item_code' => strtok($item, ':'),
                                 'quantity' => -1 * abs((float)substr($item, strpos($item, ":") + 1)), // negative adjustment
                                 'entry_type' => '2', //consumption
-                                'user_id' => $helpers->authenticatedUserId(),
+                                'user_id' => Auth::id(),
                             ]);
                         }
                     }
