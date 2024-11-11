@@ -29,7 +29,7 @@
                 </div>
                 @php
                     $allowedUsernames = explode(',', config('app.manual_weights_usernames'));
-                    $allowedUsernames = array_map('strtolower', $allowedUsernames);
+                    $allowedUsernames = array_map('strtolower', $allowedUsernames);                    
                 @endphp
                 @if (in_array(strtolower(Session::get('session_userName')), $allowedUsernames))
                     <div class="form-check">
