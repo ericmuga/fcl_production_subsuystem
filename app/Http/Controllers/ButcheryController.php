@@ -489,6 +489,19 @@ class ButcheryController extends Controller
                     'net_weight' => -1 * abs($request->return_weight - (2.4 * $request->return_no_carcass)),
                     'user_id' => Auth::id(),
                 ]);
+
+                //publish sales returns to queue as transfers
+                $transfer = [
+                    'product_code' => $request->return_item_code,
+                    'transfer_from_location' => 3535,
+                    'transfer_to_location' => 1570,
+                    'receiver_total_pieces' => $request->return_no_carcass,
+                    'receiver_total_weight' => $request->return_weight,
+                    'production_date' => today(),
+                    'with_variance' => 0,
+                ];
+                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
+
             });
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error!');
