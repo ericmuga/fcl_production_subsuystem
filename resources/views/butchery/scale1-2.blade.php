@@ -190,10 +190,10 @@ $arr_products = $products->toArray();
                             <p><code>You must have products part set in db</code></p>
                             @endif
                         </div>
-                        <!-- <div class="form-check">
+                        <div class="form-check">
                             <input type="checkbox" class="form-check-input" id="for_sale" name="for_sale">
                             <label class="form-check-label" for="for_sale"><strong> for sale?</strong></label>
-                        </div> <br> -->
+                        </div> <br>
                         <div class="form-group text-center" style="padding-left: 10%">
                             <button type="button" onclick="getScale2Reading()" class="btn btn-primary btn-lg"><i
                                     class="fas fa-balance-scale"></i> Weigh 2</button> <br>
