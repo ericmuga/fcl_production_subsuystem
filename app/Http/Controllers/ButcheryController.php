@@ -344,6 +344,18 @@ class ButcheryController extends Controller
                     'no_of_carcass' => 0,
                     'process_code' => 0,
                 ]);
+
+                $transfer = [
+                    'product_code' => $request->carcass_type,
+                    'transfer_from_location' => 1570,
+                    'transfer_to_location' => 3535,
+                    'receiver_total_pieces' => $request->no_of_items,
+                    'receiver_total_weight' => $request->net2,
+                    'production_date' => today(),
+                    'with_variance' => 0,
+                ];
+                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
+
                 Toastr::success('Sale recorded successfully', 'Success');
                 return redirect()->back()->withInput();
             } else {
