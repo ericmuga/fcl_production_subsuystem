@@ -16,7 +16,7 @@ class CreateBeheadingDataTable extends Migration
         Schema::create('beheading_data', function (Blueprint $table) {
             $table->id();
             $table->string('item_code', 20);
-            $table->integer('no_of_carcass');
+            $table->decimal('no_of_carcass', 8, 2);
             $table->double('actual_weight', 8, 2);
             $table->double('net_weight', 8, 2);
             $table->integer('process_code');
