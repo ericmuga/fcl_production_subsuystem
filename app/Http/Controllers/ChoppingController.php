@@ -495,11 +495,14 @@ class ChoppingController extends Controller
     public function closeChoppingRun(Request $request, Helpers $helpers)
     {
         try {
-            DB::transaction(function () use ($request, $helpers) {
-                // Update chopping status
+            // allow close for chopping runs created before midnight and completing after midnight
+            $todayStart = Carbon::today();
+            $allowanceEnd = $todayStart->copy()->addDay()->addMinutes(30);
+
+            DB::transaction(function () use ($request, $helpers, $todayStart, $allowanceEnd) {
                 DB::table('choppings')
                     ->where('chopping_id', $request->complete_run_number)
-                    ->whereDate('created_at', today())
+                    ->whereBetween('created_at', [$todayStart, $allowanceEnd])
                     ->update([
                         'status' => 1,
                         'closed_by' => Auth::id(),
@@ -563,13 +566,9 @@ class ChoppingController extends Controller
                     ->first();
 
                 if ($output) {
-                    $todayStart = today();
-                    $tomorrowStart = $todayStart->copy()->addDay();
-                    $allowanceEnd = $tomorrowStart->copy()->addMinutes(30);
 
                     $totalInsertedWeight = DB::table('chopping_lines')
                         ->where('chopping_id', $request->complete_run_number)
-                        ->whereDate('created_at', today())
                         ->whereBetween('created_at', [$todayStart, $allowanceEnd])
                         ->sum('weight'); 
 
@@ -582,13 +581,17 @@ class ChoppingController extends Controller
                 }
             });
 
-            // $savedLines = DB::table('chopping_lines')
-            //     ->where('chopping_id', $request->complete_run_number)
-            //     ->get();
+            $savedLines = DB::table('chopping_lines')
+                ->where('chopping_id', $request->complete_run_number)
+                ->whereBetween('created_at', [$todayStart, $allowanceEnd])
+                ->get();
 
-            // foreach ($savedLines as $line) {
-            //     $helpers->publishToQueue($line, 'production_data_order_chopping.bc');
-            // } 
+            $savedLinesArray = $savedLines->map(function ($line) {
+                $line->timestamp = now()->toDateTimeString();
+                return $line;
+            })->toArray();
+
+            $helpers->publishToQueue($savedLinesArray, 'production_data_order_chopping.bc');
 
             Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
             return redirect()->route('chopping_weigh');
