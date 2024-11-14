@@ -280,6 +280,7 @@ class ButcheryController extends Controller
                     'production_date' => today(),
                     'with_variance' => 0,
                 ];
+                $transfer['timestamp'] = now()->toDateTimeString();
                 $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
                 return redirect()->back();
             }
@@ -354,6 +355,7 @@ class ButcheryController extends Controller
                     'production_date' => today(),
                     'with_variance' => 0,
                 ];
+                $transfer['timestamp'] = now()->toDateTimeString();
                 $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
 
                 Toastr::success('Sale recorded successfully', 'Success');
@@ -512,6 +514,7 @@ class ButcheryController extends Controller
                     'production_date' => today(),
                     'with_variance' => 0,
                 ];
+                $transfer['timestamp'] = now()->toDateTimeString();
                 $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
 
             });

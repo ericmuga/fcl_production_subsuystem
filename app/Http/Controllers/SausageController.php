@@ -475,6 +475,7 @@ class SausageController extends Controller
             ];
 
             // Publish data to RabbitMQ
+            $data['timestamp'] = now()->toDateTimeString();
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer received successfully', 'Success');
