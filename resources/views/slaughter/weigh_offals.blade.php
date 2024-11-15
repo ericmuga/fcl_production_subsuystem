@@ -48,7 +48,7 @@
                     <div class="form-group">
                         <label for="reading">Reading</label>
                         <input type="number" step="0.01" class="form-control" id="reading" name="reading" value=""
-                            oninput="updateNetWeight()" placeholder="" readonly required>
+                            oninput="getNet()" placeholder="" readonly required>
                     </div>
 
                     <div class="form-check">
@@ -171,6 +171,10 @@
 
 @section('scripts')
 <script>
+    const netWeightInput = document.getElementById('net_weight');
+    const readingInput = document.getElementById('reading');
+    const tareInput = document.getElementById('tare_weight');
+
     $(document).ready(function () {
 
         $('.form-prevent-multiple-submits').on('submit', function () {
@@ -201,11 +205,8 @@
 
     });
 
-    function updateNetWeight() {
-        var reading = document.getElementById('reading').value;
-        var tareweight = document.getElementById('tare_weight').value;
-        var netWeightInput = document.getElementById('net_weight');
-        netWeightInput.value = parseFloat(reading) - parseFloat(tareweight);
+    function getNet() {
+        netWeightInput.value = parseFloat(readingInput.value) - parseFloat(tareInput.value);
     }
 
     function getScaleReading() {
