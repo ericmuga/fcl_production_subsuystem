@@ -657,7 +657,7 @@ class SlaughterController extends Controller
     {
         try {
             // forgetCache weigh_configs
-            $helpers->forgetCache('weigh_configs');
+            Cache::flush();
 
             // update
             DB::table('scale_configs')
@@ -825,14 +825,12 @@ class SlaughterController extends Controller
             'G1239' => 'Pork Liver',
         ];
 
-        $configs = Cache::remember('weigh_configs', now()->addMinutes(120), function () {
+        $configs = Cache::remember('offals_weigh_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'offals')
-                ->select('tareweight', 'comport')
-                ->get()->toArray();
+                ->get();
         });
 
-        
         $offalsData = DB::table('offals')
             ->whereDate('offals.created_at', Carbon::today())
             ->leftJoin('users', 'offals.user_id', '=', 'users.id')
