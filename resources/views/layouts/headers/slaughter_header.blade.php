@@ -70,11 +70,18 @@
             class="nav-link dropdown-toggle">Settings</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-            <li class="dropdown-divider"></li>
-            <li><a href="{{ route('slaughter_scale_settings') }}"
-                    class="dropdown-item">Scale
-                    settings </a></li>
-            <li class="dropdown-divider"></li>
+                <a href="{{ route('slaughter_scale_settings', 'slaughter') }}"
+                    class="dropdown-item">
+                    Scale settings - Slaughter
+                </a>
+            </li>
+            <hr class="dropdown-divider" />
+            <li>
+                <a href="{{ route('slaughter_scale_settings', 'offals') }}"
+                    class="dropdown-item">
+                    Scale settings - Offals
+                </a>
+            </li>
         </ul>
     </li>
 </ul>

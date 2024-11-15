@@ -69,8 +69,6 @@ Route::get('/slaughter/data-report', [SlaughterController::class, 'slaughterData
 Route::post('export-slaughter-combined-report', [SlaughterController::class, 'combinedSlaughterReport']);
 Route::post('export-slaughter-lines-report', [SlaughterController::class, 'exportSlaughterLinesReport']);
 Route::post('export-slaughter-for-nav', [SlaughterController::class, 'exportSlaughterForNav']);
-Route::get('/slaughter/scale-settings', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
-Route::post('/slaughter/update/scale-settings', [SlaughterController::class, 'UpdateScalesettings'])->name('slaughter_update_scale_settings');
 Route::get('/slaughter/password', [SlaughterController::class, 'changePassword'])->name('slaughter_change_password');
 Route::get('/slaughter/disease', [SlaughterController::class, 'disease'])->name('slaughter_disease');
 Route::post('/slaughter/record-disease', [SlaughterController::class, 'recordDisease'])->name('record_disease');
@@ -266,3 +264,11 @@ Route::prefix('asset')->group(function () {
     Route::get('/list', [AssetController::class, 'assetList'])->name('asset_list');
 });
 /*-------------End Assets------------------ */
+
+/*-------------Start Scale----------------- */
+Route::prefix('scale')->group(function () {
+    Route::get('/settings/{section}', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
+    Route::post('/settings/update/', [SlaughterController::class, 'UpdateScalesettings'])->name('slaughter_update_scale_settings');
+});
+/*-------------End Scale------------------ */
+
