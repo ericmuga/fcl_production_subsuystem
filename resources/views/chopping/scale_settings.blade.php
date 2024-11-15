@@ -67,8 +67,8 @@
                                     <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
                                     <td>
                                         <button type="button" data-id="{{ $data->id }}"
-                                            data-item="{{ $data->scale }}" data-comport="{{ $data->comport }}"
-                                            data-ip_address="{{ $data->ip_address }}"
+                                            data-item="{{ $data->scale }}" data-comport="{{ $data->comport ?? '' }}"
+                                            data-ip_address="{{ $data->ip_address ?? '' }}"
                                             data-tareweight="{{ number_format($data->tareweight, 2) }}"
                                             class="btn btn-primary btn-sm " id="editScaleModalShow"><i
                                                 class="nav-icon fas fa-edit"></i>
@@ -106,7 +106,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="baud">ComPort:</label>
-                                <select class="form-control" name="edit_comport" id="edit_comport" required>
+                                <select class="form-control select2" name="edit_comport" id="edit_comport">
 
                                 </select>
                             </div>
@@ -170,8 +170,11 @@
             let ipAddress = $(this).data('ip_address');
             let id = $(this).data('id');
 
+            // console.log(comport);
+
             $('#item_name').val(scale);
             $('#edit_comport').val(comport);
+            $('#edit_comport').select2('destroy').select2();
             $('#edit_tareweight').val(tareweight);
             $('#edit_ip_address').val(ipAddress);
             $('#item_id').val(id);

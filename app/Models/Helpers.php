@@ -358,7 +358,7 @@ class Helpers
     public function publishToQueue($data, $queue_name)
     {
         // Add the company name flag to the data
-        // $data['company_name'] = 'FCL';
+        $data['company_name'] = 'FCL';
 
         $channel = $this->getRabbitMQChannel();
 
