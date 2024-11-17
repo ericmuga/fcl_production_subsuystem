@@ -14,6 +14,9 @@
     <li class="nav-item">
         <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
     </li>
+    <li class="nav-item">
+        <a href="{{ route('chopping_receipts') }}" class="nav-link">Chopping Receipts</a>
+    </li>
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle"> IDT </a>

@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
@@ -512,5 +513,58 @@ class SausageController extends Controller
             ->get();
 
         return view('sausage.per-batch-report', compact('title', 'per_batch', 'filter'));
+    }
+
+    public function choppingReceipts(Helpers $helpers)
+    {
+        $title = 'Chopping Receipts';
+
+        $items = DB::table('template_lines')
+            ->where('type', 'Output')
+            ->get();
+
+        $configs = Cache::remember('chopiing_receipts_weigh_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'chopping_receipts')
+                ->get();
+        });
+
+        $chopping_receipts = DB::table('idt_transfers')
+            ->where('idt_transfers.transfer_from', '2055')
+            ->where('idt_transfers.location_code', '2055')
+            ->leftJoin('users', 'users.id', '=', 'idt_transfers.received_by')
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->limit(1000)
+            ->get();
+
+        return view('sausage.chopping_receipts', compact('title','items', 'configs', 'chopping_receipts', 'helpers'));
+    }
+
+    public function saveChoppingReceipts(Request $request, Helpers $helpers) {
+        $manual_weight = 0;
+        if ($request->manual_weight == 'on') {
+            $manual_weight = 1;
+        }
+
+        try {
+            DB::table('idt_transfers')->insert([
+                'product_code' => $request->product_code,
+                'location_code' => '2055',
+                'total_weight' => $request->net_weight,
+                'transfer_from' => '2055',
+                'batch_no' => $request->batch_no,
+                'manual_weight' => $manual_weight,
+                'user_id' => Auth::id(),
+                'receiver_total_weight' => $request->net_weight,
+                'received_by' => Auth::id(),
+                'transfer_type' => 0,
+            ]);
+
+            return response()->json(['success' => true, 'message' => 'Receipt saved successfully']);
+
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Failed to save receipt. Error: ' . $e->getMessage()]);
+        }
     }
 }
