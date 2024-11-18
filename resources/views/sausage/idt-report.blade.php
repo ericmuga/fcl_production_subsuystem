@@ -64,7 +64,7 @@
                             <tr>
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product?? $data->product2 }}</td>
+                                <td>{{ $data->product?? $data->product2 ?? $data->template_output }}</td>
                                 <td>{{ $data->unit_count_per_crate }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->transfer_from }}</td>

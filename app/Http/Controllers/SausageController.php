@@ -403,9 +403,13 @@ class SausageController extends Controller
         $transfer_lines = DB::table('idt_transfers')
             ->whereIn('idt_transfers.transfer_from', ['1570', '2055'])
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('template_lines', function ($join) {
+                $join->on('idt_transfers.product_code', '=', 'template_lines.item_code')
+                     ->where('template_lines.type', '=', 'Output');
+            })
             ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
-            ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->select('idt_transfers.*', 'template_lines.description as template_output','items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->when($filter == 'today', function ($q) {
                 $q->whereDate('idt_transfers.created_at', today()); // today only
             })
@@ -550,18 +554,24 @@ class SausageController extends Controller
         }
 
         try {
-            DB::table('idt_transfers')->insert([
+            $data = [
                 'product_code' => $request->product_code,
-                'location_code' => '2055',
+                'location_code' => '',
                 'total_weight' => $request->net_weight,
-                'transfer_from' => '2055',
+                'transfer_from' => '',
                 'batch_no' => $request->batch_no,
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
+                'total_weight' => $request->net_weight,
                 'receiver_total_weight' => $request->net_weight,
                 'received_by' => Auth::id(),
                 'transfer_type' => 0,
-            ]);
+            ];
+            DB::table('idt_transfers')->insert($data);
+
+            //write to rabbitmq
+            $data['timestamp'] = now()->toDateTimeString();
+            $helpers->publishToQueue($data, 'stuffing_transfers.bc');
 
             return response()->json(['success' => true, 'message' => 'Stuffing weight saved successfully']);
 
