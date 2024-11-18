@@ -778,7 +778,7 @@ class SlaughterController extends Controller
                 'batch_no' => '0',
                 'with_variance' => '0',
                 'transfer_from' => '1000',
-                'transfer_type' => '1',
+                'transfer_type' => 0,
                 'user_id' => Auth::id(),
             ]);
 
