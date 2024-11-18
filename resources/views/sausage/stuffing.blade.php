@@ -121,6 +121,7 @@
                     <tr>
                         <th>#</th>
                         <th>Product Code</th>
+                        <th>Product </th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
                         <th>Recorded by</th>
@@ -131,6 +132,7 @@
                     <tr>
                         <th>#</th>
                         <th>Product Code</th>
+                        <th>Product</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
                         <th>Recorded by</th>
@@ -142,6 +144,7 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $data->product_code }}</td>
+                        <td>{{ $data->product }}</td>
                         <td>{{ number_format($data->total_weight, 2) }}</td>
                         @if($data->manual_weight == 0)
                             <td>
