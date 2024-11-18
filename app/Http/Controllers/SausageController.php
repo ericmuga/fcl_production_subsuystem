@@ -529,9 +529,9 @@ class SausageController extends Controller
             ->get();
         });
 
-        $configs = Cache::remember('chopiing_receipts_weigh_configs', now()->addMinutes(120), function () {
+        $configs = Cache::remember('stuffing_weigh_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
-                ->where('section', 'chopping_receipts')
+                ->where('section', 'stuffing')
                 ->get();
         });
 
