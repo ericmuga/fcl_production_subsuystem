@@ -281,7 +281,7 @@ class ButcheryController extends Controller
                     'with_variance' => 0,
                 ];
                 $transfer['timestamp'] = now()->toDateTimeString();
-                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
+                $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
                 return redirect()->back();
             }
 
@@ -350,13 +350,13 @@ class ButcheryController extends Controller
                     'product_code' => $request->carcass_type,
                     'transfer_from_location' => 1570,
                     'transfer_to_location' => 3535,
-                    'receiver_total_pieces' => $request->no_of_items,
-                    'receiver_total_weight' => $request->net2,
-                    'production_date' => today(),
-                    'with_variance' => 0,
+                    'no_of_pieces' => $request->no_of_items,
+                    'total_weight' => $request->net2,
+                    'production_date' => today()
                 ];
+
                 $transfer['timestamp'] = now()->toDateTimeString();
-                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
+                $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
 
                 Toastr::success('Sale recorded successfully', 'Success');
                 return redirect()->back()->withInput();
@@ -509,13 +509,13 @@ class ButcheryController extends Controller
                     'product_code' => $request->return_item_code,
                     'transfer_from_location' => 3535,
                     'transfer_to_location' => 1570,
-                    'receiver_total_pieces' => $request->return_no_carcass,
-                    'receiver_total_weight' => $request->return_weight,
-                    'production_date' => today(),
-                    'with_variance' => 0,
+                    'no_of_pieces' => $request->return_no_carcass,
+                    'total_weight' => $request->return_weight,
+                    'production_date' => today()
                 ];
+
                 $transfer['timestamp'] = now()->toDateTimeString();
-                $helpers->publishToQueue($transfer, 'production_data_transfer.bc');
+                $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
 
             });
         } catch (\Exception $e) {
