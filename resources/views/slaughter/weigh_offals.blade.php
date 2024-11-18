@@ -119,6 +119,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Product Code</th>
+                                    <th>Product Description</th>
                                     <th>Net Weight (kgs)</th>
                                     <th>Scale Reading (kgs)</th>
                                     <th>Manually Recorded</th>
@@ -130,6 +131,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Product Code</th>
+                                    <th>Product Description</th>
                                     <th>Net Weight (kgs)</th>
                                     <th>Scale Reading (kgs)</th>
                                     <th>Manually Recorded</th>
@@ -142,6 +144,9 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $data->product_code }}</td>
+                                    <td>
+                                        {{ $productCodes[$data->product_code] }}
+                                    </td>
                                     <td>{{ number_format($data->net_weight, 2) }}</td>
                                     <td>{{ number_format($data->scale_reading, 2) }}</td>
                                     @if($data->is_manual == 0)
