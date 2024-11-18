@@ -36,7 +36,7 @@ use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 // Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 
 
-Route::group(['middleware' => ['web', 'session_check']], function(){
+Route::group(['middleware' => ['web', 'auth']], function(){
     Route::get('logs', [LogViewerController::class, 'index']);
 });
 
