@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row mb-2">
         <div class="col-sm-7">
-            <h1 class="m-0"> Sausage | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small>
+            <h1 class="m-0"> {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small>
             </h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -16,7 +16,7 @@
 
 <div class="row col-md-12 card m-2">
     <div class="card-body">
-        <form id="form-chopping-receipts" class="form-prevent-multiple-submits" method="POST" action="{{ route('save_chopping_receipts') }}" onsubmit="saveChoppingReceipt()">
+        <form id="form-chopping-receipts" class="form-prevent-multiple-submits" method="POST" action="{{ route('save_stuffing_weights') }}" onsubmit="saveChoppingReceipt()">
             @csrf
             <div class="row text-center">
                 <div class="col-md-6">
