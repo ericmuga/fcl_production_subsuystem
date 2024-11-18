@@ -19,9 +19,9 @@
                     <div class="form-group flex-grow-0">
                         <label for="product_code">Animal Type</label>
                         <select id="product_code" name="product_code" class="form-control select2" aria-label="Default select example">
-                            <option value="G0101">G0101 Baconer</option>
-                            <option value="G0102">G0102 Sow</option>
-                            <option value="G0104">G0104 Suckling</option>
+                            @foreach ($animalTypes as $key => $value)
+                                <option value={{ $key }}>{{ $key }} {{ $value }}</option>
+                            @endforeach
                         </select>
                     </div>
             
@@ -69,6 +69,7 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col">Animal Code</th>
                                     <th scope="col">Animal Type</th>
                                     <th scope="col">Count</th>
                                     <th scope="col">Edited</th>
@@ -82,6 +83,9 @@
                                     <tr>
                                         <th scope="row">{{ $loop->iteration }}</th>
                                         <td>{{ $transfer->product_code }}</td>
+                                        <td>
+                                            {{ $animalTypes[$transfer->product_code] }}
+                                        </td>
                                         <td>{{ $transfer->total_pieces }}</td>
                                         @if($transfer->edited == 0)
                                             <td>

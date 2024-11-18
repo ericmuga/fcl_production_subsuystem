@@ -747,11 +747,12 @@ class SlaughterController extends Controller
     public function lairageTransfers(Helpers $helpers)
     {
         $title = "lairage transfers";
-        
-        $itemCodes = Cache::remember('item_codes', now()->addMinutes(120), function () {
-            return DB::table('carcass_types')
-                ->get();
-        });
+
+        $animalTypes = [
+            'G0101' => 'Baconer',
+            'G0102' => 'Sow',
+            'G0104' => 'Suckling',
+        ];
 
         $transfers = DB::table('idt_transfers as transfers')
                 ->where('transfers.transfer_from', '1000')
@@ -762,7 +763,7 @@ class SlaughterController extends Controller
                 ->take(1000)
                 ->get();
 
-        return view('slaughter.lairage_transfers', compact('title', 'itemCodes', 'transfers', 'helpers'));
+        return view('slaughter.lairage_transfers', compact('title', 'animalTypes', 'transfers', 'helpers'));
     }
 
     public function saveLairageTransfer(Request $request, Helpers $helpers)
