@@ -560,6 +560,20 @@ class SausageController extends Controller
                 'transfer_type' => 0,
             ]);
 
+            $publishData = [
+                'product_code' => $request->product_code,
+                'transfer_from_location' => 2055,
+                'transfer_to_location' => 2055,
+                'receiver_total_weight' => $request->net_weight,
+                'received_by' => Auth::id(),
+                'production_date' => today(),
+                'batch_no' => $request->batch_no,
+                'with_variance' => 0,
+                'timestamp' => now()->toDateTimeString(),
+            ];
+
+            $helpers->publishToQueue($publishData, 'production_data_transfer.bc');
+
             return response()->json(['success' => true, 'message' => 'Receipt saved successfully']);
 
         } catch (\Exception $e) {
