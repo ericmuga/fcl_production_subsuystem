@@ -167,8 +167,8 @@ Route::get('/sausage/idt-report/{filter?}', [SausageController::class, 'idtRepor
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 Route::get('/per-batch-report/{filter?}', [SausageController::class, 'perBatchReport'])->name('per_batch_sausage');
 Route::post('/sausage-get-batchno-axios', [SausageController::class, 'getBatchNoAxios']);
-Route::get('/sausage/chopping-receipts', [SausageController::class, 'choppingReceipts'])->name('chopping_receipts');
-Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveChoppingReceipts'])->name('save_chopping_receipts');
+Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
+Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveStuffingWeights'])->name('save_stuffing_weights');
 /*-------------End Admin------------------ */
 
 /*-------------Start Spices------------------ */

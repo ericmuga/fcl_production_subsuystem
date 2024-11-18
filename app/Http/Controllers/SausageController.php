@@ -515,7 +515,7 @@ class SausageController extends Controller
         return view('sausage.per-batch-report', compact('title', 'per_batch', 'filter'));
     }
 
-    public function choppingReceipts(Helpers $helpers)
+    public function stuffingWeights(Helpers $helpers)
     {
         $title = 'Stuffing weights';
 
@@ -543,7 +543,7 @@ class SausageController extends Controller
         return view('sausage.stuffing', compact('title','items', 'configs', 'stuffing_transfers', 'helpers'));
     }
 
-    public function saveChoppingReceipts(Request $request, Helpers $helpers) {
+    public function saveStuffingWeights(Request $request, Helpers $helpers) {
         $manual_weight = 0;
         if ($request->manual_weight == 'on') {
             $manual_weight = 1;
@@ -563,11 +563,11 @@ class SausageController extends Controller
                 'transfer_type' => 0,
             ]);
 
-            return response()->json(['success' => true, 'message' => 'Receipt saved successfully']);
+            return response()->json(['success' => true, 'message' => 'Stuffing weight saved successfully']);
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return response()->json(['success' => false, 'message' => 'Failed to save receipt. Error: ' . $e->getMessage()]);
+            return response()->json(['success' => false, 'message' => 'Failed to save stuffing weight. Error: ' . $e->getMessage()]);
         }
     }
 }

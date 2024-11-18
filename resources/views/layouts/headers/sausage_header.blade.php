@@ -21,7 +21,7 @@
             <li><a href="{{ route('sausage_idt') }}" class="dropdown-item">Create IDT</a>
             </li>
             <li class="dropdown-divider"></li>
-            <li><a href="{{ route('chopping_receipts') }}" class="dropdown-item">Stuffing IDTs</a></li>
+            <li><a href="{{ route('stuffing_weights') }}" class="dropdown-item">Stuffing IDTs</a></li>
             <li class="dropdown-divider"></li>
             <li><a href="{{ route('sausage_idt_receive') }}" class="dropdown-item">Receive
                     From Butch-IDT</a>
