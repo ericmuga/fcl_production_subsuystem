@@ -1,24 +1,29 @@
 @extends('layouts.sausage_master')
 
 @section('content-header')
-<div class="card title">
-    <h1 class="h3">Chopping Receipts</h1>
-</div>
+<div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-sm-7">
+            <h1 class="m-0"> Sausage | {{ $title }} | <small>Create & View <strong></strong> Transfers Lines </small>
+            </h1>
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+</div><!-- /.container-fluid -->
 
 @endsection
 
 @section('content')
 
-<div class="card m-2">
+<div class="row col-md-12 card m-2">
     <div class="card-body">
-        <form id="form-chopping-receipts" method="POST" action="{{ route('save_chopping_receipts') }}" onsubmit="saveChoppingReceipt()">
+        <form id="form-chopping-receipts" class="form-prevent-multiple-submits" method="POST" action="{{ route('save_chopping_receipts') }}" onsubmit="saveChoppingReceipt()">
             @csrf
             <div class="row text-center">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label for="product_code">Product Name</label>
                         <select class="custom-select select2" id="product_code" name="product_code" required>
-                            <option value="">Choose...</option>
+                            <option value="">Select Item</option>
                             @foreach ($items as $item)
                                 <option value={{ $item->item_code }}>{{ $item->item_code }} {{ $item->description }}</option>
                             @endforeach
@@ -117,7 +122,7 @@
                         <th>#</th>
                         <th>Product Code</th>
                         <th>Net Weight (kgs)</th>
-                        <th>Manually Recorded</th>
+                        <th>Manual weights?</th>
                         <th>Recorded by</th>
                         <th>Weigh Date</th>
                     </tr>
@@ -127,13 +132,13 @@
                         <th>#</th>
                         <th>Product Code</th>
                         <th>Net Weight (kgs)</th>
-                        <th>Manually Recorded</th>
+                        <th>Manual weights?</th>
                         <th>Recorded by</th>
                         <th>Weigh Date</th>
                     </tr>
                 </tfoot>
                 <tbody>
-                    @foreach($chopping_receipts as $data)
+                    @foreach($stuffing_transfers as $data)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $data->product_code }}</td>
@@ -148,7 +153,7 @@
                             </td>
                         @endif
                         <td>{{ $data->username }}</td>
-                        <td>{{  $helpers->dateToHumanFormat($data->created_at) }}</td>
+                        <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -161,6 +166,12 @@
 
 @section('scripts')
 <script>
+    $(document).ready(function () {
+        $('.form-prevent-multiple-submits').on('submit', function () {
+            $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
+    });
+
     const netWeightInput = document.getElementById('net_weight');
     const readingInput = document.getElementById('reading');
     const tareInput = document.getElementById('tare_weight');

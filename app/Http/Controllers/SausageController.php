@@ -517,11 +517,13 @@ class SausageController extends Controller
 
     public function choppingReceipts(Helpers $helpers)
     {
-        $title = 'Chopping Receipts';
+        $title = 'Stuffing weights';
 
-        $items = DB::table('template_lines')
+        $items =  Cache::remember('stuffing_products', now()->addHours(10), function () {
+            return DB::table('template_lines')
             ->where('type', 'Output')
             ->get();
+        });
 
         $configs = Cache::remember('chopiing_receipts_weigh_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
@@ -529,7 +531,8 @@ class SausageController extends Controller
                 ->get();
         });
 
-        $chopping_receipts = DB::table('idt_transfers')
+        $stuffing_transfers = DB::table('idt_transfers')
+            ->select('idt_transfers.*', 'users.username')
             ->where('idt_transfers.transfer_from', '2055')
             ->where('idt_transfers.location_code', '2055')
             ->leftJoin('users', 'users.id', '=', 'idt_transfers.received_by')
@@ -537,7 +540,7 @@ class SausageController extends Controller
             ->limit(1000)
             ->get();
 
-        return view('sausage.chopping_receipts', compact('title','items', 'configs', 'chopping_receipts', 'helpers'));
+        return view('sausage.stuffing', compact('title','items', 'configs', 'stuffing_transfers', 'helpers'));
     }
 
     public function saveChoppingReceipts(Request $request, Helpers $helpers) {
