@@ -275,10 +275,9 @@ class ButcheryController extends Controller
                     'product_code' => $carcassType,
                     'transfer_from_location' => 1570,
                     'transfer_to_location' => 3535,
-                    'receiver_total_pieces' => $request->no_of_carcass,
-                    'receiver_total_weight' => $request->net,
-                    'production_date' => today(),
-                    'with_variance' => 0,
+                    'total_pieces' => $request->no_of_carcass,
+                    'total_weight' => $request->net,
+                    'production_date' => today()
                 ];
                 $transfer['timestamp'] = now()->toDateTimeString();
                 $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
