@@ -268,9 +268,9 @@ Route::prefix('asset')->group(function () {
 /*-------------End Assets------------------ */
 
 /*-------------Start Scale----------------- */
-Route::prefix('scale')->group(function () {
-    Route::get('/settings/{section}', [SlaughterController::class, 'scaleSettings'])->name('slaughter_scale_settings');
-    Route::post('/settings/update/', [SlaughterController::class, 'UpdateScalesettings'])->name('slaughter_update_scale_settings');
+Route::prefix('scale-settings')->group(function () {
+    Route::get('/{section}', [SlaughterController::class, 'scaleSettings'])->name('scale_settings');
+    Route::post('/update', [SlaughterController::class, 'UpdateScalesettings'])->name('update_scale_settings');
 });
 /*-------------End Scale------------------ */
 
