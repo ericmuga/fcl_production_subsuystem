@@ -562,7 +562,6 @@ class SausageController extends Controller
                 'batch_no' => $request->batch_no,
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
-                'total_weight' => $request->net_weight,
                 'receiver_total_weight' => $request->net_weight,
                 'received_by' => Auth::id(),
                 'transfer_type' => 0,
