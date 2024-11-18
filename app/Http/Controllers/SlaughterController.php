@@ -850,13 +850,22 @@ class SlaughterController extends Controller
                 $manual_weight = 1;
             }
 
-            Offals::create([
-                'product_code'=> $request->product_code,
-                'scale_reading'=> $request->reading,
-                'net_weight'=> $request->net_weight,
-                'is_manual'=> $manual_weight,
+           $data = [
+                'product_code' => $request->product_code,
+                'location_code' => '',
+                'transfer_from' => '',
+                'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
-            ]);
+                'total_weight' => $request->net_weight,
+                'receiver_total_weight' => $request->net_weight,
+                'received_by' => Auth::id(),
+                'transfer_type' => 0,
+            ];
+            DB::table('idt_transfers')->insert($data);
+
+            //write to rabbitmq
+            $data['timestamp'] = now()->toDateTimeString();
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
