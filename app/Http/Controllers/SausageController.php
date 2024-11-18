@@ -525,9 +525,11 @@ class SausageController extends Controller
 
         $items =  Cache::remember('stuffing_products', now()->addHours(10), function () {
             return DB::table('template_lines')
-            ->where('type', 'Output')
+            ->where('description', 'like', '%mix for%')
             ->get();
         });
+
+        $itemCodes = $items->pluck('item_code')->toArray();
 
         $configs = Cache::remember('stuffing_weigh_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
@@ -537,8 +539,7 @@ class SausageController extends Controller
 
         $stuffing_transfers = DB::table('idt_transfers')
             ->select('idt_transfers.*', 'users.username')
-            ->where('idt_transfers.transfer_from', '2055')
-            ->where('idt_transfers.location_code', '2055')
+            ->whereIn('idt_transfers.product_code', $itemCodes)
             ->leftJoin('users', 'users.id', '=', 'idt_transfers.received_by')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
@@ -562,7 +563,6 @@ class SausageController extends Controller
                 'batch_no' => $request->batch_no,
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
-                'total_weight' => $request->net_weight,
                 'receiver_total_weight' => $request->net_weight,
                 'received_by' => Auth::id(),
                 'transfer_type' => 0,

@@ -76,7 +76,7 @@
 <div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" action="{{ route('slaughter_update_scale_settings') }}" method="post">
+        <form id="form-edit-scale" action="{{ route('update_scale_settings') }}" method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
