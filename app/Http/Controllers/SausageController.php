@@ -536,14 +536,10 @@ class SausageController extends Controller
         });
 
         $stuffing_transfers = DB::table('idt_transfers')
-            ->select('idt_transfers.*', 'users.username', 'template_lines.description as product')
+            ->select('idt_transfers.*', 'users.username')
             ->where('idt_transfers.transfer_from', '2055')
             ->where('idt_transfers.location_code', '2055')
             ->leftJoin('users', 'users.id', '=', 'idt_transfers.received_by')
-            ->leftJoin('template_lines', function ($join) {
-                $join->on('idt_transfers.product_code', '=', 'template_lines.item_code')
-                     ->where('template_lines.type', '=', 'Output');
-            })
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
             ->get();

@@ -121,7 +121,7 @@
                     <tr>
                         <th>#</th>
                         <th>Product Code</th>
-                        <th>Product </th>
+                        <th>Product Description</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
                         <th>Recorded by</th>
@@ -132,7 +132,7 @@
                     <tr>
                         <th>#</th>
                         <th>Product Code</th>
-                        <th>Product</th>
+                        <th>Product Description</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
                         <th>Recorded by</th>
@@ -144,7 +144,13 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $data->product_code }}</td>
-                        <td>{{ $data->product }}</td>
+                        <td>
+                            @php
+                                // Filter the $items array by matching the 'code' key
+                                $item = collect($items)->firstWhere('item_code', $data->product_code);
+                            @endphp
+                            {{ $item->description ?? 'No description available' }}
+                        </td>
                         <td>{{ number_format($data->total_weight, 2) }}</td>
                         @if($data->manual_weight == 0)
                             <td>
