@@ -1,4 +1,4 @@
-@extends('layouts.slaughter_master')
+@extends($section === 'stuffing' ? 'layouts.sausage_master' : 'layouts.slaughter_master')
 
 @section('content-header')
 <div class="container">
