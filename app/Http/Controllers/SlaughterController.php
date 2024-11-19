@@ -659,27 +659,22 @@ class SlaughterController extends Controller
             // forgetCache weigh_configs
             Cache::flush();
 
+            $data = [
+                'comport' => $request->comport,
+                'tareweight' => $request->tareweight,
+                'updated_at' => Carbon::now(),
+            ];
+
             if ($request->has('edit_baud')) {
-                // update using baudrate
-                DB::table('scale_configs')
-                ->where('id', $request->item_id)
-                ->update([
-                    'comport' => $request->edit_comport,
-                    'baudrate' => $request->edit_baud,
-                    'tareweight' => $request->edit_tareweight,
-                    'updated_at' => Carbon::now(),
-                ]);
+                $data['baudrate'] = $request->edit_baud;
             } else {
-                 //update using ip address
-                DB::table('scale_configs')
-                ->where('id', $request->item_id)
-                ->update([
-                    'comport' => $request->edit_comport,
-                    'ip_address' => $request->edit_ip_address,
-                    'tareweight' => $request->edit_tareweight,
-                    'updated_at' => Carbon::now(),
-                ]);
-            }      
+                $data['ip_address'] = $request->edit_ip_address;
+            }
+
+            // update using baudrate
+            DB::table('scale_configs')
+            ->where('id', $request->item_id)
+            ->update($data);
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
