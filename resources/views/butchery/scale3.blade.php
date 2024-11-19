@@ -113,7 +113,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Batch No </label>
-                        <input type="text" class="form-control" onClick="this.select();" id="batch_no" value="" name="batch_no">
+                        <input type="text" class="form-control" onClick="this.select();" id="batch_no" value="{{ old('batch_no') }}" name="batch_no">
                     </div>
                 </div>
                 <div class="form-group">

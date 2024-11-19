@@ -1,4 +1,4 @@
-@extends('layouts.slaughter_master')
+@extends($section === 'stuffing' ? 'layouts.sausage_master' : 'layouts.slaughter_master')
 
 @section('content-header')
 <div class="container">
@@ -29,7 +29,11 @@
                                 <th style="width: 10px">#</th>
                                 <th>Scale Name</th>
                                 <th>ComPort</th>
-                                <th>BaudRate</th>
+                                @if ($section == 'stuffing')
+                                <th>IP Address</th>
+                                @else
+                                <th>BaudRate</th>  
+                                @endif
                                 <th>Tareweight</th>
                                 <Th>Date Created</Th>
                                 <th style="width: 30px">Config</th>
@@ -39,7 +43,11 @@
                             <th style="width: 10px">#</th>
                             <th>Scale Name</th>
                             <th>ComPort</th>
+                            @if ($section == 'stuffing')
+                            <th>IP Address</th>
+                            @else
                             <th>BaudRate</th>
+                            @endif  
                             <th>Tareweight</th>
                             <Th>Date Created</Th>
                             <th style="width: 30px">Config</th>
@@ -50,12 +58,16 @@
                                 <td>{{ $i++ }}</td>
                                 <td>{{ $data->scale }}</td>
                                 <td>{{ $data->comport }}</td>
+                                @if ($section == 'stuffing')
+                                <td>{{ $data->ip_address }}</td>
+                                @else
                                 <td>{{ $data->baudrate }}</td>
+                                @endif
                                 <td>{{ number_format($data->tareweight, 2) }}</td>
                                 <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
                                 <td>
                                     <button type="button" data-id="{{ $data->id }}" data-item="{{ $data->scale }}"
-                                        data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}"
+                                        data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}" data-ipaddress="{{ $data->ip_address }}"
                                         data-tareweight="{{ number_format($data->tareweight, 2) }}"
                                         class="btn btn-primary btn-sm " id="editScaleModalShow"><i
                                             class="nav-icon fas fa-edit"></i>
@@ -89,7 +101,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="baud">ComPort:</label>
+                            <label for="edit_comport">ComPort:</label>
                             <select class="form-control" name="edit_comport" id="edit_comport" required>
 
                             </select>
@@ -107,11 +119,19 @@
                                 id="comports_error">error!</button>
                         </div>
                     </div>
+                    @if($section == 'stuffing')
+                    <div class="form-group">
+                        <label for="edit_ip_address">IP Address:</label>
+                        <input type="text" class="form-control" id="edit_ip_address" name="edit_ip_address" value=""
+                            placeholder="" required>
+                    </div>
+                    @else
                     <div class="form-group">
                         <label for="baud">BaudRate:</label>
                         <input type="number" class="form-control" id="edit_baud" name="edit_baud" value=""
                             placeholder="" required>
                     </div>
+                    @endif
                     <div class="form-group">
                         <label for="baud">Tareweight:</label>
                         <input type="number" class="form-control" id="edit_tareweight" step="0.01" value=""
@@ -146,13 +166,19 @@
             var comport = $(this).data('comport');
             var tareweight = $(this).data('tareweight');
             var baud = $(this).data('baudrate');
+            var ipAddress = $(this).data('ipaddress');
             var id = $(this).data('id');
 
             $('#item_name').val(scale);
             $('#edit_comport').val(comport);
-            $('#edit_baud').val(baud);
             $('#edit_tareweight').val(tareweight);
             $('#item_id').val(id);
+
+            if (ipAddress) {
+                $('#edit_ip_address').val(ipAddress);
+            } else {
+                $('#edit_baud').val(baud);
+            }
 
             $('#editScaleModal').modal('show');
         });

@@ -650,25 +650,31 @@ class SlaughterController extends Controller
             ->where('section', $section)
             ->get();
 
-        return view('slaughter.scale_settings', compact('title', 'scale_settings', 'helpers'));
+        return view('slaughter.scale_settings', compact('title','section', 'scale_settings', 'helpers'));
     }
 
-    public function UpdateScalesettings(Request $request, Helpers $helpers)
+    public function UpdateScaleSettings(Request $request, Helpers $helpers)
     {
         try {
             // forgetCache weigh_configs
             Cache::flush();
 
-            // update
-            DB::table('scale_configs')
-                ->where('id', $request->item_id)
-                ->update([
-                    'comport' => $request->edit_comport,
-                    'baudrate' => $request->edit_baud,
-                    'tareweight' => $request->edit_tareweight,
-                    'updated_at' => Carbon::now(),
-                ]);
+            $data = [
+                'comport' => $request->comport,
+                'tareweight' => $request->tareweight,
+                'updated_at' => Carbon::now(),
+            ];
 
+            if ($request->has('edit_baud')) {
+                $data['baudrate'] = $request->edit_baud;
+            } else {
+                $data['ip_address'] = $request->edit_ip_address;
+            }
+
+            // update using baudrate
+            DB::table('scale_configs')
+            ->where('id', $request->item_id)
+            ->update($data);
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
