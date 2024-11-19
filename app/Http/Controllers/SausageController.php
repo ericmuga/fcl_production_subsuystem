@@ -534,7 +534,7 @@ class SausageController extends Controller
         $configs = Cache::remember('stuffing_weigh_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'stuffing')
-                ->get();
+                ->first();
         });
 
         $stuffing_transfers = DB::table('idt_transfers')

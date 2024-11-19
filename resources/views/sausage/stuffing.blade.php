@@ -36,23 +36,23 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-12">
-                            @if(empty($configs))
-                                <small>No comport conifgured</small>
+                        <div class="col-12 mb-3">
+                            @if($configs && $configs->comport)
+                                <small>
+                                    <label>Reading from ComPort:</label>
+                                    <strong>
+                                    <input 
+                                        type="text" style="text-align: center; border:none" id="comport_value" 
+                                        value="{{ $configs->comport ?? '' }}" disabled
+                                        >
+                                    </strong>
+                                </small>   
                             @else
-                            <small>
-                                <label>Reading from ComPort:</label>
-                                <strong>
-                                <input 
-                                    type="text" style="text-align: center; border:none" id="comport_value" 
-                                    value="{{ $configs[0]->comport?? "" }}" disabled
-                                    >
-                                </strong>
-                            </small>
+                                <small class="font-weight-bold">No comport conifgured</small>
                             @endif
                         </div>
                         <div class="col-12">
-                            <button type="button" onclick="getScaleReading()" class="btn btn-primary btn-lg">
+                            <button id="weigh_btn" type="button" data-scale-ip="{{ $configs->ip_address ?? ''}}" onclick="getScaleReading()" class="btn btn-primary btn-lg">
                                 <i class="fas fa-balance-scale"></i> Weigh</button>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                         <div class="col-6">
                             <div class="form-group">
                                 <label for="tare_weight">Tare-Weight</label>
-                                <input type="number" class="form-control" id="tare_weight" name="tare_weight" value="40" readonly required>
+                                <input type="number" class="form-control" id="tare_weight" name="tare_weight" value="{{ ($configs && $configs->tareweight) ? number_format($configs->tareweight, 2) : 40 }}" readonly required>
                             </div>
                         </div>
                         <div class="col-6">
