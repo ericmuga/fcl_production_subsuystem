@@ -270,7 +270,7 @@ Route::prefix('asset')->group(function () {
 /*-------------Start Scale----------------- */
 Route::prefix('scale-settings')->group(function () {
     Route::get('/{section}', [SlaughterController::class, 'scaleSettings'])->name('scale_settings');
-    Route::post('/update', [SlaughterController::class, 'UpdateScalesettings'])->name('update_scale_settings');
+    Route::post('/update', [SlaughterController::class, 'UpdateScaleSettings'])->name('update_scale_settings');
 });
 /*-------------End Scale------------------ */
 
