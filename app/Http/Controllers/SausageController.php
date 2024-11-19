@@ -525,7 +525,7 @@ class SausageController extends Controller
 
         $items =  Cache::remember('stuffing_products', now()->addHours(10), function () {
             return DB::table('template_lines')
-            ->where('description', 'like', '%mix for%')
+            ->where('description', 'like', 'mix for%')
             ->get();
         });
 
