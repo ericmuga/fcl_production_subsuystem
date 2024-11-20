@@ -96,7 +96,7 @@
                                                 <span class="badge badge-warning">Yes</span>
                                             </td>
                                         @endif
-                                        <td>{{ $helpers->dateToHumanFormat($transfer->created_at) }}</td>
+                                        <td>{{ $helpers->amPmDate($transfer->created_at) }}</td>
                                         <td>{{ $transfer->username }}</td>
                                         <td class="no-export">
                                             <button class="btn btn-primary">
