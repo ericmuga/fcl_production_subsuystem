@@ -59,65 +59,114 @@
 
     </div>
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <h3 class="card-header">Transfer to Slaughter Entries Recorded Today</h3>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table id="example1" class="table table-striped table-bordered">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Animal Code</th>
-                                    <th scope="col">Animal Type</th>
-                                    <th scope="col">Count</th>
-                                    <th scope="col">Edited</th>
-                                    <th scope="col">Date Posted</th>
-                                    <th scope="col">User</th>
-                                    <th scope="col" class="no-export">Edit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($transfers as $index => $transfer)
-                                    <tr>
-                                        <th scope="row">{{ $loop->iteration }}</th>
-                                        <td>{{ $transfer->product_code }}</td>
-                                        <td>
-                                            {{ $animalTypes[$transfer->product_code] }}
-                                        </td>
-                                        <td>{{ $transfer->total_pieces }}</td>
-                                        @if($transfer->edited == 0)
-                                            <td>
-                                                <span class="badge badge-success">No</span>
-                                            </td>
-                                        @else
-                                            <td>
-                                                <span class="badge badge-warning">Yes</span>
-                                            </td>
-                                        @endif
-                                        <td>{{ $helpers->amPmDate($transfer->created_at) }}</td>
-                                        <td>{{ $transfer->username }}</td>
-                                        <td class="no-export">
-                                            <button class="btn btn-primary">
-                                                <i
-                                                    class="fa fa-pencil-alt"
-                                                    data-toggle="modal"
-                                                    data-target="#editTransferModal"
-                                                    data-transfer-id={{ $transfer->id }}
-                                                    data-product-code={{ $transfer->product_code }}
-                                                    data-editing-count={{ $transfer->total_pieces }}
-                                                    role="button"
-                                                >
-                                                </i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+    <hr/>
+   
+    <div class="card">
+        <h3 class="card-header">Transfer Summary for the last 7 days</h3>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example1" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Animal Code</th>
+                            <th scope="col">Animal Type</th>
+                            <th scope="col">Count</th>
+                            <th scope="col">Date Posted</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($transferSummary as $item)
+                            <tr>
+                                <th>{{ $loop->iteration }}</th>
+                                <td>{{ $item->product_code }}</td>
+                                <td>
+                                    {{ $animalTypes[$item->product_code] }}
+                                </td>
+                                <td>{{ $item->total_transfers }}</td>
+                                <td>{{ $helpers->dateToHumanFormat($item->transfer_date) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Animal Code</th>
+                            <th scope="col">Animal Type</th>
+                            <th scope="col">Count</th>
+                            <th scope="col">Date Posted</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#transfer_entries">
+        <i class="fa fa-plus"></i>
+        Entries
+    </button>
+     
+    <hr/>
+
+    <div id="transfer_entries" class="card collapse">
+        <h3 class="card-header">Transfer to Slaughter Entries Recorded Today</h3>
+        <div class="card-body">
+            <div class="flex justify-content-end">
+                <input type="date" class="form-control mb-2 float-right" id="date_filter" name="date_filter" value="">
+            </div>
+            <div class="table-responsive">
+                <table id="example2" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Animal Code</th>
+                            <th scope="col">Animal Type</th>
+                            <th scope="col">Count</th>
+                            <th scope="col">Edited</th>
+                            <th scope="col">Date Posted</th>
+                            <th scope="col">User</th>
+                            <th scope="col" class="no-export">Edit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($transfers as $index => $transfer)
+                            <tr>
+                                <th scope="row">{{ $loop->iteration }}</th>
+                                <td>{{ $transfer->product_code }}</td>
+                                <td>
+                                    {{ $animalTypes[$transfer->product_code] }}
+                                </td>
+                                <td>{{ $transfer->total_pieces }}</td>
+                                @if($transfer->edited == 0)
+                                    <td>
+                                        <span class="badge badge-success">No</span>
+                                    </td>
+                                @else
+                                    <td>
+                                        <span class="badge badge-warning">Yes</span>
+                                    </td>
+                                @endif
+                                <td>{{ $helpers->amPmDate($transfer->created_at) }}</td>
+                                <td>{{ $transfer->username }}</td>
+                                <td class="no-export">
+                                    <button class="btn btn-primary">
+                                        <i
+                                            class="fa fa-pencil-alt"
+                                            data-toggle="modal"
+                                            data-target="#editTransferModal"
+                                            data-transfer-id={{ $transfer->id }}
+                                            data-product-code={{ $transfer->product_code }}
+                                            data-editing-count={{ $transfer->total_pieces }}
+                                            role="button"
+                                        >
+                                        </i>
+                                    </button>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

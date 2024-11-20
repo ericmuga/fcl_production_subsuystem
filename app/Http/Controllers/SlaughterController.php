@@ -671,7 +671,7 @@ class SlaughterController extends Controller
                 $data['ip_address'] = $request->edit_ip_address;
             }
 
-            // update using baudrate
+            // update
             DB::table('scale_configs')
             ->where('id', $request->item_id)
             ->update($data);
@@ -760,16 +760,24 @@ class SlaughterController extends Controller
             'G0104' => 'Suckling',
         ];
 
+        $transferSummary = DB::table('idt_transfers')
+        ->whereDate('created_at', '>=', today()->subDays(7))
+        ->whereIn('product_code', array_keys($animalTypes))
+        ->select('product_code', DB::raw("CAST(created_at AS DATE) as transfer_date"), DB::raw('COUNT(*) as total_transfers'))
+        ->groupBy('product_code', DB::raw("CAST(created_at AS DATE)"))
+        ->orderBy('transfer_date')
+        ->get();
+
         $transfers = DB::table('idt_transfers as transfers')
-                ->where('transfers.transfer_from', '1000')
-                ->whereDate('transfers.created_at', Carbon::today())
-                ->leftJoin('users as users', 'transfers.user_id', '=', 'users.id')
+                ->whereDate('transfers.created_at', '>=', today()->subDays(2))
+                ->whereIn('product_code', array_keys($animalTypes))
+                ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
                 ->select('transfers.*', 'users.username')
                 ->orderByDesc('transfers.id')
                 ->take(1000)
                 ->get();
 
-        return view('slaughter.lairage_transfers', compact('title', 'animalTypes', 'transfers', 'helpers'));
+        return view('slaughter.lairage_transfers', compact('title', 'animalTypes', 'transferSummary', 'transfers', 'helpers'));
     }
 
     public function saveLairageTransfer(Request $request, Helpers $helpers)
