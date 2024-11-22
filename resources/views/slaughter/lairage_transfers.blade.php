@@ -40,7 +40,7 @@
                         </div>
                     </div>
                         
-                <button type="submit" style="padding: 2%" class="btn btn-success btn-lg d-block mx-auto btn-prevent-multiple-submits"><i class="fa fa-paper-plane" aria-hidden="true"></i> Slaughter To Transfer</button>
+                <button type="submit" style="padding: 2%" class="btn btn-success btn-lg d-block mx-auto btn-prevent-multiple-submits"><i class="fa fa-paper-plane" aria-hidden="true"></i> Transfer To Slaughter</button>
                 </form>
             </div>
          </div>
@@ -60,47 +60,6 @@
     </div>
 
     <hr/>
-   
-    <div class="card">
-        <h3 class="card-header">Transfer Summary for the last 7 days</h3>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="example1" class="table table-striped table-bordered">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Animal Code</th>
-                            <th scope="col">Animal Type</th>
-                            <th scope="col">Count</th>
-                            <th scope="col">Date Posted</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($transferSummary as $item)
-                            <tr>
-                                <th>{{ $loop->iteration }}</th>
-                                <td>{{ $item->product_code }}</td>
-                                <td>
-                                    {{ $animalTypes[$item->product_code] }}
-                                </td>
-                                <td>{{ $item->total_transfers }}</td>
-                                <td>{{ $helpers->dateToHumanFormat($item->transfer_date) }}</td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Animal Code</th>
-                            <th scope="col">Animal Type</th>
-                            <th scope="col">Count</th>
-                            <th scope="col">Date Posted</th>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        </div>
-    </div>
 
     <button class="btn btn-primary " data-toggle="collapse" data-target="#transfer_entries">
         <i class="fa fa-plus"></i>
@@ -112,11 +71,8 @@
     <div id="transfer_entries" class="card collapse">
         <h3 class="card-header">Transfer to Slaughter Entries Recorded Today</h3>
         <div class="card-body">
-            <div class="flex justify-content-end">
-                <input type="date" class="form-control mb-2 float-right" id="date_filter" name="date_filter" value="">
-            </div>
             <div class="table-responsive">
-                <table id="example2" class="table table-striped table-bordered">
+                <table id="example1" class="table table-striped table-bordered">
                     <thead>
                         <tr>
                             <th scope="col">#</th>
@@ -124,7 +80,7 @@
                             <th scope="col">Animal Type</th>
                             <th scope="col">Count</th>
                             <th scope="col">Edited</th>
-                            <th scope="col">Date Posted</th>
+                            <th scope="col">Date Time Posted</th>
                             <th scope="col">User</th>
                             <th scope="col" class="no-export">Edit</th>
                         </tr>
@@ -210,10 +166,6 @@
 
 </div>
 
-
-
-
-
 @endsection
 
 
@@ -243,9 +195,11 @@
 
     $('#editTransferModal').on('show.bs.modal', function (event) {
         var button = $(event.relatedTarget); // Button that triggered the modal
-        editingTransferId = button.data('transfer-id'); // Extract info from data-* attributes
+        var editingTransferId = button.data('transfer-id'); // Extract info from data-* attributes
+        var editingCount = this.getAttribute('data-editing-count')
         var modal = $(this);
         modal.find('#transfer_id').val(editingTransferId);
+        modal.find('#editing_count').text(editingCount);
     });
 
     document.querySelectorAll('button[data-target="#editTransferModal"]').forEach(button => {
@@ -254,7 +208,7 @@
             var productCode = this.getAttribute('data-product-code');
             var editingCount = this.getAttribute('data-editing-count');
             document.getElementById('edit_transfer_id').value = transferId;
-            document.getElementById('editing_count').innerHTML = String(editingCount);
+            document.getElementById('editing_count').text = 'hello';
         });
     });
 
@@ -263,7 +217,13 @@
         document.getElementById('editing_count').innerHTML = '';
     });
 
-
+updateDate(event) {
+    console.log('updating date');
+    let url = window.location.href;
+    let params = new URLSearchParams(url.search);
+    params.append("date", event.target.value);
+    window.location = url + '?' + params.toString();
+}
 
 </script>
 
