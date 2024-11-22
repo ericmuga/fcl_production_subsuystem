@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\LairageTransferSummaryExport;
 use App\Exports\SlaughterCombinedExport;
 use App\Exports\SlaughterForNavExport;
 use App\Exports\SlaughterLinesExport;
@@ -758,15 +759,7 @@ class SlaughterController extends Controller
             'G0101' => 'Baconer',
             'G0102' => 'Sow',
             'G0104' => 'Suckling',
-        ];
-
-        $transferSummary = DB::table('idt_transfers')
-        ->whereDate('created_at', '>=', today()->subDays(7))
-        ->whereIn('product_code', array_keys($animalTypes))
-        ->select('product_code', DB::raw("CAST(created_at AS DATE) as transfer_date"), DB::raw('COUNT(*) as total_transfers'))
-        ->groupBy('product_code', DB::raw("CAST(created_at AS DATE)"))
-        ->orderBy('transfer_date')
-        ->get();
+        ];       
 
         $transfers = DB::table('idt_transfers as transfers')
                 ->whereDate('transfers.created_at', '>=', today()->subDays(2))
@@ -774,10 +767,57 @@ class SlaughterController extends Controller
                 ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
                 ->select('transfers.*', 'users.username')
                 ->orderByDesc('transfers.id')
-                ->take(1000)
                 ->get();
 
-        return view('slaughter.lairage_transfers', compact('title', 'animalTypes', 'transferSummary', 'transfers', 'helpers'));
+        return view('slaughter.lairage_transfers', compact('title', 'animalTypes', 'transfers', 'helpers'));
+    }
+
+    public function lairageTransferReports(Request $request, Helpers $helpers)
+    {
+        $title = "lairage transfer reports";
+
+        $animalTypes = [
+            'G0101' => 'Baconer',
+            'G0102' => 'Sow',
+            'G0104' => 'Suckling',
+        ];       
+
+        $transfers = DB::table('idt_transfers as transfers')
+                ->whereDate('transfers.created_at', '>=', today()->subDays(2))
+                ->whereIn('product_code', array_keys($animalTypes))
+                ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
+                ->select('transfers.*', 'users.username')
+                ->orderByDesc('transfers.id')
+                ->get();
+
+        return view('slaughter.lairage_transfers_reports', compact('title', 'animalTypes', 'transfers', 'helpers'));
+    }
+
+    public function exportLairageTransferSummaryReport(Request $request)
+    {
+        $animalTypes = [
+            'G0101' => 'Baconer',
+            'G0102' => 'Sow',
+            'G0104' => 'Suckling',
+        ];
+
+        if ($request->date) {
+            $date = Carbon::parse($request->date);
+        } else {
+            $date = Carbon::today();
+        }
+        
+        $transferSummary = DB::table('idt_transfers')
+        ->whereDate('created_at', '=', $date)
+        ->whereIn('product_code', array_keys($animalTypes))
+        ->select('product_code', DB::raw("CAST(created_at AS DATE) as transfer_date"), DB::raw('COUNT(*) as total_transfers'))
+        ->groupBy('product_code', DB::raw("CAST(created_at AS DATE)"))
+        ->orderBy('transfer_date')
+        ->get();
+
+        $exports = Session::put('session_export_data', $transferSummary);
+
+        return Excel::download(new LairageTransferSummaryExport, 'LairageTransferSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function saveLairageTransfer(Request $request, Helpers $helpers)

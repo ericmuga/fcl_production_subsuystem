@@ -50,15 +50,20 @@
                         <a tabindex="-1" href="{{ route('slaughter_data_report') }}"
                             class="dropdown-item">Slaughter Report</a>
                     </li>
-                    <li class="dropdown-divider"></li>
+                    <hr class="dropdown-divider" />
                     <li>
                         <a tabindex="-1" href="{{ route('missing_slap_data') }}"
                             class="dropdown-item">Missing Slapmarks Report</a>
                     </li>
-                    <li class="dropdown-divider"></li>
+                    <hr class="dropdown-divider" />
                     <li>
                         <a tabindex="-1" href="{{ route('pending_etims') }}"
                             class="dropdown-item">Pending Etims Invoices</a>
+                    </li>
+                    <hr class="dropdown-divider" />
+                    <li>
+                        <a tabindex="-1" href="{{ route('lairage_transfer_reports') }}"
+                            class="dropdown-item">Lairage Transfer Reports</a>
                     </li>
                 </ul>
             </li>
