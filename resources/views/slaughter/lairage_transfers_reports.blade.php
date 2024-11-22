@@ -8,67 +8,13 @@
 @section('content')
 
 <div class="container-fluid">
-    <div class="row mb-2">
-        <div class="col-12 col-lg-8">
-            <div class="card">
-                <h3 class="card-header">
-                Record Transfer
-                </h3>
-                <form id="record_transfer_form" class="card-body form-prevent-multiple-submits" action="{{ route('save_idt_lairage') }}" method="POST">
-                    @csrf
-                    <div class="form-group flex-grow-0">
-                        <label for="product_code">Animal Type</label>
-                        <select id="product_code" name="product_code" class="form-control select2" aria-label="Default select example">
-                            @foreach ($animalTypes as $key => $value)
-                                <option value={{ $key }}>{{ $key }} {{ $value }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-            
-                    <div class="form-group">
-                        <label for="count">count</label>
-                        <div class="row my-3 transfer-number-input justify-content-center">
-                            <div class="col col-3 col-lg-4 col-xl-2">
-                                <button id="count-reducer" type="button" class="btn btn-block btn-primary text-center">-</button>
-                            </div>
-                            <div class="col col-6 col-lg-4 ">
-                                <input id="count" name="count" type="number" class="form-control text-center" min="1" value="2">
-                            </div>
-                            <div class="col col-3 col-lg-4 col-xl-2">
-                                <button id="count-increaser" type="button" class="btn btn-block btn-primary text-center">+</button>
-                            </div>
-                        </div>
-                    </div>
-                        
-                <button type="submit" style="padding: 2%" class="btn btn-success btn-lg d-block mx-auto btn-prevent-multiple-submits"><i class="fa fa-paper-plane" aria-hidden="true"></i> Transfer To Slaughter</button>
-                </form>
-            </div>
-         </div>
-
-        <div class="col-12 col-lg-4">
-            <div class="card">
-                <h3 class="card-header">Todays Transfers Summary</h3>
-                <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Baconers: {{ $transfers->where('product_code', 'G0101')->sum('count') }}</li>
-                    <li class="list-group-item">Sow: {{ $transfers->where('product_code', 'G0102')->sum('count') }}</li>
-                    <li class="list-group-item">Suckling: {{ $transfers->where('product_code', 'G0104')->sum('count') }}</li>
-                    <li class="list-group-item">Total Transferred: {{ $transfers->sum('count') }}</li>
-                </ul>
-            </div>
-        </div>
-
-    </div>
-
-    <hr/>
-
-    <button class="btn btn-primary " data-toggle="collapse" data-target="#transfer_entries">
-        <i class="fa fa-plus"></i>
-        Entries
+    <button data-toggle="modal" data-target="#export_data" class="btn btn-success d-block mb-2" >
+        <i class="fa fa-download" aria-hidden="true"></i> Download Lairage Transfer Summary
     </button>
      
     <hr/>
 
-    <div id="transfer_entries" class="card collapse">
+    <div id="transfer_entries" class="card">
         <h3 class="card-header">Transfer to Slaughter Entries Recorded Today</h3>
         <div class="card-body">
             <div class="table-responsive">
@@ -162,25 +108,51 @@
         </div>
     </div>
 
+    <!-- Start Export combined Modal -->
+    <div class="modal fade" id="export_data" tabindex="-1" role="dialog"
+    aria-hidden="true">
+    <form id="form-lairage-transfer-summary" action="{{ route('lairage_transfer_summary') }}" method="get">
+        @csrf
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Export</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        *Filter by date<br>
+                        <div class="form-group col-md-6">
+                            <label for="date-filter">Date:(dd/mm/yyyy)</label>
+                            <input type="date" class="form-control" name="date" id="date-filter"
+                                autofocus required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button"
+                        data-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success"><i class="fa fa-send"></i>
+                        Export</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    </div>
+    <!-- End Export combined Modal -->
+
 </div>
 
 @endsection
 
 
 @section('scripts')
-
 <script>
-
-let transferIdInput = document.getElementById('transfer_id');
-let editingCountSpan = document.getElementById('editing_count');
-
-    function updateTransferId(event) {
-        let button = event.target;
-        let transferId = button.getAttribute('data-transfer-id');
-        let editingCount = button.getAttribute('data-editing-count');
-        transferIdInput.value = transferId;
-        editingCountSpan.innerHTML = editingCount;
-    }
+    var today = new Date();
+    var dateFilter = document.getElementById('date-filter');
+    dateFilter.max = today.toISOString().substr(0, 10);
 
     $('.form-prevent-multiple-submits').on('submit', function () {
         $(".btn-prevent-multiple-submits").attr('disabled', true);
@@ -189,6 +161,14 @@ let editingCountSpan = document.getElementById('editing_count');
     const number_input = document.querySelector('#count');
     const minus_button = document.querySelector('#count-reducer');
     const plus_button = document.querySelector('#count-increaser');
+
+    function updateTransferId(event) {;
+        let button = event.target;
+        let transferId = button.getAttribute('data-transfer-id');
+        let editingCount = button.getAttribute('data-editing-count');
+        transferIdInput.value = transferId;
+        editingCountSpan.innerHTML = editingCount;
+    }
 
     minus_button.addEventListener('click', () => {
 
@@ -202,10 +182,37 @@ let editingCountSpan = document.getElementById('editing_count');
         number_input.value = parseInt(number_input.value) + 1;
     });
 
+    $('#editTransferModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Button that triggered the modal
+        var editingTransferId = button.data('transfer-id'); // Extract info from data-* attributes
+        var editingCount = this.getAttribute('data-editing-count')
+        var modal = $(this);
+        modal.find('#transfer_id').val(editingTransferId);
+        modal.find('#editing_count').text(editingCount);
+    });
+
+    document.querySelectorAll('button[data-target="#editTransferModal"]').forEach(button => {
+        button.addEventListener('click', function () {
+            var transferId = this.getAttribute('data-transfer-id');
+            var productCode = this.getAttribute('data-product-code');
+            var editingCount = this.getAttribute('data-editing-count');
+            document.getElementById('edit_transfer_id').value = transferId;
+            document.getElementById('editing_count').text = 'hello';
+        });
+    });
+
     $('#editTransferModal').on('hidden.bs.modal', function () {
         document.getElementById('edit_transfer_form').reset();
         document.getElementById('editing_count').innerHTML = '';
     });
+
+updateDate(event) {
+    console.log('updating date');
+    let url = window.location.href;
+    let params = new URLSearchParams(url.search);
+    params.append("date", event.target.value);
+    window.location = url + '?' + params.toString();
+}
 
 </script>
 

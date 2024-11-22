@@ -162,7 +162,7 @@
                             </td>
                         @endif
                         <td>{{ $data->username }}</td>
-                        <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                        <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                     </tr>
                     @endforeach
                 </tbody>

@@ -77,6 +77,8 @@ Route::post('idt_lairage/save', [SlaughterController::class, 'saveLairageTransfe
 Route::post('idt_lairage/update', [SlaughterController::class, 'updateLairageTransfer'])->name('update_idt_lairage');
 Route::get('slaughter/offals', [SlaughterController::class, 'weighOffals'])->name('weigh_offals');
 Route::post('slaughter/save-offals', [SlaughterController::class, 'saveOffalsWeight'])->name('save_offals_weight');
+Route::get('slaughter/lairage-transfer-reports', [SlaughterController::class, 'lairageTransferReports'])->name('lairage_transfer_reports');
+Route::get('slaughter/lairage-transfer-summary', [SlaughterController::class, 'exportLairageTransferSummaryReport'])->name('lairage_transfer_summary');
 //queues
 Route::get('/import-receipts-from-queue', [SlaughterController::class, 'importReceiptsFromQueue']);
 /*-------------End Slaughter------------------ */
