@@ -26,13 +26,13 @@
                     </div>
             
                     <div class="form-group">
-                        <label for="total_pieces">count</label>
+                        <label for="count">count</label>
                         <div class="row my-3 transfer-number-input justify-content-center">
                             <div class="col col-3 col-lg-4 col-xl-2">
                                 <button id="count-reducer" type="button" class="btn btn-block btn-primary text-center">-</button>
                             </div>
                             <div class="col col-6 col-lg-4 ">
-                                <input id="total_pieces" name="total_pieces" type="number" class="form-control text-center" min="1" value="2">
+                                <input id="count" name="count" type="number" class="form-control text-center" min="1" value="2">
                             </div>
                             <div class="col col-3 col-lg-4 col-xl-2">
                                 <button id="count-increaser" type="button" class="btn btn-block btn-primary text-center">+</button>
@@ -49,10 +49,10 @@
             <div class="card">
                 <h3 class="card-header">Todays Transfers Summary</h3>
                 <ul class="list-group list-group-flush">
-                    <li class="list-group-item">Baconers: {{ $transfers->where('product_code', 'G0101')->sum('total_pieces') }}</li>
-                    <li class="list-group-item">Sow: {{ $transfers->where('product_code', 'G0102')->sum('total_pieces') }}</li>
-                    <li class="list-group-item">Suckling: {{ $transfers->where('product_code', 'G0104')->sum('total_pieces') }}</li>
-                    <li class="list-group-item">Total Transferred: {{ $transfers->sum('total_pieces') }}</li>
+                    <li class="list-group-item">Baconers: {{ $transfers->where('product_code', 'G0101')->sum('count') }}</li>
+                    <li class="list-group-item">Sow: {{ $transfers->where('product_code', 'G0102')->sum('count') }}</li>
+                    <li class="list-group-item">Suckling: {{ $transfers->where('product_code', 'G0104')->sum('count') }}</li>
+                    <li class="list-group-item">Total Transferred: {{ $transfers->sum('count') }}</li>
                 </ul>
             </div>
         </div>
@@ -93,8 +93,8 @@
                                 <td>
                                     {{ $animalTypes[$transfer->product_code] }}
                                 </td>
-                                <td>{{ $transfer->total_pieces }}</td>
-                                @if($transfer->edited == 0)
+                                <td>{{ $transfer->count }}</td>
+                                @if($transfer->created_at == $transfer->updated_at)
                                     <td>
                                         <span class="badge badge-success">No</span>
                                     </td>
@@ -106,17 +106,15 @@
                                 <td>{{ $helpers->amPmDate($transfer->created_at) }}</td>
                                 <td>{{ $transfer->username }}</td>
                                 <td class="no-export">
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary" >
                                         <i
                                             class="fa fa-pencil-alt"
                                             data-toggle="modal"
                                             data-target="#editTransferModal"
                                             data-transfer-id={{ $transfer->id }}
-                                            data-product-code={{ $transfer->product_code }}
-                                            data-editing-count={{ $transfer->total_pieces }}
-                                            role="button"
-                                        >
-                                        </i>
+                                            data-count={{ $transfer->count }}
+                                            onclick="updateTransferId(event)"
+                                        ></i>
                                     </button>
                                 </td>
                             </tr>
@@ -173,11 +171,22 @@
 
 <script>
 
+let transferIdInput = document.getElementById('transfer_id');
+let editingCountSpan = document.getElementById('editing_count');
+
+    function updateTransferId(event) {
+        let button = event.target;
+        let transferId = button.getAttribute('data-transfer-id');
+        let editingCount = button.getAttribute('data-editing-count');
+        transferIdInput.value = transferId;
+        editingCountSpan.innerHTML = editingCount;
+    }
+
     $('.form-prevent-multiple-submits').on('submit', function () {
         $(".btn-prevent-multiple-submits").attr('disabled', true);
     });
 
-    const number_input = document.querySelector('#total_pieces');
+    const number_input = document.querySelector('#count');
     const minus_button = document.querySelector('#count-reducer');
     const plus_button = document.querySelector('#count-increaser');
 
@@ -193,37 +202,10 @@
         number_input.value = parseInt(number_input.value) + 1;
     });
 
-    $('#editTransferModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget); // Button that triggered the modal
-        var editingTransferId = button.data('transfer-id'); // Extract info from data-* attributes
-        var editingCount = this.getAttribute('data-editing-count')
-        var modal = $(this);
-        modal.find('#transfer_id').val(editingTransferId);
-        modal.find('#editing_count').text(editingCount);
-    });
-
-    document.querySelectorAll('button[data-target="#editTransferModal"]').forEach(button => {
-        button.addEventListener('click', function () {
-            var transferId = this.getAttribute('data-transfer-id');
-            var productCode = this.getAttribute('data-product-code');
-            var editingCount = this.getAttribute('data-editing-count');
-            document.getElementById('edit_transfer_id').value = transferId;
-            document.getElementById('editing_count').text = 'hello';
-        });
-    });
-
     $('#editTransferModal').on('hidden.bs.modal', function () {
         document.getElementById('edit_transfer_form').reset();
         document.getElementById('editing_count').innerHTML = '';
     });
-
-updateDate(event) {
-    console.log('updating date');
-    let url = window.location.href;
-    let params = new URLSearchParams(url.search);
-    params.append("date", event.target.value);
-    window.location = url + '?' + params.toString();
-}
 
 </script>
 

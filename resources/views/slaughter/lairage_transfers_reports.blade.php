@@ -39,8 +39,8 @@
                                 <td>
                                     {{ $animalTypes[$transfer->product_code] }}
                                 </td>
-                                <td>{{ $transfer->total_pieces }}</td>
-                                @if($transfer->edited == 0)
+                                <td>{{ $transfer->count }}</td>
+                                @if($transfer->created_at == $transfer->updated_at)
                                     <td>
                                         <span class="badge badge-success">No</span>
                                     </td>
@@ -52,17 +52,15 @@
                                 <td>{{ $helpers->amPmDate($transfer->created_at) }}</td>
                                 <td>{{ $transfer->username }}</td>
                                 <td class="no-export">
-                                    <button class="btn btn-primary">
+                                    <button class="btn btn-primary" >
                                         <i
                                             class="fa fa-pencil-alt"
                                             data-toggle="modal"
                                             data-target="#editTransferModal"
                                             data-transfer-id={{ $transfer->id }}
-                                            data-product-code={{ $transfer->product_code }}
-                                            data-editing-count={{ $transfer->total_pieces }}
-                                            role="button"
-                                        >
-                                        </i>
+                                            data-count={{ $transfer->count }}
+                                            onclick="updateTransferId(event)"
+                                        ></i>
                                     </button>
                                 </td>
                             </tr>
@@ -160,9 +158,17 @@
         $(".btn-prevent-multiple-submits").attr('disabled', true);
     });
 
-    const number_input = document.querySelector('#total_pieces');
+    const number_input = document.querySelector('#count');
     const minus_button = document.querySelector('#count-reducer');
     const plus_button = document.querySelector('#count-increaser');
+
+    function updateTransferId(event) {;
+        let button = event.target;
+        let transferId = button.getAttribute('data-transfer-id');
+        let editingCount = button.getAttribute('data-editing-count');
+        transferIdInput.value = transferId;
+        editingCountSpan.innerHTML = editingCount;
+    }
 
     minus_button.addEventListener('click', () => {
 

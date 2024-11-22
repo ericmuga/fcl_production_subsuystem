@@ -12,6 +12,7 @@ use App\Models\MissingSlapData;
 use App\Models\Receipt;
 use App\Models\SlaughterData;
 use App\Models\Offals;
+use App\Models\LairageTransfer;
 use Illuminate\Http\Request;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -761,7 +762,7 @@ class SlaughterController extends Controller
             'G0104' => 'Suckling',
         ];       
 
-        $transfers = DB::table('idt_transfers as transfers')
+        $transfers = DB::table('lairage_transfers as transfers')
                 ->whereDate('transfers.created_at', '>=', today()->subDays(2))
                 ->whereIn('product_code', array_keys($animalTypes))
                 ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
@@ -782,7 +783,7 @@ class SlaughterController extends Controller
             'G0104' => 'Suckling',
         ];       
 
-        $transfers = DB::table('idt_transfers as transfers')
+        $transfers = DB::table('lairage_transfers as transfers')
                 ->whereDate('transfers.created_at', '>=', today()->subDays(2))
                 ->whereIn('product_code', array_keys($animalTypes))
                 ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
@@ -807,7 +808,7 @@ class SlaughterController extends Controller
             $date = Carbon::today();
         }
         
-        $transferSummary = DB::table('idt_transfers')
+        $transferSummary = DB::table('lairage_transfers')
         ->whereDate('created_at', '=', $date)
         ->whereIn('product_code', array_keys($animalTypes))
         ->select('product_code', DB::raw("CAST(created_at AS DATE) as transfer_date"), DB::raw('COUNT(*) as total_transfers'))
@@ -824,15 +825,9 @@ class SlaughterController extends Controller
     {
         try {
             // try save
-            DB::table('idt_transfers')->insert([
+            LairageTransfer::create([
                 'product_code' => $request->product_code,
-                'location_code' => '1010',
-                'total_pieces' => $request->total_pieces,
-                'total_weight' => '0',
-                'batch_no' => '0',
-                'with_variance' => '0',
-                'transfer_from' => '1000',
-                'transfer_type' => 0,
+                'count' => $request->count,
                 'user_id' => Auth::id(),
             ]);
 
@@ -849,13 +844,12 @@ class SlaughterController extends Controller
     public function updateLairageTransfer(Request $request,Helpers $helpers)
     {
         try {
+            Log::info('Lairage Transfer Update Request:', $request->all());
             // try save
-            DB::table('idt_transfers')
-                ->where('id', $request->transfer_id)
+
+            LairageTransfer::where('id', $request->transfer_id)
                 ->update([
                     'product_code' => $request->edit_product_code,
-                    'updated_at' => Carbon::now(),
-                    'edited' => 1,
                     'edited_by' => Auth::id(),
                 ]);
             Toastr::success('Updated transfer record successfully', 'Success');
