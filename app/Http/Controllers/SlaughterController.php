@@ -219,6 +219,21 @@ class SlaughterController extends Controller
             // DB::table('slaughter_data')->insert($data);
             $id = DB::table('slaughter_data')->insertGetId($data);
 
+            if ($request->has('disease_investigation')) {
+                $disease_data = [
+                    'slaughter_id' => $id,
+                    'disease_code' => 'FC20',
+                    'receipt_no' => $request->receipt_no,
+                    'slapmark' => $request->slapmark,
+                    'item_code' => $request->carcass_type,
+                    'user_id' => Auth::id(),
+                ];
+
+                DB::table('slaughter_disease')->insert($disease_data);
+
+                $data['disease_code'] = 'FC20';
+            }
+
             // Add the ID and timestamps to the data array for queueing
             $data['id'] = $id;
             $data['timestamp'] = now()->toDateTimeString();
