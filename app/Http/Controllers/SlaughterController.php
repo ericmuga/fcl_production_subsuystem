@@ -219,7 +219,7 @@ class SlaughterController extends Controller
             // DB::table('slaughter_data')->insert($data);
             $id = DB::table('slaughter_data')->insertGetId($data);
 
-            if ($request->has('disease_investigation')) {
+            if ($request->disease_investigation == 'on') {
                 $disease_data = [
                     'slaughter_id' => $id,
                     'disease_code' => 'FC20',
