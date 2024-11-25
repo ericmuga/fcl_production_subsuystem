@@ -221,7 +221,6 @@ class SlaughterController extends Controller
 
             if ($request->disease_investigation == 'on') {
                 $disease_data = [
-                    'slaughter_id' => $id,
                     'disease_code' => 'FC20',
                     'receipt_no' => $request->receipt_no,
                     'slapmark' => $request->slapmark,
@@ -229,7 +228,7 @@ class SlaughterController extends Controller
                     'user_id' => Auth::id(),
                 ];
 
-                DB::table('slaughter_disease')->insert($disease_data);
+                DB::table('disease_entries')->insert($disease_data);
 
                 $data['disease_code'] = 'FC20';
             }
