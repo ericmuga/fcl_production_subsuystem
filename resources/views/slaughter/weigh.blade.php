@@ -155,6 +155,10 @@
                     <input type="text" class="form-control" id="classification_code" name="classification_code"
                         placeholder="" readonly required>
                 </div>
+                <div class="form-group">
+                    <label for="disease_investigation">Held for further investigation?</label>
+                    <input type="checkbox" id="disease_investigation" name="disease_investigation">
+                </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" id="btn_save" onclick="return validateOnSubmit()"
                         class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i class="fa fa-paper-plane"

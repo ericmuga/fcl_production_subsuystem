@@ -219,6 +219,21 @@ class SlaughterController extends Controller
             // DB::table('slaughter_data')->insert($data);
             $id = DB::table('slaughter_data')->insertGetId($data);
 
+            if ($request->disease_investigation == 'on') {
+                $disease_data = [
+                    'slaughter_id' => $id,
+                    'disease_code' => 'FC20',
+                    'receipt_no' => $request->receipt_no,
+                    'slapmark' => $request->slapmark,
+                    'item_code' => $request->carcass_type,
+                    'user_id' => Auth::id(),
+                ];
+
+                DB::table('slaughter_disease')->insert($disease_data);
+
+                $data['disease_code'] = 'FC20';
+            }
+
             // Add the ID and timestamps to the data array for queueing
             $data['id'] = $id;
             $data['timestamp'] = now()->toDateTimeString();
@@ -700,6 +715,7 @@ class SlaughterController extends Controller
         
         $diseaseCodes = Cache::remember('diseaseCodes', now()->addMinutes(120), function () {
             return DB::table('disease_list')
+                ->where('active', 1)
                 ->get();
         });
 
@@ -711,9 +727,8 @@ class SlaughterController extends Controller
         $diseaseEntries = DB::table('disease_entries as a')
                 ->leftJoin('users as b', 'a.user_id', '=', 'b.id')
                 ->select('a.*', 'b.username as user_name')
-                ->whereDate('a.created_at', '>=', Carbon::yesterday())
+                ->whereDate('a.created_at', '>=', today()->subDays(2))
                 ->orderByDesc('id')
-                ->take(1000)
                 ->get();
 
         $receipts = DB::table('receipts')
