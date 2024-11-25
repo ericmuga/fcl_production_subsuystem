@@ -281,6 +281,7 @@ $arr_products = $products->toArray();
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sno</th>
                                     <th>Code </th>
                                     <th>Carcass </th>
                                     <th>No. of Carcass</th>
@@ -291,6 +292,7 @@ $arr_products = $products->toArray();
                             <tfoot>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sno</th>
                                     <th>Code </th>
                                     <th>Carcass </th>
                                     <th>No. of Carcass</th>
@@ -301,7 +303,8 @@ $arr_products = $products->toArray();
                             <tbody>
                                 @foreach($beheading_data as $data)
                                 <tr>
-                                    <td>{{ $i++ }}</td>
+                                    <td>{{ $loop->iteration}}</td>
+                                    <td>{{ $data->id }}</td>
                                     <td id="edit1ModalShow" data-id="{{$data->id}}"
                                         data-product_code="{{$data->item_code}}" data-item="{{$data->description}}"
                                         data-no_carcass="{{ $data->no_of_carcass }}"
@@ -341,6 +344,7 @@ $arr_products = $products->toArray();
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sno</th>
                                     <th>Product Code</th>
                                     <th>Product</th>
                                     <th>Scale Weight(kgs)</th>
@@ -351,6 +355,7 @@ $arr_products = $products->toArray();
                             <tfoot>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sno</th>
                                     <th>Product Code</th>
                                     <th>Product</th>
                                     <th>Scale Weight(kgs)</th>
@@ -362,6 +367,7 @@ $arr_products = $products->toArray();
                                 @foreach($butchery_data as $data)
                                 <tr>
                                     <td>{{ $loop->iteration}}</td>
+                                    <td>{{ $data->id }}</td>
                                     <td id="itemCodeModalShow" data-id="{{$data->id}}"
                                         data-item_code="{{trim($data->item_code)}}" data-item="{{$data->description}}" data-pieces="{{ $data->no_of_items }}"
                                         data-weight="{{number_format($data->actual_weight, 2)}}"><a

@@ -233,6 +233,7 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sno</th>
                                     <th>Code </th>
                                     <th>product </th>
                                     <th>Product Type</th>
@@ -249,6 +250,7 @@
                             <tfoot>
                                 <tr>
                                     <th>#</th>
+                                    <th>Sno</th>
                                     <th>Code </th>
                                     <th>product </th>
                                     <th>Product Type</th>
@@ -265,7 +267,8 @@
                             <tbody>
                                 @foreach($deboning_data as $data)
                                     <tr>
-                                        <td>{{ $i++ }}</td>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $data->id }}</td>
                                         {{-- Allow edits for only today --}}
                                         @php
                                             $createdAtDate = \Carbon\Carbon::parse($data->created_at)->format('Y-m-d');
