@@ -715,6 +715,7 @@ class SlaughterController extends Controller
         
         $diseaseCodes = Cache::remember('diseaseCodes', now()->addMinutes(120), function () {
             return DB::table('disease_list')
+                ->where('active', 1)
                 ->get();
         });
 
