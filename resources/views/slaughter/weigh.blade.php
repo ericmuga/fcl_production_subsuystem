@@ -156,8 +156,8 @@
                         placeholder="" readonly required>
                 </div>
                 <div class="form-group">
+                    <input type="checkbox" class="form-check-input" id="disease_investigation" name="disease_investigation" style="transform: scale(1.5);">
                     <label for="disease_investigation">Held for further investigation?</label>
-                    <input type="checkbox" id="disease_investigation" name="disease_investigation">
                 </div>
                 <div class="form-group" style="padding-top: 5%">
                     <button type="submit" id="btn_save" onclick="return validateOnSubmit()"
