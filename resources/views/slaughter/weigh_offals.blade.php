@@ -23,7 +23,7 @@
 
                     <div class="row">
                         <div class="col-12">
-                            @if(empty($configs))
+                            @if(count($configs) === 0)
                                 <small>No comport conifgured</small>
                             @else
                             <small>
@@ -60,7 +60,7 @@
                         <div class="col-6">
                             <div class="form-group">
                             <label for="tare_weight">Tare-Weight</label>
-                                @if(empty($configs))
+                                @if(count($configs) === 0)
                                 <input type="number" class="form-control" id="tare_weight" name="tare_weight" value="0.00" readonly required>
                                 @else
                                 <input type="number" class="form-control" id="tare_weight" name="tare_weight"
