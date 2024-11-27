@@ -269,7 +269,7 @@ class ButcheryController extends Controller
 
             if (in_array($carcassType, ['G1032', 'G1033', 'G1034'])) {
                 // Insert sale data for specific carcass types
-                DB::table('sales')->insert(array_merge($baseData, ['process_code' => 0]));
+                $id = DB::table('sales')->insertGetId(array_merge($baseData, ['process_code' => 0]));
                 Toastr::success('Sale recorded successfully', 'Success');
                 $transfer = [
                     'product_code' => $carcassType,
@@ -277,9 +277,11 @@ class ButcheryController extends Controller
                     'transfer_to_location' => 3535,
                     'total_pieces' => $request->no_of_carcass,
                     'total_weight' => $request->net,
-                    'production_date' => today()
+                    'production_date' => today(),
+                    'id' => $id, // Add the ID to the transfer array
+                    'timestamp' => now()->toDateTimeString()
                 ];
-                $transfer['timestamp'] = now()->toDateTimeString();
+
                 $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
                 return redirect()->back();
             }
@@ -335,14 +337,14 @@ class ButcheryController extends Controller
                     $data['item_code'] = $helpers->getSowItemCodeConversion($item_code);
                 }
 
-                DB::table('sales')->insert([
+                $id = DB::table('sales')->insertGetId([
                     'item_code' => $item_code,
                     'no_of_pieces' => $request->no_of_items,
                     'actual_weight' => $request->reading2,
                     'net_weight' => $request->net2,
                     'user_id' => $user_id,
                     'no_of_carcass' => 0,
-                    'process_code' => 0,
+                    'process_code' => 0
                 ]);
 
                 $transfer = [
@@ -351,10 +353,11 @@ class ButcheryController extends Controller
                     'transfer_to_location' => 3535,
                     'no_of_pieces' => $request->no_of_items,
                     'total_weight' => $request->net2,
-                    'production_date' => today()
+                    'production_date' => today(),
+                    'timestamp' => now()->toDateTimeString(),
+                    'id' => $id,
                 ];
 
-                $transfer['timestamp'] = now()->toDateTimeString();
                 $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
 
                 Toastr::success('Sale recorded successfully', 'Success');
@@ -492,7 +495,7 @@ class ButcheryController extends Controller
                     ]);
 
                 // insert negative sales
-                DB::table('sales')->insert([
+                $id = DB::table('sales')->insertGetId([
                     'item_code' => $request->return_item_code,
                     'no_of_pieces' => -1 * abs($request->return_no_carcass),
                     'no_of_carcass' => 0,
@@ -510,10 +513,11 @@ class ButcheryController extends Controller
                     'transfer_to_location' => 1570,
                     'no_of_pieces' => $request->return_no_carcass,
                     'total_weight' => $request->return_weight,
-                    'production_date' => today()
+                    'production_date' => today(),
+                    'id' => $id,
+                    'timestamp' => now()->toDateTimeString()
                 ];
 
-                $transfer['timestamp'] = now()->toDateTimeString();
                 $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
 
             });
