@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\FreshIdtHistoryExport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Session;
 
 class FreshcutsBulkController extends Controller
 {
@@ -284,5 +288,31 @@ class FreshcutsBulkController extends Controller
             ->get();
 
         return view('fresh_bulk.idt-report', compact('title', 'transfer_lines', 'helpers', 'range_filter'));
+    }
+    public function freshIdtReport(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $has_variance = 0;
+        $ext = '.xlsx';
+
+        $entries = DB::table('idt_transfers')
+            ->where('idt_transfers.transfer_from', '1570')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->whereDate('idt_transfers.created_at', '>=', $from_date)
+            ->whereDate('idt_transfers.created_at', '<=', $to_date)
+            ->where('idt_transfers.location_code', $request->transfer_to)
+            ->select('idt_transfers.id', 'idt_transfers.product_code', 'idt_transfers.location_code', 'idt_transfers.chiller_code', 'idt_transfers.total_crates', 'idt_transfers.total_pieces',
+            'idt_transfers.total_weight', 'idt_transfers.description', 'idt_transfers.batch_no', 'idt_transfers.transfer_type', 'idt_transfers.receiver_total_crates', 
+            'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', 'idt_transfers.production_date', 'idt_transfers.manual_weight',
+            'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username', 'idt_transfers.created_at')
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $entries);
+
+        return Excel::download(new FreshIdtHistoryExport, "Fresh IdtHistory to {$request->transfer_to} from- {$request->from_date} to {$request->to_date} $ext");
     }
 }

@@ -15,6 +15,9 @@
 <div class="col-md-12 text-left" style="margin-bottom: 1%">
     <button class="btn btn-success btn-lg" data-toggle="collapse" data-target="#export_data"><i
             class="fas fa-file-excel"></i> Generate Combined Report</button>
+    <button class="btn btn-success btn-lg" data-toggle="modal" data-target="#export_lines">
+        <i class="fas fa-file-excel"></i> Generate Lines Report
+    </button>
     <div id="export_data" class="collapse"><br>
         <div class="form-inputs">
             <div class="row">
@@ -117,4 +120,42 @@
 </div>
 <!-- /.card -->
 <!-- /.col -->
+
+<div id="export_lines" class="modal">
+    <div class="modal-dialog">
+        <form class="modal-content" action="{{ route('export-breaking-lines-report') }}" method="post" id="export-logs-form">
+            {{ csrf_field() }}
+            <h3 class="modal-header">Export data</h3>
+            <div class="modal-body">
+                <h6>*Filter by date range</h6>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <label for="stemplate_date_created_from_flagged">From: (dd/mm/yyyy)</label>
+                        <input type="date" class="form-control" name="from_date"
+                            id="stemplate_date_created_from_flagged" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="stemplate_date_created_from_flagged">To: (dd/mm/yyyy)</label>
+                        <input type="date" class="form-control" name="to_date"
+                            id="stemplate_date_created_from_flagged" required>
+                    </div>
+                </div>
+                @if(count($errors))
+                <ol>
+                    <h6><span class="label label-danger">Errors</span></h6>
+                    @foreach($errors->all() as $error)
+                    <li> <code>{{$error}}</code></li>
+                    @endforeach
+                </ol>
+                @endif
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary ">
+                    <i class="fa fa-paper-plane" aria-hidden="true"></i> Export now
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection

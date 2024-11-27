@@ -124,6 +124,8 @@ Route::get('/butchery/scale3-products', [ButcheryController::class, 'getDeboning
 Route::get('/butchery/scale-settings/{filter?}/{layout?}', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
+Route::post('export-beheading-lines-report', [ButcheryController::class, 'linesBeheadingReport'])->name('export-beheading-lines-report');
+Route::post('export-breaking-lines-report', [ButcheryController::class, 'linesBreakingReport'])->name('export-breaking-lines-report');
 
 // Marination
 Route::get('butchery-marination', [ButcheryController::class, 'weighMarination'])->name('weigh_marination');
@@ -147,6 +149,7 @@ Route::prefix('freshcuts_bulk')->group(function () {
     Route::post('/idt/create', [FreshcutsBulkController::class, 'createIdt'])->name('freshcuts_create_idt');
     Route::post('/cancel/idt-issue', [FreshcutsBulkController::class, 'cancelIdtIssue'])->name('freshcuts_cancel_idt');
     Route::get('/idt-report/{filter?}', [FreshcutsBulkController::class, 'idtReport'])->name('freshcuts_bulk_report');
+    Route::post('/idt-report/export', [FreshcutsBulkController::class, 'freshIdtReport'])->name('fresh_idt_report');
 });
 
 /*-------------End fresh cuts and bulk ------------------ */
