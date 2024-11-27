@@ -32,7 +32,7 @@ class CreateIdtTransfersTable extends Migration
             $table->integer('black_crates')->default(0);
             $table->bigInteger('received_by')->nullable(); 
             $table->bigInteger('edited_by')->nullable();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->nullable();
             $table->float('receiver_total_crates')->nullable();
             $table->float('receiver_full_crates')->nullable();
             $table->float('receiver_incomplete_crate_pieces')->nullable();
