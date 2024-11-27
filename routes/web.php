@@ -147,6 +147,7 @@ Route::prefix('freshcuts_bulk')->group(function () {
     Route::post('/idt/create', [FreshcutsBulkController::class, 'createIdt'])->name('freshcuts_create_idt');
     Route::post('/cancel/idt-issue', [FreshcutsBulkController::class, 'cancelIdtIssue'])->name('freshcuts_cancel_idt');
     Route::get('/idt-report/{filter?}', [FreshcutsBulkController::class, 'idtReport'])->name('freshcuts_bulk_report');
+    Route::post('/idt-report/export', [FreshcutsBulkController::class, 'freshIdtReport'])->name('fresh_idt_report');
 });
 
 /*-------------End fresh cuts and bulk ------------------ */
