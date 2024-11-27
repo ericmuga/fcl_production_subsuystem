@@ -124,6 +124,7 @@ Route::get('/butchery/scale3-products', [ButcheryController::class, 'getDeboning
 Route::get('/butchery/scale-settings/{filter?}/{layout?}', [ButcheryController::class, 'scaleSettings'])->name('butchery_scale_settings');
 Route::post('/butchery/update/scale-settings', [ButcheryController::class, 'UpdateScalesettings'])->name('butchery_update_scale_settings');
 Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])->name('butchery_change_password');
+Route::post('export-beheading-lines-report', [ButcheryController::class, 'linesBeheadingReport'])->name('export-beheading-lines-report');
 
 // Marination
 Route::get('butchery-marination', [ButcheryController::class, 'weighMarination'])->name('weigh_marination');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\BeheadedCombinedExport;
+use App\Exports\BeheadedLinesExport;
 use App\Exports\BreakingCombinedExport;
 use App\Exports\DebonedCombinedExport;
 use App\Models\BeheadingData;
@@ -1289,5 +1290,23 @@ class ButcheryController extends Controller
     public function insertItemLocations(Helpers $helpers)
     {
         return $helpers->insertItemLocations();
+    }
+
+    public function linesBeheadingReport(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
+        $beheading_data = DB::table('beheading_data')
+            ->whereDate('beheading_data.created_at', '>=', $from_date)
+            ->whereDate('beheading_data.created_at', '<=', $to_date)
+            ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
+            ->select('beheading_data.item_code', 'products.description', 'beheading_data.no_of_carcass', 'beheading_data.net_weight', 'beheading_data.process_code', 'beheading_data.return_entry')
+            ->orderBy('beheading_data.created_at', 'DESC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $beheading_data);
+
+        return Excel::download(new BeheadedLinesExport, 'BeheadingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 }
