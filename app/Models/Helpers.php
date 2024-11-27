@@ -461,6 +461,7 @@ class Helpers
             'master_data_disease_list.wms',
             'master_data_assets.wms',
             'master_data_recipe.wms',
+            'intercompany_transfers.wms',
             // 'yet_another_queue_name'
         ];
 
@@ -593,7 +594,22 @@ class Helpers
                         );
                     }
                 });
-            }
+            },
+            'intercompany_transfers.wms' => function ($msg) {
+                $this->processQueueMessage($msg, 'Intercompany Transfers', function ($data) {
+                    DB::table('idt_transfers')->insert([
+                        'product_code' => $data['item_code'],
+                        'location_code' => '1570',
+                        'total_pieces' => isset($data['no_of_pieces']) ? $data['no_of_pieces'] : 0,
+                        'total_weight' => $data['net_weight'],
+                        'batch_no' => isset($data['batch_no']) ? $data['batch_no'] : 0,
+                        'with_variance' => 0,
+                        'transfer_type' => 1,
+                        'transfer_from' => $data['from_location_code'],
+                        'manual_weight' => $data['manual_weight'],
+                    ]);
+                });
+            },
         ];
 
         // Start consuming messages from each queue
