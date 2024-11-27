@@ -7,6 +7,7 @@ use App\Exports\BeheadedLinesExport;
 use App\Exports\BreakingCombinedExport;
 use App\Exports\BreakingLinesExport;
 use App\Exports\DebonedCombinedExport;
+use App\Exports\DebonedLinesExport;
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
 use App\Models\Helpers;
@@ -1328,5 +1329,24 @@ class ButcheryController extends Controller
         $exports = Session::put('session_export_data', $breaking_data);
 
         return Excel::download(new BreakingLinesExport, 'BreakingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+    }
+
+    public function linesDeboningReport(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
+        $deboned_data = DB::table('deboned_data')
+            ->whereDate('deboned_data.created_at', '>=', $from_date)
+            ->whereDate('deboned_data.created_at', '<=', $to_date)
+            ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
+            ->join('users', 'deboned_data.user_id', '=', 'users.id')
+            ->select('deboned_data.item_code', 'products.description', 'deboned_data.product_type', 'deboned_data.process_code', 'deboned_data.no_of_crates',  'deboned_data.no_of_pieces', 'deboned_data.batch_no', 'deboned_data.splitted', 'deboned_data.net_weight', 'users.username')
+            ->orderBy('deboned_data.created_at', 'DESC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $deboned_data);
+
+        return Excel::download(new DebonedLinesExport, 'DebonedPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 }
