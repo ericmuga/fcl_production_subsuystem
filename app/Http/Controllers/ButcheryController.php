@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\BeheadedCombinedExport;
 use App\Exports\BeheadedLinesExport;
 use App\Exports\BreakingCombinedExport;
+use App\Exports\BreakingLinesExport;
 use App\Exports\DebonedCombinedExport;
 use App\Models\BeheadingData;
 use App\Models\ButcheryData;
@@ -1308,5 +1309,24 @@ class ButcheryController extends Controller
         $exports = Session::put('session_export_data', $beheading_data);
 
         return Excel::download(new BeheadedLinesExport, 'BeheadingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+    }
+
+    public function linesBreakingReport(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+
+        $breaking_data = DB::table('butchery_data as breaking_data')
+            ->whereDate('breaking_data.created_at', '>=', $from_date)
+            ->whereDate('breaking_data.created_at', '<=', $to_date)
+            ->leftJoin('products', 'breaking_data.item_code', '=', 'products.code')
+            ->join('users', 'breaking_data.user_id', '=', 'users.id')
+            ->select('breaking_data.item_code', 'products.description', 'breaking_data.no_of_items', 'breaking_data.net_weight', 'breaking_data.product_type', 'breaking_data.process_code', 'breaking_data.return_entry', 'users.username')
+            ->orderBy('breaking_data.created_at', 'DESC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $breaking_data);
+
+        return Excel::download(new BreakingLinesExport, 'BreakingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 }
