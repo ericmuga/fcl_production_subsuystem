@@ -34,15 +34,8 @@
                         <input type="hidden" id="session_vehicle" name="session_vehicle" value="{{ old('vehicle') }}">
                     </div>
                     <div class="form-group">
-                        <label for="inputEmail3" class="col-form-label">Production Date (dd/mm/yyyy)</label>
-                        <div class="input-group date" id="productiondate" data-target-input="nearest">
-                            <input type="text" class="form-control datetimepicker-input" id="prod_date"
-                                name="prod_date" required data-target="#productiondate" />
-                            <div class="input-group-append" data-target="#productiondate"
-                                data-toggle="datetimepicker">
-                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                            </div>
-                        </div>
+                        <label for="prod_date" class="col-form-label">Production Date</label>
+                        <input type="date" name="prod_date" id="prod_date" class="form-control" />
                     </div>
                     <div class="form-group">
                         <label for="no_of_pieces">No. of pieces(Optional) </label>
@@ -204,16 +197,10 @@
     var tareInput = document.getElementById('tareweight');
     var netInput = document.getElementById('net');
 
-    //Date picker
-    $('#productiondate').datetimepicker({
-        format : "DD/MM/YYYY"
-    });
-
     $(document).ready(function () {
 
         getTareweight()
         getNet()
-        setProductionDate() //set production date default
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
@@ -349,21 +336,6 @@
 
     const getNet = () => {
         netInput.value = readingInput.value - tareInput.value;
-    }
-
-    const setProductionDate = () => {
-        let dateToday = new Date()
-
-        // Format the date as "DD/MM/YYYY"
-        var formattedDateToday =
-            `${padZero(dateToday.getDate())}/${padZero(dateToday.getMonth() + 1)}/${dateToday.getFullYear()}`
-        $('#prod_date').val(formattedDateToday)
-
-        // Split the date by slashes to get day, month, and year parts
-        let dateParts = formattedDateToday.split('/');
-
-        // Get the day part (the second element after splitting)
-        let day = dateParts[0]
     }
 
     const padZero = (num) => {
