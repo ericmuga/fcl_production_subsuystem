@@ -111,6 +111,70 @@ class BeefLambController extends Controller
         return view('beef_lamb.idt-receiving', compact('title', 'products', 'configs', 'entries'));
     }
 
+    public function getIdtReceivingV2(Request $request, Helpers $helpers)
+    {
+        $title = 'InterCompany Transfers';
+
+        $configs = DB::table('scale_configs')
+            ->where('scale', 'BeefReceiving')
+            ->select('scale', 'tareweight', 'comport')
+            ->get()->toArray();
+
+        $entries = DB::table('idt_transfers')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->select('idt_transfers.*', 'users.username as received_by')
+            ->where('idt_transfers.location_code', '1570')
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
+            ->get();
+
+        return view('beef_lamb.idt-receivingv2', compact('title', 'configs', 'entries', 'helpers'));
+    }
+
+    public function updateIdtReceiving(Request $request, Helpers $helpers)
+    {
+        Log::info('Request: ' . json_encode($request->all()));
+
+        $user = Auth::id();
+
+        $manual = $request->manual_weight == 'on';
+
+        try {
+            //update
+            DB::table('idt_transfers')
+                ->where('id', $request->transfer_id)
+                ->update([
+                    'manual_weight' => $manual,
+                    'receiver_total_crates' => $request->total_crates ?? 0,
+                    'receiver_total_pieces' => $request->no_of_pieces ?? 0,
+                    'receiver_total_weight' => $request->net,
+                    'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
+                    'received_by' => $user,
+                    'with_variance' => $request->with_variance ?? 0,
+                ]); 
+            $data = [
+                'product_code' => $request->product,
+                'transfer_from_location' => $request->from_location,
+                'transfer_to_location' => 1570,
+                'receiver_total_pieces' => $request->no_of_pieces ?? 0,
+                'receiver_total_weight' => $request->net,
+                'production_date' => $request->prod_date,
+                'received_by' => Auth::id(),
+                'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
+                'with_variance' => 0,
+            ];
+
+            // Publish data to RabbitMQ
+            $data['timestamp'] = now()->toDateTimeString();
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+
+            return response()->json(['success' => true, 'message' => 'Transfer updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Error updating transfer']);
+            Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
+            return back();
+        }
+    }
+
     public function saveIdtReceiving(Request $request, Helpers $helpers)
     {
         // dd($request->all());
