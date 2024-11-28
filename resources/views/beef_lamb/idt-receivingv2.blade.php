@@ -34,7 +34,7 @@
                         <input type="hidden" id="session_vehicle" name="session_vehicle" value="{{ old('vehicle') }}">
                     </div>
                     <div class="form-group">
-                        <label for="inputEmail3" class="col-form-label">Production Date</label>
+                        <label for="prod_date" class="col-form-label">Production Date</label>
                         <input type="date" name="prod_date" id="prod_date" class="form-control" />
                     </div>
                     <div class="form-group">
@@ -197,10 +197,6 @@
     var tareInput = document.getElementById('tareweight');
     var netInput = document.getElementById('net');
 
-    
-
-
-    
     $(document).ready(function () {
 
         getTareweight()
