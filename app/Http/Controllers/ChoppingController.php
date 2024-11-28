@@ -565,10 +565,18 @@ class ChoppingController extends Controller
                     ->where('template_no', $chopping_id)
                     ->first();
 
+                // Get bag ids
+                $bagItemCodes = DB::table('template_lines')
+                    ->where('description', 'like', '%bag%')
+                    ->distinct()
+                    ->pluck('item_code')
+                    ->toArray();
+
                 if ($output) {
 
                     $totalInsertedWeight = DB::table('chopping_lines')
                         ->where('chopping_id', $request->complete_run_number)
+                        ->whereNotIn('item_code', $bagItemCodes)
                         ->whereBetween('created_at', [$todayStart, $allowanceEnd])
                         ->sum('weight'); 
 
