@@ -157,6 +157,7 @@ class BeefLambController extends Controller
                 'transfer_to_location' => 1570,
                 'receiver_total_pieces' => $request->no_of_pieces ?? 0,
                 'receiver_total_weight' => $request->net,
+                'production_date' => $request->prod_date,
                 'received_by' => Auth::id(),
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
                 'with_variance' => 0,
@@ -166,12 +167,9 @@ class BeefLambController extends Controller
             $data['timestamp'] = now()->toDateTimeString();
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
-            Toastr::success("Beef/lamb IDT entry for : {$request->product} inserted successfully", 'Success');
-            return redirect()
-                ->back()
-                ->withInput();
+            return response()->json(['success' => true, 'message' => 'Transfer updated successfully']);
         } catch (\Exception $e) {
-            Toastr::error($e->getMessage(), 'Error!');
+            return response()->json(['success' => false, 'message' => 'Error updating transfer']);
             Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
             return back();
         }

@@ -34,9 +34,15 @@
                         <input type="hidden" id="session_vehicle" name="session_vehicle" value="{{ old('vehicle') }}">
                     </div>
                     <div class="form-group">
-                        <label for="production-date" class="col-form-label">Production Date (dd/mm/yyyy)</label>
-                        <input type="date" class="form-control" id="prod_date"
-                            name="production-date" required data-target="#production-date" />
+                        <label for="inputEmail3" class="col-form-label">Production Date (dd/mm/yyyy)</label>
+                        <div class="input-group date" id="productiondate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" id="prod_date"
+                                name="prod_date" required data-target="#productiondate" />
+                            <div class="input-group-append" data-target="#productiondate"
+                                data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="no_of_pieces">No. of pieces(Optional) </label>
@@ -178,7 +184,7 @@
                             </button>
                         </td>
                         @else
-                        <td><span class="badge badge-warning">no action</span></td>
+                        <td><span class="badge badge-secondary">no action</span></td>
                         @endif
                     </tr>
                     @endforeach
@@ -197,6 +203,12 @@
     var readingInput = document.getElementById('reading');
     var tareInput = document.getElementById('tareweight');
     var netInput = document.getElementById('net');
+
+    //Date picker
+    $('#productiondate').datetimepicker({
+        format : "DD/MM/YYYY"
+    });
+
     $(document).ready(function () {
 
         getTareweight()
@@ -398,9 +410,11 @@
             }).then(data => {
                 if (data.success) {
                     $('#receiveModal').modal('hide');
+                    toastr.success(data.message);
                     location.reload();
                 } else {
                     alert(data.message);
+                    toastr.error(data.message);
                 }
             })
         } catch {
