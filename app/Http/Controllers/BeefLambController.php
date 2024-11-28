@@ -125,6 +125,7 @@ class BeefLambController extends Controller
             ->select('idt_transfers.*', 'users.username as received_by')
             ->where('idt_transfers.location_code', '1570')
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
+            ->orderByDesc('idt_transfers.created_at')
             ->get();
 
         return view('beef_lamb.idt-receivingv2', compact('title', 'configs', 'entries', 'helpers'));
@@ -132,10 +133,6 @@ class BeefLambController extends Controller
 
     public function updateIdtReceiving(Request $request, Helpers $helpers)
     {
-        Log::info('Request: ' . json_encode($request->all()));
-
-        $user = Auth::id();
-
         $manual = $request->manual_weight == 'on';
 
         try {
@@ -147,8 +144,8 @@ class BeefLambController extends Controller
                     'receiver_total_crates' => $request->total_crates ?? 0,
                     'receiver_total_pieces' => $request->no_of_pieces ?? 0,
                     'receiver_total_weight' => $request->net,
-                    'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
-                    'received_by' => $user,
+                    'production_date' => $request->prod_date,
+                    'received_by' => Auth::id(),
                     'with_variance' => $request->with_variance ?? 0,
                 ]); 
             $data = [
@@ -159,7 +156,7 @@ class BeefLambController extends Controller
                 'receiver_total_weight' => $request->net,
                 'production_date' => $request->prod_date,
                 'received_by' => Auth::id(),
-                'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
+                'production_date' => $request->prod_date,
                 'with_variance' => 0,
             ];
 
