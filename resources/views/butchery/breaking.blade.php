@@ -45,7 +45,7 @@
                                     </div>
                                 </div> <br>
                                 <div class="div" align="center">
-                                    <button type="submit" class="btn btn-primary "><i class="fa fa-paper-plane"
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-paper-plane"
                                             aria-hidden="true"></i> Export now</button>
                                 </div>
                             </form>
@@ -123,9 +123,16 @@
 
 <div id="export_lines" class="modal">
     <div class="modal-dialog">
-        <form class="modal-content" action="{{ route('export-breaking-lines-report') }}" method="post" id="export-logs-form">
+        <form class="modal-content form-prevent-multiple-submits" action="{{ route('export-breaking-lines-report') }}" method="post" id="export-logs-form">
             {{ csrf_field() }}
-            <h3 class="modal-header">Export data</h3>
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    Export data
+                </h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             <div class="modal-body">
                 <h6>*Filter by date range</h6>
                 <div class="row form-group">
@@ -151,11 +158,20 @@
                 <br>
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-primary ">
+                <button type="submit" class="btn btn-primary btn-prevent-multiple-submits">
                     <i class="fa fa-paper-plane" aria-hidden="true"></i> Export now
                 </button>
             </div>
         </form>
     </div>
 </div>
+@endsection
+
+
+@section('scripts')
+<script>
+     $('.form-prevent-multiple-submits').on('submit', function () {
+        $(".btn-prevent-multiple-submits").attr('disabled', true);
+    });
+</script>
 @endsection
