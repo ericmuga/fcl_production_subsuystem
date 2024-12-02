@@ -169,20 +169,6 @@ class FreshcutsBulkController extends Controller
                     'with_variance' => 1,
                 ]);
 
-                $data = [
-                    'product_code' => $request->product,
-                    'transfer_from_location' => 1570,
-                    'transfer_to_location' => 2055,
-                    'receiver_total_pieces' => $request->no_of_pieces ?: 0,
-                    'receiver_total_weight' => $request->net,
-                    'received_by' => Auth::id(),
-                    'production_date' => today(),
-                ];
-    
-                // Publish data to RabbitMQ
-                $data['timestamp'] = now()->toDateTimeString();
-                $helpers->publishToQueue($data, 'production_data_transfer.bc');
-
             } else {
                 //for despatch
                 DB::table('idt_transfers')->insert([
@@ -203,6 +189,20 @@ class FreshcutsBulkController extends Controller
                     'user_id' => Auth::id(),
                 ]);
             }
+
+            $data = [
+                    'product_code' => $request->product,
+                    'transfer_from_location' => 1570,
+                    'transfer_to_location' => 2055,
+                    'receiver_total_pieces' => $request->no_of_pieces ?: 0,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => Auth::id(),
+                    'production_date' => today(),
+                ];
+    
+            // Publish data to RabbitMQ
+            $data['timestamp'] = now()->toDateTimeString();
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer recorded successfully', 'Success');
             return redirect()

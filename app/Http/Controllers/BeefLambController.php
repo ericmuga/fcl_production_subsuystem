@@ -73,6 +73,7 @@ class BeefLambController extends Controller
                 'black_crates' => $request->black_crates,
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
                 'location_code' => '1570',
+                'transfer_from' => 'B3535',
                 'manual_weight' => $manual,
                 'user_id' => Auth::id(),
             ]);
