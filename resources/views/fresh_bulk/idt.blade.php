@@ -551,7 +551,6 @@
 
         const isStartsWithG = startsWithCharacter(product_code, 'G');
         const specificGList = @json($specificGList);
-        console.log(specificGList);
         const isSpecificG = specificGList.includes(product_code);
 
         // Disable or enable options based on conditions
