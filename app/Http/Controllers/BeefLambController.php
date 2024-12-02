@@ -149,6 +149,7 @@ class BeefLambController extends Controller
                     'received_by' => Auth::id(),
                     'with_variance' => $request->with_variance ?? 0,
                 ]); 
+
             $data = [
                 'product_code' => $request->product,
                 'transfer_from_location' => $request->from_location,
@@ -158,11 +159,12 @@ class BeefLambController extends Controller
                 'production_date' => $request->prod_date,
                 'received_by' => Auth::id(),
                 'production_date' => $request->prod_date,
-                'with_variance' => 0,
+                'with_variance' => 0,                
+                'timestamp' => now()->toDateTimeString(),
+                'id' => $request->transfer_id,
             ];
 
             // Publish data to RabbitMQ
-            $data['timestamp'] = now()->toDateTimeString();
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             return response()->json(['success' => true, 'message' => 'Transfer updated successfully']);
@@ -183,7 +185,7 @@ class BeefLambController extends Controller
 
         try {
             //insert 
-            DB::table('idt_transfers')->insert([
+            $id = DB::table('idt_transfers')->insertGetId([
                 'product_code' => $request->product,
                 'batch_no' => $request->batch_no,
                 'total_crates' => $request->total_crates,
@@ -208,11 +210,12 @@ class BeefLambController extends Controller
                 'receiver_total_weight' => $request->net,
                 'received_by' => Auth::id(),
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
-                'with_variance' => 0,
+                'with_variance' => 0,                
+                'timestamp' => now()->toDateTimeString(),
+                'id' => $id,
             ];
 
             // Publish data to RabbitMQ
-            $data['timestamp'] = now()->toDateTimeString();
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success("Beef/lamb IDT entry for : {$request->product} inserted successfully", 'Success');

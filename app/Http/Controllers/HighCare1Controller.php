@@ -275,10 +275,11 @@ class HighCare1Controller extends Controller
                 'received_by' => Auth::id(),
                 'production_date' => $transfer->production_date,
                 'with_variance' => $request->valid_match,
+                'timestamp' => now()->toDateTimeString(),
+                'id' => $request->item_id
             ];
 
             // Publish data to RabbitMQ
-            $data['timestamp'] = now()->toDateTimeString();
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer received successfully', 'Success');

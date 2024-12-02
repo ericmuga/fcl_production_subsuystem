@@ -922,11 +922,12 @@ class SlaughterController extends Controller
                 'receiver_total_weight' => $request->net_weight,
                 'received_by' => Auth::id(),
                 'transfer_type' => 0,
+                'timestamp' => now()->toDateTimeString()
             ];
-            DB::table('idt_transfers')->insert($data);
+            $id = DB::table('idt_transfers')->insertGetId($data);
 
             //write to rabbitmq
-            $data['timestamp'] = now()->toDateTimeString();
+            $data['id'] = $id;
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('record added successfully', 'Success');

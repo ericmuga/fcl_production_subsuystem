@@ -121,7 +121,7 @@ class FreshcutsBulkController extends Controller
             // try save
             if ($location == '2055') {
                 # save for sausage
-                DB::table('idt_transfers')->insert([
+                $id = DB::table('idt_transfers')->insertGetId([
                     'product_code' => $request->product,
                     'location_code' => $location, //transfer to dispatch default
                     'chiller_code' => $request->chiller_code ?: 'C',
@@ -147,7 +147,7 @@ class FreshcutsBulkController extends Controller
                 
             } elseif ($location == '2500') {
                 # save for curing
-                DB::table('idt_transfers')->insert([
+                $id = DB::table('idt_transfers')->insertGetId([
                     'product_code' => $request->product,
                     'location_code' => $location, //transfer to dispatch default
                     'chiller_code' => $request->chiller_code ?: 'C',
@@ -173,7 +173,7 @@ class FreshcutsBulkController extends Controller
 
             } else {
                 //for despatch
-                DB::table('idt_transfers')->insert([
+                $id = DB::table('idt_transfers')->insertGetId([
                     'product_code' => $request->product,
                     'location_code' => $location, //transfer to dispatch default
                     'chiller_code' => $request->chiller_code,
@@ -199,11 +199,12 @@ class FreshcutsBulkController extends Controller
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
                     'receiver_total_weight' => $request->net,
                     'received_by' => Auth::id(),
-                    'production_date' => today(),
+                    'production_date' => today(),                    
+                    'timestamp' => now()->toDateTimeString(),
+                    'id' => $id,
                 ];
     
             // Publish data to RabbitMQ
-            $data['timestamp'] = now()->toDateTimeString();
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer recorded successfully', 'Success');
