@@ -80,6 +80,8 @@ class FreshcutsBulkController extends Controller
                 ->get();
         });
 
+        $specificGList = explode(',', config('app.sausage_transfer_items'));
+
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
@@ -90,7 +92,7 @@ class FreshcutsBulkController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('fresh_bulk.idt', compact('title', 'combinedResult', 'transfer_lines', 'configs', 'helpers', 'tags', 'receipt_users'));
+        return view('fresh_bulk.idt', compact('title', 'combinedResult', 'transfer_lines', 'configs', 'helpers', 'tags', 'receipt_users', 'specificGList'));
     }
 
     public function createIdt(Request $request, Helpers $helpers)

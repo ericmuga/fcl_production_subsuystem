@@ -32,6 +32,7 @@ return [
     'get_weight_endpoint' => env('GET_WEIGHT_ENDPOINT', ''),
     'manual_weights_usernames' => env('MANUAL_WEIGHTS_USERNAMES', ''),
     'despatch_supervisors' => explode(',', env('DESPATCH_SUPERVISORS', '')),
+    'sausage_transfer_items' => env('SAUSAGE_TRANSFER_ITEMS', ''),
 
     'rabbitmq_host' => env('RABBITMQ_HOST', 'localhost'),
     'rabbitmq_port' => env('RABBITMQ_PORT', ''),

@@ -362,7 +362,7 @@
 
 @section('scripts')
 <script>
-    $(document).ready(function () {
+    $(document).ready(function () {        
 
         $('#transfer_to').change(function () {
             // Get references to the select elements
@@ -535,11 +535,11 @@
     const transferToControlHandler = (product_code) => {
         const transferToSelect = document.getElementById('transfer_to');
 
-        //hide crates_div
-        let element = document.getElementById("crates_div")
+        // Hide crates_div
+        let element = document.getElementById("crates_div");
         element.setAttribute("hidden", "hidden");
 
-        //remove any selected value first.
+        // Remove any selected value first
         $('#transfer_to').val('0');
         $('#carriage_type').val('');
         $('#transfer_to').select2('destroy').select2();
@@ -550,11 +550,14 @@
         const DESPATCH_OPTION_INDEX = 3;
 
         const isStartsWithG = startsWithCharacter(product_code, 'G');
-        const isStartsWithJ = startsWithCharacter(product_code, 'J');
+        const specificGList = @json($specificGList);
+        console.log(specificGList);
+        const isSpecificG = specificGList.includes(product_code);
 
-        transferToSelect.options[SAUSAGE_OPTION_INDEX].disabled = isStartsWithJ;
-        transferToSelect.options[CURING_OPTION_INDEX].disabled = isStartsWithJ;
-        transferToSelect.options[DESPATCH_OPTION_INDEX].disabled = isStartsWithG;
+        // Disable or enable options based on conditions
+        transferToSelect.options[SAUSAGE_OPTION_INDEX].disabled = !(isStartsWithG && isSpecificG);
+        transferToSelect.options[CURING_OPTION_INDEX].disabled = false; // Adjust logic as necessary
+        transferToSelect.options[DESPATCH_OPTION_INDEX].disabled = false; // Adjust logic as necessary
     };
 
     const fetchTransferToLocations = (prod_code) => {
