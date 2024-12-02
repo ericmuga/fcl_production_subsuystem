@@ -914,8 +914,8 @@ class SlaughterController extends Controller
 
            $data = [
                 'product_code' => $request->product_code,
-                'location_code' => '',
-                'transfer_from' => '',
+                'location_code' => '1020',
+                'transfer_from' => '3035',
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
                 'total_weight' => $request->net_weight,
