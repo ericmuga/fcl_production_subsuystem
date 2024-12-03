@@ -195,7 +195,7 @@ class FreshcutsBulkController extends Controller
             $data = [
                     'product_code' => $request->product,
                     'transfer_from_location' => 1570,
-                    'transfer_to_location' => 2055,
+                    'transfer_to_location' => $location,
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
                     'receiver_total_weight' => $request->net,
                     'received_by' => Auth::id(),
