@@ -223,8 +223,8 @@ Route::prefix('v2/chopping')->group(function () {
 /*-------------Start Despatch------------------ */
 Route::get('/despatch/dashboard', [DespatchController::class, 'index'])->name('despatch_dashboard');
 Route::get('/despatch/idt/{filter?}', [DespatchController::class, 'getIdt'])->name('despatch_idt');
-Route::get('/despatch-idt/send/{filter?}', [DespatchController::class, 'issueIdt'])->name('despatch_issue_idt');
-Route::post('/despatch-idt/send/save', [DespatchController::class, 'saveIssuedIdt'])->name('despatch_save_issued_idt');
+Route::get('/despatch/issue-idt/{filter?}', [DespatchController::class, 'issueIdt'])->name('despatch_issue_idt');
+Route::post('/despatch/issue-idt/save', [DespatchController::class, 'saveIssuedIdt'])->name('despatch_save_issued_idt');
 Route::post('/receive/idt', [DespatchController::class, 'receiveTransfer'])->name('receive_idt');
 Route::post('/receive/idt-freshcuts', [DespatchController::class, 'receiveTransferFreshcuts'])->name('receive_idt_fresh');
 Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtReport'])->name('despatch_idt_report');
