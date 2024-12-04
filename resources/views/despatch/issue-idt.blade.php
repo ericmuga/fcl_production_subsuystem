@@ -7,7 +7,7 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="product_code"> Product</label>
-                    <select class="form-control select2" name="product_code" id="product_code" onchange="updateDescription(event)" required>
+                    <select class="form-control select2" name="product_code" id="product_code" required>
                         <option selected disabled value>Select product</option>
                         @foreach($products as $product)
                             <option value="{{ $product->code }}">
@@ -16,8 +16,6 @@
                         @endforeach
                     </select>
                 </div>
-                <!-- Hidden input to store the corresponding description -->
-                <input type="hidden" id="hiddenDescription" name="description" value="">
                 <div class="form-row">
                     <div class="col-md-6 form-group">
                         <label for="location_code">Transfer To</label>
@@ -106,11 +104,18 @@
                                 required>
                         </div>
                     </div>
-                </div> 
-                <div class="form-group">
-                    <label for="batch_no">Batch No </label>
-                    <input type="text" class="form-control" id="batch_no" value="" name="batch_no" required>
                 </div>
+                <div class="form-row">
+                    <div class="form-group col-12 col-md-6">
+                        <label for="batch_no">Batch No </label>
+                        <input type="text" class="form-control" id="batch_no" value="" name="batch_no" required>
+                    </div>
+                    <div class="form-group col-12 col-md-6">
+                        <label for="description">Description (optional)</label>
+                        <input type="text" class="form-control" id="description" value="" name="description" required>
+                    </div>
+                </div> 
+                
                 <div hidden id="export_desc_div" class="row form-group">
                     <div class="col-md-6">
                         <label for="desc">Export Customer </label>
@@ -477,19 +482,6 @@
         } else {
             alert("Please set comport value first");
         }
-    }
-
-    const descriptions = @json($products->pluck('description', 'code'));
-
-    function updateDescription(event) {
-        // Get the selected code from the select field
-        const selectedCode = event.target.value;
-
-        // Get the corresponding description from the descriptions object
-        const correspondingDescription = descriptions[selectedCode];
-
-        // Update the value of the hidden input field with the corresponding description
-        document.getElementById('hiddenDescription').value = correspondingDescription;
     }
 
 </script>
