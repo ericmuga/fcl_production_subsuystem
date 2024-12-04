@@ -390,7 +390,7 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs'));
+        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'filter'));
     }
 
     public function saveIssuedIdt(Request $request) {

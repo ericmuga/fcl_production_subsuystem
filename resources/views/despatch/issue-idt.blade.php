@@ -1,5 +1,9 @@
 @extends('layouts.despatch_master')
 
+@section('content-header')
+<h1 class="m-2">Issue IDTs to {{ $filter }}</h1>
+@endsection
+
 @section('content')
     <form id="form-save-freshcuts" class="card-group text-center form-prevent-multiple-submits" action="{{ route('despatch_save_issued_idt') }}" method="post">
         @csrf
