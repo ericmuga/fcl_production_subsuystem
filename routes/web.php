@@ -127,6 +127,8 @@ Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])-
 Route::post('export-beheading-lines-report', [ButcheryController::class, 'linesBeheadingReport'])->name('export-beheading-lines-report');
 Route::post('export-breaking-lines-report', [ButcheryController::class, 'linesBreakingReport'])->name('export-breaking-lines-report');
 Route::post('export-deboning-lines-report', [ButcheryController::class, 'linesDeboningReport'])->name('export-deboning-lines-report');
+Route::get('butchery/idt/receive', [ButcheryController::class, 'receiveIdt'])->name('butchery_receive_idt');
+Route::post('butchery/idt/receive/save', [ButcheryController::class, 'updateReceiveIdt'])->name('butchery_update_idt');
 
 // Marination
 Route::get('butchery-marination', [ButcheryController::class, 'weighMarination'])->name('weigh_marination');
