@@ -112,7 +112,7 @@
                     </div>
                     <div class="form-group col-12 col-md-6">
                         <label for="description">Description (optional)</label>
-                        <input type="text" class="form-control" id="description" value="" name="description" required>
+                        <input type="text" class="form-control" id="description" value="" name="description">
                     </div>
                 </div> 
                 
