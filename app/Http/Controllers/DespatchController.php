@@ -360,4 +360,66 @@ class DespatchController extends Controller
             return back();
         }
     }
+
+    public function issueIdt($filter = null)
+    {
+        $title = "Send IDT from Despatch";
+
+        $configs = DB::table('scale_configs')
+                ->where('section', 'despatch')
+                ->where('scale', 'Despatch Issue 2')
+                ->get();
+
+        $products = DB::table('products')->where('code', 'G1338')->get();
+
+        $chillers = DB::table('chillers')->where('location_code', '1570')->get();
+
+        $username = Auth::user()->username;
+
+        $query = DB::table('idt_transfers')
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->select('idt_transfers.*', 'products.description as product', 'products.unit_of_measure', 'users.username')
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->where('idt_transfers.transfer_from', '3535')
+            ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2)) // 20 days for supervisors, others 2 days back only.
+            ->when($filter == 'butchery', function ($q) {
+                $q->where('idt_transfers.location_code', '=', '1570'); // where transfer to location code is butchery
+            });
+
+        $transfer_lines = $query->get();
+
+        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'filter'));
+    }
+
+    public function saveIssuedIdt(Request $request) {
+        try {
+
+            DB::table('idt_transfers')->insert([
+                'product_code' => $request->product_code,
+                'location_code' => $request->location_code,
+                'chiller_code' => $request->chiller_code,
+                'total_pieces' => $request->no_of_pieces ?: 0,
+                'total_weight' => $request->net,
+                'total_crates' => $request->total_crates ?: 0,
+                'black_crates' => $request->black_crates,
+                'full_crates' => $request->total_crates ?: 0,
+                'incomplete_crate_pieces' => 0,
+                'transfer_type' => 0,
+                'transfer_from' => '3535',
+                'description' => $request->description,
+                'batch_no' => $request->batch_no,
+                'user_id' => Auth::id(),
+            ]);
+
+            Toastr::success('Transfer saved successfully', 'Success');
+            return redirect()->back();
+
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            Toastr::error($e->getMessage(), 'Error!');
+            return redirect()->back();
+        }
+    }
 }
