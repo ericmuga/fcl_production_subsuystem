@@ -1303,7 +1303,7 @@ class ButcheryController extends Controller
             ->whereDate('beheading_data.created_at', '>=', $from_date)
             ->whereDate('beheading_data.created_at', '<=', $to_date)
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
-            ->select('beheading_data.item_code', 'products.description', 'beheading_data.no_of_carcass', 'beheading_data.net_weight', 'beheading_data.process_code', 'beheading_data.return_entry')
+            ->select('beheading_data.id', 'beheading_data.item_code', 'products.description', 'beheading_data.no_of_carcass', 'beheading_data.net_weight', 'beheading_data.process_code', 'beheading_data.return_entry')
             ->orderBy('beheading_data.created_at', 'DESC')
             ->get();
 
@@ -1322,7 +1322,7 @@ class ButcheryController extends Controller
             ->whereDate('breaking_data.created_at', '<=', $to_date)
             ->leftJoin('products', 'breaking_data.item_code', '=', 'products.code')
             ->join('users', 'breaking_data.user_id', '=', 'users.id')
-            ->select('breaking_data.item_code', 'products.description', 'breaking_data.no_of_items', 'breaking_data.net_weight', 'breaking_data.product_type', 'breaking_data.process_code', 'breaking_data.return_entry', 'users.username')
+            ->select('breaking_data.id', 'breaking_data.item_code', 'products.description', 'breaking_data.no_of_items', 'breaking_data.net_weight', 'breaking_data.product_type', 'breaking_data.process_code', 'breaking_data.return_entry', 'users.username')
             ->orderBy('breaking_data.created_at', 'DESC')
             ->get();
 

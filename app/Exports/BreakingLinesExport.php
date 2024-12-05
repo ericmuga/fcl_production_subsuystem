@@ -21,7 +21,7 @@ class BreakingLinesExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code', 'Item Description', 'No. of Items', 'Net Weight', 'Product Type', 'Process Code',  'Return Entry', 'Recorded By'
+                'Sno', 'Item Code', 'Item Description', 'No. of Items', 'Net Weight', 'Product Type', 'Process Code',  'Return Entry', 'Recorded By'
             ];
     }
 }
