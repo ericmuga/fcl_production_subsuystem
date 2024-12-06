@@ -553,12 +553,6 @@ class ChoppingController extends Controller
                     DB::table('chopping_lines')->insert($choppingLines);
                 }
 
-                // Ensure all lines are inserted before calculating the total weight
-                DB::commit();
-
-                // Re-open the transaction for the remaining operations
-                DB::beginTransaction();
-
                 // Fetch the 'Output' item
                 $output = DB::table('template_lines')
                     ->where('type', 'Output')
