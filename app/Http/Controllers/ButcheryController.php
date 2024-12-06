@@ -1303,7 +1303,7 @@ class ButcheryController extends Controller
             ->whereDate('beheading_data.created_at', '>=', $from_date)
             ->whereDate('beheading_data.created_at', '<=', $to_date)
             ->leftJoin('products', 'beheading_data.item_code', '=', 'products.code')
-            ->select('beheading_data.item_code', 'products.description', 'beheading_data.no_of_carcass', 'beheading_data.net_weight', 'beheading_data.process_code', 'beheading_data.return_entry')
+            ->select('beheading_data.created_at', 'beheading_data.id', 'beheading_data.item_code', 'products.description', 'beheading_data.no_of_carcass', 'beheading_data.net_weight', 'beheading_data.process_code', 'beheading_data.return_entry')
             ->orderBy('beheading_data.created_at', 'DESC')
             ->get();
 
@@ -1322,7 +1322,7 @@ class ButcheryController extends Controller
             ->whereDate('breaking_data.created_at', '<=', $to_date)
             ->leftJoin('products', 'breaking_data.item_code', '=', 'products.code')
             ->join('users', 'breaking_data.user_id', '=', 'users.id')
-            ->select('breaking_data.item_code', 'products.description', 'breaking_data.no_of_items', 'breaking_data.net_weight', 'breaking_data.product_type', 'breaking_data.process_code', 'breaking_data.return_entry', 'users.username')
+            ->select('breaking_data.created_at', 'breaking_data.id', 'breaking_data.item_code', 'products.description', 'breaking_data.no_of_items', 'breaking_data.net_weight', 'breaking_data.product_type', 'breaking_data.process_code', 'breaking_data.return_entry', 'users.username')
             ->orderBy('breaking_data.created_at', 'DESC')
             ->get();
 
@@ -1348,5 +1348,87 @@ class ButcheryController extends Controller
         $exports = Session::put('session_export_data', $deboned_data);
 
         return Excel::download(new DebonedLinesExport, 'DebonedPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+    }
+
+    public function receiveIdt(Helpers $helpers, $filter = null)
+    {
+        $title = "IDT";
+
+        $configs = DB::table('scale_configs')
+                ->where('section', 'bucthery')
+                ->where('scale', 'Receive IDT')
+                ->select('scale', 'tareweight', 'comport')
+                ->get();
+
+        $items = Cache::remember('items_list', now()->addHours(10), function () {
+            return DB::table('items')
+                ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
+                ->get();
+        });
+
+        $username = Session::get('session_userName');
+
+        // dd($username);
+
+        $transfer_lines = DB::table('idt_transfers')
+        ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
+        ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+        ->select('idt_transfers.*', 'products.description as product', 'users.username')
+        ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
+        ->where('idt_transfers.transfer_from', '3535')
+        ->where('idt_transfers.location_code', '1570') 
+        ->where('idt_transfers.total_weight', '>', '0.0')
+        ->orderByDesc('idt_transfers.id')
+        ->get();
+
+        
+        $chillers = DB::table('chillers')->where('location_code', '1570')->get();
+
+        return view('butchery.idt-receive', compact('title', 'transfer_lines', 'items', 'configs', 'helpers', 'chillers', 'filter'));
+    }
+
+    public function updateReceiveIdt(Request $request, Helpers $helpers)
+    {
+        $transfer = DB::table('idt_transfers')
+            ->where('id', $request->item_id)
+            ->first();
+
+        try {
+            // try update
+            DB::table('idt_transfers')
+                ->where('id', $request->item_id)
+                ->update([
+                    'receiver_total_pieces' => $request->receiver_total_pieces,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => Auth::id(),
+                    'with_variance' => $request->valid_match,
+                    'updated_at' => now(),
+                ]);
+
+            $data = [
+                'product_code' => $transfer->product_code,
+                'transfer_from_location' => $transfer->transfer_from,
+                'transfer_to_location' => $transfer->location_code,
+                'receiver_total_pieces' => $request->f_no_of_pieces ?? 0,
+                'receiver_total_weight' => $request->net,
+                'received_by' => Auth::id(),
+                'production_date' => $transfer->production_date,
+                'with_variance' => $request->valid_match,
+                'timestamp' => now()->toDateTimeString(),
+                'id' => $request->item_id
+            ];
+
+            // Publish data to RabbitMQ
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+
+            Toastr::success('IDT Transfer received successfully', 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            $helpers->CustomErrorlogger($e->getMessage(),  __FUNCTION__);
+            return back()
+                ->withInput();
+        }
     }
 }

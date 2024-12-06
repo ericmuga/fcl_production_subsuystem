@@ -21,7 +21,7 @@ class BeheadedLinesExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Item Code', 'Item Description', 'No. of Carcasses', 'Net Weight', 'Process Code',  'Return Entry',
+                'Created DateTime', 'Sno', 'Item Code', 'Item Description', 'No. of Carcasses', 'Net Weight', 'Process Code',  'Return Entry',
             ];
     }
 }
