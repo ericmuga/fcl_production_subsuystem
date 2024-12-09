@@ -454,7 +454,7 @@ class ChoppingController extends Controller
 
         $products = Cache::remember($cacheKey, 1440, function () use ($templateNo) {
             return DB::table('template_lines')
-                ->where('template_no', 'LIKE', $templateNo . '%')
+                ->where('template_no', $templateNo)
                 ->where('item_code', 'LIKE', 'G%')
                 ->select('item_code', 'description', 'type')
                 ->get();
