@@ -183,6 +183,7 @@ class DespatchController extends Controller
                     'received_by' => Auth::id(),
                     'production_date' => $transfer->production_date,
                     'with_variance' => $request->valid_match,
+                    'id' => $request->item_id,
                     'timestamp' => now()->toDateTimeString()
                 ];
     
