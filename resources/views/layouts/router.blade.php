@@ -156,7 +156,7 @@
 </div> --}}
 
 @if (app()->environment('production'))
-    @include('prevent-inspection')
+    <!-- @include('prevent-inspection') -->
 @endif
 
 @endsection
