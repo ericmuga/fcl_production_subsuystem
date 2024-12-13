@@ -24,6 +24,7 @@ class CreateBeefSlicingTable extends Migration
             $table->integer('no_of_crates');
             $table->integer('black_crates');
             $table->string('location_code');
+            $table->string('transfer_from');
             $table->date('production_date');
             $table->tinyInteger('edited')->default(0);
             $table->tinyInteger('manual_weight')->default(0);

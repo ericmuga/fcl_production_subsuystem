@@ -526,18 +526,18 @@ class SausageController extends Controller
 
         $items =  Cache::remember('stuffing_products', now()->addHours(10), function () {
             $items = DB::table('template_lines')
-            ->where('type', 'Output')
-            ->where('description', 'like', 'mix for%')
-            ->select('item_code', 'description')
-            ->get();
+                ->where('type', 'Output')
+                ->where('description', 'like', 'mix for%')
+                ->select('item_code', 'description')
+                ->get();
 
             $special_product = DB::table('products')
-            ->where('code', 'G2024')
-            ->select('code as item_code', 'description')
-            ->first();
+                ->where('code', 'G4470')
+                ->select('code as item_code', 'description')
+                ->first();
 
             if ($special_product) {
-            $items->push($special_product);
+                $items->push($special_product);
             }
 
             return $items;
