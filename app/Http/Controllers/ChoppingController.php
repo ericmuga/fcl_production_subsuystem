@@ -500,9 +500,11 @@ class ChoppingController extends Controller
             $allowanceEnd = $todayStart->copy()->addDay()->addMinutes(30);
 
             DB::transaction(function () use ($request, $helpers, $todayStart, $allowanceEnd) {
+                // Lock the chopping record for update to prevent concurrent modifications
                 DB::table('choppings')
                     ->where('chopping_id', $request->complete_run_number)
                     ->whereBetween('created_at', [$todayStart, $allowanceEnd])
+                    ->lockForUpdate()
                     ->update([
                         'status' => 1,
                         'closed_by' => Auth::id(),
