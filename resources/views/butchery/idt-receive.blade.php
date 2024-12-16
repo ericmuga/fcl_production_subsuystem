@@ -17,25 +17,40 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="card-group">
-                        <div class="card">
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="card-body form-group">
-                                <div class="row">
+                                <div class="form-group form-row">
                                     <label for="inputEmail3" class="col-sm-4 col-form-label">Product Name </label>
                                     <div class="col-sm-8">
                                         <input type="text" readonly class="form-control" value="" id="f_item"
                                             placeholder="" name="item">
-                                        <input type="hidden" name="product" id="f_product" value="">
-                                        <input type="hidden" name="item_id" id="f_item_id" value="">
+                                        <input type="hidden" name="transfer_id" id="f_transfer_id" value="">
                                     </div>
                                 </div>
-                                <div class="row">
+                                <div class="form-group form-row">
+                                    <label for="inputEmail3" class="col-sm-4 col-form-label">No of Pieces
+                                    </label>
+                                    <div class="col-sm-8">
+                                        <input type="number" class="form-control input_params" value=""
+                                            id="receiver_total_pieces" name="receiver_total_pieces" placeholder="" required>
+                                    </div>
+                                </div>
+                                <div class="form-group form-row">
+                                    <label for="carriage_type" class="col-sm-4 col-form-label">Carriage Type</label>
+                                    <select class="form-control col-sm-8" id="carriage_type" name="carriage_type" required onchange="toggleCrateInputs(event)">
+                                        <option disabled selected value="">Select Carriage Type</option>
+                                        <option value="van">Van</option>
+                                        <option value="crate">Crates</option>
+                                    </select>
+                                </div>
+                                <div id="crate_inputs" class="form-group row" hidden>
                                     <div class="col-sm-6">
                                         <div class="row">
                                             <label for="inputEmail3" class="col-sm-5 col-form-label">Total Crates
                                             </label>
                                             <div class="col-sm-7">
-                                                <input type="number" class="form-control tareweight" value="0"
+                                                <input type="number" class="form-control tareweight" value="1" min="1" oninput="updateTare()" onchange="updateBlackMax()"
                                                     id="f_no_of_crates" placeholder="">
                                             </div>
                                         </div>
@@ -45,24 +60,19 @@
                                             <label for="inputEmail3" class="col-sm-5 col-form-label">Black Crates
                                             </label>
                                             <div class="col-sm-7">
-                                                <input type="number" class="form-control tareweight" value="0"
+                                                <input type="number" class="form-control tareweight" value="1" min="0" oninput="updateTare()"
                                                     id="f_black_crates" placeholder="">
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-5 col-form-label">Total Tareweight(kgs)
-                                    </label>
-                                    <div class="col-sm-7">
-                                        <input type="number" readonly class="form-control input_params" value="0"
-                                            id="f_tareweight" name="f_tareweight" placeholder="">
-                                    </div>
-                                </div>
+                                <input type="hidden" id="f_issued_pieces" name="issued_pieces" value="0">
+                                <input type="hidden" id="f_issued_weight" name="issued_weight" value="0">
+                                <input type="hidden" id="f_valid_match" name="valid_match" value="1">
                             </div>
                         </div>
-                        <div class="card">
-                            <div class="card-body row">
+                        <div class="col-md-6">
+                            <div class="form-group form-row">
                                 <label for="inputEmail3" class="col-sm-5 col-form-label"> Scale Reading(Kgs)</label>
                                 <div class="col-sm-7">
                                     <input type="number" step=".01" class="form-control" value="0" id="f_weight"
@@ -75,11 +85,21 @@
                                 <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                             </div>
                             @endif
-                            <div class="card-body row">
-                                <label for="inputEmail3" class="col-sm-5 col-form-label"> Net Weight(Kgs)</label>
-                                <div class="col-sm-7">
-                                    <input type="number" step=".01" class="form-control" value="0" id="net" name="net"
-                                        placeholder="" readonly required>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="form-label">Tareweight(kgs)
+                                        </label>
+                                        <input type="number" readonly class="form-control input_params" value="0"
+                                            id="f_tareweight" name="f_tareweight" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <label for="inputEmail3" class="form-label"> Net Weight(Kgs)</label>
+                                        <input type="number" step=".01" class="form-control" value="0" id="net" name="net"
+                                            placeholder="" readonly required>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group" style="padding-left: 30%; padding-top: 5%">
@@ -95,27 +115,12 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="cad">
-                            <div class="card-body form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-4 col-form-label">No of Pieces
-                                    </label>
-                                    <div class="col-sm-8">
-                                        <input type="number" class="form-control input_params" value=""
-                                            id="receiver_total_pieces" name="receiver_total_pieces" placeholder="" required>
-                                    </div>
-                                </div>
-                                <div class="form-group" style="padding-left: 30%; padding-top: 15%">
-                                    <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
-                                        onclick="return validateOnSubmit()"><i
-                                            class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
-                                </div>
-                            </div>
-                        </div>
-                        <input type="hidden" id="f_issued_weight" value="0">
-                        <input type="hidden" id="f_valid_match" name="valid_match" value="1">
                     </div>
                     <input type="hidden" name="location_code" id="location_code" value="3535">
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary btn-prevent-multiple-submits" type="submit" onclick="return validateOnSubmit()">Save</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
                 </div>
                 <div id="loading_f" class="collapse">
                     <div class="row d-flex justify-content-center">
@@ -190,15 +195,19 @@
                                     <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                     @if ($data->received_by == null)
                                     <td>
-                                        <button type="button" data-id="{{$data->id}}"
-                                            data-product="{{ $data->product_code }}"
-                                            data-item="{{ $data->product?? $data->product2 }}" data-total_pieces="{{ $data->total_pieces }}"
-                                            data-total_weight="{{ $data->total_weight }}"
-                                            data-carriage="{{ $data->total_weight }}"
-                                            data-crates="{{ $data->total_crates }}"
-                                            data-black_crates="{{ $data->black_crates }}" class="btn btn-warning btn-xs"
-                                            title="Receive transfer" id="receiveModalShow"><i
-                                                class="fa fa-check"></i>
+                                        <button
+                                            id="receiveModalShow"
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="#receiveModal"
+                                            data-id="{{$data->id}}"
+                                            data-product-name="{{ $data->product }}"
+                                            data-issued-pieces="{{ $data->total_pieces }}"
+                                            data-issued-weight="{{ $data->total_weight }}"
+                                            class="btn btn-warning btn-xs"
+                                            title="Receive transfer"
+                                            onclick="updateReceiveModalInputs(event)">
+                                            <i class="fa fa-check"></i>
                                         </button>
                                     </td>
                                     @else
@@ -222,78 +231,87 @@
 
 @section('scripts')
 <script>
+    const tareInput = document.getElementById('f_tareweight');
+    const weightInput = document.getElementById('f_weight');
+    const netInput = document.getElementById('net');
+
+    function toggleCrateInputs(event) {
+        let selected = event.target.value;
+        const crate_inputs = document.getElementById('crate_inputs');
+        if (selected == "crate") {
+            crate_inputs.removeAttribute('hidden');
+        } else {
+            crate_inputs.setAttribute('hidden', true);
+        }
+        updateTare();
+    }
+
+    function updateTare() {
+        let carriage_type = document.getElementById('carriage_type').value;
+        let tare = 0;
+        if (carriage_type == 'van') {
+            tare = 40;
+        } else if (carriage_type == 'crate') {
+            let no_of_crates = document.getElementById('f_no_of_crates').value;
+            let black_crates = document.getElementById('f_black_crates').value;
+            tare = ((parseInt(no_of_crates) * 1.8) + (parseInt(black_crates) * 0.2)).toFixed(2);
+        }
+        tareInput.value = tare;
+        getNet();
+    }
+
+    function getNet() {
+        let tareweight = tareInput.value
+        let scale_reading = weightInput.value
+
+        let net = parseFloat(scale_reading) - parseFloat(tareweight)
+       netInput.value = net.toFixed(2);
+    }
+
+    function updateBlackMax() {
+        const totalCrates = document.getElementById('f_no_of_crates').value;
+        const blackCratesInput = document.getElementById('f_black_crates');
+        blackCratesInput.max = totalCrates;
+    }
+    
+    function updateReceiveModalInputs(event) {
+        let button = event.currentTarget;
+        let id = button.getAttribute('data-id');
+        let product_name = button.getAttribute('data-product-name');
+        let issued_pieces = button.getAttribute('data-issued-pieces');
+        let issued_weight = button.getAttribute('data-issued-weight');
+
+        console.log('updating issued pieces: ' + issued_pieces + ' issued weight: ' + issued_weight);
+
+        document.getElementById('f_transfer_id').value = id;
+        document.getElementById('f_item').value = product_name;
+        document.getElementById('f_issued_pieces').value = issued_pieces;
+        document.getElementById('f_issued_weight').value = issued_weight;
+    }
+
     $(document).ready(function () {
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        $('#receiveModal').on('shown.bs.modal', function (e) {
-            e.preventDefault()
-            // calculate total tare..
-            getIssuedTareweight()
-        })
-
-        $('.crates').keyup(function () {
-            validateCrates()
-        })
-
         $('#f_weight').on("input", function () {
             getNet()
         });
 
-        // $('.tareweight').on("input change", function () {
-        //     getIssuedTareweight()
-        // });
-
         $('#manual_weight').change(function () {
             let manual_weight = document.getElementById('manual_weight');
             let reading = document.getElementById('f_weight');
+            $('#f_weight').val("");
             if (manual_weight.checked == true) {
                 reading.readOnly = false;
                 reading.focus();
-                $('#f_weight').val("");
-
             } else {
                 reading.readOnly = true;
-            }
-        });
-
-        $("body").on("click", "#receiveModalShow", function (e) {
-            e.preventDefault();
-
-            let id = $(this).data('id');
-            let code = $(this).data('product');
-            let item = $(this).data('item');
-            let issued_weight = $(this).data('total_weight');
-            let crates = $(this).data('crates');
-            let black_crates = $(this).data('black_crates');
-
-            $('#f_item_id').val(id);
-            $('#f_product').val(code); //item_code
-            $('#f_item').val(item); //item
-            $('#f_issued_weight').val(issued_weight);
-            $('#f_no_of_crates').val(crates);
-            $('#f_black_crates').val(black_crates);
-
-            $('#receiveModal').modal('show');
-        });
+            }           
+        }); 
 
     });
-
-    const getIssuedTareweight = () => {
-        let tare = 40
-        let no_of_crates = $('#f_no_of_crates').val();
-        let black_crates = $('#f_black_crates').val();
-
-        if (no_of_crates != 0) {
-            tare = (parseInt(no_of_crates) * 1.8) + (parseInt(black_crates) * 0.2)
-        }
-
-        $('#f_tareweight').val(tare.toFixed(2))
-
-        propCratesProperty(no_of_crates)
-    }
 
     const propCratesProperty = (no_of_crates) => {
         const isReadOnly = no_of_crates === 0;
@@ -303,30 +321,34 @@
     const validateOnSubmit = () => {
         let status = true
 
-        let total_crates = $("#total_crates").val();
-        let full_crates = $("#full_crates").val();
-        let incomplete_pieces = $('#incomplete_pieces').val();
+        let total_crates = $("#f_no_of_crates").val();
+        let black_crates = $("#f_black_crates").val();
 
-        let pieces = $('#pieces').val();
-        let weight = $('#weight').val();
+        let recieving_pieces = $('#receiver_total_pieces').val();
+        let receiving_weight = $('#net').val();
 
-        let issued_pieces = $('#issued_pieces').val();
-        let issued_weight = $('#issued_weight').val();
+        let issued_pieces = $('#f_issued_pieces').val();
+        let issued_weight = $('#f_issued_weight').val();
 
-        let crates_validity = $("#crates_valid").val();
 
-        if (crates_validity == 0) {
+        if (black_crates > total_crates) {
             status = false
             alert("please ensure you have valid crates before submitting")
 
-        } else if (parseInt(full_crates) < parseInt(total_crates) && (parseInt(incomplete_pieces) < 1)) {
-            status = false
-            alert("please enter incomplete pieces")
-        } else if (parseInt(pieces) <= 0 || parseFloat(weight) <= 0) {
-            status = false
-            alert("please ensure the pieces and weight have a value of more than zero")
-        } else if (parseInt(issued_pieces) != parseInt(pieces)) {
+        } else if (parseInt(issued_pieces) != parseInt(recieving_pieces)) {
+            console.log("issued pieces: " + issued_pieces + " recieving pieces: " + recieving_pieces)
             const response = confirm("Issued does not match Receiving Qty. Are you sure you want to continue?");
+
+            if (response) {
+                setMatchValidity(0)
+                alert("Thanks for confirming");
+            } else {
+                status = false
+                alert("You have cancelled this process");
+            }
+        } else if (parseInt(issued_weight) != parseInt(receiving_weight)) {
+            console.log("issued weight: " + issued_weight + " recieving weight: " + receiving_weight)
+            const response = confirm("Issued does not match Receiving Weight. Are you sure you want to continue?");
 
             if (response) {
                 setMatchValidity(0)
@@ -354,53 +376,13 @@
         }
     }
 
-    const setCratesValidityMessage = (field_succ, field_err, message_succ, message_err) => {
-        document.getElementById(field_succ).innerHTML = message_succ
-        document.getElementById(field_err).innerHTML = message_err
-    }
-
     const setUserMessage = (field_succ, field_err, message_succ, message_err) => {
         document.getElementById(field_succ).innerHTML = message_succ
         document.getElementById(field_err).innerHTML = message_err
     }
 
-    const validateCrates = () => {
-        console.log('validating crates')
-        let incomplete_pieces = $('#incomplete_pieces').val()
-
-        let total_crates = $("#total_crates").val();
-        let full_crates = $("#full_crates").val();
-
-        let diff = parseInt(total_crates) - parseInt(full_crates)
-
-        
-        if (diff < 0 || diff > 1) {
-            setCratesValidity(0)
-            setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
-            $('#pieces').val(0)
-            $('#weight').val(0)
-
-        } else {
-            setCratesValidity(1)
-            setCratesValidityMessage('succ1', 'err1', '', '')
-        }
-        
-    }
-
-    const setCratesValidity = (status) => {
-        $("#crates_valid").val(status)
-    }
-
     const setMatchValidity = (status) => {
         $("#valid_match").val(status)
-    }
-
-    const getNet = () => {
-        let issued_tareweight = $('#f_tareweight').val()
-        let scale_reading = $('#f_weight').val()
-
-        let net = parseFloat(scale_reading) - parseFloat(issued_tareweight)
-        $('#net').val(net.toFixed(2));
     }
 
     //read scale
