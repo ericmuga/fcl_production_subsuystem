@@ -543,12 +543,62 @@ class ChoppingController extends Controller
                     ];
                 }
 
-                // Special condition for chopping_id '1230L83' or '1230L73'
-                if (in_array($chopping_id, ['1230L83', '1230L73'])) {
+                $waterValues = [
+                    '1230G42' => 27,
+                    '1230G43' => 27,
+                    '1230J39' => 5,
+                    '1230J45' => 5,
+                    '1230J46' => 8,
+                    '1230J63' => 5,
+                    '1230J72' => 5,
+                    '1230J83' => 7,
+                    '1230J84' => 7,
+                    '1230J86' => 6.5,
+                    '1230J93' => 5,
+                    '1230K01' => 5,
+                    '1230K09' => 7.5,
+                    '1230K19' => 7,
+                    '1230K31' => 10.5,
+                    '1230K37' => 7.5,
+                    '1230K38' => 7.5,
+                    '1230K41' => 7.5,
+                    '1230K54' => 10,
+                    '1230K71' => 10,
+                    '1230K72' => 7,
+                    '1230K95' => 5,
+                    '1230K96' => 7.5,
+                    '1230L03' => 6,
+                    '1230L83' => 9,
+                    '1230L84' => 9,
+                    '1230M26' => 6,
+                    '1230M31' => 4,
+                    '1230M32' => 4,
+                    '1230M33' => 7.5,
+                    '1230M46' => 4,
+                    '1230M48' => 10,
+                    '1230M56' => 7,
+                    '1230M62' => 4,
+                    '1230M66' => 6,
+                    '1230M74' => 3,
+                    '1230M76' => 3,
+                    '1230J07' => 7,
+                    '1230J87' => 5,
+                    '1230J88' => 5,
+                    '1230K56' => 10,
+                    '1230L09' => 5,
+                    '1230L10' => 5,
+                    '1230L25' => 5,
+                    '1230M52' => 10,
+                ];
+
+
+                // water auto insertions
+                if (in_array($chopping_id, array_keys($waterValues))) {
+                    $water = $waterValues[$chopping_id]; // Get the water value from the array
                     $choppingLines[] = [
                         'chopping_id' => $request->complete_run_number,
                         'item_code' => 'G8900',
-                        'weight' => (9 / (float)$request->batch_size) * 2,
+                        'weight' => ($water / (float)$request->batch_size) * 2, // Use water value for calculation
                     ];
                 }
 
