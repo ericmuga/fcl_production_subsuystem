@@ -354,6 +354,8 @@
                 return;
             }
 
+            alert(net)
+
             if (parseFloat(net) <= 1 ) {
                 alert('Please ensure Net weight is valid.');
                 return;
@@ -395,6 +397,7 @@
     });
 
     const getNet = () => {
+        console.log('triggered')
         let reading = parseFloat($('#reading').val());
         let prev_reading = parseFloat($('#previous_reading').val());
         let tareweight = parseFloat($('#tareweight').val());
@@ -462,7 +465,11 @@
                 clearTimeout(timeoutId); // Clear the timeout
                 if (response.data.success) {
                     // Set the value of the input field with id="reading"
-                    document.getElementById('reading').value = parseFloat(response.data.response).toFixed(2);
+                    const readingInput = document.getElementById('reading');
+                    readingInput.value = parseFloat(response.data.response).toFixed(2);
+
+                    // Trigger the getNet function manually
+                    getNet();
                 } else {
                     console.error('API call was not successful.');
                     document.querySelector('.form-group.error').innerHTML = '<div class="alert alert-danger small-alert">API call was not successful.</div>';
@@ -482,7 +489,8 @@
                 button.disabled = false;
                 button.innerHTML = originalLabel;
             });
-    }
+    };
+
 
     const checkClosingRunNumber = () => {
         const completeRunNumber = document.getElementById('complete_run_number').value;
