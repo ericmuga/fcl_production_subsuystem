@@ -1396,7 +1396,7 @@ class ButcheryController extends Controller
         try {
             // try update
             DB::table('idt_transfers')
-                ->where('id', $request->item_id)
+                ->where('id', $request->transfer_id)
                 ->update([
                     'receiver_total_pieces' => $request->receiver_total_pieces,
                     'receiver_total_weight' => $request->net,
