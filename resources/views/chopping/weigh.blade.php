@@ -354,8 +354,6 @@
                 return;
             }
 
-            alert(net)
-
             if (parseFloat(net) <= 1 ) {
                 alert('Please ensure Net weight is valid.');
                 return;
@@ -527,6 +525,7 @@
             .finally(() => {
                 loadSpinner.style.display = 'none';
                 // Unselect the selected product option using Select2 method
+                $('#reading').val('0.00');
                 $('#product').val(null).trigger('change');
 
                 // Re-enable the button after the request is complete
