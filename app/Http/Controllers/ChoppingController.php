@@ -456,6 +456,7 @@ class ChoppingController extends Controller
             return DB::table('template_lines')
                 ->where('template_no', $templateNo)
                 ->where('item_code', 'LIKE', 'G%')
+                ->where('type', 'Intake')
                 ->select('item_code', 'description', 'type')
                 ->get();
         });
@@ -521,7 +522,7 @@ class ChoppingController extends Controller
                         'G2125', 'G2126', 'G2127', 'G2128', 'G2129', 'G2130', 'G2131', 'G2132', 
                         'G2133', 'G2137', 'G2139', 'G2140', 'G2141', 'G2142', 'G2143', 'G2145', 
                         'G2146', 'G2147', 'G2148', 'G2151', 'G2157', 'G2158', 'G2162', 'G2165', 
-                        'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176'
+                        'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'G2175'
                 ];
 
                 $spices = DB::table('template_lines')
