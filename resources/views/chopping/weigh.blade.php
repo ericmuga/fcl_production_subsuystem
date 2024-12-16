@@ -213,6 +213,8 @@
                             </option>
                             <option selected value="1">Full Batch
                             </option>
+                            <option value="1.5">One and Half Batch
+                            </option>
                         </select>
                     </div>
                 </div>
