@@ -928,7 +928,8 @@ class SlaughterController extends Controller
 
             //write to rabbitmq
             $data['id'] = $id;
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            $queue = $helpers->createQueueName($data);
+            $helpers->publishToQueue($data, $queue);
 
             Toastr::success('record added successfully', 'Success');
             return redirect()

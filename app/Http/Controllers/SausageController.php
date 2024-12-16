@@ -482,7 +482,8 @@ class SausageController extends Controller
             ];
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            $queue = $helpers->createQueueName($data);
+            $helpers->publishToQueue($data, $queue);
 
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()
@@ -571,9 +572,9 @@ class SausageController extends Controller
         try {
             $data = [
                 'product_code' => $request->product_code,
-                'location_code' => '',
+                'location_code' => '2055',
                 'total_weight' => $request->net_weight,
-                'transfer_from' => '',
+                'transfer_from' => '2055',
                 'batch_no' => $request->batch_no,
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
@@ -585,7 +586,8 @@ class SausageController extends Controller
 
             //write to rabbitmq
             $data['timestamp'] = now()->toDateTimeString();
-            $helpers->publishToQueue($data, 'stuffing_transfers.bc');
+            $queue = $helpers->createQueueName($data);
+            $helpers->publishToQueue($data, $queue);
 
             return response()->json(['success' => true, 'message' => 'Stuffing weight saved successfully']);
 

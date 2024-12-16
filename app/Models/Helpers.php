@@ -354,6 +354,10 @@ class Helpers
         Log::error('An exception occurred in ' .$function_name, ['exception' => $e]);
     }
 
+    public function createQueueName($data) {
+        return "transfer_from_{$data['transfer_from_location']}_to_{$data['transfer_to_location']}";
+    }
+
     //Rabbit MQ
     public function publishToQueue($data, $queue_name)
     {
