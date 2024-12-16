@@ -57,6 +57,9 @@
         </form>
     </div>
     <br>
+    <div id="messageContainer">
+
+    </div>
 
     <div class="div">
         <form id="form-save-weights" class="form-prevent-multiple-submits" action="" method="post">
@@ -97,7 +100,7 @@
                                 </div>                                
                                 <div class="col-md-4">
                                     <label for="exampleInputEmail1">Scale Reading</label>
-                                    <input type="number" step="0.01" class="form-control" id="reading" name="reading"
+                                    <input type="number" step="0.01" class="form-control" id="reading" name="reading" onclick="this.select()"
                                         value="0.00" oninput="getNet()" placeholder="" readonly>
                                 </div>
                                 <div class="col-md-4 d-flex align-items-center" style="padding-top: 5%">
@@ -505,6 +508,7 @@
 
     const saveWeighLines = (product, batchNo, reading, net, saveBtn) => {
         const loadSpinner = document.getElementById('saveWeightsSpinner');
+        const messageContainer = document.getElementById('messageContainer'); // Ensure this element exists in your Blade template
         loadSpinner.style.display = 'inline-block';
 
         axios.post('/v2/chopping/save-weighings', {
@@ -514,24 +518,40 @@
                 net: net
             })
             .then(response => {
-                // console.log(response);
                 if (response.data.success) {
                     $('#previous_reading').val(response.data.reading).trigger('input');
+                    showMessage('Save successful!', 'success', messageContainer);
+                } else {
+                    showMessage('Save failed! Please try again.', 'danger', messageContainer);
                 }
             })
             .catch(error => {
                 console.error(error);
+                showMessage('An error occurred while saving. Please check the console for details.', 'danger', messageContainer);
             })
             .finally(() => {
                 loadSpinner.style.display = 'none';
-                // Unselect the selected product option using Select2 method
-                $('#reading').val('0.00');
-                $('#product').val(null).trigger('change');
+            $('#reading').val('0.00');
+            $('#product').val(null).trigger('change');
+            saveBtn.disabled = false;
+        });
+    };
 
-                // Re-enable the button after the request is complete
-                saveBtn.disabled = false;
-            });
-    }
+    // Helper function to display a message
+    const showMessage = (message, type, container) => {
+        const alert = `
+            <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>`;
+        container.innerHTML = alert;
+
+        // Automatically remove the alert after 5 seconds
+        setTimeout(() => {
+            container.innerHTML = '';
+        }, 2000);
+    };
+
 
     const loadTemplateProducts = (templateNo) => {
         const loadSpinner = document.getElementById('loadTemplateProductsSpinner');
