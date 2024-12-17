@@ -37,7 +37,10 @@
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
                 </a></li>
-            <li class="dropdown-divider"></li>
+            <hr class="dropdown-divider"/>
+            <li><a href="{{ route('list_items') }}" class="dropdown-item">Items
+            </a></li>
+            <hr class="dropdown-divider"/>
             <li>
                 <a href="{{ route('butchery_split_weights') }}" class="dropdown-item">Weight Splitting
                 </a>

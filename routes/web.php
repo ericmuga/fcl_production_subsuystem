@@ -5,6 +5,7 @@ use App\Http\Controllers\BeefLambController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
 use App\Http\Controllers\ChoppingController;
+use App\Http\Controllers\DataController;
 use App\Http\Controllers\Despatch;
 use App\Http\Controllers\DespatchController;
 use App\Http\Controllers\FreshcutsBulkController;
@@ -283,6 +284,14 @@ Route::prefix('asset')->group(function () {
 Route::prefix('scale-settings')->group(function () {
     Route::get('/{section}', [SlaughterController::class, 'scaleSettings'])->name('scale_settings');
     Route::post('/update', [SlaughterController::class, 'UpdateScaleSettings'])->name('update_scale_settings');
+});
+/*-------------End Scale------------------ */
+
+
+/*-------------Start Scale----------------- */
+Route::prefix('data')->group(function () {
+    Route::get('items', [DataController::class, 'listItems'])->name('list_items');
+    Route::post('items/create', [DataController::class, 'createItem'])->name('create_item');
 });
 /*-------------End Scale------------------ */
 
