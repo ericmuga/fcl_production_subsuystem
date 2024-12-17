@@ -371,7 +371,9 @@ class DespatchController extends Controller
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
 
-        $products = DB::table('products')->where('code', 'G1338')->get();
+        $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
+
+        $products = DB::table('products')->whereIn('code', $items_array)->get();
 
         $chillers = DB::table('chillers')->where('location_code', '1570')->get();
 

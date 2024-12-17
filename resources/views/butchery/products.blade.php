@@ -7,7 +7,8 @@
 $allowedUsernames = explode(',', strtolower(config('app.allowed_usernames_deboning')));
 
 // Get the user input from the session and convert it to lowercase for case-insensitive comparison
-$sessionUsername = strtolower(Session::get('session_userName'));
+$sessionUsername = strtolower(auth()->user()->username);
+
 @endphp
 
 @if (in_array($sessionUsername, $allowedUsernames))

@@ -196,6 +196,7 @@ class BeefLambController extends Controller
                 'receiver_total_weight' => $request->net,
                 'production_date' => Carbon::createFromFormat('d/m/Y', $request->prod_date),
                 'location_code' => '1570',
+                'transfer_from' => 'B3535',
                 'description' => $request->description,
                 'manual_weight' => $manual,
                 'user_id' => $user,
