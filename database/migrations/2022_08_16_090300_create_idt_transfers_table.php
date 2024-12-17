@@ -25,10 +25,10 @@ class CreateIdtTransfersTable extends Migration
             $table->decimal('total_weight');
             $table->string('description')->nullable();
             $table->string('order_no')->nullable();
-            $table->string('batch_no');
+            $table->string('batch_no')->nullable();
             $table->string('with_variance');
-            $table->smallInteger('transfer_type');
-            $table->string('transfer_from');
+            $table->smallInteger('transfer_type')->nullable();
+            $table->string('transfer_from')->nullable();
             $table->integer('black_crates')->default(0);
             $table->bigInteger('received_by')->nullable(); 
             $table->bigInteger('edited_by')->nullable();
