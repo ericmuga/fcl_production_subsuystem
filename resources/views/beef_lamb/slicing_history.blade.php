@@ -1,12 +1,8 @@
 @extends('layouts.butchery_master')
 
 @section('content-header')
-<div class="container">
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <h1 class="m-0"> {{ $title }} </h1>
-        </div>
-    </div>
+<div class="container mb-2">
+    <h1 class="m-0"> {{ $title }} | <small> showing beef slicing history data for last <strong>{{ $filter }}</strong> days</small></h1>
 </div>
 
 @endsection
