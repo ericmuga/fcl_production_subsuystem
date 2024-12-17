@@ -262,6 +262,7 @@ Route::prefix('Beef')->group(function () {
     Route::get('/receiving-v2', [BeefLambController::class, 'getIdtReceivingV2'])->name('idt_receivingv2');
     Route::post('/idt-save', [BeefLambController::class, 'saveIdtReceiving'])->name('save_idt_receiving');
     Route::post('/idt-update', [BeefLambController::class, 'updateIdtReceiving'])->name('update_idt_receiving');
+    Route::get('/slicing_history', [BeefLambController::class, 'getSlicingHistory'])->name('slicing_history');
 });
 /*-------------End Beef------------------ */
 
