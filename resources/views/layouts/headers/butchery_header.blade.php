@@ -35,9 +35,10 @@
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle">Data Management</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products
-                </a></li>
-            <li class="dropdown-divider"></li>
+            <li><a href="{{ route('butchery_products') }}" class="dropdown-item"> Products</a></li>
+            <hr class="dropdown-divider" />
+            <li><a href="{{ route('list_items') }}" class="dropdown-item">Items</a></li>
+            <hr class="dropdown-divider" />
             <li>
                 <a href="{{ route('butchery_split_weights') }}" class="dropdown-item">Weight Splitting
                 </a>
