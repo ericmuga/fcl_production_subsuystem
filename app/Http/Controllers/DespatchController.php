@@ -143,7 +143,8 @@ class DespatchController extends Controller
             ];
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            $queue = $helpers->createQueueName($data);
+            $helpers->publishToQueue($data, $queue);
 
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()
@@ -188,7 +189,8 @@ class DespatchController extends Controller
                 ];
     
                 // Publish data to RabbitMQ
-                $helpers->publishToQueue($data, 'production_data_transfer.bc');
+                $queue = $helpers->createQueueName($data);
+                $helpers->publishToQueue($data, $queue);
 
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()

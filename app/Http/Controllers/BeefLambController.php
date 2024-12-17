@@ -165,7 +165,8 @@ class BeefLambController extends Controller
             ];
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            $queue = $helpers->createQueueName($data);
+            $helpers->publishToQueue($data, $queue);
 
             return response()->json(['success' => true, 'message' => 'Transfer updated successfully']);
         } catch (\Exception $e) {
@@ -216,7 +217,8 @@ class BeefLambController extends Controller
             ];
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            $queue = $helpers->createQueueName($data);
+            $helpers->publishToQueue($data, $queue);
 
             Toastr::success("Beef/lamb IDT entry for : {$request->product} inserted successfully", 'Success');
             return redirect()
