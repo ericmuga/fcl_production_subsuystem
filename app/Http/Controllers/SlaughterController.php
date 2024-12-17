@@ -912,10 +912,19 @@ class SlaughterController extends Controller
                 $manual_weight = 1;
             }
 
+            $id = Offals::insetGetId([
+                'product_code'=> $request->product_code,
+                'scale_reading'=> $request->reading,
+                'net_weight'=> $request->net_weight,
+                'is_manual'=> $manual_weight,
+                'user_id' => Auth::id(),
+            ]);
+
            $data = [
+                'id' => $id,
                 'product_code' => $request->product_code,
-                'location_code' => '1020',
-                'transfer_from' => '3035',
+                'transfer_from_location' => '1020',
+                'transfer_to_location' => '3035',
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
                 'total_weight' => $request->net_weight,
@@ -924,10 +933,8 @@ class SlaughterController extends Controller
                 'transfer_type' => 0,
                 'timestamp' => now()->toDateTimeString()
             ];
-            $id = DB::table('idt_transfers')->insertGetId($data);
 
             //write to rabbitmq
-            $data['id'] = $id;
             $queue = $helpers->createQueueName($data);
             $helpers->publishToQueue($data, $queue);
 
