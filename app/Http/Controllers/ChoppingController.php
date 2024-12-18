@@ -525,12 +525,16 @@ class ChoppingController extends Controller
                         'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'G2175'
                 ];
 
+                // Get bag ids
+                $bagItemCodes = ['H221053', 'H221016'];
+
                 $spices = DB::table('template_lines')
                     ->where(function ($query) use ($chopping_id, $item_list) {
                         $query->where('item_code', 'like', 'H%')
                             ->orWhereIn('item_code', $item_list);
                     })
                     ->where('template_no', $chopping_id)
+                    ->whereNotIn('item_code', $bagItemCodes) //bag codes to be skipped
                     ->select('item_code', 'units_per_100')
                     ->get();
 
@@ -611,13 +615,6 @@ class ChoppingController extends Controller
                     ->where('type', 'Output')
                     ->where('template_no', $chopping_id)
                     ->first();
-
-                // Get bag ids
-                $bagItemCodes = DB::table('template_lines')
-                    ->where('description', 'like', '%bag%')
-                    ->distinct()
-                    ->pluck('item_code')
-                    ->toArray();
 
                 if ($output) {
 
