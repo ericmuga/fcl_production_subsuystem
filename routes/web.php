@@ -5,6 +5,7 @@ use App\Http\Controllers\BeefLambController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
 use App\Http\Controllers\ChoppingController;
+use App\Http\Controllers\DataController;
 use App\Http\Controllers\Despatch;
 use App\Http\Controllers\DespatchController;
 use App\Http\Controllers\FreshcutsBulkController;
@@ -261,6 +262,7 @@ Route::prefix('Beef')->group(function () {
     Route::get('/receiving-v2', [BeefLambController::class, 'getIdtReceivingV2'])->name('idt_receivingv2');
     Route::post('/idt-save', [BeefLambController::class, 'saveIdtReceiving'])->name('save_idt_receiving');
     Route::post('/idt-update', [BeefLambController::class, 'updateIdtReceiving'])->name('update_idt_receiving');
+    Route::get('/slicing_history', [BeefLambController::class, 'getSlicingHistory'])->name('slicing_history');
 });
 /*-------------End Beef------------------ */
 
@@ -286,3 +288,9 @@ Route::prefix('scale-settings')->group(function () {
 });
 /*-------------End Scale------------------ */
 
+/*-------------Start Data----------------- */
+Route::prefix('data')->group(function () {
+    Route::get('items', [DataController::class, 'listItems'])->name('list_items');
+    Route::post('items/create', [DataController::class, 'createItem'])->name('create_item');
+});
+/*-------------End Data------------------ */

@@ -245,4 +245,21 @@ class BeefLambController extends Controller
             return back();
         }
     }
+
+    public function getSlicingHistory()
+    {
+        $title = 'Beef Slicing History';
+
+        $filter = 3;
+
+        $entries = DB::table('beef_slicing')
+            ->whereDate('beef_slicing.created_at', '>=', today()->subDays((int)$filter))
+            ->join('beef_lamb_items', 'beef_slicing.item_code', '=', 'beef_lamb_items.code')
+            ->join('processes', 'beef_slicing.process_code', '=', 'processes.process_code')
+            ->select('beef_slicing.*', 'beef_lamb_items.description', 'processes.process')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('beef_lamb.slicing_history', compact('title', 'entries', 'filter'));
+    }
 }
