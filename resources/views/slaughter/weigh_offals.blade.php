@@ -120,8 +120,7 @@
                                     <th>#</th>
                                     <th>Product Code</th>
                                     <th>Product Description</th>
-                                    <th>Net Weight (kgs)</th>
-                                    <th>Scale Reading (kgs)</th>
+                                    <th>Weight (kgs)</th>
                                     <th>Manually Recorded</th>
                                     <th>Recorded by</th>
                                     <th>Weigh Date</th>
@@ -132,8 +131,7 @@
                                     <th>#</th>
                                     <th>Product Code</th>
                                     <th>Product Description</th>
-                                    <th>Net Weight (kgs)</th>
-                                    <th>Scale Reading (kgs)</th>
+                                    <th>Weight (kgs)</th>
                                     <th>Manually Recorded</th>
                                     <th>Recorded by</th>
                                     <th>Weigh Date</th>
@@ -147,9 +145,8 @@
                                     <td>
                                         {{ $productCodes[$data->product_code] }}
                                     </td>
-                                    <td>{{ number_format($data->net_weight, 2) }}</td>
-                                    <td>{{ number_format($data->scale_reading, 2) }}</td>
-                                    @if($data->is_manual == 0)
+                                    <td>{{ number_format($data->total_weight, 2) }}</td>
+                                    @if($data->manual_weight == 0)
                                         <td>
                                             <span class="badge badge-success">No</span>
                                         </td>

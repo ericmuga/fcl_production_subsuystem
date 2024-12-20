@@ -894,8 +894,9 @@ class SlaughterController extends Controller
                 ->get();
         });
 
-        $offalsData = DB::table('offals')
+        $offalsData = DB::table('idt_transfers as offals')
             ->whereDate('offals.created_at', Carbon::today())
+            ->whereIn('product_code', array_keys($productCodes))
             ->leftJoin('users', 'offals.user_id', '=', 'users.id')
             ->select('offals.*', 'users.username as username')
             ->orderBy('offals.created_at', 'DESC')
@@ -922,11 +923,12 @@ class SlaughterController extends Controller
                 'receiver_total_weight' => $request->net_weight,
                 'received_by' => Auth::id(),
                 'transfer_type' => 0,
-                'timestamp' => now()->toDateTimeString()
+                'batch_no' => ''
             ];
             $id = DB::table('idt_transfers')->insertGetId($data);
 
             //write to rabbitmq
+            $data['timestamp'] = now()->toDateTimeString();
             $data['id'] = $id;
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
