@@ -372,7 +372,7 @@ class HighCare1Controller extends Controller
             // dd($data);
 
             // Publish data to RabbitMQ
-            // $helpers->publishToQueue($data, 'production_data_bacon_slicing.bc');
+            $helpers->publishToQueue($data, 'production_data_bacon_slicing.bc');
 
             Toastr::success("Slicing bacon entry : {$request->item_id} inserted successfully", 'Success');
             return redirect()
