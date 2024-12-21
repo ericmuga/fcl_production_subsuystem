@@ -76,6 +76,9 @@ Route::post('/slaughter/record-disease', [SlaughterController::class, 'recordDis
 Route::get('/slaughter/lairage_transfers', [SlaughterController::class, 'lairageTransfers'])->name('lairage_transfers');
 Route::post('idt_lairage/save', [SlaughterController::class, 'saveLairageTransfer'])->name('save_idt_lairage');
 Route::post('idt_lairage/update', [SlaughterController::class, 'updateLairageTransfer'])->name('update_idt_lairage');
+Route::get('/lairage_transfers/sent', [SlaughterController::class, 'sentLairageTransfers'])->name('sent_lairage_transfers');
+Route::get('/lairage_transfers/poll', [SlaughterController::class, 'sentLairageTransfersPoll'])->name('sent_lairage_transfers_poll');
+Route::post('idt_lairage/receive', [SlaughterController::class, 'lairageTransferReceive'])->name('lairage_transfer_receive');
 Route::get('slaughter/offals', [SlaughterController::class, 'weighOffals'])->name('weigh_offals');
 Route::post('slaughter/save-offals', [SlaughterController::class, 'saveOffalsWeight'])->name('save_offals_weight');
 Route::get('slaughter/lairage-transfer-reports', [SlaughterController::class, 'lairageTransferReports'])->name('lairage_transfer_reports');

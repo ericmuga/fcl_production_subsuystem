@@ -19,8 +19,10 @@
             class="nav-link dropdown-toggle">Lairage</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li><a href="{{ route('slaughter_disease') }}" class="dropdown-item">Disease/Death</a></li>
-            <li class="dropdown-divider"></li>
-            <li><a href="{{ route('lairage_transfers') }}" class="dropdown-item">Transfers</a></li>
+            <hr class="dropdown-divider"/>
+            <li><a href="{{ route('lairage_transfers') }}" class="dropdown-item">Lairage Transfers</a></li>
+            <hr class="dropdown-divider"/>
+            <li><a href="{{ route('sent_lairage_transfers') }}" class="dropdown-item">Lairage Transfers Receive</a></li>
         </ul>
     </li>
     <li class="nav-item dropdown">
