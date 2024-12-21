@@ -250,6 +250,9 @@ Route::prefix('highcare1')->group(function () {
 
     Route::get('/idt-bulk', [HighCare1Controller::class, 'getIdtBulk'])->name('highcare1_idt_bulk');
     Route::post('/idt-bulk/save', [HighCare1Controller::class, 'saveIdtBulk'])->name('highcare1_idt_save_bulk');
+
+    Route::get('/slicing', [HighCare1Controller::class, 'getBaconSlicing'])->name('bacon_slicing');
+    Route::post('/save', [HighCare1Controller::class, 'saveBaconSlicing'])->name('bacon_slicing_save');
 });
 /*-------------End HighCare1------------------ */
 

@@ -92,7 +92,7 @@ class BeefLambController extends Controller
             ];
 
             // Publish data to RabbitMQ
-            // $helpers->publishToQueue($data, 'production_data_beef_slicing.bc');
+            $helpers->publishToQueue($data, 'production_data_beef_slicing.bc');
 
             Toastr::success("Slicing beef entry : {$request->item_id} inserted successfully", 'Success');
             return redirect()
