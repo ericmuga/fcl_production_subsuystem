@@ -28,6 +28,7 @@ class IDTController extends Controller
             '1570' => 'Butchery',
             '2595' => 'Highcare',
             '2055' => 'Sausage',
+            '3035' => 'PetFood',
         ];
 
         if ($from_location == null || $to_location == null) {

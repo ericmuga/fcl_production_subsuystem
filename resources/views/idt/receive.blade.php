@@ -9,6 +9,8 @@
     @include('layouts.headers.highcare_header')
 @elseif(request()->query('to_location') == '2055')
     @include('layouts.headers.sausage_header')
+@elseif(request()->query('to_location') == '3035')
+    @include('layouts.headers.petfood_header')
 @endif
 
 <!-- /.navbar -->
