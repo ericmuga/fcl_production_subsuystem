@@ -12,8 +12,10 @@ use App\Http\Controllers\FreshcutsBulkController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\HighCare1Controller;
 use App\Http\Controllers\HighCare2Controller;
+use App\Http\Controllers\IDTController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PetfoodController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\SlaughterController;
 use App\Http\Controllers\SpicesController;
@@ -300,3 +302,16 @@ Route::prefix('data')->group(function () {
     Route::post('items/create', [DataController::class, 'createItem'])->name('create_item');
 });
 /*-------------End Data------------------ */
+
+/*-------------Start IDT ----------------- */
+Route::prefix('idt')->group(function () {
+    Route::get('/receive', [IDTController::class, 'listIDTReceive'])->name('list_receive');
+    Route::get('/save-receive', [IDTController::class, 'saveReceive'])->name('save_idt_receive');
+});
+/*-------------End IDT ------------------ */
+
+/*-------------Start Petfood ----------------- */
+Route::prefix('petfood')->group(function () {
+    Route::get('/dashboard', [PetfoodController::class, 'dashboard'])->name('petfood_dashboard');
+});
+/*-------------End Petfood ------------------ */
