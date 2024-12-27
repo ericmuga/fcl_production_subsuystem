@@ -78,6 +78,7 @@
                                         <option value="" selected disabled>Transfer Type </option>
                                         <option value="0"> Local</option>
                                         <option value="1"> Export</option>
+                                        <option value="3035">Petfood</option>
                                     </select>
                                 </div>
                             </div>

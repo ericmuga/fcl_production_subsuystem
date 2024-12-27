@@ -30,6 +30,7 @@
                             <option value="2055">Sausage</option>
                             <option value="2500">Curing</option>
                             <option value="3535">Despatch</option>
+                            <option value="3035">Pet Food</option>
                         </select>
                     </div>
                     <div class="col-md-6">
