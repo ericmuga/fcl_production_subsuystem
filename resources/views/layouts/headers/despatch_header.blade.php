@@ -33,10 +33,18 @@
     </li>
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle">Send IDT</a>
+            class="nav-link dropdown-toggle">Issue IDT</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="{{ route('despatch_issue_idt', 'butchery') }}" class="dropdown-item"> To Butchery
-                </a>
+            <li>
+                <a href="{{ route('despatch_issue_idt', 'butchery') }}" class="dropdown-item"> To Butchery</a>
+            </li>
+            <hr class="dropdown-divider" />
+            <li>
+                <a href="{{ route('despatch_issue_idt', 'sausage') }}" class="dropdown-item"> To Sausage</a>
+            </li>
+            <hr class="dropdown-divider" />
+            <li>
+                <a href="{{ route('despatch_issue_idt', 'highcare') }}" class="dropdown-item">To High Care</a>
             </li>
         </ul>
     </li>
