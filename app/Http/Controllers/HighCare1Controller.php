@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\Helpers;
 use App\Models\User;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class HighCare1Controller extends Controller
@@ -290,6 +292,95 @@ class HighCare1Controller extends Controller
             $helpers->CustomErrorlogger($e->getMessage(),  __FUNCTION__);
             return back()
                 ->withInput();
+        }
+    }
+
+    public function getBaconSlicing(Helpers $helpers, $filter = null)
+    {
+        $title = "Bacon Production";
+
+        $configs = DB::table('scale_configs')
+            ->where('scale', 'BaconSlicing')
+            ->select('scale', 'tareweight', 'comport')
+            ->get()->toArray();
+
+        $bacon_products = ['G3813','G4451','G4501','G3810','G4451','G4536','G3814','G4451','G4547','G3812','G4451','G4544','G3804','G4451','G4503','G3813X','G4451','G4501X','G3309','G4451','G4522','G3309','G4451','G4522','G3591','G4451','G4525','G3802','G4452', 'G4540'];
+
+        $products = Cache::remember('bacon_products', now()->addMinutes(480), function () use ($bacon_products) {
+            return DB::table('products')
+                ->whereIn('products.code', $bacon_products) //bacon slicing items only 
+                ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
+                ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
+                ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
+                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_types.code as product_type_code', 'product_processes.process_code', 'processes.process', 'processes.shortcode')
+                ->get();
+        });
+
+        $bacon_data = DB::table('bacon_slicing')
+            ->where('processes.process_code', '!=', '15')
+            ->leftJoin('product_types', 'bacon_slicing.product_type', '=', 'product_types.code')
+            ->leftJoin('processes', 'bacon_slicing.process_code', '=', 'processes.process_code')
+            ->leftJoin('products', 'bacon_slicing.item_code', '=', 'products.code')
+            ->select('bacon_slicing.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description')
+            ->orderBy('bacon_slicing.created_at', 'DESC')
+            ->when($filter == 'admin', function ($q) {
+                $q->whereBetween(
+                    'bacon_slicing.created_at',
+                    [now()->startOfWeek(), now()->endOfWeek()]
+                ); // today plus last 7 days
+            })
+            ->when($filter != 'admin', function ($q) {
+                $q->whereDate('bacon_slicing.created_at', today()); // today only
+            })
+            ->get();
+
+        // dd($products);
+
+        return view('highcare1.bacon_slicing', compact('title', 'filter', 'bacon_data', 'products', 'helpers'));
+    }
+
+    public function saveBaconSlicing(Request $request, Helpers $helpers)
+    {
+        $parts = explode(':', $request->product);
+        $manual = $request->manual_weight == 'on';
+
+        // dd($request->all());    
+
+        try {
+            //insert 
+            $id = DB::table('bacon_slicing')->insertGetId([
+                'item_code' => $parts[1],
+                'actual_weight' => $request->reading,
+                'net_weight' => $request->net,
+                'process_code' => $parts[3],
+                'product_type' => $parts[4],
+                'no_of_pieces' => $request->no_of_pieces ?? 0,
+                'no_of_crates' => $request->total_crates,
+                'user_id' => Auth::id(),
+            ]);
+
+            $data = [
+                'product_code' =>$parts[1],
+                'net_weight' => $request->net,
+                'total_pieces' => $request->no_of_pieces ?? 0,
+                'production_process' =>  $parts[6],
+                'production_date' => today()->toDateString(),
+                'timestamp' => now()->toDateTimeString(),
+                'id' => $id,
+            ];
+
+            // dd($data);
+
+            // Publish data to RabbitMQ
+            $helpers->publishToQueue($data, 'production_data_bacon_slicing.bc');
+
+            Toastr::success("Slicing bacon entry : {$request->item_id} inserted successfully", 'Success');
+            return redirect()
+                ->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
+            return back();
         }
     }
 }

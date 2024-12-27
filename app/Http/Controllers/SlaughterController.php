@@ -894,8 +894,9 @@ class SlaughterController extends Controller
                 ->get();
         });
 
-        $offalsData = DB::table('offals')
+        $offalsData = DB::table('idt_transfers as offals')
             ->whereDate('offals.created_at', Carbon::today())
+            ->whereIn('product_code', array_keys($productCodes))
             ->leftJoin('users', 'offals.user_id', '=', 'users.id')
             ->select('offals.*', 'users.username as username')
             ->orderBy('offals.created_at', 'DESC')
@@ -922,11 +923,12 @@ class SlaughterController extends Controller
                 'receiver_total_weight' => $request->net_weight,
                 'received_by' => Auth::id(),
                 'transfer_type' => 0,
-                'timestamp' => now()->toDateTimeString()
+                'batch_no' => ''
             ];
             $id = DB::table('idt_transfers')->insertGetId($data);
 
             //write to rabbitmq
+            $data['timestamp'] = now()->toDateTimeString();
             $data['id'] = $id;
             $helpers->publishToQueue($data, 'production_data_transfer.bc');
 
@@ -939,5 +941,73 @@ class SlaughterController extends Controller
             return back()
                 ->withInput();
         }
+    }
+
+    public function sentLairageTransfers() {
+        $title = "Lairage Transfers";
+
+        $animalTypes = [
+            'G0101' => 'Baconer',
+            'G0102' => 'Sow',
+            'G0104' => 'Suckling',
+        ];     
+
+        $received = DB::table('lairage_transfers as transfers')
+        ->whereDate('transfers.created_at', Carbon::today())
+        ->whereNotNull('received_qty')
+        ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
+        ->leftJoin('users as received_users', 'transfers.received_by', '=', 'users.id')
+        ->select('transfers.*', 'users.username as username', 'received_users.username as received_username')
+        ->orderBy('transfers.created_at', 'DESC')
+        ->get();
+
+        return view('slaughter.receive_lairage', compact('title', 'animalTypes', 'received'));
+
+    }
+
+    public function sentLairageTransfersPoll(Request $request) {
+        try {
+            $sentPigs =  DB::table('lairage_transfers as transfers')
+            ->whereDate('transfers.created_at', Carbon::today())
+            ->whereNull('received_qty')
+            ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
+            ->select('transfers.*', 'users.username as username')
+            ->orderBy('transfers.created_at', 'DESC')
+            ->get();
+
+            return response()->json(['success' => true, 'sent' => $sentPigs]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error loading send data: ' . $e->getMessage()]);
+        }
+    }
+
+    public function lairageTransferReceive(Request $request, Helpers $helpers) {
+        try {
+            DB::table('lairage_transfers')
+            ->where('id', $request->id)
+            ->update([
+                'received_by' => Auth::id(),
+                'received_qty' => $request->qty,
+                'received_date_time' => now(),
+                'receiver_rejected' => 0
+            ]);
+
+            $data = [
+                'id' => $request->id,
+                'product_code' => $request->product_code,
+                'received_qty' => $request->qty,
+                'from_location' => '',
+                'to_location' => '1020'
+            ];
+
+            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+
+            return response()->json(['success' => true, 'message' => 'Transfer Accepted']);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Error accepting transfer: ' . $e->getMessage()]);
+        }
+
     }
 }

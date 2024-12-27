@@ -76,6 +76,9 @@ Route::post('/slaughter/record-disease', [SlaughterController::class, 'recordDis
 Route::get('/slaughter/lairage_transfers', [SlaughterController::class, 'lairageTransfers'])->name('lairage_transfers');
 Route::post('idt_lairage/save', [SlaughterController::class, 'saveLairageTransfer'])->name('save_idt_lairage');
 Route::post('idt_lairage/update', [SlaughterController::class, 'updateLairageTransfer'])->name('update_idt_lairage');
+Route::get('/lairage_transfers/sent', [SlaughterController::class, 'sentLairageTransfers'])->name('sent_lairage_transfers');
+Route::get('/lairage_transfers/poll', [SlaughterController::class, 'sentLairageTransfersPoll'])->name('sent_lairage_transfers_poll');
+Route::post('idt_lairage/receive', [SlaughterController::class, 'lairageTransferReceive'])->name('lairage_transfer_receive');
 Route::get('slaughter/offals', [SlaughterController::class, 'weighOffals'])->name('weigh_offals');
 Route::post('slaughter/save-offals', [SlaughterController::class, 'saveOffalsWeight'])->name('save_offals_weight');
 Route::get('slaughter/lairage-transfer-reports', [SlaughterController::class, 'lairageTransferReports'])->name('lairage_transfer_reports');
@@ -250,6 +253,9 @@ Route::prefix('highcare1')->group(function () {
 
     Route::get('/idt-bulk', [HighCare1Controller::class, 'getIdtBulk'])->name('highcare1_idt_bulk');
     Route::post('/idt-bulk/save', [HighCare1Controller::class, 'saveIdtBulk'])->name('highcare1_idt_save_bulk');
+
+    Route::get('/slicing', [HighCare1Controller::class, 'getBaconSlicing'])->name('bacon_slicing');
+    Route::post('/save', [HighCare1Controller::class, 'saveBaconSlicing'])->name('bacon_slicing_save');
 });
 /*-------------End HighCare1------------------ */
 
@@ -262,6 +268,7 @@ Route::prefix('Beef')->group(function () {
     Route::get('/receiving-v2', [BeefLambController::class, 'getIdtReceivingV2'])->name('idt_receivingv2');
     Route::post('/idt-save', [BeefLambController::class, 'saveIdtReceiving'])->name('save_idt_receiving');
     Route::post('/idt-update', [BeefLambController::class, 'updateIdtReceiving'])->name('update_idt_receiving');
+    Route::get('/slicing_history', [BeefLambController::class, 'getSlicingHistory'])->name('slicing_history');
 });
 /*-------------End Beef------------------ */
 

@@ -525,12 +525,16 @@ class ChoppingController extends Controller
                         'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'G2175'
                 ];
 
+                // Get bag ids
+                $bagItemCodes = ['H221053', 'H221016'];
+
                 $spices = DB::table('template_lines')
                     ->where(function ($query) use ($chopping_id, $item_list) {
                         $query->where('item_code', 'like', 'H%')
                             ->orWhereIn('item_code', $item_list);
                     })
                     ->where('template_no', $chopping_id)
+                    ->whereNotIn('item_code', $bagItemCodes) //bag codes to be skipped
                     ->select('item_code', 'units_per_100')
                     ->get();
 
@@ -559,38 +563,94 @@ class ChoppingController extends Controller
                     '1230K09' => 7.5,
                     '1230K19' => 7,
                     '1230K31' => 10.5,
-                    '1230K37' => 7.5,
-                    '1230K38' => 7.5,
-                    '1230K41' => 7.5,
-                    '1230K54' => 10,
-                    '1230K71' => 10,
-                    '1230K72' => 7,
-                    '1230K95' => 5,
-                    '1230K96' => 7.5,
-                    '1230L03' => 6,
-                    '1230L83' => 9,
-                    '1230L84' => 9,
-                    '1230M26' => 6,
+                    '1230K37' => 8.5,
+                    '1230K38' => 8.5,
+                    '1230K41' => 8.5,
+                    '1230K54' => 5,
+                    '1230K71' => 5,
+                    '1230K72' => 9,
+                    '1230K95' => 8.5,
+                    '1230K96' => 8.5,
+                    '1230L03' => 7,
+                    '1230L83' => 10,
+                    '1230L84' => 10,
+                    '1230M26' => 7,
                     '1230M31' => 4,
                     '1230M32' => 4,
-                    '1230M33' => 7.5,
-                    '1230M46' => 4,
-                    '1230M48' => 10,
-                    '1230M56' => 7,
-                    '1230M62' => 4,
-                    '1230M66' => 6,
-                    '1230M74' => 3,
-                    '1230M76' => 3,
-                    '1230J07' => 7,
-                    '1230J87' => 5,
-                    '1230J88' => 5,
-                    '1230K56' => 10,
-                    '1230L09' => 5,
-                    '1230L10' => 5,
-                    '1230L25' => 5,
+                    '1230M33' => 14,
+                    '1230M46' => 5,
+                    '1230M48' => 12,
+                    '1230M56' => 11,
+                    '1230M62' => 6,
+                    '1230M66' => 12,
+                    '1230M74' => 10.5,
+                    '1230M76' => 10.5,
+                    '1230J07' => 5,
+                    '1230J87' => 10,
+                    '1230J88' => 10,
+                    '1230K56' => 7.5,
+                    '1230L09' => 10,
+                    '1230L10' => 10,
+                    '1230L25' => 10,
                     '1230M52' => 10,
                 ];
 
+                $waterItemCodes = [
+                    '1230G42' => 'G8900',
+                    '1230G43' => 'G8900',
+                    '1230J39' => 'G8900',
+                    '1230J45' => 'G8900',
+                    '1230J46' => 'G8900',
+                    '1230J63' => 'G8900',
+                    '1230J72' => 'G8900',
+                    '1230J83' => 'G8900',
+                    '1230J84' => 'G8900',
+                    '1230J86' => 'G8900',
+                    '1230J93' => 'G8900',
+                    '1230K01' => 'G8900',
+                    '1230K09' => 'G8900',
+                    '1230K19' => 'G8900',
+                    '1230K31' => 'G8900',
+                    '1230K37' => 'G8900',
+                    '1230K38' => 'G8900',
+                    '1230K41' => 'G8900',
+                    '1230K54' => 'G8900',
+                    '1230K71' => 'G8900',
+                    '1230K72' => 'G8900',
+                    '1230K95' => 'G8900',
+                    '1230K96' => 'G8900',
+                    '1230L03' => 'G8900',
+                    '1230L83' => 'G8900',
+                    '1230L84' => 'G8900',
+                    '1230M26' => 'G8900',
+                    '1230M31' => 'G8900',
+                    '1230M32' => 'G8900',
+                    '1230M33' => 'G8900',
+                    '1230M46' => 'G8900',
+                    '1230M48' => 'G8900',
+                    '1230M56' => 'G8900',
+                    '1230M62' => 'G8900',
+                    '1230M66' => 'G8900',
+                    '1230M74' => 'G8900',
+                    '1230M76' => 'G8900',
+                    '1230J07' => 'G8901',
+                    '1230J87' => 'G8901',
+                    '1230J88' => 'G8901',
+                    '1230K56' => 'G8901',
+                    '1230L09' => 'G8901',
+                    '1230L10' => 'G8901',
+                    '1230L25' => 'G8901',
+                    '1230M52' => 'G8901',
+                ];
+                foreach ($waterValues as $recipeNo => $water) {
+                    if ($chopping_id == $recipeNo) {
+                        $choppingLines[] = [
+                            'chopping_id' => $request->complete_run_number,
+                            'item_code' => $waterItemCodes[$recipeNo],
+                            'weight' => ($water / (float)$request->batch_size) * 2,
+                        ];
+                    }
+                }
 
                 // water auto insertions
                 if (in_array($chopping_id, array_keys($waterValues))) {
@@ -611,13 +671,6 @@ class ChoppingController extends Controller
                     ->where('type', 'Output')
                     ->where('template_no', $chopping_id)
                     ->first();
-
-                // Get bag ids
-                $bagItemCodes = DB::table('template_lines')
-                    ->where('description', 'like', '%bag%')
-                    ->distinct()
-                    ->pluck('item_code')
-                    ->toArray();
 
                 if ($output) {
 

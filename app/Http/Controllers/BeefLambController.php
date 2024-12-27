@@ -62,7 +62,7 @@ class BeefLambController extends Controller
 
         try {
             //insert 
-            DB::table('beef_slicing')->insert([
+            $id = DB::table('beef_slicing')->insertGetId([
                 'item_code' => $parts[1],
                 'scale_reading' => $request->reading,
                 'net_weight' => $request->net,
@@ -77,6 +77,22 @@ class BeefLambController extends Controller
                 'manual_weight' => $manual,
                 'user_id' => Auth::id(),
             ]);
+
+            $data = [
+                'product_code' =>$parts[1],
+                'transfer_from_location' => 'B3535',
+                'transfer_to_location' => 1570,
+                'receiver_total_pieces' => $request->no_of_pieces ?? 0,
+                'receiver_total_weight' => $request->net,
+                'production_date' => $request->prod_date,
+                'received_by' => Auth::id(),
+                'production_date' => $request->prod_date,
+                'timestamp' => now()->toDateTimeString(),
+                'id' => $id,
+            ];
+
+            // Publish data to RabbitMQ
+            $helpers->publishToQueue($data, 'production_data_beef_slicing.bc');
 
             Toastr::success("Slicing beef entry : {$request->item_id} inserted successfully", 'Success');
             return redirect()
@@ -228,5 +244,22 @@ class BeefLambController extends Controller
             Log::error('An exception occurred in ' . __FUNCTION__, ['exception' => $e]);
             return back();
         }
+    }
+
+    public function getSlicingHistory()
+    {
+        $title = 'Beef Slicing History';
+
+        $filter = 3;
+
+        $entries = DB::table('beef_slicing')
+            ->whereDate('beef_slicing.created_at', '>=', today()->subDays((int)$filter))
+            ->join('beef_lamb_items', 'beef_slicing.item_code', '=', 'beef_lamb_items.code')
+            ->join('processes', 'beef_slicing.process_code', '=', 'processes.process_code')
+            ->select('beef_slicing.*', 'beef_lamb_items.description', 'processes.process')
+            ->orderByDesc('id')
+            ->get();
+
+        return view('beef_lamb.slicing_history', compact('title', 'entries', 'filter'));
     }
 }
