@@ -1,17 +1,34 @@
-@extends('layouts.butchery_master')
+@extends('layouts.template_master')
+
+@section('navbar')
+
+<!-- Navbar -->
+@if(request()->query('to_location') == '1570')
+    @include('layouts.headers.butchery_header')
+@elseif(request()->query('to_location') == '2595')
+    @include('layouts.headers.highcare_header')
+@elseif(request()->query('to_location') == '2055')
+    @include('layouts.headers.sausage_header')
+@elseif(request()->query('to_location') == '3035')
+    @include('layouts.headers.petfood_header')
+@endif
+
+<!-- /.navbar -->
+
+@endsection
+
 
 @section('content')
 
-<!--freshCuts-->
-<div class="modal fade" id="receiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+<div class="modal fade" id="receiveModal" tabindex="-1" role="dialog" aria-labelledby="receiveModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <form id="form-save-batch" class="form-prevent-multiple-submits"
-            action="{{ route('butchery_update_idt') }}" method="post"> 
+            action="{{ route('idt_receive') }}" method="post"> 
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Receive IDT From Butchery</h5>
+                    <h5 class="modal-title" id="receiveModalLabel">Receive IDT From Butchery</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -133,13 +150,12 @@
         </form>
     </div>
 </div>
-<!--freshCuts-->
 
 <div class="row">
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Transfer From Butchery Lines Entries | <span id="subtext-h1-title"><small> showing all
+                <h3 class="card-title"> Transfer From  Lines Entries | <span id="subtext-h1-title"><small> showing all
                             <strong></strong> entries
                             ordered by
                             latest</small> </span></h3>
@@ -182,7 +198,7 @@
                                 <tr>
                                     <td>{{ $data->id }}</td>
                                     <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->product  }}</td>
+                                    <td>{{ $data->description  }}</td>
                                     <td>{{ $data->total_crates }}</td>
                                     <td>{{ $data->black_crates }}</td>
                                     @if($data->received_by == null)
@@ -190,7 +206,7 @@
                                     @elseif($data->received_by != null)
                                         <td><span class="badge badge-success">received</span></td>
                                     @endif
-                                    <td>{{ $data->username }}</td>
+                                    <td>{{ $data->issued_by }}</td>
                                     <td>{{ $data->batch_no }}</td>
                                     <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                     @if ($data->received_by == null)
@@ -201,7 +217,7 @@
                                             data-toggle="modal"
                                             data-target="#receiveModal"
                                             data-id="{{$data->id}}"
-                                            data-product-name="{{ $data->product }}"
+                                            data-product-name="{{ $data->description }}"
                                             data-issued-pieces="{{ $data->total_pieces }}"
                                             data-issued-weight="{{ $data->total_weight }}"
                                             class="btn btn-warning btn-xs"
@@ -225,7 +241,6 @@
         <!-- /.col -->
     </div>
 </div>
-<!-- slicing ouput data show -->
 
 @endsection
 

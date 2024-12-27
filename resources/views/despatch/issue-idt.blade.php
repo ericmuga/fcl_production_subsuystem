@@ -358,14 +358,14 @@ function loadProductDetails (event) {
     if (productUnitMeasure == 'KG') {
         scaleInputs.removeAttribute('hidden');
         pcWeightInputs.setAttribute('hidden', true);
-        carriage.removeAttribute('readonly');
+        carriage.removeAttribute('disabled');
         pcCrateInput.removeAttribute('required');
     } else if (productUnitMeasure == 'PC') {
         pcCrateInput.setAttribute('required', true);
         crates_fields.setAttribute("hidden", "hidden");
         document.getElementById('unit_crate_count').value = selectedProduct.unit_count_per_crate;
         carriage.value = 'crate';
-        carriage.setAttribute('readonly', true);
+        carriage.setAttribute('disabled', true);
         scaleInputs.setAttribute('hidden', true);
         pcWeightInputs.removeAttribute('hidden');
         calculatePiecesAndWeight();

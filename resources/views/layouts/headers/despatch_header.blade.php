@@ -46,6 +46,10 @@
             <li>
                 <a href="{{ route('despatch_issue_idt', 'highcare') }}" class="dropdown-item">To High Care</a>
             </li>
+            <hr class="dropdown-divider" />
+            <li>
+                <a href="{{ route('despatch_issue_idt', 'petfood') }}" class="dropdown-item">To Pet Food</a>
+            </li>
         </ul>
     </li>
     <li class="nav-item dropdown">

@@ -110,6 +110,17 @@
     <div class="container-fluid">
         <div class="card-deck-wrapper">
             <div class="card-deck">
+                <div class="col-md-3 card p-2 bg-info" style="height: 200px">
+                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                        href="{{ route('petfood_dashboard') }}">
+                        <h4 class="card-title">Pet Food</h4>
+                        <p class="card-text">Select this option to switch to Pet Food.
+                        </p>
+                    </a>
+                    <div class="icon text-center">
+                        <i class="fas fa-dog fa-4x"></i>
+                    </div>
+                </div>
                 <div class="col-md-3 card p-2 bg-secondary" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('assets_dashboard') }}">

@@ -20,6 +20,7 @@
                         <option value="2595" {{ $send_to_location == 'highcare' ? 'selected' : '' }}>High Care</option>
                         <option value="2055" {{ $send_to_location == 'sausage' ? 'selected' : '' }}>Sausage</option>
                         <option value="1570" {{ $send_to_location == 'butchery' ? 'selected' : '' }}>Butchery</option>
+                        <option value="3035" {{ $send_to_location == 'petfood' ? 'selected' : '' }}>PetFood</option>
                     </select>
                 </div>
                 <div class="col-md-6 form-group">

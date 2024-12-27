@@ -364,7 +364,7 @@ class DespatchController extends Controller
 
     public function issueIdt($send_to_location = null)
     {
-        $known_locations = ['butchery', 'highcare', 'sausage'];
+        $known_locations = ['butchery', 'highcare', 'sausage', 'petfood'];
         if (!in_array($send_to_location, $known_locations)) {
             abort(404);
         }
@@ -379,9 +379,7 @@ class DespatchController extends Controller
         if ($send_to_location == 'butchery') {
             $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
             $products = DB::table('products')->whereIn('code', $items_array)->get();
-        } elseif ($send_to_location == 'highcare') {
-            $products = DB::table('items')->get();
-        } elseif ($send_to_location == 'sausage') {
+        } else {
             $products = DB::table('items')->get();
         }
 
@@ -391,21 +389,20 @@ class DespatchController extends Controller
             $chillers = [];
         }
 
+        $location_codes = [
+            'butchery' => '1570',
+            'highcare' => '2595',
+            'sausage' => '2055',
+            'petfood' => '3035',
+        ];
+
         $username = Auth::user()->username;
 
         $query = DB::table('idt_transfers')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->where('idt_transfers.transfer_from', '3535')
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
-            ->when($send_to_location == 'butchery', function ($q) {
-                $q->where('idt_transfers.location_code', '=', '1570');
-            })
-            ->when($send_to_location == 'highcare', function ($q) {
-                $q->where('idt_transfers.location_code', '=', '2595');
-            })
-            ->when($send_to_location == 'sausage', function ($q) {
-                $q->where('idt_transfers.location_code', '=', '2055');
-            })
+            ->where('idt_transfers.location_code', '=', $location_codes[$send_to_location])
             ->select(
                 'idt_transfers.*',
                 'users.username',

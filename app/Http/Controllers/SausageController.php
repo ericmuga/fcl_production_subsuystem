@@ -297,7 +297,10 @@ class SausageController extends Controller
 
         if ($export_status == 1) {
             $location = 3600;
+        } elseif ($export_status == 3035) {
+            $location = 3035;
         }
+
         return $location;
     }
 
