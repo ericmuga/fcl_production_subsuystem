@@ -389,7 +389,6 @@ const validateSubmitValues = () => {
     let status = true
 
     if (selectedProduct.unit_of_measure == 'PC') {
-        console.log('validating pc')
         let total_crates = $("#pc_total_crates").val();
         let incomplete_crates = $('#incomplete_crates').is(':checked');
         let full_crates;
