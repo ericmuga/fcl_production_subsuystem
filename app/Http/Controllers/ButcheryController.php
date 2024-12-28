@@ -1371,15 +1371,15 @@ class ButcheryController extends Controller
         // dd($username);
 
         $transfer_lines = DB::table('idt_transfers')
-        ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
-        ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-        ->select('idt_transfers.*', 'products.description as product', 'users.username')
-        ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
-        ->where('idt_transfers.transfer_from', '3535')
-        ->where('idt_transfers.location_code', '1570') 
-        ->where('idt_transfers.total_weight', '>', '0.0')
-        ->orderByDesc('idt_transfers.id')
-        ->get();
+            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->select('idt_transfers.*', 'products.description as product', 'users.username')
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
+            ->where('idt_transfers.transfer_from', '3535')
+            ->where('idt_transfers.location_code', '1570') 
+            ->where('idt_transfers.total_weight', '>', '0.0')
+            ->orderByDesc('idt_transfers.id')
+            ->get();
 
         
         $chillers = DB::table('chillers')->where('location_code', '1570')->get();

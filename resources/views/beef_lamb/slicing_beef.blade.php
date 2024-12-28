@@ -221,7 +221,7 @@
                                         <td>{{ $data->process }}</td>
                                         <td>{{ $data->no_of_crates }}</td>
                                         <td>{{ $data->black_crates }}</td>
-                                        <td>{{ $data->scale_reading }}</td>
+                                        <td>{{ number_format($data->scale_reading, 2) }}</td>
                                         <td>{{ number_format(($data->no_of_crates * 1.8) + ($data->black_crates * 0.2), 2) }}</td>
                                         <td>{{ number_format($data->net_weight, 2) }}</td>
                                         <td>{{ $data->no_of_pieces }}</td>

@@ -154,6 +154,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>Issued Weight</th>
+                                <th>Received Weight</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
                                 <th>Status</th>
@@ -168,6 +170,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>Issued Weight</th>
+                                <th>Received Weight</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
                                 <th>Status</th>
@@ -183,6 +187,8 @@
                                     <td>{{ $data->id }}</td>
                                     <td>{{ $data->product_code }}</td>
                                     <td>{{ $data->product  }}</td>
+                                    <td>{{ $data->total_weight  }}</td>
+                                    <td>{{ $data->receiver_total_weight  }}</td>
                                     <td>{{ $data->total_crates }}</td>
                                     <td>{{ $data->black_crates }}</td>
                                     @if($data->received_by == null)

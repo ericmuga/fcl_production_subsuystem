@@ -369,8 +369,6 @@ class HighCare1Controller extends Controller
                 'id' => $id,
             ];
 
-            // dd($data);
-
             // Publish data to RabbitMQ
             $helpers->publishToQueue($data, 'production_data_bacon_slicing.bc');
 
