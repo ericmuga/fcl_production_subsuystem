@@ -362,53 +362,77 @@ class DespatchController extends Controller
         }
     }
 
-    public function issueIdt($filter = null)
+    public function issueIdt($send_to_location = null)
     {
-        $title = "Send IDT from Despatch";
+        $known_locations = ['butchery', 'highcare', 'sausage', 'petfood'];
+        if (!in_array($send_to_location, $known_locations)) {
+            abort(404);
+        }
+
+        $title = "Issue IDT from Despatch to $send_to_location";
 
         $configs = DB::table('scale_configs')
                 ->where('section', 'despatch')
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
 
-        $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
+        if ($send_to_location == 'butchery') {
+            $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
+            $products = DB::table('products')->whereIn('code', $items_array)->get();
+        } else {
+            $products = DB::table('items')->get();
+        }
 
-        $products = DB::table('products')->whereIn('code', $items_array)->get();
+        if ($send_to_location == 'butchery') {
+            $chillers = DB::table('chillers')->where('location_code', '1570')->get();
+        } else {
+            $chillers = [];
+        }
 
-        $chillers = DB::table('chillers')->where('location_code', '1570')->get();
+        $location_codes = [
+            'butchery' => '1570',
+            'highcare' => '2595',
+            'sausage' => '2055',
+            'petfood' => '3035',
+        ];
 
         $username = Auth::user()->username;
 
         $query = DB::table('idt_transfers')
-            ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->select('idt_transfers.*', 'products.description as product', 'products.unit_of_measure', 'users.username')
-            ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('idt_transfers.transfer_from', '3535')
-            ->where('idt_transfers.total_weight', '>', '0.0') // not cancelled
-            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2)) // 20 days for supervisors, others 2 days back only.
-            ->when($filter == 'butchery', function ($q) {
-                $q->where('idt_transfers.location_code', '=', '1570'); // where transfer to location code is butchery
-            });
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
+            ->where('idt_transfers.location_code', '=', $location_codes[$send_to_location])
+            ->select(
+                'idt_transfers.*',
+                'users.username',
+            );
 
         $transfer_lines = $query->get();
 
-        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'filter'));
+        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'send_to_location'));
     }
 
     public function saveIssuedIdt(Request $request) {
         try {
+            Log::info($request->all());
+
+            if ($request->unit_measure == 'PC') {
+                $weight = $request->calculated_weight;
+            } else {
+                $weight = $request->net;
+            };
 
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
                 'location_code' => $request->location_code,
                 'chiller_code' => $request->chiller_code,
                 'total_pieces' => $request->no_of_pieces ?: 0,
-                'total_weight' => $request->net,
+                'total_weight' => $weight,
                 'total_crates' => $request->total_crates ?: 0,
-                'black_crates' => $request->black_crates,
+                'black_crates' => $request->black_crates ?: 0,
                 'full_crates' => $request->total_crates ?: 0,
-                'incomplete_crate_pieces' => 0,
+                'incomplete_crate_pieces' => $request->incomplete_pieces ?: 0,
                 'transfer_type' => 0,
                 'transfer_from' => '3535',
                 'description' => $request->description,

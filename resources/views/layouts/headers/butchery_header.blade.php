@@ -83,7 +83,7 @@
             class="nav-link dropdown-toggle">Receive IDT</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('butchery_receive_idt', 'despatch') }}" class="dropdown-item">Despatch - IDT</a>
+                <a href="{{ route('list_receive', ['from_location' => '3535', 'to_location' => '1570']) }}" class="dropdown-item">Despatch - IDT</a>
             </li>
         </ul>
     </li>

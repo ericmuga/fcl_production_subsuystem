@@ -14,17 +14,19 @@
     <li class="nav-item">
         <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
     </li>
+    <li class="nav-item">
+        <a id="dropdownSubMenu1"  href="{{ route('sausage_idt') }}"aria-haspopup="true" aria-expanded="false" class="nav-link">Issue IDT </a>
+    </li>
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle"> IDT </a>
+            class="nav-link dropdown-toggle">Receive IDT</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="{{ route('sausage_idt') }}" class="dropdown-item">Create IDT</a>
-            </li>
-            <li class="dropdown-divider"></li>
             <li><a href="{{ route('stuffing_weights') }}" class="dropdown-item">Stuffing IDTs</a></li>
-            <li class="dropdown-divider"></li>
-            <li><a href="{{ route('sausage_idt_receive') }}" class="dropdown-item">Receive
-                    From Butch-IDT</a>
+            <hr class="dropdown-divider"/>
+            <li><a href="{{ route('sausage_idt_receive') }}" class="dropdown-item">Butchery IDTs</a>
+            </li>
+            <hr class="dropdown-divider" />
+            <li><a href="{{ route('list_receive', ['from_location' => '3535', 'to_location' => '2055']) }}" class="dropdown-item">Despatch -IDTs</a>
             </li>
         </ul>
     </li>

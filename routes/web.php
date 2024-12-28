@@ -12,8 +12,10 @@ use App\Http\Controllers\FreshcutsBulkController;
 use App\Http\Controllers\GenericController;
 use App\Http\Controllers\HighCare1Controller;
 use App\Http\Controllers\HighCare2Controller;
+use App\Http\Controllers\IDTController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PetfoodController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\SlaughterController;
 use App\Http\Controllers\SpicesController;
@@ -131,8 +133,6 @@ Route::get('/butchery/password', [ButcheryController::class, 'changePassword'])-
 Route::post('export-beheading-lines-report', [ButcheryController::class, 'linesBeheadingReport'])->name('export-beheading-lines-report');
 Route::post('export-breaking-lines-report', [ButcheryController::class, 'linesBreakingReport'])->name('export-breaking-lines-report');
 Route::post('export-deboning-lines-report', [ButcheryController::class, 'linesDeboningReport'])->name('export-deboning-lines-report');
-Route::get('butchery/idt/receive', [ButcheryController::class, 'receiveIdt'])->name('butchery_receive_idt');
-Route::post('butchery/idt/receive/save', [ButcheryController::class, 'updateReceiveIdt'])->name('butchery_update_idt');
 
 // Marination
 Route::get('butchery-marination', [ButcheryController::class, 'weighMarination'])->name('weigh_marination');
@@ -300,3 +300,17 @@ Route::prefix('data')->group(function () {
     Route::post('items/create', [DataController::class, 'createItem'])->name('create_item');
 });
 /*-------------End Data------------------ */
+
+/*-------------Start IDT ----------------- */
+Route::prefix('idt')->group(function () {
+    Route::get('/receive', [IDTController::class, 'listIDTReceive'])->name('list_receive');
+    Route::post('save-receive', [IDTController::class, 'updateReceiveIdt'])->name('idt_receive');
+    Route::get('/issue', [IDTController::class, 'listIDTIssue'])->name('issue_idt');
+});
+/*-------------End IDT ------------------ */
+
+/*-------------Start Petfood ----------------- */
+Route::prefix('petfood')->group(function () {
+    Route::get('/dashboard', [PetfoodController::class, 'dashboard'])->name('petfood_dashboard');
+});
+/*-------------End Petfood ------------------ */
