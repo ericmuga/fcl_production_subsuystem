@@ -238,7 +238,7 @@
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
                                 <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
-                                <td>{{ $data->location_code }}</td>
+                                <td>{{ $location_names[$data->location_code] }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates ?? 0 }}</td>
                                 <td>{{ $data->black_crates ?? 0 }}</td>
