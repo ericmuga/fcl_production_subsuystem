@@ -39,6 +39,8 @@
                                             <option value="2055">Sausage</option>
                                             <option value="2595">Bacon & Ham</option>
                                             <option value="2500">Bacon & Ham Bulk</option>
+                                            <option value="3535">Despatch</option>
+                                        </select>
                                         </select>
                                     </div>
                                 </div> <br>
