@@ -50,6 +50,10 @@
             <li>
                 <a href="{{ route('despatch_issue_idt', 'petfood') }}" class="dropdown-item">To Pet Food</a>
             </li>
+            <hr class="dropdown-divider" />
+            <li>
+                <a href="{{  route('list_issued_idt', ['from_location' => '3535', 'to_location' => '4450']) }}" class="dropdown-item">To QA</a>
+            </li>
         </ul>
     </li>
     <li class="nav-item dropdown">

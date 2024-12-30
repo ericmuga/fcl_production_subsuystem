@@ -30,6 +30,7 @@ class IDTController extends Controller
             '2055' => 'Sausage',
             '3035' => 'PetFood',
             '3535' => 'Despatch',
+            '4450' => 'QA',
         ];
 
         if ($from_location == null || $to_location == null || !array_key_exists($from_location, $location_names) || !array_key_exists($to_location, $location_names)) {
@@ -136,6 +137,7 @@ class IDTController extends Controller
             '2055' => 'Sausage',
             '3035' => 'PetFood',
             '3535' => 'Despatch',
+            '4450' => 'QA',
         ];
 
         if ($from_location == null || !array_key_exists($from_location, $location_names)) {

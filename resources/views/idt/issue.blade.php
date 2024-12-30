@@ -11,6 +11,8 @@
     @include('layouts.headers.sausage_header')
 @elseif(request()->query('from_location') == '3035')
     @include('layouts.headers.petfood_header')
+@elseif(request()->query('from_location') == '3535')
+    @include('layouts.headers.despatch_header')
 @endif
 
 <!-- /.navbar -->
@@ -54,6 +56,7 @@
                             <option value="1570"  @if(request()->get('to_location') == '1570') selected @endif >Butchery</option>
                             <option value="3535"  @if(request()->get('to_location') == '3535') selected @endif >Despatch</option>
                             <option value="4300" @if(request()->get('to_location') == '4300') selected @endif >Incineration</option>
+                            <option value="4450" @if(request()->get('to_location') == '4450') selected @endif >QA</option>
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
