@@ -26,7 +26,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title"> Transfer From {{ $location_names[request()->query('from_location')] }} To {{ $location_names[request()->query('to_location')] }} Entries  | <span id="subtext-h1-title"><small> showing all
+                <h3 class="card-title"> Transfer From  Lines Entries | <span id="subtext-h1-title"><small> showing all
                             <strong></strong> entries
                             ordered by
                             latest</small> </span></h3>
@@ -41,6 +41,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>Issued Weight</th>
+                                <th>Received Weight</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
                                 <th>Status</th>
@@ -55,6 +57,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>Issued Weight</th>
+                                <th>Received Weight</th>
                                 <th>Total Crates</th>
                                 <th>Black Crates</th>
                                 <th>Status</th>
@@ -70,6 +74,8 @@
                                     <td>{{ $data->id }}</td>
                                     <td>{{ $data->product_code }}</td>
                                     <td>{{ $data->description  }}</td>
+                                    <td>{{ $data->total_weight  }}</td>
+                                    <td>{{ $data->receiver_total_weight }}</td>
                                     <td>{{ $data->total_crates }}</td>
                                     <td>{{ $data->black_crates }}</td>
                                     @if($data->received_by == null)
