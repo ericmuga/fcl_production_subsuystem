@@ -219,6 +219,15 @@ class IDTController extends Controller
     public function approveIdt(Request $request, Helpers $helpers)
     {
        try {
+            $transfer = DB::table('idt_transfers')
+                ->where('id', $request->id)
+                ->first();
+
+            if ($request->narration != null) {
+                $narration = $transfer->description . " Approval Narration: " . $request->narration;
+            } else {
+                $narration = $transfer->description;
+            }
             // updaate approval status for transfer
             DB::table('idt_transfers')
                 ->where('id', $request->id)
@@ -226,6 +235,7 @@ class IDTController extends Controller
                     'approved' => $request->input('approve'),
                     'approved_by' => Auth::id(),
                     'updated_at' => now(),
+                    'description' => $narration,
                 ]);
             
             if ($request->input('approve') == 1) {
