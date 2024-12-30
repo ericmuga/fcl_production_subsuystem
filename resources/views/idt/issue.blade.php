@@ -49,10 +49,11 @@
                         <select class="form-control" name="location_code" id="location_code" required
                             @if(request()->get('to_location')) disabled @endif >
                             <option value="" disabled  @if(!request()->get('to_location')) selected @endif> -- select an option -- </option>
-                            <option value="2595"  @if(!request()->get('to_location' == '2595')) selected @endif >High Care</option>
-                            <option value="2055"  @if(!request()->get('to_location' == '2055')) selected @endif >Sausage</option>
-                            <option value="1570"  @if(!request()->get('to_location' == '1570')) selected @endif >Butchery</option>
-                            <option value="3535"  @if(!request()->get('to_location' == '3535')) selected @endif >Despatch</option>
+                            <option value="2595"  @if(request()->get('to_location') == '2595') selected @endif >High Care</option>
+                            <option value="2055"  @if(request()->get('to_location') == '2055') selected @endif >Sausage</option>
+                            <option value="1570"  @if(request()->get('to_location') == '1570') selected @endif >Butchery</option>
+                            <option value="3535"  @if(request()->get('to_location') == '3535') selected @endif >Despatch</option>
+                            <option value="4300" @if(request()->get('to_location') == '4300') selected @endif >Incineration</option>
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
