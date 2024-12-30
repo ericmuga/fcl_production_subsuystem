@@ -14,9 +14,10 @@
                 </select>
             </div>
             <div class="form-row">
+                <input type="hidden" name="location_code" value="{{ $location_codes[$send_to_location] }}">
                 <div class="col-md-6 form-group">
                     <label for="location_code">Transfer To</label>
-                    <select class="form-control" name="location_code" id="location_code" required readonly>
+                    <select class="form-control" name="location_code" id="location_code" required disabled>
                         <option value="2595" {{ $send_to_location == 'highcare' ? 'selected' : '' }}>High Care</option>
                         <option value="2055" {{ $send_to_location == 'sausage' ? 'selected' : '' }}>Sausage</option>
                         <option value="1570" {{ $send_to_location == 'butchery' ? 'selected' : '' }}>Butchery</option>
