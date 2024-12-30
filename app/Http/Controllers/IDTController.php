@@ -55,6 +55,13 @@ class IDTController extends Controller
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
             ->where('idt_transfers.location_code', request()->query('to_location'))
             ->where('idt_transfers.transfer_from', request()->query('from_location'))
+            ->where(function ($query) {
+                $query->where('idt_transfers.requires_approval', 0)
+                      ->orWhere(function ($query) {
+                          $query->where('idt_transfers.requires_approval', 1)
+                                ->where('idt_transfers.approved', 1);
+                      });
+            })
             // Select columns from the joined tables
             ->select(
                 'idt_transfers.*', // Select all columns from idt_transfers
