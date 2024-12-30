@@ -19,21 +19,21 @@ class IDTController extends Controller
 
     public function listIDTReceive(Request $request, Helpers $helpers)
     {
-        $title = "Receive IDT";
-
         $from_location = $request->query('from_location');
         $to_location = $request->query('to_location');
+
+        $title = "Receive IDT from $from_location to $to_location";
 
         $location_names = [
             '1570' => 'Butchery',
             '2595' => 'Highcare',
             '2055' => 'Sausage',
             '3035' => 'PetFood',
+            '3535' => 'Despatch',
         ];
 
-        if ($from_location == null || $to_location == null) {
-            Toastr::error('Invalid locations', 'Error!');
-            return redirect()->back();
+        if ($from_location == null || $to_location == null || !array_key_exists($from_location, $location_names) || !array_key_exists($to_location, $location_names)) {
+           abort(404);
         };
 
         // Combine products and items using UNION
