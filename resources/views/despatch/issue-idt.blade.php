@@ -40,8 +40,8 @@
                         <th>Total Weight</th>
                         <th>Description</th>
                         <th>Batch No</th>
-                        <th>Status</th>
                         <th>Date</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tfoot>
@@ -58,8 +58,8 @@
                         <th>Total Weight</th>
                         <th>Description</th>
                         <th>Batch No</th>
-                        <th>Status</th>
                         <th>Date</th>
+                        <th>Status</th>
                     </tr>
                 </tfoot>
                 <tbody>
@@ -72,7 +72,7 @@
                                 data-total_weight="{{ $data->total_weight }}"
                                 data-transfer_type="{{ $data->transfer_type }}"
                                 data-description="{{ $data->description }}"
-                                data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
+                                data-batch_no="{{ $data->batch_no }}">{{ $data->id }}
                             </td>
                             <td>{{ $data->product_code }}</td>
                             <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
@@ -85,14 +85,35 @@
                             <td>{{ $data->total_weight }}</td>
                             <td>{{ $data->description }}</td>
                             <td>{{ $data->batch_no }}</td>
-                            @if ($data->total_weight == 0 )
-                            <td><span class="badge badge-danger">cancelled</span></td>
-                            @elseif($data->received_by != null)
-                            <td><span class="badge badge-success">received</span></td>
-                            @else
-                            <td><span class="badge badge-info">waiting receipt</span></td>
-                            @endif
                             <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                            @if ($data->requires_approval == true && $data->approved_by == null && auth()->user()->role == 'QA')
+                                <td>
+                                    <button
+                                        type="button"
+                                        data-toggle="modal"
+                                        data-target="#approveModal"
+                                        class="btn btn-sm btn-primary"
+                                        data-id="{{ $data->id }}"
+                                        data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
+                                        data-weight = "{{ $data->total_weight }}"
+                                        data-pieces = "{{ $data->total_pieces }}"
+                                        data-batch_no = "{{ $data->batch_no }}"
+                                        data-send-location = "{{ $data->location_code }}"
+                                        onclick="updateApprovalModal(event)"
+                                    >
+                                        Approve
+                                    </button></td>
+                            @elseif ($data->requires_approval == true && $data->approved_by == null)
+                                <td><span class="badge badge-info">waiting approval</span></td>
+                            @elseif ($data->requires_approval == true && $data->approved_by != null && $data->approved == 0)
+                                <td><span class="badge badge-info">rejected</span></td>
+                            @elseif ($data->total_weight == 0 )
+                                <td><span class="badge badge-danger">cancelled</span></td>
+                            @elseif($data->received_by != null)
+                                <td><span class="badge badge-success">received</span></td>
+                            @else
+                                <td><span class="badge badge-info">waiting receipt</span></td>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>
@@ -100,89 +121,85 @@
         </div>
     </div>
 </div>
-<!-- slicing ouput data show -->
 
-<!-- Edit Modal -->
-<div id="editIdtModal" class="modal fade" role="dialog">
+<!-- Approval Modal -->
+<div id="approveModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-xl">
-        <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role"
-            action="{{ route('freshcuts_cancel_idt') }}" method="post">
+        <form class="modal-content" id="approval-form" action="{{ route('approve_idt') }}" method="post">
             @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editIdtModalLabel">Cancel Transfer for Idt No: <strong><input
-                                style="border:none" type="text" id="item_id" name="item_id" value="" readonly></strong>
-                    </h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="card-group">
-                        <div class="card">
-                            <div class="card-body" style="">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label for="edit_product" class="col-sm-3 col-form-label">Product Name </label>
-                                        <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control" value="" id="edit_product"
-                                                placeholder="">
-                                        </div>
-                                    </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIdtModalLabel">Approve Transfer: <strong><input
+                            style="border:none" type="text" id="approve_transfer_id" name="id" value="" readonly></strong>
+                </h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="edit_product" class="col-sm-3 col-form-label">Product Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" value="" id="approve_product"
+                                        placeholder="">
                                 </div>
                             </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer Type </label>
-                                    <div class="col-sm-9">
-                                        <select class="form-control select2" name="for_export_edit" id="for_export_edit"
-                                            selected="selected" readonly>
-                                            <option value="" selected disabled>Transfer Type </option>
-                                            <option value="0"> Local</option>
-                                            <option value="1"> Export</option>
-                                        </select>
-                                    </div>
-                                </div><br>
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" value="" id="batch_no_edit"
-                                            name="batch_no_edit" required placeholder="" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body text-center form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Net
-                                        Weight(Kgs)</label>
-                                    <div class="col-sm-6">
-                                        <input type="number" step="0.1" class="form-control" value="0" id="weight_edit"
-                                            readonly name="weight_edit" placeholder="">
-                                    </div>
+                            <div class="row">
+                                <label for="edit_product" class="col-sm-3 col-form-label">Batch No</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" value="" id="approve_batch_no"
+                                        placeholder="">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
-                            onclick="return validateOnEditSubmit()" type="submit">
-                            <i class="fa fa-save"></i> Cancel Transfer
-                        </button>
+                    <div class="col-md-4">
+                        <div class="form-group form-row">
+                            <label for="edit_product" class="col-sm-3 col-form-label">Pieces</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control" value="" id="approve_pieces">
+                            </div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Weight</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" value="" id="approve_net" name="net" required readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="inputEmail3" class="col-sm-6 col-form-label">Send to Location</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="location" id="approve_location" required>
+                                    <option value="">Select Location</option>
+                                    <option value="1570">Butchery</option>
+                                    <option value="2595">Highcare</option>
+                                    <option value="2055">Sausage</option>
+                                    <option value="4300">Incineration</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="narration">Narration</label>
+                            <textarea class="form-control" name="narration" id="narration" rows="2"></textarea>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger btn-lg" name="approve" value="0">
+                    Reject
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" name="approve" value="1" >
+                    Approve
+                </button>
             </div>
         </form>
     </div>
 </div>
-<!--End Edit scale1 modal-->
+<!--End Approval modal-->
 
 @endsection
 
@@ -194,6 +211,23 @@
     const crates_fields = document.getElementById("crates_div")
     let selectedProduct;
     const products = @json($products);
+
+    function updateApprovalModal(event) {
+        let btn = event.currentTarget
+        let id = btn.getAttribute('data-id')
+        let product = btn.getAttribute('data-product')
+        let weight = btn.getAttribute('data-weight')
+        let pieces = btn.getAttribute('data-pieces')
+        let batch_no = btn.getAttribute('data-batch_no')
+        let send_location = btn.getAttribute('data-send-location')
+
+        document.getElementById('approve_transfer_id').value = id
+        document.getElementById('approve_product').value = product
+        document.getElementById('approve_batch_no').value = batch_no
+        document.getElementById('approve_pieces').value = pieces
+        document.getElementById('approve_net').value = weight
+        document.getElementById('approve_location').value = send_location
+    }
 
     function updateTare() {
         let tare
@@ -500,7 +534,7 @@ const padZero = (num) => {
     return num < 10 ? `0${num}` : num;
 }
 
-togglePiecesInput = () => {
+const togglePiecesInput = () => {
     let incomplete_crates = $('#incomplete_crates').is(':checked')
     let incomplete_pieces = document.getElementById('incomplete_pieces')
     incomplete_pieces.value = 0

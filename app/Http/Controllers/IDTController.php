@@ -182,8 +182,6 @@ class IDTController extends Controller
 
     public function saveIssueIdt(Request $request) {
         try {
-            Log::info($request->all());
-            
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
                 'location_code' => $request->location_code,
@@ -208,6 +206,33 @@ class IDTController extends Controller
             Log::error($e->getMessage());
             Toastr::error($e->getMessage(), 'Error!');
             return redirect()->back();
+        }
+    }
+
+    public function approveIdt(Request $request, Helpers $helpers)
+    {
+       try {
+            // updaate approval status for transfer
+            DB::table('idt_transfers')
+                ->where('id', $request->id)
+                ->update([
+                    'approved' => $request->input('approve'),
+                    'approved_by' => Auth::id(),
+                    'updated_at' => now(),
+                ]);
+            
+            if ($request->input('approve') == 1) {
+                Toastr::success('IDT Transfer approved successfully', 'Success');
+            } else {
+                Toastr::warning('IDT Transfer rejected successfully', 'Success');
+            };
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            $helpers->CustomErrorlogger($e->getMessage(),  __FUNCTION__);
+            return back()
+                ->withInput();
         }
     }
 }
