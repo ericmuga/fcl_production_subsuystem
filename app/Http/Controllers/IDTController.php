@@ -55,6 +55,13 @@ class IDTController extends Controller
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
             ->where('idt_transfers.location_code', request()->query('to_location'))
             ->where('idt_transfers.transfer_from', request()->query('from_location'))
+            ->where(function ($query) {
+                $query->where('idt_transfers.requires_approval', 0)
+                      ->orWhere(function ($query) {
+                          $query->where('idt_transfers.requires_approval', 1)
+                                ->where('idt_transfers.approved', 1);
+                      });
+            })
             // Select columns from the joined tables
             ->select(
                 'idt_transfers.*', // Select all columns from idt_transfers
@@ -182,8 +189,6 @@ class IDTController extends Controller
 
     public function saveIssueIdt(Request $request) {
         try {
-            Log::info($request->all());
-            
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
                 'location_code' => $request->location_code,
@@ -208,6 +213,43 @@ class IDTController extends Controller
             Log::error($e->getMessage());
             Toastr::error($e->getMessage(), 'Error!');
             return redirect()->back();
+        }
+    }
+
+    public function approveIdt(Request $request, Helpers $helpers)
+    {
+       try {
+            $transfer = DB::table('idt_transfers')
+                ->where('id', $request->id)
+                ->first();
+
+            if ($request->narration != null) {
+                $narration = $transfer->description . " Approval Narration: " . $request->narration;
+            } else {
+                $narration = $transfer->description;
+            }
+            // updaate approval status for transfer
+            DB::table('idt_transfers')
+                ->where('id', $request->id)
+                ->update([
+                    'approved' => $request->input('approve'),
+                    'approved_by' => Auth::id(),
+                    'updated_at' => now(),
+                    'description' => $narration,
+                ]);
+            
+            if ($request->input('approve') == 1) {
+                Toastr::success('IDT Transfer approved successfully', 'Success');
+            } else {
+                Toastr::warning('IDT Transfer rejected successfully', 'Success');
+            };
+
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            $helpers->CustomErrorlogger($e->getMessage(),  __FUNCTION__);
+            return back()
+                ->withInput();
         }
     }
 }

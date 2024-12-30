@@ -304,9 +304,10 @@ Route::prefix('data')->group(function () {
 /*-------------Start IDT ----------------- */
 Route::prefix('idt')->group(function () {
     Route::get('/receive', [IDTController::class, 'listIDTReceive'])->name('list_receive');
-    Route::post('save-receive', [IDTController::class, 'updateReceiveIdt'])->name('idt_receive');
+    Route::post('/save-receive', [IDTController::class, 'updateReceiveIdt'])->name('idt_receive');
     Route::get('/issue', [IDTController::class, 'listIDTIssued'])->name('list_issued_idt');
-    Route::post('save-issue', [IDTController::class, 'saveIssueIdt'])->name('save_issue_idt');
+    Route::post('/save-issue', [IDTController::class, 'saveIssueIdt'])->name('save_issue_idt');
+    Route::post('/approve', [IDTController::class, 'approveIdt'])->name('approve_idt');
 });
 /*-------------End IDT ------------------ */
 
