@@ -415,8 +415,6 @@ class DespatchController extends Controller
 
     public function saveIssuedIdt(Request $request) {
         try {
-            Log::info($request->all());
-
             if ($request->unit_measure == 'PC') {
                 $weight = $request->calculated_weight;
             } else {

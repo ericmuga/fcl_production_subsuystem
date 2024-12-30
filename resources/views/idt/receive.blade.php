@@ -17,8 +17,107 @@
 
 @endsection
 
+@section('content-header')
+<h1 class="m-2">Receive IDTs from {{ $location_names[request()->get('from_location')] }} to {{ $location_names[request()->get('to_location')]  }}</h1>
+@endsection
 
 @section('content')
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title"> Transfer From  Lines Entries | <span id="subtext-h1-title"><small> showing all
+                            <strong></strong> entries
+                            ordered by
+                            latest</small> </span></h3>
+            </div>
+            <!-- /.card-header -->
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                        width="100%">
+                        <thead>
+                            <tr>
+                                <th>IDT No</th>
+                                <th>Product Code</th>
+                                <th>Product</th>
+                                <th>Issued Weight</th>
+                                <th>Received Weight</th>
+                                <th>Total Crates</th>
+                                <th>Black Crates</th>
+                                <th>Status</th>
+                                <th>Issued By</th>
+                                <th>Batch No</th>
+                                <th>Issue Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tfoot>
+                            <tr>
+                                <th>IDT No</th>
+                                <th>Product Code</th>
+                                <th>Product</th>
+                                <th>Issued Weight</th>
+                                <th>Received Weight</th>
+                                <th>Total Crates</th>
+                                <th>Black Crates</th>
+                                <th>Status</th>
+                                <th>Issued By</th>
+                                <th>Batch No</th>
+                                <th>Issue Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
+                        <tbody>
+                            @foreach($transfer_lines as $data)
+                                <tr>
+                                    <td>{{ $data->id }}</td>
+                                    <td>{{ $data->product_code }}</td>
+                                    <td>{{ $data->description  }}</td>
+                                    <td>{{ $data->total_weight  }}</td>
+                                    <td>{{ $data->receiver_total_weight }}</td>
+                                    <td>{{ $data->total_crates }}</td>
+                                    <td>{{ $data->black_crates }}</td>
+                                    @if($data->received_by == null)
+                                        <td><span class="badge badge-secondary">pending</span></td>
+                                    @elseif($data->received_by != null)
+                                        <td><span class="badge badge-success">received</span></td>
+                                    @endif
+                                    <td>{{ $data->issued_by }}</td>
+                                    <td>{{ $data->batch_no }}</td>
+                                    <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                    @if ($data->received_by == null)
+                                    <td>
+                                        <button
+                                            id="receiveModalShow"
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="#receiveModal"
+                                            data-id="{{$data->id}}"
+                                            data-product-name="{{ $data->description }}"
+                                            data-issued-pieces="{{ $data->total_pieces }}"
+                                            data-issued-weight="{{ $data->total_weight }}"
+                                            class="btn btn-warning btn-xs"
+                                            title="Receive transfer"
+                                            onclick="updateReceiveModalInputs(event)">
+                                            <i class="fa fa-check"></i>
+                                        </button>
+                                    </td>
+                                    @else
+                                    <td><span class="badge badge-warning">no action</span></td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+        <!-- /.col -->
+    </div>
+</div>
 
 <div class="modal fade" id="receiveModal" tabindex="-1" role="dialog" aria-labelledby="receiveModalLabel"
     aria-hidden="true">
@@ -148,103 +247,6 @@
                 </div>
             </div>
         </form>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="card-title"> Transfer From  Lines Entries | <span id="subtext-h1-title"><small> showing all
-                            <strong></strong> entries
-                            ordered by
-                            latest</small> </span></h3>
-            </div>
-            <!-- /.card-header -->
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
-                        width="100%">
-                        <thead>
-                            <tr>
-                                <th>IDT No</th>
-                                <th>Product Code</th>
-                                <th>Product</th>
-                                <th>Issued Weight</th>
-                                <th>Received Weight</th>
-                                <th>Total Crates</th>
-                                <th>Black Crates</th>
-                                <th>Status</th>
-                                <th>Issued By</th>
-                                <th>Batch No</th>
-                                <th>Issue Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tfoot>
-                            <tr>
-                                <th>IDT No</th>
-                                <th>Product Code</th>
-                                <th>Product</th>
-                                <th>Issued Weight</th>
-                                <th>Received Weight</th>
-                                <th>Total Crates</th>
-                                <th>Black Crates</th>
-                                <th>Status</th>
-                                <th>Issued By</th>
-                                <th>Batch No</th>
-                                <th>Issue Date</th>
-                                <th>Action</th>
-                            </tr>
-                        </tfoot>
-                        <tbody>
-                            @foreach($transfer_lines as $data)
-                                <tr>
-                                    <td>{{ $data->id }}</td>
-                                    <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->description  }}</td>
-                                    <td>{{ $data->total_weight  }}</td>
-                                    <td>{{ $data->receiver_total_weight }}</td>
-                                    <td>{{ $data->total_crates }}</td>
-                                    <td>{{ $data->black_crates }}</td>
-                                    @if($data->received_by == null)
-                                        <td><span class="badge badge-secondary">pending</span></td>
-                                    @elseif($data->received_by != null)
-                                        <td><span class="badge badge-success">received</span></td>
-                                    @endif
-                                    <td>{{ $data->issued_by }}</td>
-                                    <td>{{ $data->batch_no }}</td>
-                                    <td>{{ $helpers->amPmDate($data->created_at) }}</td>
-                                    @if ($data->received_by == null)
-                                    <td>
-                                        <button
-                                            id="receiveModalShow"
-                                            type="button"
-                                            data-toggle="modal"
-                                            data-target="#receiveModal"
-                                            data-id="{{$data->id}}"
-                                            data-product-name="{{ $data->description }}"
-                                            data-issued-pieces="{{ $data->total_pieces }}"
-                                            data-issued-weight="{{ $data->total_weight }}"
-                                            class="btn btn-warning btn-xs"
-                                            title="Receive transfer"
-                                            onclick="updateReceiveModalInputs(event)">
-                                            <i class="fa fa-check"></i>
-                                        </button>
-                                    </td>
-                                    @else
-                                    <td><span class="badge badge-warning">no action</span></td>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- /.card-body -->
-        </div>
-        <!-- /.card -->
-        <!-- /.col -->
     </div>
 </div>
 
