@@ -19,105 +19,110 @@
 <div id="idt_entries" class="collapse">
     <hr>
 
-    <div class="card p-4">
-        <div class="card-title mb-2">
-            <h3 class="card-header">IDT Entries</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"> Transfer Entries | <span id="subtext-h1-title"><small> showing all
+                        <strong></strong> entries
+                        ordered by
+                        latest</small> </span></h3>
         </div>
-        <div class="table-responsive">
-            <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
-                width="100%">
-                <thead>
-                    <tr>
-                        <th>IDT No</th>
-                        <th>Product Code</th>
-                        <th>Product</th>
-                        <th>Std Unit Measure</th>
-                        <th>Transfer To </th>
-                        <th>Chiller</th>
-                        <th>Total Crates</th>
-                        <th>Black Crates</th>
-                        <th>Total Pieces</th>
-                        <th>Total Weight</th>
-                        <th>Description</th>
-                        <th>Batch No</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>IDT No</th>
-                        <th>Product Code</th>
-                        <th>Product</th>
-                        <th>Std Unit Measure</th>
-                        <th>Transfer To </th>
-                        <th>Chiller</th>
-                        <th>Total Crates</th>
-                        <th>Black Crates</th>
-                        <th>Total Pieces</th>
-                        <th>Total Weight</th>
-                        <th>Description</th>
-                        <th>Batch No</th>
-                        <th>Date</th>
-                        <th>Status</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @foreach($transfer_lines as $data)
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                    width="100%">
+                    <thead>
                         <tr>
-                            <td id="editIdtModalShow" data-id="{{ $data->id }}"
-                                data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
-                                data-unit_measure="{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}"
-                                data-total_pieces="{{ $data->total_pieces }}"
-                                data-total_weight="{{ $data->total_weight }}"
-                                data-transfer_type="{{ $data->transfer_type }}"
-                                data-description="{{ $data->description }}"
-                                data-batch_no="{{ $data->batch_no }}">{{ $data->id }}
-                            </td>
-                            <td>{{ $data->product_code }}</td>
-                            <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
-                            <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
-                            <td>{{ $data->location_code }}</td>
-                            <td>{{ $data->chiller_code }}</td>
-                            <td>{{ $data->total_crates ?? 0 }}</td>
-                            <td>{{ $data->black_crates ?? 0 }}</td>
-                            <td>{{ $data->total_pieces }}</td>
-                            <td>{{ $data->total_weight }}</td>
-                            <td>{{ $data->description }}</td>
-                            <td>{{ $data->batch_no }}</td>
-                            <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
-                            @if ($data->requires_approval == true && $data->approved_by == null && auth()->user()->role == 'QA')
-                                <td>
-                                    <button
-                                        type="button"
-                                        data-toggle="modal"
-                                        data-target="#approveModal"
-                                        class="btn btn-sm btn-primary"
-                                        data-id="{{ $data->id }}"
-                                        data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
-                                        data-weight = "{{ $data->total_weight }}"
-                                        data-pieces = "{{ $data->total_pieces }}"
-                                        data-batch_no = "{{ $data->batch_no }}"
-                                        data-send-location = "{{ $data->location_code }}"
-                                        onclick="updateApprovalModal(event)"
-                                    >
-                                        Approve
-                                    </button></td>
-                            @elseif ($data->requires_approval == true && $data->approved_by == null)
-                                <td><span class="badge badge-info">waiting approval</span></td>
-                            @elseif ($data->requires_approval == true && $data->approved_by != null && $data->approved == 0)
-                                <td><span class="badge badge-info">rejected</span></td>
-                            @elseif ($data->total_weight == 0 )
-                                <td><span class="badge badge-danger">cancelled</span></td>
-                            @elseif($data->received_by != null)
-                                <td><span class="badge badge-success">received</span></td>
-                            @else
-                                <td><span class="badge badge-info">waiting receipt</span></td>
-                            @endif
+                            <th>IDT No</th>
+                            <th>Product Code</th>
+                            <th>Product</th>
+                            <th>Std Unit Measure</th>
+                            <th>Transfer To </th>
+                            <th>Chiller</th>
+                            <th>Total Crates</th>
+                            <th>Black Crates</th>
+                            <th>Total Pieces</th>
+                            <th>Total Weight</th>
+                            <th>Description</th>
+                            <th>Batch No</th>
+                            <th>Date</th>
+                            <th>Status</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>IDT No</th>
+                            <th>Product Code</th>
+                            <th>Product</th>
+                            <th>Std Unit Measure</th>
+                            <th>Transfer To </th>
+                            <th>Chiller</th>
+                            <th>Total Crates</th>
+                            <th>Black Crates</th>
+                            <th>Total Pieces</th>
+                            <th>Total Weight</th>
+                            <th>Description</th>
+                            <th>Batch No</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach($transfer_lines as $data)
+                            <tr>
+                                <td id="editIdtModalShow" data-id="{{ $data->id }}"
+                                    data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
+                                    data-unit_measure="{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}"
+                                    data-total_pieces="{{ $data->total_pieces }}"
+                                    data-total_weight="{{ $data->total_weight }}"
+                                    data-transfer_type="{{ $data->transfer_type }}"
+                                    data-description="{{ $data->description }}"
+                                    data-batch_no="{{ $data->batch_no }}">{{ $data->id }}
+                                </td>
+                                <td>{{ $data->product_code }}</td>
+                                <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
+                                <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
+                                <td>{{ $data->location_code }}</td>
+                                <td>{{ $data->chiller_code }}</td>
+                                <td>{{ $data->total_crates ?? 0 }}</td>
+                                <td>{{ $data->black_crates ?? 0 }}</td>
+                                <td>{{ $data->total_pieces }}</td>
+                                <td>{{ $data->total_weight }}</td>
+                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->batch_no }}</td>
+                                <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                                @if ($data->requires_approval == true && $data->approved_by == null && auth()->user()->role == 'QA')
+                                    <td>
+                                        <button
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="#approveModal"
+                                            class="btn btn-sm btn-primary"
+                                            data-id="{{ $data->id }}"
+                                            data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
+                                            data-weight = "{{ $data->total_weight }}"
+                                            data-pieces = "{{ $data->total_pieces }}"
+                                            data-batch_no = "{{ $data->batch_no }}"
+                                            data-send-location = "{{ $data->location_code }}"
+                                            onclick="updateApprovalModal(event)"
+                                        >
+                                            Approve
+                                        </button></td>
+                                @elseif ($data->requires_approval == true && $data->approved_by == null)
+                                    <td><span class="badge badge-info">waiting approval</span></td>
+                                @elseif ($data->requires_approval == true && $data->approved_by != null && $data->approved == 0)
+                                    <td><span class="badge badge-info">rejected</span></td>
+                                @elseif ($data->total_weight == 0 )
+                                    <td><span class="badge badge-danger">cancelled</span></td>
+                                @elseif($data->received_by != null)
+                                    <td><span class="badge badge-success">received</span></td>
+                                @else
+                                    <td><span class="badge badge-info">waiting receipt</span></td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
