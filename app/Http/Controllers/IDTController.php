@@ -228,7 +228,8 @@ class IDTController extends Controller
             } else {
                 $narration = $transfer->description;
             }
-            // updaate approval status for transfer
+
+            // update approval status for transfer
             DB::table('idt_transfers')
                 ->where('id', $request->id)
                 ->update([
