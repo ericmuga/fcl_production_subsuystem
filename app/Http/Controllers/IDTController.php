@@ -17,6 +17,16 @@ class IDTController extends Controller
         $this->middleware('auth');
     }
 
+    const locations = [
+        '1570' => 'Butchery',
+        '2595' => 'Highcare',
+        '2055' => 'Sausage',
+        '3035' => 'PetFood',
+        '3535' => 'Despatch',
+        '4300' => 'Incinerator',
+        '4450' => 'QA',
+    ];
+
     public function listIDTReceive(Request $request, Helpers $helpers)
     {
         $from_location = $request->query('from_location');
@@ -24,15 +34,9 @@ class IDTController extends Controller
 
         $title = "Receive IDT from $from_location to $to_location";
 
-        $location_names = [
-            '1570' => 'Butchery',
-            '2595' => 'Highcare',
-            '2055' => 'Sausage',
-            '3035' => 'PetFood',
-            '3535' => 'Despatch',
-        ];
+        $locations = self::locations;
 
-        if ($from_location == null || $to_location == null || !array_key_exists($from_location, $location_names) || !array_key_exists($to_location, $location_names)) {
+        if ($from_location == null || $to_location == null || !array_key_exists($from_location, $locations) || !array_key_exists($to_location, $locations)) {
            abort(404);
         };
 
@@ -74,9 +78,9 @@ class IDTController extends Controller
             ->get();
 
 
-        $configs = DB::table('scale_configs')->where('section', $location_names[$to_location])->where('scale', 'IDT')->get();
+        $configs = DB::table('scale_configs')->where('section', $locations[$to_location])->where('scale', 'IDT')->get();
        
-        return view('idt.receive', compact('title', 'configs', 'transfer_lines', 'location_names', 'helpers'));
+        return view('idt.receive', compact('title', 'configs', 'transfer_lines', 'locations', 'helpers'));
     }
 
     public function updateReceiveIdt(Request $request, Helpers $helpers)
@@ -130,15 +134,9 @@ class IDTController extends Controller
 
         $from_location = $request->query('from_location');
 
-        $location_names = [
-            '1570' => 'Butchery',
-            '2595' => 'Highcare',
-            '2055' => 'Sausage',
-            '3035' => 'PetFood',
-            '3535' => 'Despatch',
-        ];
+        $locations = self::locations;
 
-        if ($from_location == null || !array_key_exists($from_location, $location_names)) {
+        if ($from_location == null || !array_key_exists($from_location, $locations)) {
             abort(404);
         };
 
@@ -182,9 +180,9 @@ class IDTController extends Controller
             $products = DB::table('products')->get();
         }
         
-        $configs = DB::table('scale_configs')->where('section', $location_names[$from_location])->where('scale', 'IDT')->get();
+        $configs = DB::table('scale_configs')->where('section', $locations[$from_location])->where('scale', 'IDT')->get();
        
-        return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'location_names', 'helpers'));
+        return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
     }
 
     public function saveIssueIdt(Request $request) {
@@ -228,7 +226,8 @@ class IDTController extends Controller
             } else {
                 $narration = $transfer->description;
             }
-            // updaate approval status for transfer
+
+            // update approval status for transfer
             DB::table('idt_transfers')
                 ->where('id', $request->id)
                 ->update([
