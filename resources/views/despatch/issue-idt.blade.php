@@ -673,12 +673,7 @@ function loadProductDetails (event) {
     // show weight or pieces input based on the unit of measure
     const scaleInputs = document.getElementById('scaleInputs');
     const pcWeightInputs = document.getElementById('pcWeightInputs');
-    if (productUnitMeasure == 'KG') {
-        scaleInputs.removeAttribute('hidden');
-        pcWeightInputs.setAttribute('hidden', true);
-        carriage.removeAttribute('disabled');
-        pcCrateInput.removeAttribute('required');
-    } else if (productUnitMeasure == 'PC' && selectedProduct.unit_count_per_crate > 0) {
+    if (productUnitMeasure == 'PC' && selectedProduct.unit_count_per_crate > 0) {
         pcCrateInput.setAttribute('required', true);
         crates_fields.setAttribute("hidden", "hidden");
         document.getElementById('unit_crate_count').value = selectedProduct.unit_count_per_crate;
@@ -687,19 +682,11 @@ function loadProductDetails (event) {
         scaleInputs.setAttribute('hidden', true);
         pcWeightInputs.removeAttribute('hidden');
         calculateWeight();
-    } else if (productUnitMeasure == 'PC' && selectedProduct.unit_count_per_crate > 0) { 
-        pcCrateInput.setAttribute('required', true);
-        crates_fields.setAttribute("hidden", "hidden");
-        document.getElementById('unit_crate_count').value = selectedProduct.unit_count_per_crate;
-        scaleInputs.setAttribute('hidden', true);
-        pcWeightInputs.removeAttribute('hidden');
-        const crate_input = document.getElementById('pc_total_crates');
-        crate_input.setAttribute('readonly', true);
-        const incomplete_crates_input = document.getElementById('incomplete_crates');
-        incomplete_crates_input.disabled
-        incomplete_pieces.removeAttribute('readonly')
-
-        calculateWeight();
+    } else { 
+        scaleInputs.removeAttribute('hidden');
+        pcWeightInputs.setAttribute('hidden', true);
+        carriage.removeAttribute('disabled');
+        pcCrateInput.removeAttribute('required');
     }
 
     // set max for pieces in incomplete crate
