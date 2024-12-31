@@ -581,10 +581,6 @@
 
         });
 
-        $("#incomplete_pieces").on("keyup", function (e) {
-            calculateWeightEdit()
-        });
-
         $('.crates').on("keyup change", function () {
             validateCrates()
         })
