@@ -207,7 +207,7 @@
                     <div class="row">
                         <div class="col-md-6 form-group">
                             <label for="total_crates">Total Crates</label>
-                            <input type="number" class="form-control crates" id="pc_total_crates" name="total_crates" min="1" value="" onkeyup="handleChange()" placeholder="">
+                            <input type="number" class="form-control crates" id="pc_total_crates" name="total_crates" min="1" value="" onkeyup="calculateWeight()" placeholder="">
                         </div>
                         <div class="col-md-6 form-check">
                             <input type="checkbox" class="form-check-input" id="incomplete_crates" name="incomplete_crates" onchange="togglePiecesInput()">
@@ -758,26 +758,6 @@ const validateSubmitValues = () => {
     }
 
     return status
-} 
-
-const handleChange = () => {
-    let total_crates = $("#pc_total_crates").val();
-    let incomplete_crates = $('#incomplete_crates').is(':checked');
-    let full_crates;
-    if (incomplete_crates) {
-        full_crates = total_crates
-    } else {
-        full_crates = total_crates - 1
-    }
-
-    if (total_crates != '') {
-        if (incomplete_crates) {
-            $('.incomplete_pieces').show();
-        } else {
-            $('.incomplete_pieces').hide();
-            $('#incomplete_pieces').val(0)
-        }
-    }
 }
 
 const setCratesValidityMessage = (field_succ, field_err, message_succ, message_err) => {
