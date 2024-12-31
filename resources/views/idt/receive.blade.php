@@ -18,7 +18,7 @@
 @endsection
 
 @section('content-header')
-<h1 class="m-2">Receive IDTs from {{ $location_names[request()->get('from_location')] }} to {{ $location_names[request()->get('to_location')]  }}</h1>
+<h1 class="m-2">Receive IDTs from {{ $locations[request()->get('from_location')] }} to {{ $locations[request()->get('to_location')]  }}</h1>
 @endsection
 
 @section('content')
