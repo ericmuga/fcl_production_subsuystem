@@ -21,7 +21,7 @@
 
 @section('content-header')
 <h1 class="m-2">
-    Issue IDTs from {{ $location_names[request()->get('from_location')] }} @if(request()->get('to_location')) to {{ $location_names[request()->get('to_location')] }} @endif
+    Issue IDTs from {{ $locations[request()->get('from_location')] }} @if(request()->get('to_location')) to {{ $locations[request()->get('to_location')] }} @endif
 </h1>
 @endsection
 
@@ -48,15 +48,12 @@
                 <div class="form-row">
                     <div class="col-md-6 form-group">
                         <label for="location_code">Transfer To</label>
-                        <select class="form-control" name="location_code" id="location_code" required
-                            @if(request()->get('to_location')) disabled @endif >
-                            <option value="" disabled  @if(!request()->get('to_location')) selected @endif> -- select an option -- </option>
-                            <option value="2595"  @if(request()->get('to_location') == '2595') selected @endif >High Care</option>
-                            <option value="2055"  @if(request()->get('to_location') == '2055') selected @endif >Sausage</option>
-                            <option value="1570"  @if(request()->get('to_location') == '1570') selected @endif >Butchery</option>
-                            <option value="3535"  @if(request()->get('to_location') == '3535') selected @endif >Despatch</option>
-                            <option value="4300" @if(request()->get('to_location') == '4300') selected @endif >Incineration</option>
-                            <option value="4450" @if(request()->get('to_location') == '4450') selected @endif >QA</option>
+                        <select class="form-control" name="location_code" id="location_code" required @if(request()->get('to_location')) disabled @endif >
+                            @foreach ($locations as $code => $name)
+                                <option value="{{ $code }}" @if(request()->get('to_location') == $code) selected @endif>
+                                    {{ $name }}
+                                </option>
+                            @endforeach
                         </select>
                     </div>
                     <div class="col-md-6 form-group">
@@ -241,7 +238,7 @@
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
                                 <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
-                                <td>{{ $location_names[$data->location_code] }}</td>
+                                <td>{{ $locations[$data->location_code] }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates ?? 0 }}</td>
                                 <td>{{ $data->black_crates ?? 0 }}</td>
@@ -371,7 +368,7 @@
         } else {
             tare = (parseFloat(1.8) * parseFloat(total_crates)) + parseFloat(black_crates) * 0.2
         }
-        tareWeightInput.value = tare
+        tareWeightInput.value = tare.toFixed(2);
         getNet()
     }
 

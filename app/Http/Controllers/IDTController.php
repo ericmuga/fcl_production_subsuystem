@@ -131,7 +131,7 @@ class IDTController extends Controller
 
         $from_location = $request->query('from_location');
 
-        $location_names = [
+        $locations = [
             '1570' => 'Butchery',
             '2595' => 'Highcare',
             '2055' => 'Sausage',
@@ -140,7 +140,7 @@ class IDTController extends Controller
             '4450' => 'QA',
         ];
 
-        if ($from_location == null || !array_key_exists($from_location, $location_names)) {
+        if ($from_location == null || !array_key_exists($from_location, $locations)) {
             abort(404);
         };
 
@@ -184,9 +184,9 @@ class IDTController extends Controller
             $products = DB::table('products')->get();
         }
         
-        $configs = DB::table('scale_configs')->where('section', $location_names[$from_location])->where('scale', 'IDT')->get();
+        $configs = DB::table('scale_configs')->where('section', $locations[$from_location])->where('scale', 'IDT')->get();
        
-        return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'location_names', 'helpers'));
+        return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
     }
 
     public function saveIssueIdt(Request $request) {
