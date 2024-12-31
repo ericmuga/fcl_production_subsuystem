@@ -215,7 +215,7 @@
                         </div>
                         <div id="incomplete_pieces_group" class="col-md-6 form-group">
                             <label id="pieces-label" for="incomplete_pieces">Pieces in incomplete Crate</label>
-                            <input type="number" class="form-control crates" min="0" id="incomplete_pieces" name="incomplete_pieces" readonly>
+                            <input type="number" class="form-control crates" min="0" id="incomplete_pieces" name="incomplete_pieces" readonly oninput="calculateWeight()">
                         </div>
                         <input type="hidden" name="no_of_pieces" id="no_of_pieces" value="0">
                         <div class="col-md-6 form-group">
@@ -690,7 +690,7 @@ function loadProductDetails (event) {
         carriage.setAttribute('disabled', true);
         scaleInputs.setAttribute('hidden', true);
         pcWeightInputs.removeAttribute('hidden');
-        calculatePiecesAndWeight();
+        calculateWeight();
     } else if (productUnitMeasure == 'PC' && selectedProduct.unit_count_per_crate > 0) { 
         pcCrateInput.setAttribute('required', true);
         crates_fields.setAttribute("hidden", "hidden");
@@ -703,7 +703,7 @@ function loadProductDetails (event) {
         incomplete_crates_input.disabled
         incomplete_pieces.removeAttribute('readonly')
 
-        calculatePiecesAndWeight();
+        calculateWeight();
     }
 
     // set max for pieces in incomplete crate
@@ -804,12 +804,12 @@ const validateCrates = () => {
     } else {
         setCratesValidity(1)
         setCratesValidityMessage('succ1', 'err1', '', '')
-        calculatePiecesAndWeight()
+        calculateWeight()
         btn.disabled = false
     }
 }
 
-const calculatePiecesAndWeight = () => {
+const calculateWeight = () => {
     let total_crates = document.getElementById('pc_total_crates').value;
     let unit_crate_count = document.getElementById('unit_crate_count').value;
     let incomplete_crates = document.getElementById('incomplete_crates').checked;
@@ -819,7 +819,8 @@ const calculatePiecesAndWeight = () => {
     let weight_per_unit = selectedProduct.qty_per_unit_of_measure;
     let crate_unit_count = selectedProduct.unit_count_per_crate;
     if (incomplete_crates) {
-        total_pieces = ((total_crates * unit_crate_count) + parseInt(incomplete_pieces)).toFixed(2);
+        let full_crates = total_crates - 1;
+        total_pieces = ((full_crates * unit_crate_count) + parseInt(incomplete_pieces)).toFixed(2);
     } else if (crate_unit_count == 0) {
         total_pieces = incomplete_pieces;
     } else {
@@ -827,7 +828,7 @@ const calculatePiecesAndWeight = () => {
     } 
 
     let total_weight = total_pieces * weight_per_unit;
-    weightInput.value = total_weight;
+    weightInput.value = total_weight.toFixed(2);
 }
 
 const setCratesValidity = (status) => {
