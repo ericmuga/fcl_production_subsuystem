@@ -86,12 +86,18 @@
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div> <br>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Crates Tare-Weight</label>
-                    <input type="number" class="form-control" id="tareweight" name="tareweight"
-                        value="{{ number_format($configs[0]->tareweight * 4, 2) }}" readonly>
-                    <input type="hidden" class="form-control " id="default_tareweight"
-                        value="{{ number_format($configs[0]->tareweight, 2) }}">
+                <div class="row">
+                    <div class="col-6 form-group">
+                        <label for="exampleInputPassword1">Crates Tare-Weight</label>
+                        <input type="number" class="form-control" id="tareweight" name="tareweight" value="" readonly>
+                    </div>
+                    <div class="col-6 form-group">
+                        <label for="crate_weight">Crate Weight</label>
+                        <select class="form-control" id="crate_weight" name="crate_weight" onchange="updateTotalTare()">
+                            <option selected value="1.8">1.8</option>
+                            <option value="1.4">1.4</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Net</label>
@@ -119,8 +125,8 @@
                 <div class="form-group">
                     <div class="row">
                         <div class="col-md-6">
-                            <label for="exampleInputPassword1">No. of Crates</label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates"
+                            <label for="no_of_crates">No. of Crates</label>
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" oninput="updateTotalTare()"
                                 value="4" name="no_of_crates" placeholder="" required>
                         </div>
                         <div class="col-md-6">
@@ -430,11 +436,21 @@
 
 @section('scripts')
 <script>
+    function updateTotalTare() {
+        crate_weight = document.getElementById('crate_weight').value;
+        no_of_crates = document.getElementById('no_of_crates').value;
+        tareweight_input = document.getElementById('tareweight');
+        tareweight_input.value = (no_of_crates * crate_weight).toFixed(2);
+        getNet();
+    };
+
     $(document).ready(function () {
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
+
+        updateTotalTare();
 
         let reading = document.getElementById('reading');
         if (($('#old_manual').val()) == "on") {
@@ -596,17 +612,6 @@
                 });
 
             }
-
-        });
-
-        $('#no_of_crates').change(function () {
-            var number_of_crates = $(this).val();
-            var default_tareweight = $('#default_tareweight').val();
-
-            var new_tareweight = (number_of_crates) * (default_tareweight);
-            $("#tareweight").val(Math.round((new_tareweight + Number.EPSILON) * 100) / 100);
-
-            getNet();
 
         });
 
