@@ -220,7 +220,7 @@
                         <input type="hidden" name="no_of_pieces" id="no_of_pieces" value="0">
                         <div class="col-md-6 form-group">
                             <label for="calculated_weight">Calculated Weight (kgs)</label>
-                            <input type="number" class="form-control crates" value="0" id="calculated_weight"
+                            <input type="number" class="form-control crates" value="0" id="calculated_weight" min="0.01"
                                 name="calculated_weight" placeholder="" readonly>
                         </div>
                     </div>
