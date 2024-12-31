@@ -823,6 +823,7 @@ const togglePiecesInput = () => {
     } else {
         incomplete_pieces_input.setAttribute('readonly', true)
     }
+    calculateWeight()
 }
 
 </script>
