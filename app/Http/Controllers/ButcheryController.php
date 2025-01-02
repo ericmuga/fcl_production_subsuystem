@@ -703,7 +703,7 @@ class ButcheryController extends Controller
                         'process_code' => $request->edit_production_process,
                         'product_type' => $request->edit_product_type2,
                         'actual_weight' => $request->edit_weight,
-                        'net_weight' => $request->edit_weight - (1.8 * $request->edit_crates),
+                        'net_weight' => $request->edit_weight - ($request->crate_weight * $request->edit_crates),
                         'narration' => $request->edit_narration,
                         'no_of_pieces' => $request->edit_no_pieces,
                         'edited' => 1,
