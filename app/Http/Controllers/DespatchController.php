@@ -362,38 +362,26 @@ class DespatchController extends Controller
         }
     }
 
-    public function issueIdt($send_to_location = null)
+    public function issueIdt()
     {
-        $location_codes = [
-            'butchery' => '1570',
-            'highcare' => '2595',
-            'sausage' => '2055',
-            'petfood' => '3035',
+        $locations = [
+            '1570' => 'Butchery',
+            '2595' => 'Highcare',
+            '2055' => 'Sausage',
+            '3035' => 'PetFood',
+            '4300' => 'Incinerator',
+            '4450' => 'QA',
         ];
 
-        if (!in_array($send_to_location, array_keys($location_codes))) {
-            abort(404);
-        }
-
-        $title = "Issue IDT from Despatch to $send_to_location";
+        $title = "Issue IDT from Despatch";
 
         $configs = DB::table('scale_configs')
                 ->where('section', 'despatch')
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
 
-        if ($send_to_location == 'butchery') {
-            $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
-            $products = DB::table('products')->whereIn('code', $items_array)->get();
-        } else {
-            $products = DB::table('items')->get();
-        }
-
-        if ($send_to_location == 'butchery') {
-            $chillers = DB::table('chillers')->where('location_code', '1570')->get();
-        } else {
-            $chillers = [];
-        }
+       
+        $products = DB::table('items')->get();
 
         $username = Auth::user()->username;
 
@@ -401,7 +389,6 @@ class DespatchController extends Controller
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->where('idt_transfers.transfer_from', '3535')
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
-            ->where('idt_transfers.location_code', '=', $location_codes[$send_to_location])
             ->select(
                 'idt_transfers.*',
                 'users.username',
@@ -409,7 +396,39 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'send_to_location', 'location_codes'));
+        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'configs', 'locations'));
+    }
+
+    public function issueButchery()
+    {
+        $title = "Issue IDT from Despatch to Butchery";
+
+        $configs = DB::table('scale_configs')
+                ->where('section', 'despatch')
+                ->where('scale', 'Despatch Issue 2')
+                ->get();
+
+        
+        $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
+        $products = DB::table('products')->whereIn('code', $items_array)->get();
+
+        $chillers = DB::table('chillers')->where('location_code', '1570')->get();
+
+        $username = Auth::user()->username;
+
+        $query = DB::table('idt_transfers')
+            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+            ->where('idt_transfers.transfer_from', '3535')
+            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
+            ->where('idt_transfers.location_code', '=', '1570')
+            ->select(
+                'idt_transfers.*',
+                'users.username',
+            );
+
+        $transfer_lines = $query->get();
+
+        return view('despatch.issue-butchery', compact('title', 'transfer_lines', 'products', 'chillers', 'configs'));
     }
 
     public function saveIssuedIdt(Request $request) {
