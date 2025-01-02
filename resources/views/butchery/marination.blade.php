@@ -75,7 +75,7 @@
         <div class="card ">
             <div class="card-body text-center">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">No. of Crates</label>
+                    <label for="exampleInputPassword1">Total Crates</label>
                     <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" min="0" value="4" oninput="updateTotalTare()"
                         name="no_of_crates" placeholder="" required>
                 </div>
