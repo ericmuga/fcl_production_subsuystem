@@ -49,19 +49,19 @@
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="row">
                     <div class="col-4 form-group">
-                        <label for="tareweight">Crates Tare-Weight</label>
-                        <input type="number" class="form-control" id="tareweight" name="tareweight" value="" readonly>
-                    </div>
-                    <div class="col-4 form-group">
                         <label for="crate_weight">Crate Weight</label>
                         <select class="form-control" id="crate_weight" name="crate_weight" onchange="updateTotalTare()">
                             <option selected value="1.8">1.8</option>
-                            <option value="1.4">1.4</option>
+                            <option value="1.5">1.5</option>
                         </select>
                     </div>
                     <div class="col-4 form-group">
                         <label for="black_crates">Black Crates</label>
                         <input type="number" class="form-control" id="black_crates" name="black_crates" min="0" oninput="updateTotalTare()" value="1">
+                    </div>
+                    <div class="col-4 form-group">
+                        <label for="tareweight">Crates Tare-Weight</label>
+                        <input type="number" class="form-control" id="tareweight" name="tareweight" value="" readonly>
                     </div>
                 </div>
                 <div class="form-group">
