@@ -96,13 +96,13 @@
                 <div class="form-group">
                     <label for="reading">Scale Reading</label>
                     <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
-                        oninput="getNet()" placeholder="" readonly>
+                        oninput="getNet()" placeholder="" @if(count($configs) > 0) readonly @endif>
                 </div>
-                @if(count($configs) === 0)
-                <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
-                    <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
-                </div> <br>
+                @if(count($configs) > 0)
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
+                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
+                    </div>
                 @endif
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-row">
@@ -118,12 +118,12 @@
                     </div>
                 </div>
                 <div class="form-group mt-3">
-                    <button type="button" onclick="getScaleReading()" id="weigh" value=""
-                        class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh
-                    </button>
                     @if(count($configs) > 0)
+                        <button type="button" onclick="getScaleReading()" id="weigh" value=""
+                            class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh
+                        </button>
                         <small class="d-block">Reading from : <input style="font-weight: bold; border: none" type="text" id="comport_value"
-                                value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
+                            value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
                     @else
                         <small class="d-block">No comport configured</small>
                     @endif
@@ -359,6 +359,7 @@
     const incomplete_pieces_input = document.getElementById('incomplete_pieces');
     let selectedProduct;
     const products = @json($products);
+    const configs = @json($configs);
 
     function updateApprovalModal(event) {
         let btn = event.currentTarget
@@ -418,7 +419,7 @@
 
         let reading = document.getElementById('reading');
 
-        if (($('#old_manual').val()) == "on") {
+        if (($('#old_manual').val()) == "on" || configs.length == 0) {
             $('#manual_weight').prop('checked', true);
             reading.readOnly = false;
             reading.focus();

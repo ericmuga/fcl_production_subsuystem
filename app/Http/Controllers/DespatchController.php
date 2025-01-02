@@ -379,7 +379,6 @@ class DespatchController extends Controller
                 ->where('section', 'despatch')
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
-
        
         $products = DB::table('items')->get();
 
