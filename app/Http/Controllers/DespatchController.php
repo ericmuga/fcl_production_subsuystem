@@ -90,7 +90,7 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.idt', compact('title', 'transfer_lines', 'items', 'configs', 'helpers'));
+        return view('despatch.idt', compact('title', 'transfer_lines', 'items', 'configs', 'helpers', 'filter'));
     }
 
     public function receiveTransfer(Request $request, Helpers $helpers)
