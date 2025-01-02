@@ -40,19 +40,7 @@
             </li>
             <hr class="dropdown-divider" />
             <li>
-                <a href="{{ route('despatch_issue_idt', 'sausage') }}" class="dropdown-item"> To Sausage</a>
-            </li>
-            <hr class="dropdown-divider" />
-            <li>
-                <a href="{{ route('despatch_issue_idt', 'highcare') }}" class="dropdown-item">To High Care</a>
-            </li>
-            <hr class="dropdown-divider" />
-            <li>
-                <a href="{{ route('despatch_issue_idt', 'petfood') }}" class="dropdown-item">To Pet Food</a>
-            </li>
-            <hr class="dropdown-divider" />
-            <li>
-                <a href="{{  route('list_issued_idt', ['from_location' => '3535', 'to_location' => '4450']) }}" class="dropdown-item">To QA</a>
+                <a href="{{ route('despatch_issue_idt') }}" class="dropdown-item">Finished Goods</a>
             </li>
         </ul>
     </li>
