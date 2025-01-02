@@ -6,9 +6,291 @@
 
 @section('content')
     @if($send_to_location == 'butchery')
-        @include('layouts.partials.idt_kg_form')
+        <form id="form-issue-idt" class="card-group text-center form-prevent-multiple-submits" action="{{ route('despatch_save_issued_idt') }}" method="post">
+            @csrf
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="product_code"> Product</label>
+                        <select class="form-control select2" name="product_code" id="product_code" required>
+                            <option selected disabled value>Select product</option>
+                            @foreach($products as $product)
+                                <option value="{{ $product->code }}">
+                                    {{ $product->code }} - {{ $product->description }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <input type="hidden" name="location_code" value="{{ $location_codes[$send_to_location] }}">
+                        <div class="col-md-6 form-group">
+                            <label for="location_code">Transfer To</label>
+                            <select class="form-control" name="location_code" id="location_code" required disabled>
+                                <option value="2595" {{ $send_to_location == 'highcare' ? 'selected' : '' }}>High Care</option>
+                                <option value="2055" {{ $send_to_location == 'sausage' ? 'selected' : '' }}>Sausage</option>
+                                <option value="1570" {{ $send_to_location == 'butchery' ? 'selected' : '' }}>Butchery</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="carriage_type">Carriage Type</label>
+                            <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
+                                <option disabled selected value> -- select an option -- </option>
+                                <option value="crate">Crate</option>
+                                <option value="van">Van</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div hidden id="crates_div" class="form-row">
+                        <div class="col-md-6 from-group">
+                            <label for="kg_total_crates">Total Crates </label>
+                            <input type="number" class="form-control" id="kg_total_crates" value="1" name="total_crates" min="1" oninput="updateTare()">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="black_crates">Black Crates </label>
+                            <input type="number" class="form-control" id="black_crates" value="1" name="black_crates" min="0" oninput="updateTare()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="reading">Scale Reading</label>
+                        <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
+                            oninput="getNet()" placeholder="" readonly>
+                    </div>
+                    @if(count($configs) === 0)
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
+                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
+                    </div> <br>
+                    @endif
+                    <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
+                    <div class="form-row">
+                        <div class="col-md-6 form-group">
+                            <label for="tareweight">Tare-Weight</label>
+                            <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.00"
+                                step=".01" placeholder="" readonly>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="net">Net Weight</label>
+                            <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
+                                placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <button type="button" onclick="getScaleReading()" id="weigh" value=""
+                            class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh
+                        </button>
+                        @if(count($configs) > 0)
+                            <small class="d-block">Reading from : <input style="font-weight: bold; border: none" type="text" id="comport_value"
+                                    value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
+                        @else
+                            <small class="d-block">No comport configured</small>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="card ">
+                <div class="card-body">
+                    <div class="row">
+                        @if(count($chillers) > 0)
+                            <div class="col-md-6">
+                                <label for="chiller_code">Transfer To Chiller </label>
+                                <select class="form-control locations" name="chiller_code" id="chiller_code" required>
+                                    <option disabled selected value> -- select an option -- </option>
+                                    @foreach($chillers as $chiller)
+                                        <option value="{{ $chiller->chiller_code }}">
+                                            {{ $chiller->chiller_code }} - {{ $chiller->description }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endif
+                        <div class="col-md-6">
+                            <label for="no_of_pieces">No. of pieces </label>
+                            <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
+                                required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-12 col-md-6">
+                            <label for="batch_no">Batch No </label>
+                            <input type="text" class="form-control" id="batch_no" value="" name="batch_no" required>
+                        </div>
+                        <div class="form-group col-12 col-md-6">
+                            <label for="description">Description (optional)</label>
+                            <input type="text" class="form-control" id="description" value="" name="description">
+                        </div>
+                    </div> 
+                    
+                    <div hidden id="export_desc_div" class="row form-group">
+                        <div class="col-md-6">
+                            <label for="desc">Export Customer </label>
+                            <input type="text" class="form-control" id="desc" value="" name="desc" placeholder="">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="order_no">Order No </label>
+                            <input type="text" class="form-control" id="order_no" value="" name="order_no" placeholder="">
+                        </div>
+                    </div>
+                    <div class="form-group" style="padding-top: 5%">
+                        <button type="submit" onclick="return validateOnSubmit()"
+                            class="btn btn-primary btn-lg btn-prevent-multiple-submits"><i
+                                class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     @else
-        @include('layouts.partials.idt_pc_form')
+        <form id="form-issue-idt" class="card-group text-center form-prevent-multiple-submits" action="{{ route('despatch_save_issued_idt') }}" method="post">
+            @csrf
+            <div class="card">
+                <div class="card-body from-group">
+                    <div class="form-group">
+                        <label for="product_code" >Product</label>
+                        <select class="form-control select2" name="product_code" id="product_code" onchange="loadProductDetails(event)" required>
+                            <option selected disabled value>Select product</option>
+                            @foreach($products as $product)
+                            <option value="{{ $product->code }}">
+                                {{ $product->code }} - {{ $product->description }}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="row">
+                        <input type="hidden" name="location_code" value="{{ $location_codes[$send_to_location] }}">
+                        <div class="col-md-6 form-group">
+                            <label class="form-label" for="location_code">Transfer To</label>
+                            <select class="form-control" name="location_code" id="location_code" required disabled>
+                                <option value="2595" {{ $send_to_location == 'highcare' ? 'selected' : '' }}>High Care</option>
+                                <option value="2055" {{ $send_to_location == 'sausage' ? 'selected' : '' }}>Sausage</option>
+                                <option value="1570" {{ $send_to_location == 'butchery' ? 'selected' : '' }}>Butchery</option>
+                                <option value="3035" {{ $send_to_location == 'petfood' ? 'selected' : '' }}>PetFood</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="carriage_type">Carriage Type</label>
+                            <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
+                                <option disabled selected value> -- select an option -- </option>
+                                <option value="crate">Crate</option>
+                                <option value="van">Van</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div hidden id="crates_div" class="form-row">
+                        <div class="col-md-6 from-group">
+                            <label for="total_crates">Total Crates </label>
+                            <input type="number" class="form-control" id="kg_total_crates" value="1" name="total_crates" min="1" oninput="updateTare()">
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="black_crates">Black Crates </label>
+                            <input type="number" class="form-control" id="black_crates" value="1" name="black_crates" min="0" oninput="updateTare()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="pcWeightInputs" class="card">
+                <div class="card-body form-group">
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="unit_crate_count">Unit Count Per Crate</label>
+                            <input type="number" readonly class="form-control input_params crates" value="0"
+                                id="unit_crate_count" name="unit_crate_count" placeholder="">
+                        </div>
+                        <div class="col-md-6 form-gorup">
+                            <label for="unit_measure">Item Unit Measure</label>
+                            <input type="text" readonly class="form-control input_params" value="0"
+                                id="unit_measure" name="unit_measure" placeholder="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            <label for="total_crates">Total Crates</label>
+                            <input type="number" class="form-control crates" id="pc_total_crates" name="total_crates" min="1" value="" onkeyup="calculateWeight()" placeholder="">
+                        </div>
+                        <div class="col-md-6 form-check">
+                            <input type="checkbox" class="form-check-input" id="incomplete_crates" name="incomplete_crates" onchange="togglePiecesInput()">
+                            <label class="form-check-label" for="incomplete_crates">Incomplete Crate</label>
+                        </div>
+                        <div id="incomplete_pieces_group" class="col-md-6 form-group">
+                            <label id="pieces-label" for="incomplete_pieces">Pieces in incomplete Crate</label>
+                            <input type="number" class="form-control crates" min="0" id="incomplete_pieces" name="incomplete_pieces" readonly oninput="calculateWeight()">
+                        </div>
+                        <input type="hidden" name="no_of_pieces" id="no_of_pieces" value="0">
+                        <div class="col-md-6 form-group">
+                            <label for="calculated_weight">Calculated Weight (kgs)</label>
+                            <input type="number" class="form-control crates" value="0" id="calculated_weight" min="0.01"
+                                name="calculated_weight" placeholder="" readonly>
+                        </div>
+                    </div>
+                    <span class="text-danger" id="err1"></span>
+                    <span class="text-success" id="succ1"></span>
+                    <input type="hidden" name="crates_valid" id="crates_valid" value="0">
+                    <input type="hidden" name="" id="crates_valid" value="0">
+                </div>
+            </div>
+            <div id="scaleInputs" class="card" hidden>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="reading">Scale Reading</label>
+                        <input type="number" step="0.01" class="form-control" id="reading" name="reading" value="0.00"
+                            oninput="getNet()" placeholder="" readonly>
+                    </div>
+                    @if(count($configs) === 0)
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
+                        <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
+                    </div> <br>
+                    @endif
+                    <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
+                    <div class="form-row">
+                        <div class="col-md-6 form-group">
+                            <label for="tareweight">Tare-Weight</label>
+                            <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.00"
+                                step=".01" placeholder="" readonly>
+                        </div>
+                        <div class="col-md-6 form-group">
+                            <label for="net">Net Weight</label>
+                            <input type="number" class="form-control" id="net" name="net" value="0.00" step=".01"
+                                placeholder="" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group mt-3">
+                        <button type="button" onclick="getScaleReading()" id="weigh" value=""
+                            class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh
+                        </button>
+                        @if(count($configs) > 0)
+                            <small class="d-block">Reading from : <input style="font-weight: bold; border: none" type="text" id="comport_value"
+                                    value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
+                        @else
+                            <small class="d-block">No comport configured</small>
+                        @endif
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body text-center form-group">
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail3">Batch No </label>
+                            <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required placeholder="">
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="inputEmail3">Description (optional)</label>
+                            <input type="number" class="form-control" value="" id="description" name="description" placeholder="">
+                        </div>
+        
+                    </div>
+                    
+                    <div class="div" style="padding-top: 5%">
+                        <button type="submit" id="submit-btn" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
+                            onclick="return validateSubmitValues()"><i
+                                class="fa fa-paper-plane single-click" aria-hidden="true"></i> Save</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     @endif
 
     <button class="btn btn-primary my-4" data-toggle="collapse" data-target="#idt_entries"><i
@@ -19,170 +301,192 @@
 <div id="idt_entries" class="collapse">
     <hr>
 
-    <div class="card p-4">
-        <div class="card-title mb-2">
-            <h3 class="card-header">IDT Entries</h3>
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title"> Transfer Entries | <span id="subtext-h1-title"><small> showing all
+                        <strong></strong> entries
+                        ordered by
+                        latest</small> </span></h3>
         </div>
-        <div class="table-responsive">
-            <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
-                width="100%">
-                <thead>
-                    <tr>
-                        <th>IDT No</th>
-                        <th>Product Code</th>
-                        <th>Product</th>
-                        <th>Std Unit Measure</th>
-                        <th>Transfer To </th>
-                        <th>Chiller</th>
-                        <th>Total Crates</th>
-                        <th>Black Crates</th>
-                        <th>Total Pieces</th>
-                        <th>Total Weight</th>
-                        <th>Description</th>
-                        <th>Batch No</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tfoot>
-                    <tr>
-                        <th>IDT No</th>
-                        <th>Product Code</th>
-                        <th>Product</th>
-                        <th>Std Unit Measure</th>
-                        <th>Transfer To </th>
-                        <th>Chiller</th>
-                        <th>Total Crates</th>
-                        <th>Black Crates</th>
-                        <th>Total Pieces</th>
-                        <th>Total Weight</th>
-                        <th>Description</th>
-                        <th>Batch No</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </tfoot>
-                <tbody>
-                    @foreach($transfer_lines as $data)
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                    width="100%">
+                    <thead>
                         <tr>
-                            <td id="editIdtModalShow" data-id="{{ $data->id }}"
-                                data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
-                                data-unit_measure="{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}"
-                                data-total_pieces="{{ $data->total_pieces }}"
-                                data-total_weight="{{ $data->total_weight }}"
-                                data-transfer_type="{{ $data->transfer_type }}"
-                                data-description="{{ $data->description }}"
-                                data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
-                            </td>
-                            <td>{{ $data->product_code }}</td>
-                            <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
-                            <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
-                            <td>{{ $data->location_code }}</td>
-                            <td>{{ $data->chiller_code }}</td>
-                            <td>{{ $data->total_crates ?? 0 }}</td>
-                            <td>{{ $data->black_crates ?? 0 }}</td>
-                            <td>{{ $data->total_pieces }}</td>
-                            <td>{{ $data->total_weight }}</td>
-                            <td>{{ $data->description }}</td>
-                            <td>{{ $data->batch_no }}</td>
-                            @if ($data->total_weight == 0 )
-                            <td><span class="badge badge-danger">cancelled</span></td>
-                            @elseif($data->received_by != null)
-                            <td><span class="badge badge-success">received</span></td>
-                            @else
-                            <td><span class="badge badge-info">waiting receipt</span></td>
-                            @endif
-                            <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                            <th>IDT No</th>
+                            <th>Product Code</th>
+                            <th>Product</th>
+                            <th>Std Unit Measure</th>
+                            <th>Transfer To </th>
+                            <th>Chiller</th>
+                            <th>Total Crates</th>
+                            <th>Black Crates</th>
+                            <th>Total Pieces</th>
+                            <th>Total Weight</th>
+                            <th>Description</th>
+                            <th>Batch No</th>
+                            <th>Date</th>
+                            <th>Status</th>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tfoot>
+                        <tr>
+                            <th>IDT No</th>
+                            <th>Product Code</th>
+                            <th>Product</th>
+                            <th>Std Unit Measure</th>
+                            <th>Transfer To </th>
+                            <th>Chiller</th>
+                            <th>Total Crates</th>
+                            <th>Black Crates</th>
+                            <th>Total Pieces</th>
+                            <th>Total Weight</th>
+                            <th>Description</th>
+                            <th>Batch No</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </tfoot>
+                    <tbody>
+                        @foreach($transfer_lines as $data)
+                            <tr>
+                                <td id="editIdtModalShow" data-id="{{ $data->id }}"
+                                    data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
+                                    data-unit_measure="{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}"
+                                    data-total_pieces="{{ $data->total_pieces }}"
+                                    data-total_weight="{{ $data->total_weight }}"
+                                    data-transfer_type="{{ $data->transfer_type }}"
+                                    data-description="{{ $data->description }}"
+                                    data-batch_no="{{ $data->batch_no }}">{{ $data->id }}
+                                </td>
+                                <td>{{ $data->product_code }}</td>
+                                <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
+                                <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
+                                <td>{{ $data->location_code }}</td>
+                                <td>{{ $data->chiller_code }}</td>
+                                <td>{{ $data->total_crates ?? 0 }}</td>
+                                <td>{{ $data->black_crates ?? 0 }}</td>
+                                <td>{{ $data->total_pieces }}</td>
+                                <td>{{ $data->total_weight }}</td>
+                                <td>{{ $data->description }}</td>
+                                <td>{{ $data->batch_no }}</td>
+                                <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                                @if ($data->requires_approval == true && $data->approved_by == null && auth()->user()->role == 'QA')
+                                    <td>
+                                        <button
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="#approveModal"
+                                            class="btn btn-sm btn-primary"
+                                            data-id="{{ $data->id }}"
+                                            data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
+                                            data-weight = "{{ $data->total_weight }}"
+                                            data-pieces = "{{ $data->total_pieces }}"
+                                            data-batch_no = "{{ $data->batch_no }}"
+                                            data-send-location = "{{ $data->location_code }}"
+                                            onclick="updateApprovalModal(event)"
+                                        >
+                                            Approve
+                                        </button></td>
+                                @elseif ($data->requires_approval == true && $data->approved_by == null)
+                                    <td><span class="badge badge-info">waiting approval</span></td>
+                                @elseif ($data->requires_approval == true && $data->approved_by != null && $data->approved == 0)
+                                    <td><span class="badge badge-info">rejected</span></td>
+                                @elseif ($data->total_weight == 0 )
+                                    <td><span class="badge badge-danger">cancelled</span></td>
+                                @elseif($data->received_by != null)
+                                    <td><span class="badge badge-success">received</span></td>
+                                @else
+                                    <td><span class="badge badge-info">waiting receipt</span></td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
-<!-- slicing ouput data show -->
 
-<!-- Edit Modal -->
-<div id="editIdtModal" class="modal fade" role="dialog">
+<!-- Approval Modal -->
+<div id="approveModal" class="modal fade" role="dialog">
     <div class="modal-dialog modal-xl">
-        <!--Start create user modal-->
-        <form class="form-prevent-multiple-submits" id="form-edit-role"
-            action="{{ route('freshcuts_cancel_idt') }}" method="post">
+        <form class="modal-content" id="approval-form" action="{{ route('approve_idt') }}" method="post">
             @csrf
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editIdtModalLabel">Cancel Transfer for Idt No: <strong><input
-                                style="border:none" type="text" id="item_id" name="item_id" value="" readonly></strong>
-                    </h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="card-group">
-                        <div class="card">
-                            <div class="card-body" style="">
-                                <div class="form-group">
-                                    <div class="row">
-                                        <label for="edit_product" class="col-sm-3 col-form-label">Product Name </label>
-                                        <div class="col-sm-9">
-                                            <input type="text" readonly class="form-control" value="" id="edit_product"
-                                                placeholder="">
-                                        </div>
-                                    </div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIdtModalLabel">Approve Transfer: <strong><input
+                            style="border:none" type="text" id="approve_transfer_id" name="id" value="" readonly></strong>
+                </h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="edit_product" class="col-sm-3 col-form-label">Product Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" value="" id="approve_product"
+                                        placeholder="">
                                 </div>
                             </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer Type </label>
-                                    <div class="col-sm-9">
-                                        <select class="form-control select2" name="for_export_edit" id="for_export_edit"
-                                            selected="selected" readonly>
-                                            <option value="" selected disabled>Transfer Type </option>
-                                            <option value="0"> Local</option>
-                                            <option value="1"> Export</option>
-                                        </select>
-                                    </div>
-                                </div><br>
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-3 col-form-label">Batch No </label>
-                                    <div class="col-sm-9">
-                                        <input type="text" class="form-control" value="" id="batch_no_edit"
-                                            name="batch_no_edit" required placeholder="" readonly>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body text-center form-group">
-                                <div class="row">
-                                    <label for="inputEmail3" class="col-sm-6 col-form-label">Net
-                                        Weight(Kgs)</label>
-                                    <div class="col-sm-6">
-                                        <input type="number" step="0.1" class="form-control" value="0" id="weight_edit"
-                                            readonly name="weight_edit" placeholder="">
-                                    </div>
+                            <div class="row">
+                                <label for="edit_product" class="col-sm-3 col-form-label">Batch No</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" value="" id="approve_batch_no"
+                                        placeholder="">
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <div class="form-group">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button class="btn btn-warning btn-lg btn-prevent-multiple-submits"
-                            onclick="return validateOnEditSubmit()" type="submit">
-                            <i class="fa fa-save"></i> Cancel Transfer
-                        </button>
+                    <div class="col-md-4">
+                        <div class="form-group form-row">
+                            <label for="edit_product" class="col-sm-3 col-form-label">Pieces</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control" value="" id="approve_pieces">
+                            </div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Weight</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" value="" id="approve_net" name="net" required readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="inputEmail3" class="col-sm-6 col-form-label">Send to Location</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="location" id="approve_location" required>
+                                    <option value="">Select Location</option>
+                                    <option value="1570">Butchery</option>
+                                    <option value="2595">Highcare</option>
+                                    <option value="2055">Sausage</option>
+                                    <option value="4300">Incineration</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="narration">Narration</label>
+                            <textarea class="form-control" name="narration" id="narration" rows="2"></textarea>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger btn-lg" name="approve" value="0" onclick="showLoadingModal()">
+                    Reject
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" name="approve" value="1" onclick="showLoadingModal()">
+                    Approve
+                </button>
             </div>
         </form>
     </div>
 </div>
-<!--End Edit scale1 modal-->
+<!--End Approval modal-->
 
 @endsection
 
@@ -192,8 +496,26 @@
     const tareWeightInput = document.getElementById('tareweight')
     const readingInput = document.getElementById('reading')
     const crates_fields = document.getElementById("crates_div")
+    const incomplete_pieces_input = document.getElementById('incomplete_pieces');
     let selectedProduct;
     const products = @json($products);
+
+    function updateApprovalModal(event) {
+        let btn = event.currentTarget
+        let id = btn.getAttribute('data-id')
+        let product = btn.getAttribute('data-product')
+        let weight = btn.getAttribute('data-weight')
+        let pieces = btn.getAttribute('data-pieces')
+        let batch_no = btn.getAttribute('data-batch_no')
+        let send_location = btn.getAttribute('data-send-location')
+
+        document.getElementById('approve_transfer_id').value = id
+        document.getElementById('approve_product').value = product
+        document.getElementById('approve_batch_no').value = batch_no
+        document.getElementById('approve_pieces').value = pieces
+        document.getElementById('approve_net').value = weight
+        document.getElementById('approve_location').value = send_location
+    }
 
     function updateTare() {
         let tare
@@ -257,10 +579,6 @@
                 reading.readOnly = true;
             }
 
-        });
-
-        $("#incomplete_pieces").on("keyup", function (e) {
-            calculateWeightEdit()
         });
 
         $('.crates').on("keyup change", function () {
@@ -355,12 +673,7 @@ function loadProductDetails (event) {
     // show weight or pieces input based on the unit of measure
     const scaleInputs = document.getElementById('scaleInputs');
     const pcWeightInputs = document.getElementById('pcWeightInputs');
-    if (productUnitMeasure == 'KG') {
-        scaleInputs.removeAttribute('hidden');
-        pcWeightInputs.setAttribute('hidden', true);
-        carriage.removeAttribute('disabled');
-        pcCrateInput.removeAttribute('required');
-    } else if (productUnitMeasure == 'PC') {
+    if (productUnitMeasure == 'PC' && selectedProduct.unit_count_per_crate > 0) {
         pcCrateInput.setAttribute('required', true);
         crates_fields.setAttribute("hidden", "hidden");
         document.getElementById('unit_crate_count').value = selectedProduct.unit_count_per_crate;
@@ -368,7 +681,12 @@ function loadProductDetails (event) {
         carriage.setAttribute('disabled', true);
         scaleInputs.setAttribute('hidden', true);
         pcWeightInputs.removeAttribute('hidden');
-        calculatePiecesAndWeight();
+        calculateWeight();
+    } else { 
+        scaleInputs.removeAttribute('hidden');
+        pcWeightInputs.setAttribute('hidden', true);
+        carriage.removeAttribute('disabled');
+        pcCrateInput.removeAttribute('required');
     }
 
     // set max for pieces in incomplete crate
@@ -403,14 +721,14 @@ const validateSubmitValues = () => {
         let weight = $('#weight').val();
 
         let crates_validity = $("#crates_valid").val();
-        let user_validity = $("#user_valid").val();
 
         let batchField = document.getElementById('batch');
 
-        if (user_validity == 0) {
-            status = false
-            alert("please ensure you have validated receiver before submitting")
+        let calculated_weight = $('#calculated_weight').val();
 
+        if (calculated_weight == 0) {
+            status = false
+            alert("please ensure you have valid weight")
         } else if (incomplete_crates && (parseInt(incomplete_pieces) < 1)) {
             status = false
             alert("please enter incomplete pieces")
@@ -427,26 +745,6 @@ const validateSubmitValues = () => {
     }
 
     return status
-} 
-
-const handleChange = () => {
-    let total_crates = $("#pc_total_crates").val();
-    let incomplete_crates = $('#incomplete_crates').is(':checked');
-    let full_crates;
-    if (incomplete_crates) {
-        full_crates = total_crates
-    } else {
-        full_crates = total_crates - 1
-    }
-
-    if (total_crates != '') {
-        if (incomplete_crates) {
-            $('.incomplete_pieces').show();
-        } else {
-            $('.incomplete_pieces').hide();
-            $('#incomplete_pieces').val(0)
-        }
-    }
 }
 
 const setCratesValidityMessage = (field_succ, field_err, message_succ, message_err) => {
@@ -469,12 +767,12 @@ const validateCrates = () => {
     } else {
         setCratesValidity(1)
         setCratesValidityMessage('succ1', 'err1', '', '')
-        calculatePiecesAndWeight()
+        calculateWeight()
         btn.disabled = false
     }
 }
 
-const calculatePiecesAndWeight = () => {
+const calculateWeight = () => {
     let total_crates = document.getElementById('pc_total_crates').value;
     let unit_crate_count = document.getElementById('unit_crate_count').value;
     let incomplete_crates = document.getElementById('incomplete_crates').checked;
@@ -482,14 +780,18 @@ const calculatePiecesAndWeight = () => {
     let piecesInput = document.getElementById('pieces');
     let weightInput = document.getElementById('calculated_weight');
     let weight_per_unit = selectedProduct.qty_per_unit_of_measure;
+    let crate_unit_count = selectedProduct.unit_count_per_crate;
     if (incomplete_crates) {
-        total_pieces = ((total_crates * unit_crate_count) + parseInt(incomplete_pieces)).toFixed(2);
+        let full_crates = total_crates - 1;
+        total_pieces = ((full_crates * unit_crate_count) + parseInt(incomplete_pieces)).toFixed(2);
+    } else if (crate_unit_count == 0) {
+        total_pieces = incomplete_pieces;
     } else {
         total_pieces = (total_crates * unit_crate_count).toFixed(2);
-    }
+    } 
 
     let total_weight = total_pieces * weight_per_unit;
-    weightInput.value = total_weight;
+    weightInput.value = total_weight.toFixed(2);
 }
 
 const setCratesValidity = (status) => {
@@ -500,15 +802,15 @@ const padZero = (num) => {
     return num < 10 ? `0${num}` : num;
 }
 
-togglePiecesInput = () => {
+const togglePiecesInput = () => {
     let incomplete_crates = $('#incomplete_crates').is(':checked')
-    let incomplete_pieces = document.getElementById('incomplete_pieces')
-    incomplete_pieces.value = 0
+    incomplete_pieces_input.value = 0
     if (incomplete_crates) {
-        incomplete_pieces.removeAttribute('readonly')
+        incomplete_pieces_input.removeAttribute('readonly')
     } else {
-        incomplete_pieces.setAttribute('readonly', true)
+        incomplete_pieces_input.setAttribute('readonly', true)
     }
+    calculateWeight()
 }
 
 </script>

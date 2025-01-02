@@ -77,6 +77,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div>
     <!-- ./wrapper -->
 
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p id="loading-text" class="mt-3">Please wait...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- REQUIRED SCRIPTS -->
     <!-- jQuery -->
     <script src="{{ asset('assets/plugins/jquery/jquery.min.js') }}"></script>
@@ -186,6 +200,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
             //Initialize Select2 Elements
             $('.select2').select2()
         });
+
+        function showLoadingModal(text) {
+            if (!text) {
+                text = 'Please wait...';
+            }
+            $('#loading-text').text(text);
+            $('#loadingModal').modal('show');
+        }
 
     </script>
     @if (app()->environment('production'))

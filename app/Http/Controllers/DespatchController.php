@@ -364,8 +364,14 @@ class DespatchController extends Controller
 
     public function issueIdt($send_to_location = null)
     {
-        $known_locations = ['butchery', 'highcare', 'sausage', 'petfood'];
-        if (!in_array($send_to_location, $known_locations)) {
+        $location_codes = [
+            'butchery' => '1570',
+            'highcare' => '2595',
+            'sausage' => '2055',
+            'petfood' => '3035',
+        ];
+
+        if (!in_array($send_to_location, array_keys($location_codes))) {
             abort(404);
         }
 
@@ -389,13 +395,6 @@ class DespatchController extends Controller
             $chillers = [];
         }
 
-        $location_codes = [
-            'butchery' => '1570',
-            'highcare' => '2595',
-            'sausage' => '2055',
-            'petfood' => '3035',
-        ];
-
         $username = Auth::user()->username;
 
         $query = DB::table('idt_transfers')
@@ -410,7 +409,7 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'send_to_location'));
+        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'chillers', 'configs', 'send_to_location', 'location_codes'));
     }
 
     public function saveIssuedIdt(Request $request) {
@@ -420,6 +419,8 @@ class DespatchController extends Controller
             } else {
                 $weight = $request->net;
             };
+
+            $requires_approval = substr($request->product_code, 0, 1) === 'J';
 
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
@@ -436,6 +437,7 @@ class DespatchController extends Controller
                 'description' => $request->description,
                 'batch_no' => $request->batch_no,
                 'user_id' => Auth::id(),
+                'requires_approval' => $requires_approval,
             ]);
 
             Toastr::success('Transfer saved successfully', 'Success');
