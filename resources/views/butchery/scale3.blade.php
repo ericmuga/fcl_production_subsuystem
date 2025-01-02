@@ -96,7 +96,7 @@
                     </div>
                     <div class="col-6 form-group">
                         <label for="black_crates">Black Crates</label>
-                        <input type="number" class="form-control" id="black_crates" name="black_crates" min="0" oninput="updateTotalTare()" value="1">
+                        <input type="number" class="form-control" id="black_crates" name="black_crates" min="0" oninput="updateTotalTare()" value="1" max="4">
                     </div>
                 </div>
                 <div class="row">
@@ -132,7 +132,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label for="no_of_crates">Total Crates</label>
-                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" oninput="updateTotalTare()"
+                            <input type="number" class="form-control" onClick="this.select();" id="no_of_crates" oninput="updateBlackCratesMax()"
                                 value="4" name="no_of_crates" placeholder="" required>
                         </div>
                         <div class="col-md-6">
@@ -442,6 +442,16 @@
 
 @section('scripts')
 <script>
+    function updateBlackCratesMax() {
+        black_crates_input = document.getElementById('black_crates');
+        no_of_crates = document.getElementById('no_of_crates').value;
+        if (parseInt(black_crates_input.value) > parseInt(no_of_crates)) {
+            black_crates_input.value = '';
+        };
+        black_crates_input.max = no_of_crates;
+        updateTotalTare();
+    };
+
     function updateTotalTare() {
         crate_weight = document.getElementById('crate_weight').value;
         no_of_crates = document.getElementById('no_of_crates').value;
