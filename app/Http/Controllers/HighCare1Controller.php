@@ -304,7 +304,7 @@ class HighCare1Controller extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $bacon_products = ['G3813','G4451','G4501','G3810','G4451','G4536','G3814','G4451','G4547','G3812','G4451','G4544','G3804','G4451','G4503','G3813X','G4451','G4501X','G3309','G4451','G4522','G3309','G4451','G4522','G3591','G4451','G4525','G3802','G4452', 'G4540'];
+        $bacon_products = ['G3813', 'G4501', 'G3810', 'G4536', 'G3814', 'G4547', 'G3812', 'G4544', 'G3804', 'G4503', 'G3813X', 'G4501X', 'G3591', 'G4525', 'G3802', 'G4452', 'G4540'];
 
         $products = Cache::remember('bacon_products', now()->addMinutes(480), function () use ($bacon_products) {
             return DB::table('products')
