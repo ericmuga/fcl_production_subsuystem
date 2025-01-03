@@ -57,7 +57,6 @@
                             </tr>
                         </tfoot>
                         <tbody>
-                            {{ count($summary) }}
                             @foreach($summary as $transfer)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
