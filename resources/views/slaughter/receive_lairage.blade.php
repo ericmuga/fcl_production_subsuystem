@@ -37,17 +37,29 @@
           <tr>
             <th>Animal Type</th>
             <th>Count</th>
+            <th>Status</th>
             <th>Date Time Received</th>
+            <th>Issued By</th>
             <th>Received By</th>
           </tr>
         </thead>
         <tbody class="reeceivedEntriesTableBody">
             @foreach ($received as $entry)
             <tr>
-                <th> {{ $animalTypes[$entry->product_code] }}</th>
-                <th>{{ $entry->count  }}</th>
-                <th>{{ $entry->received_date_time }}</th>
-                <th>{{ $entry->received_username }}</th>
+                <td> {{ $animalTypes[$entry->product_code] }}</td>
+                <td>{{ $entry->count  }}</td>
+                <td>
+                    @if($entry->received_by == null)
+                        <div class="badge badge-primary">Sent</div>
+                    @elseif ($entry->received_by && $entry->receiver_rejected == 0)
+                        <div class="badge badge-success">Received</div>
+                    @elseif ($entry->received_by && $entry->receiver_rejected == 1)
+                        <div class="badge badge-danger">Rejected</div>
+                    @endif
+                </td>
+                <td>{{ $entry->received_date_time }}</td>
+                <td>{{ $entry->issuer_username }}</td>
+                <td>{{ $entry->receiver_username }}</td>
               </tr>
             @endforeach
         </tbody>
