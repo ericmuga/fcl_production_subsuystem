@@ -309,6 +309,8 @@ Route::prefix('idt')->group(function () {
     Route::get('/issue', [IDTController::class, 'listIDTIssued'])->name('list_issued_idt');
     Route::post('/save-issue', [IDTController::class, 'saveIssueIdt'])->name('save_issue_idt');
     Route::post('/approve', [IDTController::class, 'approveIdt'])->name('approve_idt');
+    Route::get('/beef-combined-report', [IDTController::class, 'beefCombinedReport'])->name('beef_combined_report');
+    Route::post('/beef-combined-export', [IDTController::class, 'beefCombinedExport'])->name('beef_combined_export');
 });
 /*-------------End IDT ------------------ */
 
