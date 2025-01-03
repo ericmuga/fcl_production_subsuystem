@@ -147,6 +147,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
     {!! Toastr::message() !!}
 
     <script>
+
+        $(document).ready(function () {        
+            $('.form-prevent-multiple-submits').on('submit', function () {
+                $(".btn-prevent-multiple-submits").attr('disabled', true);
+            });
+        });
+        
         $(function () {
             $("#example1").DataTable({
                 "responsive": false,
