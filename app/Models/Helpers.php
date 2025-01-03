@@ -600,7 +600,7 @@ class Helpers
             'intercompany_transfers.wms' => function ($msg) {
                 $this->processQueueMessage($msg, 'Intercompany Transfers', function ($data) {
                     DB::table('idt_transfers')->insert([
-                        'product_code' => $data['item_code'],
+                        'product_code' => substr($data['item_code'], 1),
                         'location_code' => '1570',
                         'total_pieces' => isset($data['no_of_pieces']) ? $data['no_of_pieces'] : 0,
                         'total_weight' => $data['net_weight'],
