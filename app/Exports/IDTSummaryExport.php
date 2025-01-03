@@ -20,6 +20,6 @@ class IDTSummaryExport implements FromCollection, withHeadings
     public function headings(): array
     {
         return
-            ['Product Code', 'Product Description', 'Total Weight', 'Total Pieces', 'From Location', 'To Location'];
+            ['Product Code', 'Product Description', 'Sent Weight', 'Received Weight', 'Sent Pieces', 'Received Pieces'];
     }
 }

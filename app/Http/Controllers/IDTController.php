@@ -275,8 +275,13 @@ class IDTController extends Controller
             ->groupBy('product_code', 'items.description'); // Group by item code
 
         if ($request->from_date) {
-            $q->whereBetween('transfers.created_at', [$request->from_date, $request->to_date]);
-            $title .= ' between ' . $request->from_date . ' and ' . $request->to_date;
+            $q->whereDate('transfers.created_at', '>=', $request->from_date);
+            $title .= ' from ' . $request->from_date;
+        }
+    
+        if ($request->to_date) {
+            $q->whereDate('transfers.created_at', '<=', $request->to_date);
+            $title .= ' to ' . $request->from_date;
         }
 
         if (!$request->from_date && !$request->to_date) {
@@ -298,30 +303,35 @@ class IDTController extends Controller
         $title = 'IDT Beef Combined Report';
 
         $q =  DB::table('idt_transfers as transfers')
-            ->leftJoin('beef_lamb_items as items', 'transfers.product_code', '=', 'items.code')
-            ->where('transfers.transfer_from', 'B3535')
-            ->where('transfers.location_code', '1570')
-            ->select(
-                'product_code',
-                DB::raw('SUM(CASE WHEN receiver_total_weight IS NULL THEN total_weight ELSE 0 END) as sent_weight'),
-                DB::raw('SUM(receiver_total_weight) as received_weight'),
-                DB::raw('SUM(CASE WHEN receiver_total_pieces IS NULL THEN total_pieces ELSE 0 END) as sent_pieces'),
-                DB::raw('SUM(receiver_total_pieces) as received_pieces'),
-                'items.description as item_description',
-            )
-            ->groupBy('product_code', 'items.description'); // Group by item code
+        ->leftJoin('beef_lamb_items as items', 'transfers.product_code', '=', 'items.code')
+        ->where('transfers.transfer_from', 'B3535')
+        ->where('transfers.location_code', '1570')
+        ->select(
+            'product_code',
+            'items.description as item_description',
+            DB::raw('SUM(CASE WHEN receiver_total_weight IS NULL THEN total_weight ELSE 0 END) as sent_weight'),
+            DB::raw('SUM(receiver_total_weight) as received_weight'),
+            DB::raw('SUM(CASE WHEN receiver_total_pieces IS NULL THEN total_pieces ELSE 0 END) as sent_pieces'),
+            DB::raw('SUM(receiver_total_pieces) as received_pieces'),
+        )
+        ->groupBy('product_code', 'items.description'); // Group by item code
 
-        if ($request->from_date) {
-            $q->whereBetween('transfers.created_at', [$request->from_date, $request->to_date]);
-            $title .= ' between ' . $request->from_date . ' and ' . $request->to_date;
-        }
+    if ($request->from_date) {
+        $q->whereDate('transfers.created_at', '>=', $request->from_date);
+        $title .= ' from ' . $request->from_date;
+    }
 
-        if (!$request->from_date && !$request->to_date) {
-            $q->whereDate('transfers.created_at', '>=', now()->subDays(30));
-            $title .= " for the last 30 days";
-        }
+    if ($request->to_date) {
+        $q->whereDate('transfers.created_at', '<=', $request->to_date);
+        $title .= ' to ' . $request->from_date;
+    }
 
-        $data = $q->get();
+    if (!$request->from_date && !$request->to_date) {
+        $q->whereDate('transfers.created_at', '>=', now()->subDays(30));
+        $title .= " for the last 30 days";
+    }
+
+    $data = $q->get();
 
         $exports = Session::put('session_export_data', $data);
 
