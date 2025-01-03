@@ -138,8 +138,8 @@
                         <input type="text" class="form-control" value="" id="batch_no" name="batch_no" required placeholder="">
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="inputEmail3">Description (optional)</label>
-                        <input type="number" class="form-control" value="" id="description" name="description" placeholder="">
+                        <label for="description">Description (optional)</label>
+                        <input type="text" class="form-control" value="" id="description" name="description" placeholder="">
                     </div>
     
                 </div>
