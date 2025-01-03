@@ -109,7 +109,8 @@
                     <td><h4>${animalTypes[item.product_code]}</h4></td>
                     <td><h4>${item.count}</h4></td>
                     <td class="name">
-                        <button class="btn btn-lg btn-primary" data-product="${item.product_code}" data-id="${item.id}" data-qty="${item.count}" onclick="acceptPigs(event)">Receive</button>
+                        <button class="btn btn-lg btn-primary" data-product="${item.product_code}" data-id="${item.id}" data-qty="${item.count}" onclick="acceptPigs(event)">Accept</button>
+                        <button class="btn btn-lg btn-danger" data-product="${item.product_code}" data-id="${item.id}" data-qty="${item.count}" onclick="rejectPigs(event)">Reject</button>
                     </td>
                     
                 `;
@@ -131,6 +132,7 @@
     }
 
     function acceptPigs(event) {
+        console.log('Accepting pigs');
         btn = event.currentTarget;
         btn.disabled = true
         const id = btn.dataset.id;
@@ -146,7 +148,39 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id, qty, product_code
+                id, qty, product_code, reject: 0
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                toastr.success('Accepted Pig Transfer');
+                location.reload();
+            } else {
+                console.error(data);
+                toastr.error(data.message);
+            }
+        })
+    }
+
+    function rejectPigs(event) {
+        console.log('Rejecting pigs');
+        btn = event.currentTarget;
+        btn.disabled = true
+        const id = btn.dataset.id;
+        const qty = btn.dataset.qty;
+        const product_code = btn.dataset.product;
+        const url = "{{ route('lairage_transfer_receive') }}"
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                    .attr('content'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id, qty, product_code, reject: 1
             })
         })
         .then(response => response.json())
