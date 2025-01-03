@@ -798,12 +798,13 @@ class SlaughterController extends Controller
         ];       
 
         $transfers = DB::table('lairage_transfers as transfers')
-                ->whereDate('transfers.created_at', '>=', today()->subDays(2))
-                ->whereIn('product_code', array_keys($animalTypes))
-                ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
-                ->select('transfers.*', 'users.username')
-                ->orderByDesc('transfers.id')
-                ->get();
+            ->whereDate('transfers.created_at', '>=', today()->subDays(2))
+            ->whereIn('product_code', array_keys($animalTypes))
+            ->leftJoin('users as issuer', 'transfers.user_id', '=', 'issuer.id')
+            ->leftJoin('users as receiver', 'transfers.received_by', '=', 'receiver.id')
+            ->select('transfers.*', 'issuer.username as issuer_username', 'receiver.username as receiver_username')
+            ->orderByDesc('transfers.id')
+            ->get();
 
         return view('slaughter.lairage_transfers_reports', compact('title', 'animalTypes', 'transfers', 'helpers'));
     }
@@ -954,10 +955,10 @@ class SlaughterController extends Controller
 
         $received = DB::table('lairage_transfers as transfers')
         ->whereDate('transfers.created_at', Carbon::today())
-        ->whereNotNull('received_qty')
+        ->whereNotNull('received_by')
         ->leftJoin('users', 'transfers.user_id', '=', 'users.id')
-        ->leftJoin('users as received_users', 'transfers.received_by', '=', 'users.id')
-        ->select('transfers.*', 'users.username as username', 'received_users.username as received_username')
+        ->leftJoin('users as received_users', 'transfers.received_by', '=', 'received_users.id')
+        ->select('transfers.*', 'users.username as issuer_username', 'received_users.username as receiver_username')
         ->orderBy('transfers.created_at', 'DESC')
         ->get();
 
@@ -990,20 +991,16 @@ class SlaughterController extends Controller
                 'received_by' => Auth::id(),
                 'received_qty' => $request->qty,
                 'received_date_time' => now(),
-                'receiver_rejected' => 0
+                'receiver_rejected' => $request->reject,
             ]);
 
-            $data = [
-                'id' => $request->id,
-                'product_code' => $request->product_code,
-                'received_qty' => $request->qty,
-                'from_location' => '',
-                'to_location' => '1020'
-            ];
+            if ($request->rejected) {
+                $msg = 'Transfer Rejected';
+            } else {
+                $msg = 'Transfer Accepted';
+            }
 
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
-
-            return response()->json(['success' => true, 'message' => 'Transfer Accepted']);
+            return response()->json(['success' => true, 'message' => $msg]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             return response()->json(['success' => false, 'message' => 'Error accepting transfer: ' . $e->getMessage()]);

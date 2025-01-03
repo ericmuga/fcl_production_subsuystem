@@ -27,8 +27,6 @@
                             <th scope="col">Count</th>
                             <th scope="col">Edited</th>
                             <th scope="col">Date Time Posted</th>
-                            <th scope="col">User</th>
-                            <th scope="col" class="no-export">Edit</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -50,19 +48,6 @@
                                     </td>
                                 @endif
                                 <td>{{ $helpers->amPmDate($transfer->created_at) }}</td>
-                                <td>{{ $transfer->username }}</td>
-                                <td class="no-export">
-                                    <button class="btn btn-primary" >
-                                        <i
-                                            class="fa fa-pencil-alt"
-                                            data-toggle="modal"
-                                            data-target="#editTransferModal"
-                                            data-transfer-id={{ $transfer->id }}
-                                            data-count={{ $transfer->count }}
-                                            onclick="updateTransferId(event)"
-                                        ></i>
-                                    </button>
-                                </td>
                             </tr>
                         @endforeach
                     </tbody>

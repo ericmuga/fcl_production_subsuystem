@@ -37,17 +37,29 @@
           <tr>
             <th>Animal Type</th>
             <th>Count</th>
+            <th>Status</th>
             <th>Date Time Received</th>
+            <th>Issued By</th>
             <th>Received By</th>
           </tr>
         </thead>
         <tbody class="reeceivedEntriesTableBody">
             @foreach ($received as $entry)
             <tr>
-                <th> {{ $animalTypes[$entry->product_code] }}</th>
-                <th>{{ $entry->count  }}</th>
-                <th>{{ $entry->received_date_time }}</th>
-                <th>{{ $entry->received_username }}</th>
+                <td> {{ $animalTypes[$entry->product_code] }}</td>
+                <td>{{ $entry->count  }}</td>
+                <td>
+                    @if($entry->received_by == null)
+                        <div class="badge badge-primary">Sent</div>
+                    @elseif ($entry->received_by && $entry->receiver_rejected == 0)
+                        <div class="badge badge-success">Received</div>
+                    @elseif ($entry->received_by && $entry->receiver_rejected == 1)
+                        <div class="badge badge-danger">Rejected</div>
+                    @endif
+                </td>
+                <td>{{ $entry->received_date_time }}</td>
+                <td>{{ $entry->issuer_username }}</td>
+                <td>{{ $entry->receiver_username }}</td>
               </tr>
             @endforeach
         </tbody>
@@ -109,7 +121,8 @@
                     <td><h4>${animalTypes[item.product_code]}</h4></td>
                     <td><h4>${item.count}</h4></td>
                     <td class="name">
-                        <button class="btn btn-lg btn-primary" data-product="${item.product_code}" data-id="${item.id}" data-qty="${item.count}" onclick="acceptPigs(event)">Receive</button>
+                        <button class="btn btn-lg btn-primary" data-product="${item.product_code}" data-id="${item.id}" data-qty="${item.count}" onclick="acceptPigs(event)">Accept</button>
+                        <button class="btn btn-lg btn-danger" data-product="${item.product_code}" data-id="${item.id}" data-qty="${item.count}" onclick="rejectPigs(event)">Reject</button>
                     </td>
                     
                 `;
@@ -131,6 +144,7 @@
     }
 
     function acceptPigs(event) {
+        console.log('Accepting pigs');
         btn = event.currentTarget;
         btn.disabled = true
         const id = btn.dataset.id;
@@ -146,7 +160,39 @@
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                id, qty, product_code
+                id, qty, product_code, reject: 0
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                toastr.success('Accepted Pig Transfer');
+                location.reload();
+            } else {
+                console.error(data);
+                toastr.error(data.message);
+            }
+        })
+    }
+
+    function rejectPigs(event) {
+        console.log('Rejecting pigs');
+        btn = event.currentTarget;
+        btn.disabled = true
+        const id = btn.dataset.id;
+        const qty = btn.dataset.qty;
+        const product_code = btn.dataset.product;
+        const url = "{{ route('lairage_transfer_receive') }}"
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                    .attr('content'),
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id, qty, product_code, reject: 1
             })
         })
         .then(response => response.json())

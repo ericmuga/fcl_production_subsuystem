@@ -33,6 +33,8 @@
             class="nav-link dropdown-toggle">Data Management</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li><a href="{{ route('slicing_history') }}" class="dropdown-item"> Slicing History</a></li>
+            <hr class="dropdown-divider"/>
+            <li><a href="{{ route('beef_combined_report') }}" class="dropdown-item">Beef IDT Sent vs. Received</a></li>   
         </ul>
     </li>
     <li class="nav-item dropdown">

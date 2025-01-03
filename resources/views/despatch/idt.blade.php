@@ -1,5 +1,10 @@
 @extends('layouts.despatch_master')
 
+@section('content-header')
+<h1 class="m-2">IDTs sent to Desptach from {{ ucfirst($filter) }}</h1>
+@endsection
+
+
 @section('content')
 <div class="modal fade" id="despatchReceiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
     aria-hidden="true">

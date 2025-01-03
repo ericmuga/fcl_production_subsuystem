@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Helpers;
+use App\Exports\IDTSummaryExport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Session;
 
 
 class IDTController extends Controller
@@ -250,5 +254,77 @@ class IDTController extends Controller
             return back()
                 ->withInput();
         }
+    }
+
+    public function beefCombinedReport(Request $request, Helpers $helpers, $filter = null)
+    {
+        $title = "IDT Beef Combined Report";
+
+        $q =  DB::table('idt_transfers as transfers')
+            ->leftJoin('beef_lamb_items as items', 'transfers.product_code', '=', 'items.code')
+            ->where('transfers.transfer_from', 'B3535')
+            ->where('transfers.location_code', '1570')
+            ->select(
+                'product_code',
+                DB::raw('SUM(CASE WHEN receiver_total_weight IS NULL THEN total_weight ELSE 0 END) as sent_weight'),
+                DB::raw('SUM(receiver_total_weight) as received_weight'),
+                DB::raw('SUM(CASE WHEN receiver_total_pieces IS NULL THEN total_pieces ELSE 0 END) as sent_pieces'),
+                DB::raw('SUM(receiver_total_pieces) as received_pieces'),
+                'items.description as item_description',
+            )
+            ->groupBy('product_code', 'items.description'); // Group by item code
+
+        if ($request->from_date) {
+            $q->whereBetween('transfers.created_at', [$request->from_date, $request->to_date]);
+            $title .= ' between ' . $request->from_date . ' and ' . $request->to_date;
+        }
+
+        if (!$request->from_date && !$request->to_date) {
+            $q->whereDate('transfers.created_at', '>=', now()->subDays(30));
+            $title .= " for the last 30 days";
+        }
+
+        $summary = $q->get();
+
+        $products = Cache::remember('cm_items', now()->addMinutes(120), function () {
+            return DB::table('products')->get();
+        });
+
+        return view('idt.beef-combined-report', compact('title', 'helpers', 'summary', 'products'));
+    }
+
+    public function beefCombinedExport(Request $request, Helpers $helpers)
+    {
+        $title = 'IDT Beef Combined Report';
+
+        $q =  DB::table('idt_transfers as transfers')
+            ->leftJoin('beef_lamb_items as items', 'transfers.product_code', '=', 'items.code')
+            ->where('transfers.transfer_from', 'B3535')
+            ->where('transfers.location_code', '1570')
+            ->select(
+                'product_code',
+                DB::raw('SUM(CASE WHEN receiver_total_weight IS NULL THEN total_weight ELSE 0 END) as sent_weight'),
+                DB::raw('SUM(receiver_total_weight) as received_weight'),
+                DB::raw('SUM(CASE WHEN receiver_total_pieces IS NULL THEN total_pieces ELSE 0 END) as sent_pieces'),
+                DB::raw('SUM(receiver_total_pieces) as received_pieces'),
+                'items.description as item_description',
+            )
+            ->groupBy('product_code', 'items.description'); // Group by item code
+
+        if ($request->from_date) {
+            $q->whereBetween('transfers.created_at', [$request->from_date, $request->to_date]);
+            $title .= ' between ' . $request->from_date . ' and ' . $request->to_date;
+        }
+
+        if (!$request->from_date && !$request->to_date) {
+            $q->whereDate('transfers.created_at', '>=', now()->subDays(30));
+            $title .= " for the last 30 days";
+        }
+
+        $data = $q->get();
+
+        $exports = Session::put('session_export_data', $data);
+
+        return Excel::download(new IDTSummaryExport, $title . '.xlsx');
     }
 }
