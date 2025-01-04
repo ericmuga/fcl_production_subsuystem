@@ -11,6 +11,8 @@
     @include('layouts.headers.sausage_header')
 @elseif(request()->query('to_location') == '3035')
     @include('layouts.headers.petfood_header')
+@elseif(request()->query('to_location') == '4400')
+    @include('layouts.headers.freshcuts-bulk_header')
 @endif
 
 <!-- /.navbar -->
