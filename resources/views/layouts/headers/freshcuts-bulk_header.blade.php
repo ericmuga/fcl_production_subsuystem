@@ -17,6 +17,17 @@
     <li class="nav-item">
         <a href="{{ route('freshcuts_bulk_idt') }}" class="nav-link">IDT</a>
     </li>
+    @if(auth()->user()->role == 'kitchen')
+    <li class="nav-item dropdown">
+        <a id="dropdownSubMenu2" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Receive IDT</a>
+        <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">                        
+            <li>
+                <a href="{{ route('list_receive', ['from_location' => '1570', 'to_location' => '4400']) }}" class="dropdown-item">Kitchen -IDTs</a>
+            </li>
+        </ul>
+    </li>
+    @endif
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle">Data Management</a>

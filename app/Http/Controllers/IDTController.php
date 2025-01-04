@@ -28,6 +28,7 @@ class IDTController extends Controller
         '3035' => 'PetFood',
         '3535' => 'Despatch',
         '4300' => 'Incinerator',
+        '4400' => 'Kitchen',
         '4450' => 'QA',
     ];
 

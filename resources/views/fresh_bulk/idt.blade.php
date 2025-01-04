@@ -31,6 +31,7 @@
                             <option value="2500">Curing</option>
                             <option value="3535">Despatch</option>
                             <option value="3035">Pet Food</option>
+                            <option value="4400">Kitchen</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -116,8 +117,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <label for="exampleInputPassword1">Transfer To Chiller </label>
-                            <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
-                                required>
+                            <select class="form-control locations" name="chiller_code" id="chiller_code">
                                 <option value="">Select chiller</option>
                             </select>
                         </div>
@@ -376,11 +376,14 @@
             //receiver div
             let element_recv = document.getElementById("receiver_div")
 
+            const noReceiverLocations = ['3535', '2055', '3035', '4400'];
+
             // Check if the selected value is '3535' (Despatch)
-            if ($(this).val() == '3535' || $(this).val() == '2055') {
+            if (noReceiverLocations.includes($(this).val())) {
                 // Enable the 'Export' option in the transferTypeSelect
                 transferTypeSelect.options[2].disabled = false;
-                $('#transfer_type').val('');   
+                $('#transfer_type').val(''); 
+                $('#chiller_code').val('');   
                 
                 // hide receiver_div
                 element_recv.setAttribute("hidden", "hidden");
