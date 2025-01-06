@@ -607,6 +607,7 @@ class Helpers
                         'batch_no' => isset($data['batch_no']) ? $data['batch_no'] : 0,
                         'with_variance' => 0,
                         'transfer_type' => 1,
+                        'user_id' => 1,
                         'transfer_from' => $data['from_location_code'],
                         'manual_weight' => $data['manual_weight'],
                     ]);
