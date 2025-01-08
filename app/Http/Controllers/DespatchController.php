@@ -380,7 +380,14 @@ class DespatchController extends Controller
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
        
-        $products = DB::table('items')->get();
+        $products = DB::table('products')
+            ->select('code', 'description') // Select columns from products
+            ->union(
+                DB::table('items')
+                ->select('code', 'description') // Select columns from items
+            )->get();
+
+        // dd($products);
 
         $username = Auth::user()->username;
 
