@@ -379,15 +379,16 @@ class DespatchController extends Controller
                 ->where('section', 'despatch')
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
+
+        $imported_products = ['G1091', 'G1093','G1094','G1098'];
        
         $products = DB::table('products')
             ->select('code', 'description') // Select columns from products
+            ->whereIn('code', $imported_products) // Where code starts with J
             ->union(
                 DB::table('items')
                 ->select('code', 'description') // Select columns from items
             )->get();
-
-        // dd($products);
 
         $username = Auth::user()->username;
 
