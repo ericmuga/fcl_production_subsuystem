@@ -24,11 +24,10 @@
                 <div class="row form-group">
                     <div class="col-md-6">
                         <label for="exampleInputPassword1">Transfer To</label>
-                        <select class="form-control select2" disabled name="transfer_to" id="transfer_to" required>
-                            {{-- <option disabled selected value> -- select an option -- </option>
+                        <select class="form-control select2" name="transfer_to" id="transfer_to" required>
+                            <option disabled selected value> -- select an option -- </option>
                             <option value="2055">Sausage</option>
-                            <option value="2500">High Care</option> --}}
-                            <option selected value="3535">Despatch</option>
+                            <option value="3535">Despatch</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -232,7 +231,7 @@
                                         href="#">{{ $data->id }}</a>
                                 </td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product }}</td>
+                                <td>{{ $data->product ?? 'Bacon offcuts - to mince' }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                 <td>{{ $data->transfer_from }}</td>
                                 <td>{{ $data->location_code }}</td>
@@ -372,6 +371,12 @@
         $(document).on('change', '#product', function () {
             let product_code = $(this).val()
             fetchTransferToLocations(product_code);
+
+            if (product_code === 'G4470') {
+            $('#chiller_code').removeAttr('required');
+            } else {
+            $('#chiller_code').attr('required', 'required');
+            }
         });
 
         $('#manual_weight').change(function () {

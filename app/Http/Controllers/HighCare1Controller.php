@@ -71,11 +71,20 @@ class HighCare1Controller extends Controller
         });
 
         $items = Cache::remember('items_list_sausage', now()->addHours(10), function () {
-            return DB::table('items')
+            $items = DB::table('items')
                 ->where('blocked', '!=', 1)
                 ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
                 ->get();
+
+            $products = DB::table('products')
+                ->where('code', 'G4470')
+                ->select('id', 'code', DB::raw('code as barcode'), 'description', 'unit_of_measure')
+                ->get();
+
+            return $items->merge($products);
         });
+
+        // dd($items);
 
         $tags = Cache::remember('tags', now()->addHours(10), function () {
             return DB::table('receipts')
@@ -103,24 +112,20 @@ class HighCare1Controller extends Controller
 
     public function saveIdtBulk(Request $request, Helpers $helpers)
     {
-        switch ($request->transfer_type) {
-            case '2':
-                $location = '3600';
-                break;
+        $location = $request->transfer_to;
+        if($request->transfer_type == '2' && $request->transfer_to == '3535'){
+            $location = '3636';
+        } 
 
-            default:
-                # code...
-                $location = '3535';
-                break;
-        }
-
-        $tranfer_from_2595 = ['J31022101', 'J31050701', 'J31022210', 'J31022211', 'J31050905', 'J31090264', 'J31020851', 'J31022751', 'J31022551', 'J31090176', 'J31022851', 'J31020620', 'J31020621', 'J31020622']; //from location 2595
+        $tranfer_from_2595 = ['J31022101', 'J31050701', 'J31022210', 'J31022211', 'J31050905', 'J31090264', 'J31020851', 'J31022751', 'J31022551', 'J31090176', 'J31022851', 'J31020620', 'J31020621', 'J31020622', 'G4470']; //from location 2595
 
         $transfer_from = '2500'; //bacon and ham, default
 
         if (in_array($request->product, $tranfer_from_2595)) {
             $transfer_from = '2595'; //highcare
         }
+
+        // dd($location);
 
         try {
             // try save

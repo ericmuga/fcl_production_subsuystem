@@ -26,6 +26,9 @@
             <li><a href="{{ route('sausage_idt_receive') }}" class="dropdown-item">Butchery IDTs</a>
             </li>
             <hr class="dropdown-divider" />
+            <li><a href="{{ route('list_receive', ['from_location' => '2595', 'to_location' => '2055']) }}" class="dropdown-item">HighCare -IDTs</a>
+            </li>
+            <hr class="dropdown-divider" />
             <li><a href="{{ route('list_receive', ['from_location' => '3535', 'to_location' => '2055']) }}" class="dropdown-item">Despatch -IDTs</a>
             </li>
         </ul>
