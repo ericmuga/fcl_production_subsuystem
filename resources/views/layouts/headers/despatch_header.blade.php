@@ -29,6 +29,9 @@
             <li class="dropdown-divider"></li>
             <li><a href="{{ route('despatch_idt', 'fresh_cuts') }}" class="dropdown-item">Freshcuts-IDT</a>
             </li>
+            <li class="dropdown-divider"></li>
+            <li><a href="{{ route('despatch_idt', 'petfood') }}" class="dropdown-item">Petfood-IDT</a>
+            </li>
         </ul>
     </li>
     <li class="nav-item dropdown">

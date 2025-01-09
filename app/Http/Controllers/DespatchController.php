@@ -86,6 +86,9 @@ class DespatchController extends Controller
             })
             ->when($filter == 'fresh_cuts', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '1570'); // from butchery only
+            })
+            ->when($filter == 'petfood', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '3035'); // from petfood only
             });
 
         $transfer_lines = $query->get();
