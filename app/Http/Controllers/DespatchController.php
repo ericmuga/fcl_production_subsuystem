@@ -380,7 +380,7 @@ class DespatchController extends Controller
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
 
-        $imported_products = ['G1091', 'G1093','G1094','G1098'];
+        $imported_products = ['G1091', 'G1093','G1094','G1098', 'G1071'];
        
         $products = DB::table('products')
             ->select('code', 'description') // Select columns from products
