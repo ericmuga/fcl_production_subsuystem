@@ -285,7 +285,7 @@ class ButcheryController extends Controller
                     'timestamp' => now()->toDateTimeString()
                 ];
 
-                $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
+                // //$helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
                 return redirect()->back();
             }
 
@@ -310,7 +310,7 @@ class ButcheryController extends Controller
             $beheadingData['process_name'] = $helpers->getProcessName($beheadingData['process_code']);
 
             // Publish the entire beheading data to the queue
-            $helpers->publishToQueue($beheadingData, 'production_data_order_beheading.bc');
+            // //$helpers->publishToQueue($beheadingData, 'production_data_order_beheading.bc');
 
             Toastr::success('Record inserted successfully', 'Success');
             return redirect()->back();
@@ -361,7 +361,7 @@ class ButcheryController extends Controller
                     'id' => $id,
                 ];
 
-                $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
+                // //$helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
 
                 Toastr::success('Sale recorded successfully', 'Success');
                 return redirect()->back()->withInput();
@@ -385,7 +385,7 @@ class ButcheryController extends Controller
                 $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
                 // Publish to the queue
-                $helpers->publishToQueue($data, 'production_data_order_breaking.bc');
+                //$helpers->publishToQueue($data, 'production_data_order_breaking.bc');
                 
                 Toastr::success('Record inserted successfully', 'Success');
             }
@@ -521,7 +521,7 @@ class ButcheryController extends Controller
                     'timestamp' => now()->toDateTimeString()
                 ];
 
-                $helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
+                //$helpers->publishToQueue($transfer, 'production_sales_transfers.bc');
 
             });
         } catch (\Exception $e) {
@@ -679,7 +679,7 @@ class ButcheryController extends Controller
                 $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
                 // Publish to the queue
-                $helpers->publishToQueue($data, 'production_data_order_deboning.bc');
+                //$helpers->publishToQueue($data, 'production_data_order_deboning.bc');
 
                 Toastr::success("Deboning record {$request->product} inserted successfully", 'Success');
             }
@@ -1252,7 +1252,7 @@ class ButcheryController extends Controller
             $data['process_name'] = $helpers->getProcessName($data['process_code']);
 
             // Publish to the queue
-            $helpers->publishToQueue($data, 'production_data_order_marination.bc');
+            //$helpers->publishToQueue($data, 'production_data_order_marination.bc');
 
             Toastr::success("Item {$item[0]} recorded successfully", 'Success');
             return redirect()->back();

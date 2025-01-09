@@ -120,7 +120,7 @@ class IDTController extends Controller
             ];
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            //$helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('IDT Transfer received successfully', 'Success');
             return redirect()

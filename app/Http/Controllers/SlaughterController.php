@@ -238,7 +238,7 @@ class SlaughterController extends Controller
             $data['timestamp'] = now()->toDateTimeString();
 
             // Publish data to RabbitMQ
-            $helpers->publishToQueue($data, 'slaughter_line.bc');
+            //$helpers->publishToQueue($data, 'slaughter_line.bc');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
@@ -753,7 +753,7 @@ class SlaughterController extends Controller
             DB::table('disease_entries')->insert($data);
 
             $data['timestamp'] = now()->toDateTimeString();
-            $helpers->publishToQueue($data, 'slaughter_disease.wms');
+            //$helpers->publishToQueue($data, 'slaughter_disease.wms');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
@@ -931,7 +931,7 @@ class SlaughterController extends Controller
             //write to rabbitmq
             $data['timestamp'] = now()->toDateTimeString();
             $data['id'] = $id;
-            $helpers->publishToQueue($data, 'production_data_transfer.bc');
+            //$helpers->publishToQueue($data, 'production_data_transfer.bc');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()

@@ -638,7 +638,7 @@ class ChoppingController extends Controller
             return $line;
         })->toArray();
 
-        $helpers->publishToQueue($savedLinesArray, 'production_data_order_chopping.bc');
+        //$helpers->publishToQueue($savedLinesArray, 'production_data_order_chopping.bc');
     }
 
     private function getWaterValues()
