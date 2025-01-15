@@ -574,23 +574,38 @@ class ChoppingController extends Controller
         $waterValues = $this->getWaterValues();
         $waterItemCodes = $this->getWaterItemCodes();
 
+        $waterInserted = false;
+        $iceInserted = false;
+
         foreach ($waterValues as $recipeNo => $water) {
             if ($chopping_id == $recipeNo) {
-                $choppingLines[] = [
-                    'chopping_id' => $request->complete_run_number,
-                    'item_code' => $waterItemCodes[$recipeNo],
-                    'weight' => ($water / (float)$request->batch_size) * 2,
-                ];
+                if (!$waterInserted && $waterItemCodes[$recipeNo] == 'G8900') {
+                    $choppingLines[] = [
+                        'chopping_id' => $request->complete_run_number,
+                        'item_code' => 'G8900',
+                        'weight' => ($water / (float)$request->batch_size) * 2,
+                    ];
+                    $waterInserted = true;
+                } elseif (!$iceInserted && $waterItemCodes[$recipeNo] == 'G8901') {
+                    $choppingLines[] = [
+                        'chopping_id' => $request->complete_run_number,
+                        'item_code' => 'G8901',
+                        'weight' => ($water / (float)$request->batch_size) * 2,
+                    ];
+                    $iceInserted = true;
+                }
             }
         }
 
         if (in_array($chopping_id, array_keys($waterValues))) {
             $water = $waterValues[$chopping_id];
-            $choppingLines[] = [
-                'chopping_id' => $request->complete_run_number,
-                'item_code' => 'G8900',
-                'weight' => ($water / (float)$request->batch_size) * 2,
-            ];
+            if (!$waterInserted) {
+                $choppingLines[] = [
+                    'chopping_id' => $request->complete_run_number,
+                    'item_code' => 'G8900',
+                    'weight' => ($water / (float)$request->batch_size) * 2,
+                ];
+            }
         }
 
         return $choppingLines;
