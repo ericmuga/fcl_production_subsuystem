@@ -7,7 +7,7 @@
 <div class="card m-2">
     <h2 class="card-header">Weigh Offals</h2>
     <div class="card-body">
-        <form id="form-weigh-offals" method="POST" action="{{ route('save_offals_weight') }}">
+        <form id="form-weigh-offals" class="form-prevent-multiple-submits" method="POST" action="{{ route('save_offals_weight') }}">
             @csrf
             <div class="row text-center">
                 <div class="col-md-6">
