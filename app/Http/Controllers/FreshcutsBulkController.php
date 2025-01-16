@@ -69,8 +69,15 @@ class FreshcutsBulkController extends Controller
                 ->get();
         });
 
+        //query 3
+        $beef_items = Cache::remember('beef_items', now()->addHours(10), function () {
+            return DB::table('beef_lamb_items')
+                ->select('code', 'barcode', 'description')
+                ->get();
+        });
+
         // Merge the two collections
-        $combinedResult = $items->concat($products);
+        $combinedResult = $items->concat($products)->concat($beef_items);
 
         $tags = Cache::remember('tags', now()->addHours(10), function () {
             return DB::table('receipts')
@@ -85,6 +92,7 @@ class FreshcutsBulkController extends Controller
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('products', 'idt_transfers.product_code', '=', 'products.code')
+            ->leftJoin('beef_lamb_items', 'idt_transfers.product_code', '=', 'beef_lamb_items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'products.description as product2', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
