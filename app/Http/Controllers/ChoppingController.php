@@ -509,7 +509,7 @@ class ChoppingController extends Controller
                 $this->insertOutputItem($request, $chopping_id, $todayStart, $allowanceEnd);
             });
 
-            $this->publishChoppingLines($request, $helpers, $todayStart, $allowanceEnd);
+            // $this->publishChoppingLines($request, $helpers, $todayStart, $allowanceEnd);
 
             Toastr::success("Chopping Run {$request->complete_run_number} closed successfully", "Success");
             return redirect()->route('chopping_weigh');
