@@ -386,11 +386,11 @@ class DespatchController extends Controller
         $imported_products = ['G1091', 'G1093','G1094','G1098', 'G1071'];
        
         $products = DB::table('products')
-            ->select('code', 'description') // Select columns from products
-            ->whereIn('code', $imported_products) // Where code starts with J
+            ->select(DB::raw('TRIM(code) as code'), 'description', 'unit_of_measure', DB::raw('0 as unit_count_per_crate'), DB::raw('0 as qty_per_unit_of_measure')) // Select columns from products
+            ->whereIn(DB::raw('TRIM(code)'), $imported_products) // Where code starts with J
             ->union(
-                DB::table('items')
-                ->select('code', 'description') // Select columns from items
+            DB::table('items')
+            ->select(DB::raw('TRIM(code) as code'), 'description', 'unit_of_measure', 'unit_count_per_crate', 'qty_per_unit_of_measure') // Select columns from items
             )->get();
 
         $username = Auth::user()->username;
@@ -402,44 +402,46 @@ class DespatchController extends Controller
             ->select(
                 'idt_transfers.*',
                 'users.username',
-            );
+            )->orderBy('idt_transfers.id', 'DESC');
 
         $transfer_lines = $query->get();
+        // dd($products);
+        // dd($transfer_lines );
 
         return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'configs', 'locations'));
     }
 
-    public function issueButchery()
-    {
-        $title = "Issue IDT from Despatch to Butchery";
+    // public function issueButchery()
+    // {
+    //     $title = "Issue IDT from Despatch to Butchery";
 
-        $configs = DB::table('scale_configs')
-                ->where('section', 'despatch')
-                ->where('scale', 'Despatch Issue 2')
-                ->get();
+    //     $configs = DB::table('scale_configs')
+    //             ->where('section', 'despatch')
+    //             ->where('scale', 'Despatch Issue 2')
+    //             ->get();
 
         
-        $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
-        $products = DB::table('products')->whereIn('code', $items_array)->get();
+    //     $items_array = ['G1098', 'G1094', 'G1091', 'G1093'];
+    //     $products = DB::table('products')->whereIn('code', $items_array)->get();
 
-        $chillers = DB::table('chillers')->where('location_code', '1570')->get();
+    //     $chillers = DB::table('chillers')->where('location_code', '1570')->get();
 
-        $username = Auth::user()->username;
+    //     $username = Auth::user()->username;
 
-        $query = DB::table('idt_transfers')
-            ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->where('idt_transfers.transfer_from', '3535')
-            ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
-            ->where('idt_transfers.location_code', '=', '1570')
-            ->select(
-                'idt_transfers.*',
-                'users.username',
-            );
+    //     $query = DB::table('idt_transfers')
+    //         ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
+    //         ->where('idt_transfers.transfer_from', '3535')
+    //         ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
+    //         ->where('idt_transfers.location_code', '=', '1570')
+    //         ->select(
+    //             'idt_transfers.*',
+    //             'users.username',
+    //         );
 
-        $transfer_lines = $query->get();
+    //     $transfer_lines = $query->get();
 
-        return view('despatch.issue-butchery', compact('title', 'transfer_lines', 'products', 'chillers', 'configs'));
-    }
+    //     return view('despatch.issue-butchery', compact('title', 'transfer_lines', 'products', 'chillers', 'configs'));
+    // }
 
     public function saveIssuedIdt(Request $request) {
         try {
@@ -451,23 +453,42 @@ class DespatchController extends Controller
 
             $requires_approval = substr($request->product_code, 0, 1) === 'J';
 
-            DB::table('idt_transfers')->insert([
-                'product_code' => $request->product_code,
-                'location_code' => $request->location_code,
-                'chiller_code' => $request->chiller_code,
-                'total_pieces' => $request->no_of_pieces ?: 0,
-                'total_weight' => $weight,
-                'total_crates' => $request->total_crates ?: 0,
-                'black_crates' => $request->black_crates ?: 0,
-                'full_crates' => $request->total_crates ?: 0,
-                'incomplete_crate_pieces' => $request->incomplete_pieces ?: 0,
-                'transfer_type' => 0,
-                'transfer_from' => '3535',
-                'description' => $request->description,
-                'batch_no' => $request->batch_no,
-                'user_id' => Auth::id(),
-                'requires_approval' => $requires_approval,
-            ]);
+            if($request->unit_crate_count > 0) {
+                // save for calculated weight
+                DB::table('idt_transfers')->insert([
+                    'product_code' => $request->product_code,
+                    'location_code' => $request->location_code,
+                    'chiller_code' => $request->chiller_code,
+                    'total_pieces' => $request->calculated_pieces ?: 0,
+                    'total_weight' => $request->calculated_weight,
+                    'incomplete_crate_pieces' => $request->incomplete_pieces ?: 0,
+                    'transfer_type' => 0,
+                    'transfer_from' => '3535',
+                    'description' => $request->description,
+                    'batch_no' => $request->batch_no,
+                    'user_id' => Auth::id(),
+                    'requires_approval' => $requires_approval,
+                ]);
+            } else {
+                // save for scale weights
+                DB::table('idt_transfers')->insert([
+                    'product_code' => $request->product_code,
+                    'location_code' => $request->location_code,
+                    'chiller_code' => $request->chiller_code,
+                    'total_pieces' => $request->no_of_pieces ?: 0,
+                    'total_weight' => $request->net,
+                    'total_crates' => $request->total_crates_kg ?: 0,
+                    'black_crates' => $request->black_crates_kg ?: 0,
+                    'full_crates' => $request->total_crates_kg ?: 0,
+                    'incomplete_crate_pieces' => $request->incomplete_pieces ?: 0,
+                    'transfer_type' => 0,
+                    'transfer_from' => '3535',
+                    'description' => $request->description,
+                    'batch_no' => $request->batch_no,
+                    'user_id' => Auth::id(),
+                    'requires_approval' => $requires_approval,
+                ]);
+            }
 
             Toastr::success('Transfer saved successfully', 'Success');
             return redirect()->back();

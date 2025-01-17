@@ -41,12 +41,12 @@
                 </div>
                 <div hidden id="crates_div" class="form-row">
                     <div class="col-md-6 from-group">
-                        <label for="total_crates">Total Crates </label>
-                        <input type="number" class="form-control" id="kg_total_crates" value="1" name="total_crates" min="1" oninput="updateTare()">
+                        <label for="total_crates">Total Crates Kg </label>
+                        <input type="number" class="form-control" id="kg_total_crates" value="1" name="total_crates_kg" min="1" oninput="updateTare()">
                     </div>
                     <div class="col-md-6 form-group">
-                        <label for="black_crates">Black Crates </label>
-                        <input type="number" class="form-control" id="black_crates" value="1" name="black_crates" min="0" oninput="updateTare()">
+                        <label for="black_crates">Black Crates kg</label>
+                        <input type="number" class="form-control" id="kg_black_crates" value="1" name="black_crates_kg" min="0" oninput="updateTare()">
                     </div>
                 </div>
             </div>
@@ -66,19 +66,28 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 form-group">
-                        <label for="total_crates">Total Crates</label>
-                        <input type="number" class="form-control crates" id="pc_total_crates" name="total_crates" min="1" value="" onkeyup="calculateWeight()" placeholder="">
-                    </div>
                     <div class="col-md-6 form-check">
                         <input type="checkbox" class="form-check-input" id="incomplete_crates" name="incomplete_crates" onchange="togglePiecesInput()">
                         <label class="form-check-label" for="incomplete_crates">Incomplete Crate</label>
+                    </div>
+                </div><br>
+                <div class="row">                    
+                    <div class="col-md-6 form-group">
+                        <label for="total_crates">Full Crates(excl. of black) </label>
+                        <input type="number" class="form-control crates" id="pc_total_crates" name="total_crates" min="1" value="" onkeyup="calculateWeight()" placeholder="">
                     </div>
                     <div id="incomplete_pieces_group" class="col-md-6 form-group">
                         <label id="pieces-label" for="incomplete_pieces">Pieces in incomplete Crate</label>
                         <input type="number" class="form-control crates" min="0" id="incomplete_pieces" name="incomplete_pieces" readonly oninput="calculateWeight()">
                     </div>
-                    <input type="hidden" name="no_of_pieces" id="no_of_pieces" value="0">
+                    <input type="hidden" name="no_of_pieces" id="no_of_pieces" value="0">                    
+                </div>
+                <div class="row">
+                    <div class="col-md-6 form-group">
+                        <label for="calculated_weight">Calculated pcs (kgs)</label>
+                        <input type="number" class="form-control crates" value="0" id="calculated_pieces" min="1"
+                            name="calculated_pieces" placeholder="" readonly>
+                    </div>
                     <div class="col-md-6 form-group">
                         <label for="calculated_weight">Calculated Weight (kgs)</label>
                         <input type="number" class="form-control crates" value="0" id="calculated_weight" min="0.01"
@@ -107,7 +116,7 @@
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-row">
                     <div class="col-md-6 form-group">
-                        <label for="tareweight">Tare-Weight</label>
+                        <label for="tareweight">Tare-Weight kg</label>
                         <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.00"
                             step=".01" placeholder="" readonly>
                     </div>
@@ -142,6 +151,12 @@
                         <input type="text" class="form-control" value="" id="description" name="description" placeholder="">
                     </div>
     
+                </div>
+                <div class="row">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail3"> Pieces</label>
+                        <input type="text" class="form-control" value="" id="no_of_pieces" name="no_of_pieces" placeholder="">
+                    </div>    
                 </div>
                 
                 <div class="div" style="padding-top: 5%">
@@ -221,8 +236,8 @@
                                     data-batch_no="{{ $data->batch_no }}">{{ $data->id }}
                                 </td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
-                                <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
+                                <td>{{ $products->firstWhere('code', trim($data->product_code))->description ?? 'N/A' }}</td>
+                                <td>{{ $products->firstWhere('code', trim($data->product_code))->unit_of_measure ?? 'N/A' }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates ?? 0 }}</td>
@@ -379,9 +394,9 @@
     }
 
     function updateTare() {
-        let tare
+        let tare = 0.00;
         let total_crates = document.getElementById('kg_total_crates').value
-        let black_crates = document.getElementById('black_crates').value
+        let black_crates = document.getElementById('kg_black_crates').value
         if (!carriage.value) {
             tare = 0
         } else if (carriage.value == 'van') {
@@ -389,16 +404,22 @@
         } else {
             tare = (parseFloat(1.8) * parseFloat(total_crates)) + parseFloat(black_crates) * 0.2
         }
-        tareWeightInput.value = tare
+        // tareWeightInput.value = tare
+        tareWeightInput.value = tare.toFixed(2)
         getNet()
     }
 
     function getNet() {
         if (!carriage.value) {
             alert('Please select carriage type first')
+            if (readingInput.value == '') {
+                readingInput.value = 0;
+            }
         } else {
-            net = (parseFloat(readingInput.value) - parseFloat(tareWeightInput.value)).toFixed(2)
-            document.getElementById('net').value = net
+            let readingValue = parseFloat(readingInput.value) || 0;
+            let tareValue = parseFloat(tareWeightInput.value) || 0;
+            let net = (readingValue - tareValue).toFixed(2);
+            document.getElementById('net').value = net;
         }
     }
 
@@ -529,11 +550,13 @@ function loadProductDetails (event) {
 
     // update the unit measure input
     productUnitMeasure = selectedProduct.unit_of_measure;
+    product_unit_count_per_crate = selectedProduct.unit_count_per_crate;
     document.getElementById('unit_measure').value = productUnitMeasure;
 
     // show weight or pieces input based on the unit of measure
     const scaleInputs = document.getElementById('scaleInputs');
     const pcWeightInputs = document.getElementById('pcWeightInputs');
+
     if (productUnitMeasure == 'PC' && selectedProduct.unit_count_per_crate > 0) {
         pcCrateInput.setAttribute('required', true);
         crates_fields.setAttribute("hidden", "hidden");
@@ -638,12 +661,22 @@ const calculateWeight = () => {
     let unit_crate_count = document.getElementById('unit_crate_count').value;
     let incomplete_crates = document.getElementById('incomplete_crates').checked;
     let incomplete_pieces = document.getElementById('incomplete_pieces').value;
-    let piecesInput = document.getElementById('pieces');
+    let piecesInput = document.getElementById('calculated_pieces');
     let weightInput = document.getElementById('calculated_weight');
     let weight_per_unit = selectedProduct.qty_per_unit_of_measure;
     let crate_unit_count = selectedProduct.unit_count_per_crate;
+
+    console.log('total_crates:', total_crates);
+    console.log('unit_crate_count:', unit_crate_count);
+    console.log('incomplete_crates:', incomplete_crates);
+    console.log('incomplete_pieces:', incomplete_pieces);
+    console.log('piecesInput:', piecesInput);
+    console.log('weightInput:', weightInput);
+    console.log('weight_per_unit:', weight_per_unit);
+    console.log('crate_unit_count:', crate_unit_count);
+
     if (incomplete_crates) {
-        let full_crates = total_crates - 1;
+        let full_crates = total_crates;
         total_pieces = ((full_crates * unit_crate_count) + parseInt(incomplete_pieces)).toFixed(2);
     } else if (crate_unit_count == 0) {
         total_pieces = incomplete_pieces;
@@ -652,6 +685,7 @@ const calculateWeight = () => {
     } 
 
     let total_weight = total_pieces * weight_per_unit;
+    piecesInput.value = total_pieces;
     weightInput.value = total_weight.toFixed(2);
 }
 

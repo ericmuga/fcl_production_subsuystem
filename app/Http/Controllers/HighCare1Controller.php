@@ -114,7 +114,7 @@ class HighCare1Controller extends Controller
     {
         $location = $request->transfer_to;
         if($request->transfer_type == '2' && $request->transfer_to == '3535'){
-            $location = '3636';
+            $location = '3600';
         } 
 
         $tranfer_from_2595 = ['J31022101', 'J31050701', 'J31022210', 'J31022211', 'J31050905', 'J31090264', 'J31020851', 'J31022751', 'J31022551', 'J31090176', 'J31022851', 'J31020620', 'J31020621', 'J31020622', 'G4470']; //from location 2595
