@@ -34,6 +34,7 @@ class IDTController extends Controller
 
     public function listIDTReceive(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         $from_location = $request->query('from_location');
         $to_location = $request->query('to_location');
 

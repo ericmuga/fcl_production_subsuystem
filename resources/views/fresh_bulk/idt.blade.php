@@ -246,7 +246,7 @@
                                         data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
                                     </td>
                                     <td>{{ $data->product_code }}</td>
-                                    <td>{{ $data->product?? $data->product2 }}</td>
+                                    <td>{{ $data->product?? $data->product2?? $data->beef_product }}</td>
                                     <td>{{ number_format($data->qty_per_unit_of_measure, 2) }}</td>
                                     <td>{{ $data->location_code }}</td>
                                     <td>{{ $data->chiller_code }}</td>
