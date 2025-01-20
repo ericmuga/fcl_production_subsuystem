@@ -20,17 +20,17 @@
 
                                 <h6>*Filter by date range</h6>
                                 <div class="row form-group">
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label for="stemplate_date_created_from_flagged">From: (dd/mm/yyyy)</label>
                                         <input type="date" class="form-control" name="from_date"
                                             id="stemplate_date_created_from_flagged" required>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label for="stemplate_date_created_from_flagged">To: (dd/mm/yyyy)</label>
                                         <input type="date" class="form-control" name="to_date"
                                             id="stemplate_date_created_from_flagged" required>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-3">
                                         <label for="stemplate_date_created_from_flagged">Transfer From</label>
                                         <select class="form-control select2" name="transfer_from"
                                             id="transfer_from" required>
@@ -38,9 +38,22 @@
                                             <option value="1570">Butchery</option>
                                             <option value="2055">Sausage</option>
                                             <option value="2595">Bacon & Ham</option>
-                                            <option value="2500">Bacon & Ham Bulk</option>
+                                            <option value="2500">Bacon & Ham Curing</option>
                                             <option value="3535">Despatch</option>
+                                            <option value="3035">Petfood</option>
                                         </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="stemplate_date_created_from_flagged">Transfer To</label>
+                                        <select class="form-control select2" name="transfer_to"
+                                            id="transfer_to" required>
+                                            <option disabled selected value> -- select an option -- </option>
+                                            <option value="1570">Butchery</option>
+                                            <option value="2055">Sausage</option>
+                                            <option value="2595">Bacon & Ham</option>
+                                            <option value="2500">Bacon & Ham Curing</option>
+                                            <option value="3535">Despatch</option>
+                                            <option value="3035">Petfood</option>
                                         </select>
                                     </div>
                                 </div> <br>
