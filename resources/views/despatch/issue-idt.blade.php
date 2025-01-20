@@ -74,7 +74,7 @@
                 <div class="row">                    
                     <div class="col-md-6 form-group">
                         <label for="total_crates">Full Crates(excl. of black) </label>
-                        <input type="number" class="form-control crates" id="pc_total_crates" name="total_crates" min="1" value="" onkeyup="calculateWeight()" placeholder="">
+                        <input type="number" class="form-control crates" id="pc_total_crates" value="0" name="total_crates" min="0" value="" onkeyup="calculateWeight()" placeholder="">
                     </div>
                     <div id="incomplete_pieces_group" class="col-md-6 form-group">
                         <label id="pieces-label" for="incomplete_pieces">Pieces in incomplete Crate</label>

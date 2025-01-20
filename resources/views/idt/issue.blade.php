@@ -46,7 +46,7 @@
                     <input type="hidden" id="transfer_to" name="location_code" value="{{ request()->get('to_location') }}">
                 @endif
                 <div class="form-row">
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label for="location_code">Transfer To</label>
                         <select class="form-control" name="location_code" id="location_code" required @if(request()->get('to_location')) disabled @endif >
                             @foreach ($locations as $code => $name)
@@ -56,7 +56,15 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
+                        <label for="carriage_type">Transfer Type</label>
+                        <select class="form-control" name="transfer_type" id="transfer_type" required>
+                            <option disabled selected value> -- select an option -- </option>
+                            <option value="0"> Local</option>
+                            <option value="1"> Export</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 form-group">
                         <label for="carriage_type">Carriage Type</label>
                         <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
                             <option disabled selected value> -- select an option -- </option>
@@ -238,7 +246,7 @@
                                 <td>{{ $data->product_code }}</td>
                                 <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
                                 <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
-                                <td>{{ $locations[$data->location_code] }}</td>
+                                <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates ?? 0 }}</td>
                                 <td>{{ $data->black_crates ?? 0 }}</td>

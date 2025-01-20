@@ -195,7 +195,7 @@ class IDTController extends Controller
         try {
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
-                'location_code' => $request->location_code,
+                'location_code' => $request->transfer_type == 1 ? '3600' : $request->location_code,
                 'chiller_code' => $request->chiller_code,
                 'total_pieces' => $request->no_of_pieces ?: 0,
                 'total_weight' => $request->net,
