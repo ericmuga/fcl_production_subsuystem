@@ -21,7 +21,7 @@
                     </select>
                 </div>
                 <div class="row">
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label class="form-label" for="location_code">Transfer To</label>
                         <select class="form-control" name="location_code" id="location_code" required>
                             <option selected disabled value>Select location</option>
@@ -30,7 +30,16 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
+                        <label class="form-label" for="tranfer_type">Transfer Type</label>
+                        <select class="form-control select2" name="tranfer_type" id="tranfer_type"
+                            required>
+                            <option value="" selected disabled>Transfer Type </option>
+                            <option value="0"> Local</option>
+                            <option value="1"> Export</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 form-group">
                         <label for="carriage_type">Carriage Type</label>
                         <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
                             <option disabled selected value> -- select an option -- </option>
@@ -194,6 +203,7 @@
                             <th>Product</th>
                             <th>Std Unit Measure</th>
                             <th>Transfer To </th>
+                            <th>Transfer From </th>
                             <th>Chiller</th>
                             <th>Total Crates</th>
                             <th>Black Crates</th>
@@ -212,6 +222,7 @@
                             <th>Product</th>
                             <th>Std Unit Measure</th>
                             <th>Transfer To </th>
+                            <th>Transfer From </th>
                             <th>Chiller</th>
                             <th>Total Crates</th>
                             <th>Black Crates</th>
@@ -239,6 +250,7 @@
                                 <td>{{ $products->firstWhere('code', trim($data->product_code))->description ?? 'N/A' }}</td>
                                 <td>{{ $products->firstWhere('code', trim($data->product_code))->unit_of_measure ?? 'N/A' }}</td>
                                 <td>{{ $data->location_code }}</td>
+                                <td>{{ $data->transfer_from }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates ?? 0 }}</td>
                                 <td>{{ $data->black_crates ?? 0 }}</td>
@@ -367,6 +379,22 @@
 
 @section('scripts')
 <script>
+
+    $(document).ready(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const param = urlParams.keys().next().value;
+        if (param == 'butchery') {
+            const locationSelect = document.getElementById('location_code');
+            for (let i = 0; i < locationSelect.options.length; i++) {
+                if (locationSelect.options[i].value === '1570') {
+                    locationSelect.options[i].selected = true;
+                } else {
+                    locationSelect.options[i].disabled = true;
+                }
+            }
+        }
+    });
+
     const carriage = document.getElementById('carriage_type')
     const tareWeightInput = document.getElementById('tareweight')
     const readingInput = document.getElementById('reading')

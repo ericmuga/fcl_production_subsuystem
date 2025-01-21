@@ -401,7 +401,7 @@ class DespatchController extends Controller
 
         $query = DB::table('idt_transfers')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->where('idt_transfers.transfer_from', '3535')
+            ->whereIn('idt_transfers.transfer_from', ['3535', '3600'])
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
             ->select(
                 'idt_transfers.*',
@@ -409,8 +409,6 @@ class DespatchController extends Controller
             )->orderBy('idt_transfers.id', 'DESC');
 
         $transfer_lines = $query->get();
-        // dd($products);
-        // dd($transfer_lines );
 
         return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'configs', 'locations'));
     }
@@ -455,6 +453,12 @@ class DespatchController extends Controller
                 $weight = $request->net;
             };
 
+            $transfer_from = '3535';
+
+            if ($request->tranfer_type == 1) {
+                $transfer_from = '3600';
+            }
+
             $requires_approval = substr($request->product_code, 0, 1) === 'J';
 
             if($request->unit_crate_count > 0) {
@@ -467,7 +471,7 @@ class DespatchController extends Controller
                     'total_weight' => $request->calculated_weight,
                     'incomplete_crate_pieces' => $request->incomplete_pieces ?: 0,
                     'transfer_type' => 0,
-                    'transfer_from' => '3535',
+                    'transfer_from' => $transfer_from,
                     'description' => $request->description,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
@@ -486,7 +490,7 @@ class DespatchController extends Controller
                     'full_crates' => $request->total_crates_kg ?: 0,
                     'incomplete_crate_pieces' => $request->incomplete_pieces ?: 0,
                     'transfer_type' => 0,
-                    'transfer_from' => '3535',
+                    'transfer_from' => $transfer_from,
                     'description' => $request->description,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
