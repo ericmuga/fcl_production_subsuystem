@@ -222,6 +222,7 @@ class DespatchController extends Controller
             ->when($filter == 'history', function ($q, $days_filter) {
                 $q->whereDate('idt_transfers.created_at', '>=', today()->subDays((int)$days_filter)); // today plus last 7 days
             })
+            ->limit(1000)
             ->get();
 
         return view('despatch.idt-report', compact('title', 'filter', 'transfer_lines', 'helpers', 'days_filter'));
