@@ -207,7 +207,7 @@ class DespatchController extends Controller
     {
         $title = "IDT-Report";
 
-        $days_filter = 7;
+        $days_filter = 2;
 
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
