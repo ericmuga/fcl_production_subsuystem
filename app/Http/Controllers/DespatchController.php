@@ -207,7 +207,7 @@ class DespatchController extends Controller
     {
         $title = "IDT-Report";
 
-        $days_filter = 20;
+        $days_filter = 7;
 
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
@@ -220,7 +220,7 @@ class DespatchController extends Controller
                 $q->whereDate('idt_transfers.created_at', today()); // today only
             })
             ->when($filter == 'history', function ($q, $days_filter) {
-                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays(20)); // today plus last 7 days
+                $q->whereDate('idt_transfers.created_at', '>=', today()->subDays((int)$days_filter)); // today plus last 7 days
             })
             ->get();
 
