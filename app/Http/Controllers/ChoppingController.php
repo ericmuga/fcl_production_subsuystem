@@ -550,7 +550,7 @@ class ChoppingController extends Controller
             'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'G2175'
         ];
 
-        $bagItemCodes = ['H221053', 'H221016', 'H221187'];
+        $bagItemCodes = ['H221053', 'H221016', 'H221187', 'H221015'];
 
         $spices = DB::table('template_lines')
             ->where(function ($query) use ($chopping_id, $item_list) {
