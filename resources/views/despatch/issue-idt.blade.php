@@ -31,7 +31,7 @@
                         </select>
                     </div>
                     <div class="col-md-4 form-group">
-                        <label class="form-label" for="tranfer_type">Transfer Type</label>
+                        <label class="form-label" for="tranfer_type">Transfer From</label>
                         <select class="form-control select2" name="tranfer_type" id="tranfer_type"
                             required>
                             <option value="" selected disabled>Transfer Type </option>
