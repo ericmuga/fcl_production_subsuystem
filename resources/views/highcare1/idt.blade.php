@@ -160,6 +160,7 @@
             </div>
         </div>
         <input type="hidden" name="location_code" id="location_code" value="3535">
+        <input type="" name="transfer_from" id="transfer_from" value="{{ $filter ?? '2595' }}">
     </form>
     <div id="loading" class="collapse">
         <div class="row d-flex justify-content-center">

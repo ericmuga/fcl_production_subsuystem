@@ -35,8 +35,9 @@
                         <select class="form-control select2" name="tranfer_type" id="tranfer_type"
                             required>
                             <option value="" selected disabled>Transfer Type </option>
-                            <option value="0"> Local</option>
-                            <option value="1"> Export</option>
+                            <option value="3535"> Local</option>
+                            <option value="3600"> Export</option>
+                            <option value="3540"> Third Party</option>
                         </select>
                     </div>
                     <div class="col-md-4 form-group">
@@ -46,14 +47,15 @@
                             <option value="crate">Crate</option>
                             <option value="van">Van</option>
                         </select>
-                    </div>
+                    </div>                    
                 </div>
                 <div hidden id="crates_div" class="form-row">
-                    <div class="col-md-6 from-group">
+                    
+                    <div class="col-md-4 from-group">
                         <label for="total_crates">Total Crates Kg </label>
                         <input type="number" class="form-control" id="kg_total_crates" value="1" name="total_crates_kg" min="1" oninput="updateTare()">
                     </div>
-                    <div class="col-md-6 form-group">
+                    <div class="col-md-4 form-group">
                         <label for="black_crates">Black Crates kg</label>
                         <input type="number" class="form-control" id="kg_black_crates" value="1" name="black_crates_kg" min="0" oninput="updateTare()">
                     </div>

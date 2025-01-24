@@ -43,6 +43,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>From Location</th>
+                                <th>To Location</th>
                                 <th>Issued Weight</th>
                                 <th>Received Weight</th>
                                 <th>Total Crates</th>
@@ -59,6 +61,8 @@
                                 <th>IDT No</th>
                                 <th>Product Code</th>
                                 <th>Product</th>
+                                <th>From Location</th>
+                                <th>To Location</th>
                                 <th>Issued Weight</th>
                                 <th>Received Weight</th>
                                 <th>Total Crates</th>
@@ -76,6 +80,8 @@
                                     <td>{{ $data->id }}</td>
                                     <td>{{ $data->product_code }}</td>
                                     <td>{{ $data->description  }}</td>
+                                    <td>{{ $data->transfer_from }}</td>
+                                    <td>{{ $data->location_code }}</td>
                                     <td>{{ $data->total_weight  }}</td>
                                     <td>{{ $data->receiver_total_weight }}</td>
                                     <td>{{ $data->total_crates }}</td>

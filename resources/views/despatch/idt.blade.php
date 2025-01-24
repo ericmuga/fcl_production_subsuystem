@@ -1,7 +1,7 @@
 @extends('layouts.despatch_master')
 
 @section('content-header')
-<h1 class="m-2">IDTs sent to Desptach from {{ ucfirst($filter) }}</h1>
+<h1 class="m-2">IDTs sent to Despatch from {{ ucfirst($filter) }}</h1>
 @endsection
 
 

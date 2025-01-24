@@ -26,7 +26,7 @@ class HighCare1Controller extends Controller
 
         $transfers = DB::table('idt_transfers')
             ->whereDate('idt_transfers.created_at', today())
-            ->whereIn('idt_transfers.transfer_from', ['2595'])
+            ->whereIn('idt_transfers.transfer_from', ['2595', '2500'])
             ->select(DB::raw('SUM(idt_transfers.receiver_total_pieces) as received_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as received_weight'), DB::raw('SUM(idt_transfers.total_pieces) as issued_pieces'), DB::raw('SUM(idt_transfers.total_weight) as issued_weight'))
             ->groupBy('idt_transfers.transfer_from')
             ->get();
@@ -50,12 +50,12 @@ class HighCare1Controller extends Controller
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->whereDate('idt_transfers.created_at', today())
-            ->where('idt_transfers.transfer_from', '2595')
+            ->where('idt_transfers.transfer_from', $filter??'2595')
             ->where('idt_transfers.filter1', null)
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers'));
+        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter'));
     }
 
     public function getIdtBulk(Helpers $helpers)
@@ -183,7 +183,6 @@ class HighCare1Controller extends Controller
 
     public function saveTransfer(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'crates_valid' => 'required|boolean',
         ]);
@@ -209,7 +208,7 @@ class HighCare1Controller extends Controller
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
                 'transfer_type' => $request->for_export,
-                'transfer_from' => '2595',
+                'transfer_from' => $request->transfer_from,
                 'description' => $request->desc,
                 'order_no' => $request->order_no,
                 'batch_no' => $request->batch_no,
@@ -251,7 +250,7 @@ class HighCare1Controller extends Controller
             ->orderByDesc('idt_transfers.id')
             ->get();
 
-        return view('sausage.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
+        return view('highcare1.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
     }
 
     public function updateReceiveIdt(Request $request, Helpers $helpers)

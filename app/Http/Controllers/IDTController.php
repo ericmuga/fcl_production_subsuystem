@@ -63,8 +63,23 @@ class IDTController extends Controller
             })
             // Apply filters
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
-            ->where('idt_transfers.location_code', request()->query('to_location'))
-            ->where('idt_transfers.transfer_from', request()->query('from_location'))
+            ->where(function ($query) {
+                $to_location = request()->query('to_location');
+                $query->where('idt_transfers.location_code', $to_location);
+                
+                if ($to_location == '2595') {
+                    $query->orWhere('idt_transfers.location_code', '2500');
+                }
+            })
+            ->where(function ($query) {
+                $from_location = request()->query('from_location');
+                $query->where('idt_transfers.transfer_from', $from_location);
+
+                if ($from_location == '3535') {
+                    $query->orWhere('idt_transfers.transfer_from', '3600')
+                          ->orWhere('idt_transfers.transfer_from', '3540');
+                }
+            })
             ->where(function ($query) {
                 $query->where('idt_transfers.requires_approval', 0)
                       ->orWhere(function ($query) {

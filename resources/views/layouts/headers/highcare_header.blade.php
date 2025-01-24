@@ -14,9 +14,22 @@
     <li class="nav-item">
         <a href="{{ route('highcare1_dashboard') }}" class="nav-link">Dashboard</a>
     </li>
-    <li class="nav-item">
+    <!-- <li class="nav-item">
         <a href="{{ route('highcare1_idt') }}" aria-haspopup="true" aria-expanded="false" class="nav-link">Create IDT </a>
-    </li>
+    </li> -->
+    <li class="nav-item dropdown">
+        <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Create IDT </a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li>
+                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">HighCare IDT</a>
+            </li>
+            <hr class="dropdown-divider" />
+            <li>
+                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item">Curing IDT</a>
+            </li>
+        </ul>
+    </li>    
     <li class="nav-item dropdown">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle">Receive IDT </a>

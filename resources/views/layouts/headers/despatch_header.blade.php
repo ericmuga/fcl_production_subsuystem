@@ -24,6 +24,9 @@
             <li><a href="{{ route('despatch_idt', 'highcare') }}" class="dropdown-item">Highcare-IDT</a>
             </li>
             <li class="dropdown-divider"></li>
+            <li><a href="{{ route('despatch_idt', 'curing') }}" class="dropdown-item">Curing-IDT</a>
+            </li>
+            <li class="dropdown-divider"></li>
             <li><a href="{{ route('despatch_idt', 'highcare_bulk') }}" class="dropdown-item">HighcareBulk-IDT</a>
             </li>
             <li class="dropdown-divider"></li>
@@ -31,6 +34,9 @@
             </li>
             <li class="dropdown-divider"></li>
             <li><a href="{{ route('despatch_idt', 'petfood') }}" class="dropdown-item">Petfood-IDT</a>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li><a href="{{ route('despatch_idt', 'export') }}" class="dropdown-item">Export-IDT</a>
             </li>
         </ul>
     </li>

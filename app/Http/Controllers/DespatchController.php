@@ -59,7 +59,7 @@ class DespatchController extends Controller
 
         $username = Session::get('session_userName');
 
-        // dd($username);
+        // dd($filter);
 
         $query = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
@@ -77,6 +77,9 @@ class DespatchController extends Controller
                 $q->where('idt_transfers.transfer_from', '=', '2595') // from highcare and not bulk only
                     ->where('idt_transfers.filter1', null);
             })
+            ->when($filter == 'curing', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '2500'); // from curing only
+            })
             ->when($filter == 'highcare_bulk', function ($q) {
                 $q->where('idt_transfers.filter1', 'bulk')
                     ->where(function ($q) {
@@ -89,6 +92,9 @@ class DespatchController extends Controller
             })
             ->when($filter == 'petfood', function ($q) {
                 $q->where('idt_transfers.transfer_from', '=', '3035'); // from petfood only
+            })
+            ->when($filter == 'export', function ($q) {
+                $q->where('idt_transfers.location_code', '=', '3600'); // to export only
             });
 
         $transfer_lines = $query->get();
@@ -374,10 +380,12 @@ class DespatchController extends Controller
         $locations = [
             '1570' => 'Butchery',
             '2595' => 'Highcare',
+            '2500' => 'Curing',
             '2055' => 'Sausage',
             '3035' => 'PetFood',
             '4300' => 'Incinerator',
             '4450' => 'QA',
+            // '3600' => 'Export',
         ];
 
         $title = "Issue IDT from Despatch";
@@ -401,7 +409,7 @@ class DespatchController extends Controller
 
         $query = DB::table('idt_transfers')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->whereIn('idt_transfers.transfer_from', ['3535', '3600'])
+            ->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3535', '3540'])
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
             ->select(
                 'idt_transfers.*',
@@ -453,11 +461,7 @@ class DespatchController extends Controller
                 $weight = $request->net;
             };
 
-            $transfer_from = '3535';
-
-            if ($request->tranfer_type == 1) {
-                $transfer_from = '3600';
-            }
+            $transfer_from = $request->tranfer_type;
 
             $requires_approval = substr($request->product_code, 0, 1) === 'J';
 

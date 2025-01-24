@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateChoppingsTable extends Migration
+class CreateChoppingsSyncTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateChoppingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('choppings', function (Blueprint $table) {
+        Schema::create('choppings_sync', function (Blueprint $table) {
             $table->id();
             $table->string('chopping_id')->index();
-            $table->foreignId('user_id')->constrained('users'); //maker
-            $table->bigInteger('closed_by')->nullable(); //maker
-            $table->bigInteger('sync_id')->nullable(); //maker
-            $table->tinyInteger('status')->default(0);
+            $table->string('item_code');
+            $table->decimal('weight', 10, 2);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->useCurrent();
+            $table->datetime('sync_date')->nullable(); // Added column
+            $table->tinyInteger('output')->default(0); // Added column
         });
     }
 
@@ -32,6 +32,6 @@ class CreateChoppingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('choppings');
+        Schema::dropIfExists('choppings_sync');
     }
 }

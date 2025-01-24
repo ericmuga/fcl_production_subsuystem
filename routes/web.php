@@ -246,7 +246,7 @@ Route::post('/import-stocks', [DespatchController::class, 'importStocks'])->name
 /*-------------Start HighCare1------------------ */
 Route::prefix('highcare1')->group(function () {
     Route::get('/dashboard', [HighCare1Controller::class, 'index'])->name('highcare1_dashboard');
-    Route::get('/idt', [HighCare1Controller::class, 'getIdt'])->name('highcare1_idt');
+    Route::get('/idt/{filter?}', [HighCare1Controller::class, 'getIdt'])->name('highcare1_idt');
     Route::get('/idt-receive', [HighCare1Controller::class, 'getReceiveIdt'])->name('highcare_idt_receive');
     Route::post('/idt/receive-update', [HighCare1Controller::class, 'updateReceiveIdt'])->name('update_idt_receive_highcare');
     Route::get('/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
