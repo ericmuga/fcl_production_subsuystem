@@ -355,6 +355,8 @@
                                     <option value="2595">Highcare</option>
                                     <option value="2055">Sausage</option>
                                     <option value="4300">Incineration</option>
+                                    <option value="4450">QA</option>
+                                    <option value="3035">Petfood</option>
                                 </select>
                             </div>
                         </div>
