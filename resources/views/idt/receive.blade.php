@@ -45,6 +45,7 @@
                                 <th>Product</th>
                                 <th>From Location</th>
                                 <th>To Location</th>
+                                <th>Issued pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Weight</th>
                                 <th>Total Crates</th>
@@ -63,6 +64,7 @@
                                 <th>Product</th>
                                 <th>From Location</th>
                                 <th>To Location</th>
+                                <th>Issued pieces</th>
                                 <th>Issued Weight</th>
                                 <th>Received Weight</th>
                                 <th>Total Crates</th>
@@ -82,6 +84,7 @@
                                     <td>{{ $data->description  }}</td>
                                     <td>{{ $data->transfer_from }}</td>
                                     <td>{{ $data->location_code }}</td>
+                                    <td>{{ $data->total_pieces }}</td>
                                     <td>{{ $data->total_weight  }}</td>
                                     <td>{{ $data->receiver_total_weight }}</td>
                                     <td>{{ $data->total_crates }}</td>

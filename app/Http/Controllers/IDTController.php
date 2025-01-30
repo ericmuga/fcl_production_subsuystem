@@ -29,7 +29,7 @@ class IDTController extends Controller
         '3535' => 'Despatch',
         '4300' => 'Incinerator',
         '4400' => 'Kitchen',
-        '4450' => 'QA',
+        '4450' => 'QA'
     ];
 
     public function listIDTReceive(Request $request, Helpers $helpers)

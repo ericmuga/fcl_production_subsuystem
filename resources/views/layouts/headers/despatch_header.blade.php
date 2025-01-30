@@ -36,7 +36,16 @@
             <li><a href="{{ route('despatch_idt', 'petfood') }}" class="dropdown-item">Petfood-IDT</a>
             </li>
             <li class="dropdown-divider"></li>
-            <li><a href="{{ route('despatch_idt', 'export') }}" class="dropdown-item">Export-IDT</a>
+            <li class="dropdown-submenu">
+                <a id="dropdownSubMenu2" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    class="dropdown-item dropdown-toggle">Despatch IDT</a>
+                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
+                    <li><a href="{{ route('despatch_idt', 'export') }}" class="dropdown-item">Export-IDT</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li><a href="{{ route('despatch_idt', 'local') }}" class="dropdown-item">Local 3535-IDT</a></li>
+                    <li class="dropdown-divider"></li>
+                    <li><a href="{{ route('despatch_idt', 'old_factory') }}" class="dropdown-item">Old Factory-IDT</a></li>
+                </ul>
             </li>
         </ul>
     </li>

@@ -38,6 +38,7 @@
                             <option value="3535"> Local</option>
                             <option value="3600"> Export</option>
                             <option value="3540"> Third Party</option>
+                            <option value="3555"> Old Factory </option>
                         </select>
                     </div>
                     <div class="col-md-4 form-group">
@@ -357,6 +358,8 @@
                                     <option value="4300">Incineration</option>
                                     <option value="4450">QA</option>
                                     <option value="3035">Petfood</option>
+                                    <option value="3535">local 3535</option>
+                                    <option value="3600">export 3600</option>
                                 </select>
                             </div>
                         </div>
@@ -717,7 +720,7 @@ const calculateWeight = () => {
     } 
 
     let total_weight = total_pieces * weight_per_unit;
-    piecesInput.value = total_pieces;
+    piecesInput.value = Math.floor(total_pieces);
     weightInput.value = total_weight.toFixed(2);
 }
 

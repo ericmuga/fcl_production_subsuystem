@@ -94,7 +94,13 @@ class DespatchController extends Controller
                 $q->where('idt_transfers.transfer_from', '=', '3035'); // from petfood only
             })
             ->when($filter == 'export', function ($q) {
-                $q->where('idt_transfers.location_code', '=', '3600'); // to export only
+                $q->where('idt_transfers.transfer_from', '=', '3600'); // to export only
+            })
+            ->when($filter == 'local', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '3535'); // to export only
+            })
+            ->when($filter == 'old_factory', function ($q) {
+                $q->where('idt_transfers.transfer_from', '=', '3555'); // to export only
             });
 
         $transfer_lines = $query->get();
@@ -385,7 +391,8 @@ class DespatchController extends Controller
             '3035' => 'PetFood',
             '4300' => 'Incinerator',
             '4450' => 'QA',
-            // '3600' => 'Export',
+            '3535' => 'Despatch',
+            '3600' => 'Export',
         ];
 
         $title = "Issue IDT from Despatch";
@@ -409,7 +416,7 @@ class DespatchController extends Controller
 
         $query = DB::table('idt_transfers')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3535', '3540'])
+            ->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3535', '3540', '3555'])
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(in_array(strtolower($username), array_map('strtolower', config('app.despatch_supervisors'))) ? 20 : 2))
             ->select(
                 'idt_transfers.*',
