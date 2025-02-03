@@ -23,7 +23,7 @@ class CreateIdtTransfersTable extends Migration
             $table->integer('incomplete_crate_pieces')->default(0);
             $table->integer('total_pieces')->default(0);
             $table->decimal('total_weight');
-            $table->string('description')->nullable();
+            $table->text('description')->nullable();
             $table->string('order_no')->nullable();
             $table->string('batch_no');
             $table->string('with_variance');
