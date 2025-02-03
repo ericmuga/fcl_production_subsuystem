@@ -60,12 +60,14 @@ class BeefLambController extends Controller
         $parts = explode(':', $request->product);
         $manual = $request->manual_weight == 'on';
 
+        // dd($request->all());
+
         try {
             //insert 
             $id = DB::table('beef_slicing')->insertGetId([
                 'item_code' => $parts[1],
                 'scale_reading' => $request->reading,
-                'net_weight' => $request->net,
+                'net_weight' => $request->return_entry == 'on' ? $request->net * -1 : $request->net,
                 'process_code' => $parts[3],
                 'product_type' => $parts[4],
                 'no_of_pieces' => $request->no_of_pieces ?? 0,
@@ -83,7 +85,7 @@ class BeefLambController extends Controller
                 'transfer_from_location' => 'B3535',
                 'transfer_to_location' => 1570,
                 'receiver_total_pieces' => $request->no_of_pieces ?? 0,
-                'receiver_total_weight' => $request->net,
+                'receiver_total_weight' => $request->return_entry == 'on' ? $request->net * -1 : $request->net,
                 'production_date' => $request->prod_date,
                 'received_by' => Auth::id(),
                 'production_date' => $request->prod_date,

@@ -136,6 +136,15 @@
                         <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
                             >
                     </div>
+                </div><br>
+                
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="return_entry" name="return_entry">
+                            <label class="form-check-label" for="return_entry"><strong>Is a return Entry?</strong></label>
+                        </div>
+                    </div>
                 </div>
                 <div class="row">
 
