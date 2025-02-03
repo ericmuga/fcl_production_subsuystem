@@ -78,20 +78,29 @@
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
-                </div> <br>
+                </div>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
-                <div class="row form-group">
-                    <div class="crates col-md-4">
+                <div class="row form-group">                    
+                    <div class="crates col-md-6">
                         <label for="exampleInputPassword1">Total Crates </label>
                         <input type="number" class="form-control" id="total_crates" value="" name="total_crates" min="2"
                             placeholder="" required>
                     </div>
-                    <div class="crates col-md-4">
+                    <div class="crates col-md-6">
                         <label for="exampleInputPassword1">Black Crates </label>
                         <input type="number" class="form-control" id="black_crates" value="" name="black_crates" min="1"
                             placeholder="" required>
                     </div>
-                    <div class="col-md-4">
+                </div>
+                <div class="row form-group">                    
+                    <div class="crates col-md-6">
+                        <label for="exampleInputEmail1">Crate Type</label>
+                        <select class="form-control" name="crate_type" id="crate_type" required>
+                            <option value="1.8" selected>Normal Crate</option>
+                            <option value="1.4">small Crate</option>
+                        </select>
+                    </div>
+                    <div class=" crates col-md-6">
                         <label for="exampleInputPassword1">Total Tare</label>
                         <input type="number" class="form-control" id="tareweight" name="tareweight" value="0.0"
                             readonly>
@@ -222,7 +231,7 @@
                                         <td>{{ $data->no_of_crates }}</td>
                                         <td>{{ $data->black_crates }}</td>
                                         <td>{{ number_format($data->scale_reading, 2) }}</td>
-                                        <td>{{ number_format(($data->no_of_crates * 1.8) + ($data->black_crates * 0.2), 2) }}</td>
+                                        <td>{{ number_format(($data->scale_reading - $data->net_weight), 2) }}</td>
                                         <td>{{ number_format($data->net_weight, 2) }}</td>
                                         <td>{{ $data->no_of_pieces }}</td>
                                         <td>{{ \Carbon\Carbon::parse($data->production_date)->format('d/m/Y') }}
@@ -435,10 +444,11 @@
     const getTareweight = () => {
         let total_crates = $('#total_crates').val()
         let black_crates = $('#black_crates').val()
+        let crate_type = $('#crate_type').val()
         let tareweight = 0
 
         if (parseInt(total_crates) > 0 && parseInt(black_crates)) {
-            tareweight = (parseInt(total_crates) * 1.8) + (parseInt(black_crates) * 0.2)
+            tareweight = (parseInt(total_crates) * parseFloat(crate_type)) + (parseInt(black_crates) * 0.2)
             let formatted = Math.round((tareweight + Number.EPSILON) * 100) / 100;
             $('#tareweight').val(formatted);
         }
