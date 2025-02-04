@@ -254,8 +254,20 @@ class DespatchController extends Controller
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
-            ->where('idt_transfers.transfer_from', $request->transfer_from)
-            ->where('idt_transfers.location_code', $request->transfer_to)
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_from == '3535') {
+                    $query->whereIn('idt_transfers.transfer_from', ['3535', '3600']);
+                } else {
+                    $query->where('idt_transfers.transfer_from', $request->transfer_from);
+                }
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_to == '3535') {
+                    $query->whereIn('idt_transfers.location_code', ['3535', '3600']);
+                } else {
+                    $query->where('idt_transfers.location_code', $request->transfer_to);
+                }
+            })
             ->select('idt_transfers.id', 'idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from', 'idt_transfers.description as customer_code', 'idt_transfers.order_no', 'idt_transfers.total_pieces', 'idt_transfers.total_weight', 'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', DB::raw("(CASE WHEN idt_transfers.with_variance = '0' THEN 'Yes' ELSE 'No' END) AS with_variance"), 'idt_transfers.batch_no', 'users.username as received_by', 'idt_transfers.created_at')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
