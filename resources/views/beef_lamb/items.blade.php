@@ -9,7 +9,7 @@
 <!-- Create Item Modal -->
 <div class="modal fade" id="createItemModal" tabindex="-1" role="dialog" aria-labelledby="createItemModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <form action="{{ route('create_item') }}"  class="modal-content" method="POST">
+      <form action="{{ route('create_beef_item') }}"  class="modal-content" method="POST">
         @csrf
         <div class="modal-header">
           <h5 class="modal-title" id="createItemModalLabel">Create Item</h5>
@@ -54,7 +54,7 @@
 
 <!-- Items Table -->
 <div class="card m-4 p-4">
-  <table id="example1" class="table table-bordered">
+  <table id="example1" class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
         <th scope="col">Code</th>
@@ -70,7 +70,6 @@
             <td>{{ $item->barcode }}</td>
             <td>{{ $item->description }}</td>
             <td>{{ $item->unit_of_measure }}</td>
-        </tr>
         @endforeach
     </tbody>
     <tfoot>

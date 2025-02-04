@@ -298,7 +298,9 @@ Route::prefix('scale-settings')->group(function () {
 /*-------------Start Data----------------- */
 Route::prefix('data')->group(function () {
     Route::get('items', [DataController::class, 'listItems'])->name('list_items');
+    Route::get('beef-items', [DataController::class, 'beefListItems'])->name('beef_list_items');
     Route::post('items/create', [DataController::class, 'createItem'])->name('create_item');
+    Route::post('beef_items/create', [DataController::class, 'createBeefItem'])->name('create_beef_item');
 });
 /*-------------End Data------------------ */
 
