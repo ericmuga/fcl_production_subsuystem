@@ -39,6 +39,14 @@
               <option value="PC">Piece</option>
             </select>
           </div>
+          <div class="form-group">
+            <label for="code">Qty Per Unit Measure:</label>
+            <input type="number" class="form-control" min="0" id="qty_per_unit_of_measure" name="qty_per_unit_of_measure" required>
+          </div>
+          <div class="form-group">
+            <label for="code">Unit Count Per Crate:</label>
+            <input type="number" class="form-control" min="0" id="unit_count_per_crate" name="unit_count_per_crate" required>
+          </div>
           <div class="form-check">
             <input type="checkbox" class="form-check-input" id="despatch_combo" name="despatch_combo">
             <label class="form-label" for="despatch_combo">Transferrable to Despatch:</label>

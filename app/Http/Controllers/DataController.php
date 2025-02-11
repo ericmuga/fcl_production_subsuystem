@@ -35,8 +35,14 @@ class DataController extends Controller
     // Show the form for creating a new resource.
     public function createItem(Request $request)
     {
-        // Log::info($request->all());
+        // dd($request->all());
         try {
+                $existingItem = DB::table('items')->where('code', $request->code)->first();
+                if ($existingItem) {
+                    Toastr::error('Item already exists', 'Error!');
+                    return redirect()->back()->withInput();
+                }
+
                 DB::table('items')->insert([
                     'code' => $request->code,
                     'barcode' => $request->barcode,
