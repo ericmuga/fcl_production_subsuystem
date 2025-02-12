@@ -17,6 +17,16 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ChoppingController extends Controller
 {
+    // Define the item list as a class property
+    private $itemList = [
+        'G2103', 'G2107', 'G2109', 'G2110', 'G2111', 'G2113', 'G2114', 'G2115',
+        'G2116', 'G2117', 'G2118', 'G2119', 'G2120', 'G2121', 'G2122', 'G2123',
+        'G2125', 'G2126', 'G2127', 'G2128', 'G2129', 'G2130', 'G2131', 'G2132',
+        'G2133', 'G2137', 'G2139', 'G2140', 'G2141', 'G2142', 'G2143', 'G2145',
+        'G2146', 'G2147', 'G2148', 'G2151', 'G2157', 'G2158', 'G2162', 'G2165',
+        'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'G2175'
+    ];
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -452,14 +462,15 @@ class ChoppingController extends Controller
         $templateNo = $request->input('template_no');
         $cacheKey = 'template_lines_' . $templateNo;
 
-        $products = Cache::remember($cacheKey, 1440, function () use ($templateNo) {
-            return DB::table('template_lines')
-                ->where('template_no', $templateNo)
-                ->where('item_code', 'LIKE', 'G%')
-                ->where('type', 'Intake')
-                ->select('item_code', 'description', 'type')
-                ->get();
-        });
+        $products = DB::table('template_lines')
+            ->where('template_no', $templateNo)
+            ->where('item_code', 'LIKE', 'G%')
+            ->where('type', 'Intake')
+            ->whereNotIn('item_code', $this->itemList) // Use class property
+            ->select('item_code', 'description', 'type')
+            ->get();
+
+        // info($this->itemList);
 
         return response()->json([
             'success' => true,
@@ -541,14 +552,8 @@ class ChoppingController extends Controller
 
     private function getChoppingLines($request, $chopping_id)
     {
-        $item_list = [
-            'G2103', 'G2107', 'G2109', 'G2110', 'G2111', 'G2113', 'G2114', 'G2115',
-            'G2116', 'G2117', 'G2118', 'G2119', 'G2120', 'G2121', 'G2122', 'G2123',
-            'G2125', 'G2126', 'G2127', 'G2128', 'G2129', 'G2130', 'G2131', 'G2132',
-            'G2133', 'G2137', 'G2139', 'G2140', 'G2141', 'G2142', 'G2143', 'G2145',
-            'G2146', 'G2147', 'G2148', 'G2151', 'G2157', 'G2158', 'G2162', 'G2165',
-            'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'G2175'
-        ];
+        // Use the class property for item list
+        $item_list = $this->itemList;
 
         $bagItemCodes = ['H221053', 'H221016', 'H221187', 'H221015'];
 
@@ -563,12 +568,20 @@ class ChoppingController extends Controller
             ->get();
 
         $choppingLines = [];
+        $processedItems = []; // Track processed item codes
+
         foreach ($spices as $sp) {
-            $choppingLines[] = [
-                'chopping_id' => $request->complete_run_number,
-                'item_code' => $sp->item_code,
-                'weight' => ((float)$sp->units_per_100 / (float)$request->batch_size) * 2,
-            ];
+            if (!in_array($sp->item_code, $processedItems)) {
+                $weight = ((float)$sp->units_per_100 / (float)$request->batch_size) * 2;
+                $choppingLines[] = [
+                    'chopping_id' => $request->complete_run_number,
+                    'item_code' => $sp->item_code,
+                    'weight' => $weight,
+                ];
+                $processedItems[] = $sp->item_code; // Mark item as processed
+            } else {
+                info("Duplicate item code detected: {$sp->item_code} for chopping_id: {$request->complete_run_number}");
+            }
         }
 
         $waterValues = $this->getWaterValues();
