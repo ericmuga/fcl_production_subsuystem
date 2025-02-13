@@ -76,8 +76,9 @@ class IDTController extends Controller
                 $query->where('idt_transfers.transfer_from', $from_location);
 
                 if ($from_location == '3535') {
-                    $query->orWhere('idt_transfers.transfer_from', '3600')
-                          ->orWhere('idt_transfers.transfer_from', '3540');
+                    $query->orWhere('idt_transfers.transfer_from', '3600') // Export
+                          ->orWhere('idt_transfers.transfer_from', '3540') // Third Party
+                          ->orWhere('idt_transfers.transfer_from', '3555'); // Old Factory
                 }
             })
             ->where(function ($query) {
