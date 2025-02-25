@@ -35,13 +35,25 @@
                     </div>
                 </div>
                 <div class="row form-group">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="form-group" id="product_type_select">
                             <label for="exampleInputPassword1">Product Type</label>
                             <input type="text" class="form-control" id="product_type" value="" readonly>
                             <input type="hidden" class="form-control" id="product_type_code" value=""
                                 name="product_type_code">
                         </div>
+                        
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="exampleInputEmail1">Intake Item</label>
+                        <select class="form-control select2" name="intake_type" id="intake_type" required>
+                            <option value="">Select Intake Item</option>
+                            @foreach($products as $product)
+                                @if($product->product_type == 3)
+                                    <option value="{{ $product->product_code }}">{{ $product->description }}</option>
+                                @endif
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="row form-group">

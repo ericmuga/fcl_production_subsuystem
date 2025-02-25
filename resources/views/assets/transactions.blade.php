@@ -468,6 +468,7 @@
         $('#loading').collapse('show');
         axios.get('/asset/fetch-data')
             .then(function (response) {
+                console.log(response)
                 $('#loading').collapse('hide');
                 let faSelect = document.getElementById('fa_select');
                 // let fromDeptSelect = document.getElementById('from_dept_select');

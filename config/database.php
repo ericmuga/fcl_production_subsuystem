@@ -105,6 +105,20 @@ return [
             // ...
         ],
 
+        'bc240' => [
+            'driver' => env('DB_CONNECTION_BC240'),
+            'host' => env('DB_HOST_BC240'),
+            'port' => env('DB_PORT_BC240'),
+            'database' => env('DB_DATABASE_BC240'),
+            'username' => env('DB_USERNAME_BC240'),
+            'password' => env('DB_PASSWORD_BC240'),
+            'charset' => 'utf8mb4',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'collation' => 'utf8mb4_unicode_ci',
+            // ...
+        ],
+
     ],
 
     /*
