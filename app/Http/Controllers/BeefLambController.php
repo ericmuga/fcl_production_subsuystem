@@ -44,6 +44,8 @@ class BeefLambController extends Controller
             ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_lamb_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
             ->get();
 
+        // dd($products);
+
         $entries = DB::table('beef_slicing')
             ->whereDate('beef_slicing.created_at', today())
             ->join('beef_lamb_items', 'beef_slicing.item_code', '=', 'beef_lamb_items.code')
