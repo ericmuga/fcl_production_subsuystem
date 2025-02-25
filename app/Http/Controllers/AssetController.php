@@ -24,8 +24,8 @@ class AssetController extends Controller
     {
         $title = "dashboard";
 
-        $data = DB::table('view_assets')
-            ->selectRaw('COUNT(DISTINCT No_) as assets_count, COUNT(DISTINCT Responsible_employee) as users_count, COUNT(DISTINCT Location_code) as depts_count')
+        $data = DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972')
+            ->selectRaw('COUNT(DISTINCT No_) as assets_count, COUNT(DISTINCT [Responsible Employee]) as users_count, COUNT(DISTINCT [Location Code]) as depts_count')
             ->first();
 
         $results = DB::table('asset_movements')
@@ -39,23 +39,37 @@ class AssetController extends Controller
     {
         $title = "Create";
 
+        $departments = Cache::rememberForever('departments_data', function () {
+            return DB::connection('bc240')
+            ->table(DB::raw('[dbo].[FCL1$FA Location$437dbf0e-84ff-417a-965d-ed2bb9650972]'))
+            ->select('Code', 'Name')
+            ->where('Name', '!=', '')
+            ->get()
+            ->keyBy('Code'); // Index by 'Code' for faster lookup
+        });
+
         $entries = DB::table('asset_movements')
             ->whereDate('asset_movements.created_at', today())
             ->join('users', 'asset_movements.user_id', '=', 'users.id')
-            ->join('view_depts', 'asset_movements.to_dept', '=', DB::raw('view_depts.Code collate Latvian_BIN'))
             ->select('asset_movements.*', 'users.username')
-            ->orderByDesc('id')
+            ->orderByDesc('asset_movements.id')
             ->get();
+
+        $entries->transform(function ($entry) use ($departments) {
+            $entry->department_name = $departments[$entry->to_dept]->Name ?? 'Unknown';
+            return $entry;
+        });    
 
         return view('assets.transactions', compact('title', 'helpers', 'entries'));
     }
 
     public function fetchData()
     {
-        $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
-            return DB::table('view_assets as a')
-                ->where('a.FA Class Code', 'CE')
-                ->get();
+        $data = Cache::rememberForever('fixed_assets_data', function () {
+            return DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
+            ->where('a.FA Class Code', 'CE')
+            ->select('a.No_', 'a.Description', 'a.Location Code', 'a.Responsible Employee')
+            ->get();
         });
 
         return response()->json($data);
@@ -63,9 +77,12 @@ class AssetController extends Controller
 
     public function fetchDeptsData()
     {
-        $data = DB::table('view_depts')
+        $data = Cache::rememberForever('depts_data', function () {
+            return DB::connection('bc240')->table('FCL1$FA Location$437dbf0e-84ff-417a-965d-ed2bb9650972')
             ->select('Code', 'Name')
+            ->where('Name', '!=', '')
             ->get();
+        });
 
         return response()->json($data);
     }
@@ -129,7 +146,7 @@ class AssetController extends Controller
         $title = 'Asset List';
 
         $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
-            return DB::table('view_assets as a')
+            return DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
                 ->where('a.FA Class Code', 'CE')
                 ->get();
         });
@@ -139,7 +156,9 @@ class AssetController extends Controller
 
     public function getAssetEmployeeList()
     {
-        $data = DB::table('view_employees')
+        $data = DB::connection('bc240')->table('FCL1$Employee$437dbf0e-84ff-417a-965d-ed2bb9650972')
+            ->SELECT('No_', 'First Name', 'Last Name')
+            ->orderBy('First Name')
             ->get();
 
         return response()->json($data);
