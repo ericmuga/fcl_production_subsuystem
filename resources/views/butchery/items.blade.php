@@ -41,7 +41,7 @@
           </div>
           <div class="form-group">
             <label for="code">Qty Per Unit Measure:</label>
-            <input type="number" class="form-control" min="0" step="0.1" id="qty_per_unit_of_measure" name="qty_per_unit_of_measure" required>
+            <input type="number" class="form-control" min="0" step="0.01" id="qty_per_unit_of_measure" name="qty_per_unit_of_measure" required>
           </div>
           <div class="form-group">
             <label for="code">Unit Count Per Crate:</label>
