@@ -63,8 +63,9 @@ class DespatchController extends Controller
 
         $query = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('beef_lamb_items', 'idt_transfers.product_code', '=', 'beef_lamb_items.code')
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
-            ->select('idt_transfers.*', 'items.description as product', 'items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
+            ->select('idt_transfers.*', 'items.description as product', 'beef_lamb_items.description','items.qty_per_unit_of_measure', 'items.unit_count_per_crate', 'users.username')
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->where('idt_transfers.received_by', '=', null)
             ->whereIn('idt_transfers.location_code', ['3535', '3600'])

@@ -336,8 +336,8 @@
                             <tr>
                                 <td>{{ $data->id }}</td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $data->product }}</td>
-                                <td>{{ $data->unit_count_per_crate }}</td>
+                                <td>{{ $data->product ?? $data->description }}</td>
+                                <td>{{ $data->unit_count_per_crate ?? '0' }}</td>
                                 <td>{{ number_format($data->qty_per_unit_of_measure, 3) }}</td>
                                 <td>{{ $data->total_crates }}</td>
                                 <td>{{ $data->black_crates }}</td>
