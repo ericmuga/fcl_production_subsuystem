@@ -154,7 +154,7 @@
                                         data-code="{{ $data->item_code }}" data-item="{{ $data->description }}"><a
                                             href="#">{{ $data->item_code }}</a>
                                     </td>
-                                    <td>{{ $data->description }}</td>
+                                    <td>{{ $data->description?? $data->beef_description }}</td>
                                     <td> {{ $data->product_type }}</td>
                                     <td> {{ $data->process }}</td>
                                     <td> {{ number_format($data->actual_weight, 2) }}</td>

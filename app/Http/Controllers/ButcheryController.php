@@ -1202,13 +1202,21 @@ class ButcheryController extends Controller
         });
 
         $products = Cache::remember('marination_products', now()->addMinutes(120), function () {
-            return  DB::table('products')
-                ->where('processes.process_code', '15')
-                ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
-                ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
-                ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
-                ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_processes.process_code', 'product_processes.product_type as product_type_code', 'processes.process', 'processes.shortcode')
-                ->get();
+            $marination_products = DB::table('products')
+            ->where('processes.process_code', '15')
+            ->join('product_processes', 'product_processes.product_code', '=', 'products.code')
+            ->join('processes', 'product_processes.process_code', '=', 'processes.process_code')
+            ->join('product_types', 'product_processes.product_type', '=', 'product_types.code')
+            ->select(DB::raw('TRIM(products.code) as code'), 'products.description', 'product_types.description as product_type_name', 'product_processes.process_code', 'product_processes.product_type as product_type_code', 'processes.process', 'processes.shortcode')
+            ->get();
+
+            $beef_items = DB::table('beef_lamb_items')
+            ->join('beef_product_processes', 'beef_product_processes.product_code', '=', 'beef_lamb_items.code')
+            ->join('product_types', 'beef_product_processes.product_type', '=', 'product_types.code')
+            ->select('beef_product_processes.product_code as code', 'beef_lamb_items.description', 'product_types.description as product_type_name','beef_product_processes.product_type as product_type_code')
+            ->get();
+
+            return $marination_products->merge($beef_items);
         });
 
         $marination_data = DB::table('deboned_data')
@@ -1217,7 +1225,8 @@ class ButcheryController extends Controller
             ->leftJoin('product_types', 'deboned_data.product_type', '=', 'product_types.code')
             ->leftJoin('processes', 'deboned_data.process_code', '=', 'processes.process_code')
             ->leftJoin('products', 'deboned_data.item_code', '=', 'products.code')
-            ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description')
+            ->leftJoin('beef_lamb_items', 'deboned_data.item_code', '=', 'beef_lamb_items.code')
+            ->select('deboned_data.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description', 'beef_lamb_items.description as beef_description')
             ->orderBy('deboned_data.created_at', 'DESC')
             ->get();
 
