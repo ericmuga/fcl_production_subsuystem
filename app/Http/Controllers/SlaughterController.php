@@ -55,6 +55,7 @@ class SlaughterController extends Controller
         $lined_up = Cache::remember('lined_up', now()->addMinutes(120), function () {
             return DB::table('receipts')
                 ->whereDate('slaughter_date', Carbon::today())
+                ->whereDate('created_at', Carbon::today())
                 ->sum('receipts.received_qty');
         });
 

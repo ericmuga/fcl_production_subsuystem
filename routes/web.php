@@ -224,6 +224,10 @@ Route::prefix('v2/chopping')->group(function () {
     Route::post('/lines-export', [ChoppingController::class, 'choppingLinesV2Export'])->name('chopping_v2_export');
 });
 
+Route::get('/recipe-data', [ChoppingController::class, 'getRecipeData'])->name('get_recipe_data');
+Route::get('/production-data', [ChoppingController::class, 'getProductionData'])->name('get_production_data');
+Route::post('/recipe/upload', [ChoppingController::class, 'upload'])->name('recipe_upload');
+
 /*-------------End Spices------------------ */
 
 /*-------------Start Despatch------------------ */

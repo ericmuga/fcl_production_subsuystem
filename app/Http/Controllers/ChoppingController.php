@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ChoppingV2LinesExport;
 use App\Exports\PostedChoppingLinesExport;
+use App\Imports\RecipeImport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
@@ -772,5 +773,51 @@ class ChoppingController extends Controller
         $exports = Session::put('session_export_data', $lines);
 
         return Excel::download(new ChoppingV2LinesExport, "Chopping Lines v2 from- {$request->from_date} to {$request->to_date} $ext");
+    }
+
+    public function getRecipeData(Request $request)
+    {
+        $title = 'Recipe data';
+
+        $cacheKey = 'recipe_data_cache';
+        $lines = Cache::remember($cacheKey, now()->addHours(10), function () {
+            return DB::table('RecipeData as a')
+            ->orderBy('a.recipe', 'asc')
+            ->get();
+        });
+
+        return view('chopping.recipe-data', compact('title', 'lines'));
+    }
+
+    public function getProductionData(Request $request)
+    {
+        $title = 'Production data';
+
+        $filter = 10; // last 2 days
+
+        $lines = DB::table('ProductionData as a')
+            ->orderBy('a.ProductionOrderNo', 'asc')
+            ->whereDate('TransactionDate', '>=', today()->subDays((int)$filter)) // last 2 days
+            ->get();
+
+        return view('chopping.production-data', compact('title', 'lines', 'filter'));
+    }
+
+    public function upload(Request $request)
+    {
+        $request->validate([
+            'excel_file' => 'required|mimes:xlsx,xls,csv',
+        ]);
+        // Forget cached data with key recipe_data_cache
+        Cache::forget('recipe_data_cache');
+
+        try {
+            Excel::import(new RecipeImport, $request->file('excel_file'));
+            Toastr::success("Excel file uploaded successfully", 'Success');
+            return redirect()->back();
+        } catch (\Exception $e) {
+            Toastr::error($e->getMessage(), 'Error!');
+            return redirect()->back();
+        }
     }
 }

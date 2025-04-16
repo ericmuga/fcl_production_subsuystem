@@ -119,6 +119,16 @@
                         <a tabindex="-1" href="{{ route('chopping_v2_report') }}"
                             class="dropdown-item"> Chopping V2 Lines</a>
                     </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('get_recipe_data') }}"
+                            class="dropdown-item"> Recipe Data</a>
+                    </li>
+                    <li class="dropdown-divider"></li>
+                    <li>
+                        <a tabindex="-1" href="{{ route('get_production_data') }}"
+                            class="dropdown-item"> Production Data</a>
+                    </li>
                 </ul>
             </li>
             <!-- End Level two -->
