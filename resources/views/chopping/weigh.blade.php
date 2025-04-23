@@ -175,7 +175,7 @@
     <div class=" center-page">
         <div class="row">
             <div class="col text-center">
-                <button type="button" id="modalLauncherBtn" class="btn btn-lg btn-danger" data-toggle="modal" data-target="#stopModal">
+                <button type="button" id="modalLauncherBtn" class="btn btn-lg btn-danger" >
                     <i class="fa fa-stop-circle single-click" aria-hidden="true"></i> Complete Chopping Run
                 </button>
             </div>
@@ -211,7 +211,7 @@
                             </option>
                             <option value="0.5">Half Batch
                             </option>
-                            <option selected value="1">Full Batch
+                            <option value="1">Full Batch
                             </option>
                             <option value="1.5">One and a Half Batch
                             </option>
@@ -309,6 +309,23 @@
         
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
+
+        $('#modalLauncherBtn').on('click', function () {
+            const runNumber = $('#complete_run_number').val();
+            const firstPart = runNumber.split('-')[0].substring(0, 8);
+            
+            const halfBatchKeys = ['1230K88', '1230M81', '1230L42', '1230M34'];
+
+            // Select2-compatible way to update value
+            if (halfBatchKeys.includes(firstPart)) {
+                $('#batch_size').val('0.5').trigger('change');
+            } else {
+                $('#batch_size').val('1').trigger('change');
+            }
+
+            // Now show the modal (if you're not using data-toggle)
+            $('#stopModal').modal('show');
         });
 
         document.getElementById('modalLauncherBtn').addEventListener('click', checkClosingRunNumber);
