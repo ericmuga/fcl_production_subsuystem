@@ -611,16 +611,16 @@ class ChoppingController extends Controller
             }
         }
 
-        if (in_array($chopping_id, array_keys($waterValues))) {
-            $water = $waterValues[$chopping_id];
-            if (!$waterInserted) {
-                $choppingLines[] = [
-                    'chopping_id' => $request->complete_run_number,
-                    'item_code' => 'G8900',
-                    'weight' => ($water / (float)$request->batch_size) * 2,
-                ];
-            }
-        }
+        // if (in_array($chopping_id, array_keys($waterValues))) {
+        //     $water = $waterValues[$chopping_id];
+        //     if (!$waterInserted) {
+        //         $choppingLines[] = [
+        //             'chopping_id' => $request->complete_run_number,
+        //             'item_code' => 'G8900',
+        //             'weight' => ($water / (float)$request->batch_size) * 2,
+        //         ];
+        //     }
+        // }
 
         return $choppingLines;
     }
