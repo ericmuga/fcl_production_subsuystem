@@ -143,13 +143,13 @@ class SlaughterController extends Controller
     public function loadWeighMoreDataAjax(Request $request)
     {
         $total_per_slap = DB::table('receipts')
-            ->whereDate('slaughter_date', '>=', today()->subDays(1))
+            ->whereDate('slaughter_date', today())
             ->where('vendor_tag', $request->slapmark)
             ->where('item_code', $request->carcass_type)
             ->sum('receipts.received_qty');
 
         $total_per_vendor = DB::table('receipts')
-            ->whereDate('slaughter_date', '>=', today()->subDays(1))
+            ->whereDate('slaughter_date', today())
             ->where('vendor_no', $request->vendor_no)
             ->sum('receipts.received_qty');
 
