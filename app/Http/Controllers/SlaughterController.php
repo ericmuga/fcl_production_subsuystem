@@ -487,41 +487,45 @@ class SlaughterController extends Controller
         try {
             //code...
             DB::transaction(function () use ($request, $helpers, $database_date) {
-
-                //delete existing records of same slaughter date
-                // DB::table('receipts')->where('slaughter_date', $database_date)->delete();
-
                 $fileD = fopen($request->file, "r");
                 // $column = fgetcsv($fileD); // skips first row as header
 
+                $rowData = [];
                 while (!feof($fileD)) {
                     $rowData[] = fgetcsv($fileD);
                 }
 
                 foreach ($rowData as $key => $row) {
+                    try {
+                        // Log the row being processed
+                        Log::info("Processing row $key: ", $row);
 
-                    DB::table('receipts')->updateOrInsert(
-                        [
-                            'enrolment_no' => $row[0],
-                            'vendor_tag' => $row[1],
-                            'slaughter_date' => $database_date,
-                        ],
-                        [
-                            'receipt_no' => $row[2],
-                            'vendor_no' => $row[3],
-                            'vendor_name' => $row[4],
-                            'receipt_date' => $row[5],
-                            'item_code' => $row[6],
-                            'description' => $row[7],
-                            'received_qty' => $row[8],
-                            'user_id' => Auth::id(),
-                            'slaughter_date' => $database_date,
-                        ]
-                    );
+                        DB::table('receipts')->updateOrInsert(
+                            [
+                                'enrolment_no' => $row[0],
+                                'vendor_tag' => $row[1],
+                                'slaughter_date' => $database_date,
+                            ],
+                            [
+                                'receipt_no' => $row[2],
+                                'vendor_no' => $row[3],
+                                'vendor_name' => $row[4],
+                                'receipt_date' => $row[5],
+                                'item_code' => $row[6],
+                                'description' => $row[7],
+                                'received_qty' => $row[8],
+                                'user_id' => Auth::id(),
+                                'slaughter_date' => $database_date,
+                            ]
+                        );
+                    } catch (\Exception $e) {
+                        // Log the error for the specific row
+                        Log::error("Error processing row $key: " . $e->getMessage(), $row);
+                    }
                 }
             });
 
-            Toastr::success('receipts uploaded successfully', 'Success');
+            Toastr::success('Receipts uploaded successfully', 'Success');
             return redirect()->back();
         } catch (\Exception $e) {
             Toastr::error($e->getMessage(), 'Error Occurred. Wrong Data format!. Records not saved!');
