@@ -421,8 +421,12 @@ class DespatchController extends Controller
             ->select(DB::raw('TRIM(code) as code'), 'description', 'unit_of_measure', DB::raw('0 as unit_count_per_crate'), DB::raw('0 as qty_per_unit_of_measure')) // Select columns from products
             ->whereIn(DB::raw('TRIM(code)'), $imported_products) // Where code starts with J
             ->union(
-            DB::table('items')
-            ->select(DB::raw('TRIM(code) as code'), 'description', 'unit_of_measure', 'unit_count_per_crate', 'qty_per_unit_of_measure') // Select columns from items
+                DB::table('items')
+                ->select(DB::raw('TRIM(code) as code'), 'description', 'unit_of_measure', 'unit_count_per_crate', 'qty_per_unit_of_measure') // Select columns from items            
+            ->union(
+                DB::table('beef_lamb_items')
+                ->select('code', 'description', 'unit_of_measure', DB::raw('0 as unit_count_per_crate'), DB::raw('1 as qty_per_unit_of_measure')) // Select columns from beef_lamb_items
+            )
             )->get();
 
         $username = Auth::user()->username;
