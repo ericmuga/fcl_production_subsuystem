@@ -573,7 +573,7 @@ class ChoppingController extends Controller
 
         foreach ($spices as $sp) {
             if (!in_array($sp->item_code, $processedItems)) {
-                $weight = ((float)$sp->units_per_100 / (float)$request->batch_size) * 2;
+                $weight = ((float)$sp->units_per_100 * (float)$request->batch_size) * 2;
                 $choppingLines[] = [
                     'chopping_id' => $request->complete_run_number,
                     'item_code' => $sp->item_code,
