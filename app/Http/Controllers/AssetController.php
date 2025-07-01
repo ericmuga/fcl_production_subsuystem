@@ -148,8 +148,12 @@ class AssetController extends Controller
         $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
             return DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
                 ->where('a.FA Class Code', 'CE')
+                ->select('a.No_', 'a.Description', 'a.Responsible Employee as Responsible_employee')
+                ->orderBy('a.No_')
                 ->get();
         });
+
+        // dd($data);
 
         return view('assets.asset-list', compact('data', 'title'));
     }

@@ -26,7 +26,6 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Name </th>
-                                <th>Brand</th>
                                 <th>Responsible Employee</th>
                             </tr>
                         </thead>
@@ -35,7 +34,6 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Name </th>
-                                <th>Brand</th>
                                 <th>Responsible Employee</th>
                         </tfoot>
                         <tbody>
@@ -44,7 +42,6 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $e->No_ }}</td>
                                     <td>{{ $e->Description }}</td>
-                                    <td>{{ $e->Make_Brand }}</td>
                                     <td>{{ $e->Responsible_employee }}</td>
                                 </tr>
                             @endforeach
