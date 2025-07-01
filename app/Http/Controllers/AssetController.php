@@ -103,12 +103,13 @@ class AssetController extends Controller
 
     public function saveMovement(Request $request, Helpers $helpers)
     {
+        // dd($request->all());
         $parts = explode(':', $request->fa);
         try {
             //insert 
             DB::table('asset_movements')->insert([
                 'fa' => $parts[0],
-                'description' => $parts[3],
+                'description' => $parts[1],
                 'to_dept' => $request->to_dept,
                 'to_user' => $request->to_user,
                 'from_dept' => $request->from_dept,
@@ -161,7 +162,7 @@ class AssetController extends Controller
     public function getAssetEmployeeList()
     {
         $data = DB::connection('bc240')->table('FCL1$Employee$437dbf0e-84ff-417a-965d-ed2bb9650972')
-            ->SELECT('No_', 'First Name', 'Last Name')
+            ->SELECT('No_', 'First Name as FirstName', 'Last Name as lastName')
             ->orderBy('First Name')
             ->get();
 

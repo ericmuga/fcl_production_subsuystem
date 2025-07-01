@@ -145,7 +145,7 @@
                                 <th>From User</th>
                                 <th>From Dept</th>
                                 <th>Created By</th>
-                                <th>Autheticated user</th>
+                                <th>Authenticated user</th>
                                 <th>Status</th>
                                 <th>Created Date </th>
                             </tr>
@@ -160,7 +160,7 @@
                                 <th>From User</th>
                                 <th>From Dept</th>
                                 <th>Created By</th>
-                                <th>Autheticated user</th>
+                                <th>Authenticated user</th>
                                 <th>Status</th>
                                 <th>Created Date </th>
                             </tr>
@@ -487,9 +487,11 @@
 
                 // Append options from Axios response
                 response.data.forEach(function (item) {
-                    appendOption(faSelect, item.No_ + ':' + item.Location_code + ':' + item
-                        .Responsible_employee + ':' + item.Description, item.No_ + ' ' + item
-                        .Description);
+                    // appendOption(faSelect, item.No_ + ':' + item.Location_code + ':' + item
+                    //     .Responsible_employee + ':' + item.Description, item.No_ + ' ' + item
+                    //     .Description);
+
+                    appendOption3(faSelect, item.No_, item.Description);
 
                     // Check if the value is unique
                     if (!uniqueValues.hasOwnProperty(item.Location_code)) {
@@ -519,6 +521,7 @@
         axios.get('/asset/fetch-depts')
             .then(function (response) {
                 $('#loading').collapse('hide');
+                // console.log('fetch locations: ')
                 // console.log(response)
                 let toDeptSelect = document.getElementById('to_dept_select');
                 let fromDeptSelect = document.getElementById('from_dept_select');
@@ -533,8 +536,8 @@
                 // Append options from Axios response
                 response.data.forEach(function (item) {     
                     if (!uniqueValues.hasOwnProperty(item.Code)) {               
-                        appendOption(toDeptSelect, item.Code , item.Name);
-                        appendOption(fromDeptSelect, item.Code , item.Name);
+                        appendOption2(toDeptSelect, item.Code , item.Name);
+                        appendOption2(fromDeptSelect, item.Code , item.Name);
                     }
                 });
             })
@@ -548,6 +551,8 @@
         axios.get('/asset/fetch-employees')
             .then(function (response) {
                 $('#loading').collapse('hide');
+                console.log('fetch employees: ')
+                console.log(response)
                 let toUserSelect = document.getElementById('to_user_select');
                 let fromUserSelect = document.getElementById('from_user_select');
 
@@ -562,9 +567,9 @@
                 response.data.forEach(function (item) {
                     if (!uniqueValues.hasOwnProperty(item.No_)) {
                         appendOption(toUserSelect, item.No_, item
-                            .No_);
+                            .FirstName ?? + ' ' + item.LastName?? '');
                         appendOption(fromUserSelect, item.No_, item
-                            .No_);
+                            .FirstName?? + ' ' + item.LastName?? '');
                     }
                 });
             })
@@ -576,7 +581,20 @@
     const appendOption = (selectElement, value, text) => {
         var option = document.createElement('option');
         option.value = value;
-        option.text = text;
+        option.text = value + ' - ' + text; // Append both value and text
+        selectElement.appendChild(option);
+    }
+
+    const appendOption2 = (selectElement, value, text) => {
+        var option = document.createElement('option');
+        option.value = value;
+        option.text = text; // Append both value and text
+        selectElement.appendChild(option);
+    }
+    const appendOption3 = (selectElement, value, text) => {
+        var option = document.createElement('option');
+        option.value = value + ':' + text;
+        option.text = value + ' - ' + text; // Append both value and text
         selectElement.appendChild(option);
     }
 
