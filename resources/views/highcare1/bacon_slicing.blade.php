@@ -1,4 +1,4 @@
-@extends('layouts.butchery_master')
+@extends('layouts.highcare_master')
 
 @section('content-header')
 <div class="container">

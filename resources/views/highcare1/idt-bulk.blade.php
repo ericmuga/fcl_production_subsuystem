@@ -372,7 +372,7 @@
             let product_code = $(this).val()
             fetchTransferToLocations(product_code);
 
-            if (product_code === 'G4470') {
+            if (product_code.startsWith('G')) {
             $('#chiller_code').removeAttr('required');
             } else {
             $('#chiller_code').attr('required', 'required');

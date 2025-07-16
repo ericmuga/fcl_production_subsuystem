@@ -22,11 +22,11 @@
             class="nav-link dropdown-toggle">Create IDT </a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">HighCare IDT</a>
+                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">IDT To HighCare</a>
             </li>
             <hr class="dropdown-divider" />
             <li>
-                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item">Curing IDT</a>
+                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item"> IDT To Curing</a>
             </li>
         </ul>
     </li>    
