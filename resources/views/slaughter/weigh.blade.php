@@ -615,6 +615,12 @@
 
             var classification_code = document.getElementById('classification_code');
 
+            // suckling pigs classification
+            if (carcass_type == "G0113") {
+                classification_code.value = "*";
+                return; // Ensure this is the default and exit further checks
+            }
+
             if (meat_percent != null) {
 
                 if (vendor_number != null) {
