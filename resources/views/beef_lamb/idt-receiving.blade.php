@@ -48,6 +48,8 @@
                                 <option value="">Select Vehicle</option>
                                 <option value="KAQ 714R">KAQ 714R</option>
                                 <option value="KAS 004G">KAS 004G</option>
+                                <option value="KCE 015W">KCE 015W</option>
+                                <option value="KAX 004C">KAX 004C</option>
                             </select>
                             <input type="hidden" id="session_vehicle" name="session_vehicle" value="{{ old('description') }}">
                         </div>
