@@ -455,7 +455,7 @@ class Helpers
 
         // List of queues to declare and consume from
         $queues = [
-            'slaughter_receipts.wms',
+            // 'slaughter_receipts.wms',
             'master_data_items.wms',
             'master_data_locations.wms',
             'master_data_products.wms',
