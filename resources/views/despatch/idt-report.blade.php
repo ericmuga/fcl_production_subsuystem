@@ -42,6 +42,7 @@
                                             <option value="3535">Despatch</option>
                                             <option value="3035">Petfood</option>
                                             <option value="3555">old Factory</option>
+                                            <option value="4450">QA</option>
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -57,6 +58,7 @@
                                             <option value="3035">Petfood</option>
                                             <option value="3555">old Factory</option>
                                             <option value="3540"> Third Party</option>
+                                            <option value="4450"> QA</option>
                                         </select>
                                     </div>
                                 </div> <br>
