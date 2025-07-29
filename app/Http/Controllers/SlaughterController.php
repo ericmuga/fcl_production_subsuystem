@@ -504,6 +504,7 @@ class SlaughterController extends Controller
                             [
                                 'enrolment_no' => $row[0],
                                 'vendor_tag' => $row[1],
+                                'item_code' => $row[6],
                                 'slaughter_date' => $database_date,
                             ],
                             [
