@@ -240,6 +240,7 @@ Route::post('/receive/idt', [DespatchController::class, 'receiveTransfer'])->nam
 Route::post('/receive/idt-freshcuts', [DespatchController::class, 'receiveTransferFreshcuts'])->name('receive_idt_fresh');
 Route::get('/despatch/idt-report/{filter?}', [DespatchController::class, 'idtReport'])->name('despatch_idt_report');
 Route::post('/despatch/idt-export', [DespatchController::class, 'exportIdtHistory'])->name('despatch_export_idt');
+Route::post('/despatch/idt-summary-export', [DespatchController::class, 'exportIdtSummary'])->name('despatch_export_idt_summary');
 Route::get('/despatch/idt-variance/{filter?}', [DespatchController::class, 'idtVarianceReport'])->name('despatch_idt_variance');
 Route::get('/despatch/idt-per-chiller', [DespatchController::class, 'idtStocksPerChiller'])->name('despatch_idt_per_chiller');
 Route::get('/despatch/stocks-take', [DespatchController::class, 'takeStocks'])->name('take_stocks');

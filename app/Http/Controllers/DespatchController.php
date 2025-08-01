@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\DespatchIdtHistoryExport;
+use App\Exports\DespatchIDTSummaryReport;
 use App\Imports\ImportStocks;
 use App\Imports\ImportStocksCSV;
 use App\Imports\ImportStocksExcel;
@@ -276,6 +277,43 @@ class DespatchController extends Controller
         $exports = Session::put('session_export_data', $entries);
 
         return Excel::download(new DespatchIdtHistoryExport, "IdtHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
+    }
+
+    public function exportIdtSummary(Request $request)
+    {
+        // dd($request->all());
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $entries = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->where('idt_transfers.received_by', '!=', null)
+            ->whereDate('idt_transfers.created_at', '>=', $from_date)
+            ->whereDate('idt_transfers.created_at', '<=', $to_date)
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_from == '3535') {
+                    $query->whereIn('idt_transfers.transfer_from', ['3535', '3600']);
+                } else {
+                    $query->where('idt_transfers.transfer_from', $request->transfer_from);
+                }
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_to == '3535') {
+                    $query->whereIn('idt_transfers.location_code', ['3535', '3600']);
+                } else {
+                    $query->where('idt_transfers.location_code', $request->transfer_to);
+                }
+            })
+            ->select('idt_transfers.product_code', 'items.description as product', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from',   DB::raw('SUM(idt_transfers.total_pieces) as total_pieces'), DB::raw('SUM(idt_transfers.total_weight) as total_weight'), DB::raw('SUM(idt_transfers.receiver_total_pieces) as receiver_total_pieces'), DB::raw('SUM(idt_transfers.receiver_total_weight) as receiver_total_weight'))
+            ->groupBy('idt_transfers.product_code', 'items.description', 'items.qty_per_unit_of_measure', 'idt_transfers.location_code', 'idt_transfers.transfer_from')
+            ->get();
+
+        // dd($entries);
+
+        $exports = Session::put('session_export_data', $entries);
+
+        return Excel::download(new DespatchIDTSummaryReport, "IdtSummaryHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function idtVarianceReport($filter = null)
