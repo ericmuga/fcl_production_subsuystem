@@ -19,19 +19,24 @@
         <div class="card">
             <div class="card-body " style="">
                 <div class="form-group">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <label for="exampleInputPassword1"> Product Code</label>
-                            <select class="form-control select2" name="product" id="product" required>
-                                <option value="">Select product</option>
-                                @foreach($products as $product)
-                                <option value="{{ $product->code.'-'.$product->product_type_code }}">
-                                    {{ $product->code.' '.$product->description.'-'.$product->product_type_name }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
+                    <label for="exampleInputPassword1"> Product Code</label>
+                    <select class="form-control select2" name="product" id="product" required>
+                        <option value="">Select product</option>
+                        @foreach($products as $product)
+                        <option value="{{ $product->code.'-'.$product->product_type_code }}">
+                            {{ $product->code.' '.$product->description.'-'.$product->product_type_name }}
+                        </option>
+                        @endforeach
+                    </select>
+                    <label for="exampleInputPassword1"> Input /Output Product</label>
+                    <select class="form-control select2" name="product" id="product" required>
+                        <option value="">Select product</option>
+                        @foreach($products as $product)
+                        <option value="{{ $product->code.'-'.$product->product_type_code }}">
+                            {{ $product->code.' '.$product->description.'-'.$product->product_type_name }}
+                        </option>
+                        @endforeach
+                    </select>
                 </div>
             </div>
         </div>

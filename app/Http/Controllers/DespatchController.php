@@ -444,6 +444,7 @@ class DespatchController extends Controller
             '4450' => 'QA',
             '3535' => 'Despatch',
             '3600' => 'Export',
+            '4400' => 'Kitchen-IDT Staff Meals'
         ];
 
         $title = "Issue IDT from Despatch";
@@ -480,7 +481,15 @@ class DespatchController extends Controller
 
         $transfer_lines = $query->get();
 
-        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'configs', 'locations'));
+        //receiving users
+        $receipt_users = Cache::remember('idt_receipt_users', now()->addHours(10), function () {
+            return DB::table('users')
+                ->where('barcode_id', '!=', null)
+                ->select('id', 'username', 'barcode_id', 'section')
+                ->get();
+        });
+
+        return view('despatch.issue-idt', compact('title', 'transfer_lines', 'products', 'configs', 'locations', 'receipt_users'));
     }
 
     // public function issueButchery()
@@ -516,6 +525,7 @@ class DespatchController extends Controller
     // }
 
     public function saveIssuedIdt(Request $request) {
+        // dd($request->all());
         try {
             if ($request->unit_measure == 'PC') {
                 $weight = $request->calculated_weight;
@@ -545,7 +555,7 @@ class DespatchController extends Controller
                 ]);
             } else {
                 // save for scale weights
-                DB::table('idt_transfers')->insert([
+                $data = [
                     'product_code' => $request->product_code,
                     'location_code' => $request->location_code,
                     'chiller_code' => $request->chiller_code,
@@ -561,7 +571,17 @@ class DespatchController extends Controller
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
                     'requires_approval' => $requires_approval,
-                ]);
+                ];
+
+                // Add receiver fields if location_code is '4400' (kitchen)
+                if ($request->location_code == '4400') {
+                    $data['receiver_total_pieces'] = $request->no_of_pieces ?: 0;
+                    $data['receiver_total_weight'] = $request->net;
+                    $data['received_by'] = $request->receiver_id;
+                    $data['with_variance'] = 1;
+                }
+
+                DB::table('idt_transfers')->insert($data);
             }
 
             Toastr::success('Transfer saved successfully', 'Success');

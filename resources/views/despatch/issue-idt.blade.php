@@ -170,6 +170,21 @@
                         <input type="text" class="form-control" value="" id="no_of_pieces" name="no_of_pieces" placeholder="">
                     </div>    
                 </div>
+
+                <div hidden id="receiver_div" class="row form-group">
+                    <div class="col-md-12">
+                        <label for="exampleInputPassword1">IDT Receiver(Supervisor)</label>
+                        <select class="form-control select2 receiver_select" name="receiver_id" id="receiver_id"
+                                required>
+                                <option value="">Select supervisor</option>
+                                @foreach($receipt_users as $u)
+                                    <option value="{{ $u->id }}">
+                                        {{ $u->barcode_id.'-'.$u->username.'-'.$u->section }}
+                                    </option>
+                                @endforeach
+                            </select>
+                    </div>
+                </div>
                 
                 <div class="div" style="padding-top: 5%">
                     <button type="submit" id="submit-btn" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
@@ -399,6 +414,17 @@
                     locationSelect.options[i].disabled = true;
                 }
             }
+        }
+    });
+
+    const receiverDiv = document.getElementById('receiver_div');
+    const locationSelect = document.getElementById('location_code');
+
+    locationSelect.addEventListener('change', function() {
+        if (locationSelect.value === '4400') {
+            receiverDiv.removeAttribute('hidden');
+        } else {
+            receiverDiv.setAttribute('hidden', 'hidden');
         }
     });
 

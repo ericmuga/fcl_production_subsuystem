@@ -376,7 +376,7 @@
             //receiver div
             let element_recv = document.getElementById("receiver_div")
 
-            const noReceiverLocations = ['3535', '2055', '3035', '4400'];
+            const noReceiverLocations = ['3535', '2055', '3035'];
 
             // Check if the selected value is '3535' (Despatch)
             if (noReceiverLocations.includes($(this).val())) {
