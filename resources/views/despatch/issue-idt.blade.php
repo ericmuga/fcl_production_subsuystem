@@ -419,12 +419,15 @@
 
     const receiverDiv = document.getElementById('receiver_div');
     const locationSelect = document.getElementById('location_code');
+    const receiverSelect = document.getElementById('receiver_id');
 
     locationSelect.addEventListener('change', function() {
         if (locationSelect.value === '4400') {
             receiverDiv.removeAttribute('hidden');
+            receiverSelect.setAttribute('required', 'required');
         } else {
             receiverDiv.setAttribute('hidden', 'hidden');
+            receiverSelect.removeAttribute('required');
         }
     });
 
