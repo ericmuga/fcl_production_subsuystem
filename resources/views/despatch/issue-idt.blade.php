@@ -1,7 +1,7 @@
 @extends('layouts.despatch_master')
 
 @section('content-header')
-<h1 class="m-2">Issue IDTs from Despatch tt</h1>
+<h1 class="m-2">Issue IDTs from Despatch</h1>
 @endsection
 
 @section('content')
