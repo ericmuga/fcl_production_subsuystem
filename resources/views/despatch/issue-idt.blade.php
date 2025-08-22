@@ -1,7 +1,7 @@
 @extends('layouts.despatch_master')
 
 @section('content-header')
-<h1 class="m-2">Issue IDTs from Despatch</h1>
+<h1 class="m-2">Issue IDTs from Despatch tt</h1>
 @endsection
 
 @section('content')
@@ -420,6 +420,15 @@
     const receiverDiv = document.getElementById('receiver_div');
     const locationSelect = document.getElementById('location_code');
     const receiverSelect = document.getElementById('receiver_id');
+
+    // On page load, ensure receiver is not required unless location_code is 4400
+    if (locationSelect.value !== '4400') {
+        receiverDiv.setAttribute('hidden', 'hidden');
+        receiverSelect.removeAttribute('required');
+    } else {
+        receiverDiv.removeAttribute('hidden');
+        receiverSelect.setAttribute('required', 'required');
+    }
 
     locationSelect.addEventListener('change', function() {
         if (locationSelect.value === '4400') {
