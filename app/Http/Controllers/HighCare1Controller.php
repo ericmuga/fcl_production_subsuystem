@@ -76,7 +76,7 @@ class HighCare1Controller extends Controller
                 ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
                 ->get();
 
-            $select_products = ['G4451','G4452','G4453','G4456','G4457','G4459','G4460','G4461','G4462','G4463','G4464','G4465','G4466','G4467','G4470'];
+            $select_products = ['G2323','G4451','G4452','G4453','G4456','G4457','G4459','G4460','G4461','G4462','G4463','G4464','G4465','G4466','G4467','G4470'];
             $products = DB::table('products')
                 ->whereIn('code', $select_products)
                 ->select('id', 'code', DB::raw('code as barcode'), 'description', 'unit_of_measure')
@@ -126,7 +126,7 @@ class HighCare1Controller extends Controller
             $transfer_from = '2595'; //highcare
         }
 
-        $off_cuts = ['G4451','G4452','G4453','G4456','G4457','G4459','G4460','G4461','G4462','G4463','G4464','G4465','G4466','G4467'];
+        $off_cuts = ['G2323','G4451','G4452','G4453','G4456','G4457','G4459','G4460','G4461','G4462','G4463','G4464','G4465','G4466','G4467'];
         
         if (in_array($request->product, $off_cuts)) {
             $transfer_from = '2595'; //off cuts from highcare
