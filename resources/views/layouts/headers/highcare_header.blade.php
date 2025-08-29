@@ -22,11 +22,11 @@
             class="nav-link dropdown-toggle">Create IDT </a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">IDT To HighCare</a>
+                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">HighCare To Despatch IDT</a>
             </li>
             <hr class="dropdown-divider" />
             <li>
-                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item"> IDT To Curing</a>
+                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item">Curing To Despatch IDT </a>
             </li>
         </ul>
     </li>    
@@ -35,7 +35,7 @@
             class="nav-link dropdown-toggle">Receive IDT </a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('highcare_idt_receive') }}" class="dropdown-item">Butchery IDT</a>
+                <a href="{{ route('list_receive', ['from_location' => '1570', 'to_location' => '2500']) }}" class="dropdown-item">Butchery IDT</a>
             </li>
             <hr class="dropdown-divider" />
             <li>

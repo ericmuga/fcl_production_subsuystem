@@ -5,6 +5,8 @@
 <!-- Navbar -->
 @if(request()->query('to_location') == '1570')
     @include('layouts.headers.butchery_header')
+@elseif(request()->query('to_location') == '2500')
+    @include('layouts.headers.highcare_header')
 @elseif(request()->query('to_location') == '2595')
     @include('layouts.headers.highcare_header')
 @elseif(request()->query('to_location') == '2055')

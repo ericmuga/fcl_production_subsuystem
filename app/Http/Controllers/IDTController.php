@@ -23,6 +23,7 @@ class IDTController extends Controller
 
     const locations = [
         '1570' => 'Butchery',
+        '2500' => 'Curing',
         '2595' => 'Highcare',
         '2055' => 'Sausage',
         '3035' => 'PetFood',

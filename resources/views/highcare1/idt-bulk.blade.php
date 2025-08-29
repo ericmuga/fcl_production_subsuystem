@@ -26,6 +26,7 @@
                         <label for="exampleInputPassword1">Transfer To</label>
                         <select class="form-control select2" name="transfer_to" id="transfer_to" required>
                             <option disabled selected value> -- select an option -- </option>
+                            <option value="1570">Butchery</option>
                             <option value="2055">Sausage</option>
                             <option value="3535">Despatch</option>
                         </select>
