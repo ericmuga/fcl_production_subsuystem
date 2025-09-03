@@ -252,6 +252,7 @@ class DespatchController extends Controller
         $ext = '.xlsx';
 
         $entries = DB::table('idt_transfers')
+            ->where('idt_transfers.received_by', '!=', null)
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
@@ -573,8 +574,8 @@ class DespatchController extends Controller
                     'requires_approval' => $requires_approval,
                 ];
 
-                // Add receiver fields if location_code is '4400' (kitchen)
-                if ($request->location_code == '4400') {
+                // Add receiver fields if location_code is '4400' (kitchen) or incineration
+                if ($request->location_code == '4400' || $request->location_code == '4300') {
                     $data['receiver_total_pieces'] = $request->no_of_pieces ?: 0;
                     $data['receiver_total_weight'] = $request->net;
                     $data['received_by'] = $request->receiver_id;

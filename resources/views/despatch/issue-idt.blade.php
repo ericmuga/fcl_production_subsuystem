@@ -421,8 +421,8 @@
     const locationSelect = document.getElementById('location_code');
     const receiverSelect = document.getElementById('receiver_id');
 
-    // On page load, ensure receiver is not required unless location_code is 4400
-    if (locationSelect.value !== '4400') {
+    // On page load, ensure receiver is not required unless location_code is 4400 or 4300 incineration
+    if (locationSelect.value !== '4400' && locationSelect.value !== '4300') {
         receiverDiv.setAttribute('hidden', 'hidden');
         receiverSelect.removeAttribute('required');
     } else {
@@ -431,7 +431,7 @@
     }
 
     locationSelect.addEventListener('change', function() {
-        if (locationSelect.value === '4400') {
+        if (locationSelect.value === '4400' || locationSelect.value === '4300') {
             receiverDiv.removeAttribute('hidden');
             receiverSelect.setAttribute('required', 'required');
         } else {

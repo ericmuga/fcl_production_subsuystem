@@ -63,6 +63,8 @@
                                                     <option value="3555">old Factory</option>
                                                     <option value="3540"> Third Party</option>
                                                     <option value="4450"> QA</option>
+                                                    <option value="4300"> Incineration</option>
+                                                    <option value="4400"> kitchen Staff meals</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -142,6 +144,8 @@
                                                     <option value="3555">old Factory</option>
                                                     <option value="3540"> Third Party</option>
                                                     <option value="4450"> QA</option>
+                                                    <option value="4300"> Incineration</option>
+                                                    <option value="4400"> kitchen Staff meals</option>
                                                 </select>
                                             </div>
                                         </div>
