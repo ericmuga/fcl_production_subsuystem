@@ -340,7 +340,7 @@ class HighCare1Controller extends Controller
                 ); // today plus last 7 days
             })
             ->when($filter != 'admin', function ($q) {
-                $q->whereDate('bacon_slicing.created_at', today()); // today only
+                $q->whereDate('bacon_slicing.created_at', today()->subDays(3)); // 3 days only
             })
             ->get();
 
