@@ -50,7 +50,7 @@
                             <option value="">Select Intake Item</option>
                             @foreach($products as $product)
                                 @if($product->product_type == 3)
-                                    <option value="{{ $product->product_code }}">{{ $product->description }}</option>
+                                    <option value="{{ $product->product_code }}">{{ $product->product_code }} {{ $product->description }}</option>
                                 @endif
                             @endforeach
                         </select>
@@ -207,6 +207,7 @@
                                     <th>Code </th>
                                     <th>product </th>
                                     <th>Product Type</th>
+                                    <th>Intake Item</th>
                                     <th>Production Process</th>
                                     <th>Total Crates</th>
                                     <th>Black Crates</th>
@@ -224,6 +225,7 @@
                                     <th>Code </th>
                                     <th>product </th>
                                     <th>Product Type</th>
+                                    <th>Intake Item</th>
                                     <th>Production Process</th>
                                     <th>Total Crates</th>
                                     <th>Black Crates</th>
@@ -248,6 +250,7 @@
                                         @else
                                             <td>Intake</td>
                                         @endif
+                                        <td>{{ $data->intake_item }}</td>
                                         <td>{{ $data->process }}</td>
                                         <td>{{ $data->no_of_crates }}</td>
                                         <td>{{ $data->black_crates }}</td>
@@ -376,6 +379,35 @@
     $(document).ready(function () {
 
         setProductionDate() //set production date default
+
+        // Add rule for intake_type based on selected product
+        $('#product').change(function () {
+            var data = $(this).val();
+            var product_type_code = data.split(':')[4];
+
+            if (product_type_code == '1') {
+                $('#intake_type').prop('disabled', false);
+                $('#intake_type').prop('required', true);
+            } else {
+                $('#intake_type').val('');
+                $('#intake_type').prop('disabled', true);
+                $('#intake_type').prop('required', false);
+            }
+        });
+
+        // On form submit, validate intake_type if product_type == 1
+        $('#form-save-scale3').on('submit', function (e) {
+            var data = $('#product').val();
+            var product_type_code = data ? data.split(':')[4] : '';
+            var intake_type = $('#intake_type').val();
+
+            if (product_type_code == '1' && !intake_type) {
+                alert('Please select Intake Item for Main Product.');
+                $('#intake_type').focus();
+                e.preventDefault();
+                return false;
+            }
+        });
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);

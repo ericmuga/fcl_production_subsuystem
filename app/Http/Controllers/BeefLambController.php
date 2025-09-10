@@ -37,21 +37,33 @@ class BeefLambController extends Controller
             ->select('scale', 'tareweight', 'comport')
             ->get()->toArray();
 
-        $products = DB::table('beef_product_processes')
+        $beef_products = DB::table('beef_product_processes')
             ->leftJoin('beef_lamb_items', 'beef_product_processes.product_code', '=', 'beef_lamb_items.code')
             ->leftJoin('processes', 'beef_product_processes.process_code', '=', 'processes.process_code')
             ->leftJoin('product_types', 'beef_product_processes.product_type', '=', 'product_types.code')
             ->select('beef_product_processes.product_code', 'beef_product_processes.process_code', 'beef_product_processes.product_type', 'beef_lamb_items.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
             ->get();
 
-        // dd($products);
+        $pork_products = DB::table('products')
+            ->leftJoin('product_processes', 'products.code', '=', 'product_processes.product_code')
+            ->leftJoin('processes', 'product_processes.process_code', '=', 'processes.process_code')
+            ->leftJoin('product_types', 'product_processes.product_type', '=', 'product_types.code')
+            ->select('products.code as product_code', 'product_processes.process_code', 'product_processes.product_type', 'products.description', 'processes.shortcode', 'processes.process', 'product_types.description as type_description')
+            ->get();
+
+        $products = $beef_products->merge($pork_products)->sortBy('product_code');
 
         $entries = DB::table('beef_slicing')
             ->whereDate('beef_slicing.created_at', today())
-            ->join('beef_lamb_items', 'beef_slicing.item_code', '=', 'beef_lamb_items.code')
+            ->leftJoin('beef_lamb_items', 'beef_slicing.item_code', '=', 'beef_lamb_items.code')
+            ->leftJoin('products', 'beef_slicing.item_code', '=', 'products.code')
             ->join('processes', 'beef_slicing.process_code', '=', 'processes.process_code')
-            ->select('beef_slicing.*', 'beef_lamb_items.description', 'processes.process')
-            ->orderByDesc('id')
+            ->select(
+            'beef_slicing.*',
+            DB::raw('COALESCE(beef_lamb_items.description, products.description) as description'),
+            'processes.process'
+            )
+            ->orderByDesc('beef_slicing.id')
             ->get();
 
         return view('beef_lamb.slicing_beef', compact('title', 'products', 'configs', 'entries'));
@@ -80,6 +92,7 @@ class BeefLambController extends Controller
                 'transfer_from' => 'B3535',
                 'manual_weight' => $manual,
                 'user_id' => Auth::id(),
+                'intake_item' => $request->intake_type,
             ]);
 
             $data = [
