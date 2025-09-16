@@ -252,7 +252,7 @@ class DespatchController extends Controller
         $ext = '.xlsx';
 
         $entries = DB::table('idt_transfers')
-            ->where('idt_transfers.received_by', '!=', null)
+            // ->where('idt_transfers.received_by', '!=', null)
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
@@ -289,7 +289,7 @@ class DespatchController extends Controller
 
         $entries = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
-            ->where('idt_transfers.received_by', '!=', null)
+            // ->where('idt_transfers.received_by', '!=', null)
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
             ->where(function ($query) use ($request) {
