@@ -204,6 +204,29 @@ class FreshcutsBulkController extends Controller
                     'received_by' => $request->receiver_id,
                     'with_variance' => 1,
                 ]);
+            } elseif($location == '4300') {
+                // for incineration
+                $id = DB::table('idt_transfers')->insertGetId([
+                    'product_code' => $request->product,
+                    'location_code' => $location,
+                    'chiller_code' => $request->chiller_code,
+                    'total_pieces' => $request->no_of_pieces ?: 0,
+                    'total_weight' => $request->net,
+                    'total_crates' => $request->no_of_crates ?: 0,
+                    'black_crates' => $request->black_crates,
+                    'full_crates' => $request->no_of_crates ?: 0,
+                    'incomplete_crate_pieces' => 0,
+                    'transfer_type' => $request->transfer_type,
+                    'transfer_from' => '1570',
+                    'description' => $desc,
+                    'order_no' => $request->order_no,
+                    'batch_no' => $request->batch_no,
+                    'user_id' => Auth::id(),
+
+                    //QA approval
+                    'requires_approval' => 1,
+                    
+                ]);
             } else {
                 //for despatch
                 $id = DB::table('idt_transfers')->insertGetId([
