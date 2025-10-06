@@ -38,7 +38,7 @@ class HighCare1Controller extends Controller
     {
         $title = "IDT";
 
-        $items = Cache::remember('items_list_sausage', now()->addHours(10), function () {
+        $items = Cache::remember('items_list_highcare', now()->addHours(10), function () {
             return DB::table('items')
                 ->where('blocked', '!=', 1)
                 ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')

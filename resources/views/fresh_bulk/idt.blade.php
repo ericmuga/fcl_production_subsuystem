@@ -32,6 +32,7 @@
                             <option value="3535">Despatch</option>
                             <option value="3035">Pet Food</option>
                             <option value="4400">Kitchen</option>
+                            <option value="4300">Incineration</option>
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -256,12 +257,33 @@
                                     <td>{{ $data->total_weight }}</td>
                                     <td>{{ $data->description }}</td>
                                     <td>{{ $data->batch_no }}</td>
-                                    @if ($data->total_weight == 0 )
-                                    <td><span class="badge badge-danger">cancelled</span></td>
-                                    @elseif($data->total_weight > 0 && $data->received_by != null)
-                                    <td><span class="badge badge-success">received</span></td>
-                                    @elseif($data->total_weight > 0 && $data->received_by == null)
-                                    <td><span class="badge badge-info">waiting receipt</span></td>
+                                    @if ($data->requires_approval == true && $data->approved_by == null && auth()->user()->role == 'QA')
+                                    <td>
+                                        <button
+                                            type="button"
+                                            data-toggle="modal"
+                                            data-target="#approveModal"
+                                            class="btn btn-sm btn-primary"
+                                            data-id="{{ $data->id }}"
+                                            data-product="{{ $data->product?? $data->product2?? $data->beef_product }}"
+                                            data-weight = "{{ $data->total_weight }}"
+                                            data-pieces = "{{ $data->total_pieces }}"
+                                            data-batch_no = "{{ $data->batch_no }}"
+                                            data-send-location = "{{ $data->location_code }}"
+                                            onclick="updateApprovalModal(event)"
+                                        >
+                                            Approve
+                                        </button></td>
+                                    @elseif ($data->requires_approval == true && $data->approved_by == null)
+                                        <td><span class="badge badge-info">waiting approval</span></td>
+                                    @elseif ($data->requires_approval == true && $data->approved_by != null && $data->approved == 0)
+                                        <td><span class="badge badge-info">rejected</span></td>
+                                    @elseif ($data->total_weight == 0 )
+                                        <td><span class="badge badge-danger">cancelled</span></td>
+                                    @elseif($data->received_by != null)
+                                        <td><span class="badge badge-success">received</span></td>
+                                    @else
+                                        <td><span class="badge badge-info">waiting receipt</span></td>
                                     @endif
                                     <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
                                 </tr>
@@ -276,6 +298,89 @@
     </div>
 </div>
 <!-- slicing ouput data show -->
+
+<!-- Approval Modal -->
+<div id="approveModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-xl">
+        <form class="modal-content" id="approval-form" action="{{ route('approve_idt') }}" method="post">
+            @csrf
+            <div class="modal-header">
+                <h5 class="modal-title" id="editIdtModalLabel">Approve Transfer: <strong><input
+                            style="border:none" type="text" id="approve_transfer_id" name="id" value="" readonly></strong>
+                </h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="row">
+                                <label for="edit_product" class="col-sm-3 col-form-label">Product Name</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" value="" id="approve_product"
+                                        placeholder="">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <label for="edit_product" class="col-sm-3 col-form-label">Batch No</label>
+                                <div class="col-sm-9">
+                                    <input type="text" readonly class="form-control" value="" id="approve_batch_no"
+                                        placeholder="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group form-row">
+                            <label for="edit_product" class="col-sm-3 col-form-label">Pieces</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control" value="" id="approve_pieces">
+                            </div>
+                        </div>
+                        <div class="form-group form-row">
+                            <label for="inputEmail3" class="col-sm-3 col-form-label">Weight</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" value="" id="approve_net" name="net" required readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="row">
+                            <label for="inputEmail3" class="col-sm-6 col-form-label">Send to Location</label>
+                            <div class="col-sm-6">
+                                <select class="form-control" name="location" id="approve_location" required>
+                                    <option value="">Select Location</option>
+                                    <option value="1570">Butchery</option>
+                                    <option value="2595">Highcare</option>
+                                    <option value="2055">Sausage</option>
+                                    <option value="4300">Incineration</option>
+                                    <option value="4450">QA</option>
+                                    <option value="3035">Petfood</option>
+                                    <option value="3535">local 3535</option>
+                                    <option value="3600">export 3600</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="narration">Narration</label>
+                            <textarea class="form-control" name="narration" id="narration" rows="2"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger btn-lg" name="approve" value="0" onclick="showLoadingModal()">
+                    Reject
+                </button>
+                <button type="submit" class="btn btn-primary btn-lg" name="approve" value="1" onclick="showLoadingModal()">
+                    Approve
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!--End Approval modal-->
 
 <!-- Edit Modal -->
 <div id="editIdtModal" class="modal fade" role="dialog">
@@ -527,6 +632,23 @@
             $('#editIdtModal').modal('show');
         });
     });
+
+    const updateApprovalModal = (event) =>  {
+        let btn = event.currentTarget
+        let id = btn.getAttribute('data-id')
+        let product = btn.getAttribute('data-product')
+        let weight = btn.getAttribute('data-weight')
+        let pieces = btn.getAttribute('data-pieces')
+        let batch_no = btn.getAttribute('data-batch_no')
+        let send_location = btn.getAttribute('data-send-location')
+
+        document.getElementById('approve_transfer_id').value = id
+        document.getElementById('approve_product').value = product
+        document.getElementById('approve_batch_no').value = batch_no
+        document.getElementById('approve_pieces').value = pieces
+        document.getElementById('approve_net').value = weight
+        document.getElementById('approve_location').value = send_location
+    }
 
     const startsWithCharacter =(str, character) => {
         return str.startsWith(character);

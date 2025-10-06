@@ -239,6 +239,7 @@ class IDTController extends Controller
 
     public function approveIdt(Request $request, Helpers $helpers)
     {
+        dd($request->all());
        try {
             $transfer = DB::table('idt_transfers')
                 ->where('id', $request->id)
