@@ -28,6 +28,10 @@ class ChoppingController extends Controller
         'G2166', 'G2167', 'G2172', 'G2173', 'G2174', 'G2176', 'D213021'
     ];
 
+    private $bagItemCodes = [
+        'H221053', 'H221016', 'H221187', 'H221015'
+    ];
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -556,15 +560,12 @@ class ChoppingController extends Controller
         // Use the class property for item list
         $item_list = $this->itemList;
 
-        $bagItemCodes = ['H221053', 'H221016', 'H221187', 'H221015'];
-
         $spices = DB::table('template_lines')
             ->where(function ($query) use ($chopping_id, $item_list) {
                 $query->where('item_code', 'like', 'H%')
                     ->orWhereIn('item_code', $item_list);
             })
             ->where('template_no', $chopping_id)
-            ->whereNotIn('item_code', $bagItemCodes)
             ->select('item_code', 'units_per_100')
             ->get();
 
@@ -640,9 +641,11 @@ class ChoppingController extends Controller
             ->first();
 
         if ($output) {
+            // Make bagItemCodes available as a public property
+            $bagItemCodes = $this->bagItemCodes;
             $totalInsertedWeight = DB::table('chopping_lines')
                 ->where('chopping_id', $request->complete_run_number)
-                ->whereNotIn('item_code', ['H221053', 'H221016', 'H221187'])
+                ->whereNotIn('item_code', $bagItemCodes)
                 ->whereBetween('created_at', [$todayStart, $allowanceEnd])
                 ->sum('weight');
 
