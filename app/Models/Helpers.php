@@ -379,8 +379,8 @@ class Helpers
     //     }
     // }
 
-    private $rabbitMQConnection = null;
-    private $rabbitMQChannel = null;
+    // private $rabbitMQConnection = null;
+    // private $rabbitMQChannel = null;
 
     // private function getRabbitMQConnection()
     // {
@@ -401,14 +401,14 @@ class Helpers
     //     return $this->rabbitMQConnection;
     // }
 
-    private function getRabbitMQChannel()
-    {
-        if ($this->rabbitMQChannel === null) {
-            $connection = $this->getRabbitMQConnection();
-            $this->rabbitMQChannel = $connection->channel();
-        }
-        return $this->rabbitMQChannel;
-    }
+    // private function getRabbitMQChannel()
+    // {
+    //     if ($this->rabbitMQChannel === null) {
+    //         $connection = $this->getRabbitMQConnection();
+    //         $this->rabbitMQChannel = $connection->channel();
+    //     }
+    //     return $this->rabbitMQChannel;
+    // }
 
     // public function declareQueue($queue_name)
     // {
@@ -434,20 +434,20 @@ class Helpers
     //     }
     // }
 
-    public function __destruct()
-    {
-        try {
-            if ($this->rabbitMQChannel) {
-                $this->rabbitMQChannel->close();
-            }
-            if ($this->rabbitMQConnection) {
-                $this->rabbitMQConnection->close();
-            }
-            Log::info("RabbitMQ connection and channel closed.");
-        } catch (\Exception $e) {
-            Log::error("Error closing RabbitMQ resources: {$e->getMessage()}");
-        }
-    }
+    // public function __destruct()
+    // {
+    //     try {
+    //         if ($this->rabbitMQChannel) {
+    //             $this->rabbitMQChannel->close();
+    //         }
+    //         if ($this->rabbitMQConnection) {
+    //             $this->rabbitMQConnection->close();
+    //         }
+    //         Log::info("RabbitMQ connection and channel closed.");
+    //     } catch (\Exception $e) {
+    //         Log::error("Error closing RabbitMQ resources: {$e->getMessage()}");
+    //     }
+    // }
 
     // public function consumeFromQueue()
     // {
@@ -634,21 +634,21 @@ class Helpers
     /**
      * Processes a queue message with the given processing logic.
      */
-    private function processQueueMessage($msg, $context, $processData)
-    {
-        $data = json_decode($msg->body, true);
-        Log::info("{$context} received for processing: " . json_encode($data));
+    // private function processQueueMessage($msg, $context, $processData)
+    // {
+    //     $data = json_decode($msg->body, true);
+    //     Log::info("{$context} received for processing: " . json_encode($data));
 
-        try {
-            $processData($data);
-            Log::info("{$context} data processed successfully.");
-            $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
-            Log::info("Message acknowledged.");
-        } catch (\Exception $e) {
-            Log::error("Failed to process {$context} data: " . $e->getMessage());
-            $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
-        }
-    }
+    //     try {
+    //         $processData($data);
+    //         Log::info("{$context} data processed successfully.");
+    //         $msg->delivery_info['channel']->basic_ack($msg->delivery_info['delivery_tag']);
+    //         Log::info("Message acknowledged.");
+    //     } catch (\Exception $e) {
+    //         Log::error("Failed to process {$context} data: " . $e->getMessage());
+    //         $msg->delivery_info['channel']->basic_nack($msg->delivery_info['delivery_tag']);
+    //     }
+    // }
 
     public function getProcessName($process_code)
     {

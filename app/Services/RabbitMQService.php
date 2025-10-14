@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Log;
 
 class RabbitMQService
 {
-    protected $connection;
-    protected $channel;
+    // protected $connection;
+    // protected $channel;
 
     // public function __construct()
     // {
@@ -57,56 +57,56 @@ class RabbitMQService
     //     }
     // }
 
-    private function storePendingMessage($queue, $message)
-    {
-        // Save the message as pending in the database
-        MessagePushStatus::create([
-            'queue' => $queue,
-            'message' => $message,
-            'status' => 'pending',
-        ]);
-    }
+    // private function storePendingMessage($queue, $message)
+    // {
+    //     // Save the message as pending in the database
+    //     MessagePushStatus::create([
+    //         'queue' => $queue,
+    //         'message' => $message,
+    //         'status' => 'pending',
+    //     ]);
+    // }
 
-    private function storeMessageStatus($queue, $message, $status)
-    {
-        // Update the message status in the database after publishing
-        MessagePushStatus::create([
-            'queue' => $queue,
-            'message' => $message,
-            'status' => $status,
-        ]);
-    }
+    // private function storeMessageStatus($queue, $message, $status)
+    // {
+    //     // Update the message status in the database after publishing
+    //     MessagePushStatus::create([
+    //         'queue' => $queue,
+    //         'message' => $message,
+    //         'status' => $status,
+    //     ]);
+    // }
 
-    public function retryPendingMessages()
-    {
-        // Retry sending pending messages
-        if (!$this->connection) {
-            $this->connect();
-        }
+    // public function retryPendingMessages()
+    // {
+    //     // Retry sending pending messages
+    //     if (!$this->connection) {
+    //         $this->connect();
+    //     }
 
-        if ($this->connection) {
-            $pendingMessages = MessagePushStatus::where('status', 'pending')->get();
+    //     if ($this->connection) {
+    //         $pendingMessages = MessagePushStatus::where('status', 'pending')->get();
 
-            foreach ($pendingMessages as $pending) {
-                try {
-                    $this->publish($pending->queue, $pending->message);
+    //         foreach ($pendingMessages as $pending) {
+    //             try {
+    //                 $this->publish($pending->queue, $pending->message);
 
-                    // If successful, update status to 'sent'
-                    $pending->update(['status' => 'sent']);
-                } catch (\Exception $e) {
-                    Log::error('RabbitMQ Retry Error: ' . $e->getMessage());
-                }
-            }
-        }
-    }
+    //                 // If successful, update status to 'sent'
+    //                 $pending->update(['status' => 'sent']);
+    //             } catch (\Exception $e) {
+    //                 Log::error('RabbitMQ Retry Error: ' . $e->getMessage());
+    //             }
+    //         }
+    //     }
+    // }
 
-    public function close()
-    {
-        if ($this->channel) {
-            $this->channel->close();
-        }
-        if ($this->connection) {
-            $this->connection->close();
-        }
-    }
+    // public function close()
+    // {
+    //     if ($this->channel) {
+    //         $this->channel->close();
+    //     }
+    //     if ($this->connection) {
+    //         $this->connection->close();
+    //     }
+    // }
 }
