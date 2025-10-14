@@ -357,27 +357,27 @@ class Helpers
     }
 
     //Rabbit MQ
-    public function publishToQueue($data, $queue_name)
-    {
-        // Add the company name flag to the data
-        $data['company_name'] = 'FCL';
+    // public function publishToQueue($data, $queue_name)
+    // {
+    //     // Add the company name flag to the data
+    //     $data['company_name'] = 'FCL';
 
-        $channel = $this->getRabbitMQChannel();
+    //     $channel = $this->getRabbitMQChannel();
 
-        try {
-            $channel->exchange_declare('fcl.exchange.direct', 'direct', false, true, false);
+    //     try {
+    //         $channel->exchange_declare('fcl.exchange.direct', 'direct', false, true, false);
 
-            $msg = new AMQPMessage(json_encode($data), [
-                'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-            ]);
+    //         $msg = new AMQPMessage(json_encode($data), [
+    //             'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+    //         ]);
 
-            $channel->basic_publish($msg, 'fcl.exchange.direct', $queue_name);
-            Log::info("Message published to queue: {$queue_name}");
-        } catch (\Exception $e) {
-            Log::error("Failed to publish message to queue {$queue_name}: {$e->getMessage()}");
-            $this->CustomErrorlogger($e, 'publishToQueue');
-        }
-    }
+    //         $channel->basic_publish($msg, 'fcl.exchange.direct', $queue_name);
+    //         Log::info("Message published to queue: {$queue_name}");
+    //     } catch (\Exception $e) {
+    //         Log::error("Failed to publish message to queue {$queue_name}: {$e->getMessage()}");
+    //         $this->CustomErrorlogger($e, 'publishToQueue');
+    //     }
+    // }
 
     private $rabbitMQConnection = null;
     private $rabbitMQChannel = null;
@@ -449,187 +449,187 @@ class Helpers
         }
     }
 
-    public function consumeFromQueue()
-    {
-        $channel = $this->getRabbitMQChannel();
+    // public function consumeFromQueue()
+    // {
+    //     $channel = $this->getRabbitMQChannel();
 
-        // List of queues to declare and consume from
-        $queues = [
-            // 'slaughter_receipts.wms',
-            'master_data_items.wms',
-            'master_data_locations.wms',
-            'master_data_products.wms',
-            'master_data_family.wms',
-            'master_data_disease_list.wms',
-            'master_data_assets.wms',
-            'master_data_recipe.wms',
-            'intercompany_transfers.wms',
-            // 'yet_another_queue_name'
-        ];
+    //     // List of queues to declare and consume from
+    //     $queues = [
+    //         // 'slaughter_receipts.wms',
+    //         'master_data_items.wms',
+    //         'master_data_locations.wms',
+    //         'master_data_products.wms',
+    //         'master_data_family.wms',
+    //         'master_data_disease_list.wms',
+    //         'master_data_assets.wms',
+    //         'master_data_recipe.wms',
+    //         'intercompany_transfers.wms',
+    //         // 'yet_another_queue_name'
+    //     ];
 
-        // Declare each queue
-        foreach ($queues as $queue) {
-            $this->declareQueue($queue);
-        }
+    //     // Declare each queue
+    //     foreach ($queues as $queue) {
+    //         $this->declareQueue($queue);
+    //     }
 
-        // Define callback functions for each queue with queue-specific handling logic
-        $callbacks = [
-            'slaughter_receipts.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Slaughter Receipts', function ($data) {
-                    return $this->insertReceiptData($data);
-                });
-            },
-            'master_data_items.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Items', function ($data) {
-                    foreach ($data['items'] as $item) {
-                        DB::table('items')->updateOrInsert(
-                            ['code' => $item['code']],
-                            [
-                                'barcode' => $item['barcode'],
-                                'description' => $item['description'],
-                                'unit_of_measure' => $item['base-unit-of-measure'],
-                                'blocked' => $item['blocked'],
-                            ]
-                        );
-                    }
-                });
-            },
-            'master_data_locations.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Locations', function ($data) {
-                    foreach ($data['locations'] as $location) {
-                        DB::table('stock_locations')->updateOrInsert(
-                            ['location_code' => $location['code']],
-                            ['description' => $location['name']]
-                        );
-                    }
-                });
-            },
-            'master_data_products.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Products', function ($data) {
-                    foreach ($data['products'] as $product) {
-                        DB::table('products')->updateOrInsert(
-                            ['code' => $product['code']],
-                            [
-                                'description' => $product['description'],
-                                'unit_of_measure' => $product['unit_of_measure'],
-                                'product_type' => $product['product_type'],
-                                'process_type' => $product['process_type']
-                            ]
-                        );
-                    }
-                });
-            },
-            'master_data_family.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Families', function ($data) {
-                    foreach ($data['families'] as $family) {
-                        DB::table('family')->updateOrInsert(
-                            ['family_no' => $family['family_no']],
-                            [
-                                'item_no' => $family['item_no'],
-                                'family_description' => $family['family_description'],
-                                'item_type' => $family['item_type'],
-                                'process_code' => $family['process_code']
-                            ]
-                        );
-                    }
-                });
-            },
-            'master_data_disease_list.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Diseases', function ($data) {
-                    foreach ($data['diseases'] as $disease) {
-                        DB::table('disease_list')->updateOrInsert(
-                            ['disease_code' => $disease['disease_code']],
-                            ['description' => $disease['description']]
-                        );
-                    }
-                });
-            },
-            'master_data_assets.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Assets', function ($data) {
-                    foreach ($data['assets'] as $asset) {
-                        DB::table('assets')->updateOrInsert(
-                            ['fa_code' => $asset['Fa_Code']],
-                            [
-                                'no' => $asset['No_'],
-                                'description' => $asset['Description'],
-                                'chassis' => $asset['Chassis'],
-                                'engine_no' => $asset['Engine_No'],
-                                'fa_class_code' => $asset['FA_Class_Code'],
-                                'make_brand' => $asset['Make_Brand'],
-                                'comments' => $asset['Comments'],
-                                'responsible_employee' => $asset['Responsible_employee'],
-                                'location_code' => $asset['Location_code'],
-                                'location_name' => $asset['LocationName']
-                            ]
-                        );
-                    }
-                });
-            },
-            'master_data_recipe.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Master Data Recipe', function ($data) {
-                    foreach ($data['headers'] as $header) {
-                        DB::table('template_header')->updateOrInsert(
-                            ['template_no' => $header['template_no']],
-                            [
-                                'template_name' => $header['template_name'],
-                                'blocked' => $header['blocked'],
-                                'user_id' => null
-                            ]
-                        );
-                    }
-                    foreach ($data['lines'] as $line) {
-                        DB::table('template_lines')->updateOrInsert(
-                            [
-                                'template_no' => $line['template_no'],
-                                'item_code' => $line['item_code']
-                            ],
-                            [
-                                'description' => $line['description'],
-                                'percentage' => $line['percentage'],
-                                'units_per_100' => $line['units_per_100'],
-                                'type' => $line['type'],
-                                'main_product' => $line['main_product'],
-                                'shortcode' => $line['shortcode'],
-                                'unit_measure' => $line['unit_measure'],
-                                'location' => $line['location']
-                            ]
-                        );
-                    }
-                });
-            },
-            'intercompany_transfers.wms' => function ($msg) {
-                $this->processQueueMessage($msg, 'Intercompany Transfers', function ($data) {
-                    DB::table('idt_transfers')->insert([
-                        'product_code' => substr($data['item_code'], 1),
-                        'location_code' => '1570',
-                        'total_pieces' => isset($data['no_of_pieces']) ? $data['no_of_pieces'] : 0,
-                        'total_weight' => $data['net_weight'],
-                        'batch_no' => isset($data['batch_no']) ? $data['batch_no'] : 0,
-                        'with_variance' => 0,
-                        'transfer_type' => 1,
-                        'user_id' => 1,
-                        'transfer_from' => $data['from_location_code'],
-                        'manual_weight' => $data['manual_weight'],
-                    ]);
-                });
-            },
-        ];
+    //     // Define callback functions for each queue with queue-specific handling logic
+    //     $callbacks = [
+    //         'slaughter_receipts.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Slaughter Receipts', function ($data) {
+    //                 return $this->insertReceiptData($data);
+    //             });
+    //         },
+    //         'master_data_items.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Items', function ($data) {
+    //                 foreach ($data['items'] as $item) {
+    //                     DB::table('items')->updateOrInsert(
+    //                         ['code' => $item['code']],
+    //                         [
+    //                             'barcode' => $item['barcode'],
+    //                             'description' => $item['description'],
+    //                             'unit_of_measure' => $item['base-unit-of-measure'],
+    //                             'blocked' => $item['blocked'],
+    //                         ]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'master_data_locations.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Locations', function ($data) {
+    //                 foreach ($data['locations'] as $location) {
+    //                     DB::table('stock_locations')->updateOrInsert(
+    //                         ['location_code' => $location['code']],
+    //                         ['description' => $location['name']]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'master_data_products.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Products', function ($data) {
+    //                 foreach ($data['products'] as $product) {
+    //                     DB::table('products')->updateOrInsert(
+    //                         ['code' => $product['code']],
+    //                         [
+    //                             'description' => $product['description'],
+    //                             'unit_of_measure' => $product['unit_of_measure'],
+    //                             'product_type' => $product['product_type'],
+    //                             'process_type' => $product['process_type']
+    //                         ]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'master_data_family.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Families', function ($data) {
+    //                 foreach ($data['families'] as $family) {
+    //                     DB::table('family')->updateOrInsert(
+    //                         ['family_no' => $family['family_no']],
+    //                         [
+    //                             'item_no' => $family['item_no'],
+    //                             'family_description' => $family['family_description'],
+    //                             'item_type' => $family['item_type'],
+    //                             'process_code' => $family['process_code']
+    //                         ]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'master_data_disease_list.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Diseases', function ($data) {
+    //                 foreach ($data['diseases'] as $disease) {
+    //                     DB::table('disease_list')->updateOrInsert(
+    //                         ['disease_code' => $disease['disease_code']],
+    //                         ['description' => $disease['description']]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'master_data_assets.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Assets', function ($data) {
+    //                 foreach ($data['assets'] as $asset) {
+    //                     DB::table('assets')->updateOrInsert(
+    //                         ['fa_code' => $asset['Fa_Code']],
+    //                         [
+    //                             'no' => $asset['No_'],
+    //                             'description' => $asset['Description'],
+    //                             'chassis' => $asset['Chassis'],
+    //                             'engine_no' => $asset['Engine_No'],
+    //                             'fa_class_code' => $asset['FA_Class_Code'],
+    //                             'make_brand' => $asset['Make_Brand'],
+    //                             'comments' => $asset['Comments'],
+    //                             'responsible_employee' => $asset['Responsible_employee'],
+    //                             'location_code' => $asset['Location_code'],
+    //                             'location_name' => $asset['LocationName']
+    //                         ]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'master_data_recipe.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Master Data Recipe', function ($data) {
+    //                 foreach ($data['headers'] as $header) {
+    //                     DB::table('template_header')->updateOrInsert(
+    //                         ['template_no' => $header['template_no']],
+    //                         [
+    //                             'template_name' => $header['template_name'],
+    //                             'blocked' => $header['blocked'],
+    //                             'user_id' => null
+    //                         ]
+    //                     );
+    //                 }
+    //                 foreach ($data['lines'] as $line) {
+    //                     DB::table('template_lines')->updateOrInsert(
+    //                         [
+    //                             'template_no' => $line['template_no'],
+    //                             'item_code' => $line['item_code']
+    //                         ],
+    //                         [
+    //                             'description' => $line['description'],
+    //                             'percentage' => $line['percentage'],
+    //                             'units_per_100' => $line['units_per_100'],
+    //                             'type' => $line['type'],
+    //                             'main_product' => $line['main_product'],
+    //                             'shortcode' => $line['shortcode'],
+    //                             'unit_measure' => $line['unit_measure'],
+    //                             'location' => $line['location']
+    //                         ]
+    //                     );
+    //                 }
+    //             });
+    //         },
+    //         'intercompany_transfers.wms' => function ($msg) {
+    //             $this->processQueueMessage($msg, 'Intercompany Transfers', function ($data) {
+    //                 DB::table('idt_transfers')->insert([
+    //                     'product_code' => substr($data['item_code'], 1),
+    //                     'location_code' => '1570',
+    //                     'total_pieces' => isset($data['no_of_pieces']) ? $data['no_of_pieces'] : 0,
+    //                     'total_weight' => $data['net_weight'],
+    //                     'batch_no' => isset($data['batch_no']) ? $data['batch_no'] : 0,
+    //                     'with_variance' => 0,
+    //                     'transfer_type' => 1,
+    //                     'user_id' => 1,
+    //                     'transfer_from' => $data['from_location_code'],
+    //                     'manual_weight' => $data['manual_weight'],
+    //                 ]);
+    //             });
+    //         },
+    //     ];
 
-        // Start consuming messages from each queue
-        foreach ($queues as $queue) {
-            $channel->basic_consume($queue, '', false, false, false, false, $callbacks[$queue]);
-        }
+    //     // Start consuming messages from each queue
+    //     foreach ($queues as $queue) {
+    //         $channel->basic_consume($queue, '', false, false, false, false, $callbacks[$queue]);
+    //     }
 
-        while (true) {
-            try {
-                while (count($channel->callbacks)) {
-                    $channel->wait(null, false, 5); // Timeout of 5 seconds
-                }
-            } catch (\Exception $e) {
-                Log::error('Error in message consumption: ' . $e->getMessage());
-            }
-        }
-    }
+    //     while (true) {
+    //         try {
+    //             while (count($channel->callbacks)) {
+    //                 $channel->wait(null, false, 5); // Timeout of 5 seconds
+    //             }
+    //         } catch (\Exception $e) {
+    //             Log::error('Error in message consumption: ' . $e->getMessage());
+    //         }
+    //     }
+    // }
 
     /**
      * Processes a queue message with the given processing logic.
