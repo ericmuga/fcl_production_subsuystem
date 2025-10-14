@@ -382,24 +382,24 @@ class Helpers
     private $rabbitMQConnection = null;
     private $rabbitMQChannel = null;
 
-    private function getRabbitMQConnection()
-    {
-        if ($this->rabbitMQConnection === null) {
-            try {
-                $this->rabbitMQConnection = new AMQPStreamConnection(
-                    config('app.rabbitmq_host'), // RabbitMQ host
-                    config('app.rabbitmq_port'), // RabbitMQ port (default for AMQP is 5672)
-                    config('app.rabbitmq_user'), // RabbitMQ user
-                    config('app.rabbitmq_password') // RabbitMQ password
-                );
-                Log::info('RabbitMQ connection established successfully.');
-            } catch (\Exception $e) {
-                Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
-                throw $e;
-            }
-        }
-        return $this->rabbitMQConnection;
-    }
+    // private function getRabbitMQConnection()
+    // {
+    //     if ($this->rabbitMQConnection === null) {
+    //         try {
+    //             $this->rabbitMQConnection = new AMQPStreamConnection(
+    //                 config('app.rabbitmq_host'), // RabbitMQ host
+    //                 config('app.rabbitmq_port'), // RabbitMQ port (default for AMQP is 5672)
+    //                 config('app.rabbitmq_user'), // RabbitMQ user
+    //                 config('app.rabbitmq_password') // RabbitMQ password
+    //             );
+    //             Log::info('RabbitMQ connection established successfully.');
+    //         } catch (\Exception $e) {
+    //             Log::error('Failed to establish RabbitMQ connection: ' . $e->getMessage());
+    //             throw $e;
+    //         }
+    //     }
+    //     return $this->rabbitMQConnection;
+    // }
 
     private function getRabbitMQChannel()
     {
@@ -410,29 +410,29 @@ class Helpers
         return $this->rabbitMQChannel;
     }
 
-    public function declareQueue($queue_name)
-    {
-        $channel = $this->getRabbitMQChannel();
+    // public function declareQueue($queue_name)
+    // {
+    //     $channel = $this->getRabbitMQChannel();
 
-        try {
-            $channel->queue_declare(
-                $queue_name,
-                false,
-                true,
-                false,
-                false,
-                false,
-                new \PhpAmqpLib\Wire\AMQPTable([
-                    'x-dead-letter-exchange' => 'fcl.exchange.dlx',
-                    'x-dead-letter-routing-key' => $queue_name,
-                ])
-            );
-            Log::info("Queue declared: {$queue_name}");
-        } catch (\Exception $e) {
-            Log::error("Failed to declare queue {$queue_name}: {$e->getMessage()}");
-            $this->CustomErrorlogger($e, 'declareQueue');
-        }
-    }
+    //     try {
+    //         $channel->queue_declare(
+    //             $queue_name,
+    //             false,
+    //             true,
+    //             false,
+    //             false,
+    //             false,
+    //             new \PhpAmqpLib\Wire\AMQPTable([
+    //                 'x-dead-letter-exchange' => 'fcl.exchange.dlx',
+    //                 'x-dead-letter-routing-key' => $queue_name,
+    //             ])
+    //         );
+    //         Log::info("Queue declared: {$queue_name}");
+    //     } catch (\Exception $e) {
+    //         Log::error("Failed to declare queue {$queue_name}: {$e->getMessage()}");
+    //         $this->CustomErrorlogger($e, 'declareQueue');
+    //     }
+    // }
 
     public function __destruct()
     {
