@@ -65,12 +65,10 @@ class AssetController extends Controller
 
     public function fetchData()
     {
-        $data = Cache::rememberForever('fixed_assets_data', function () {
-            return DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
+        $data = DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
             ->where('a.FA Class Code', 'CE')
             ->select('a.No_', 'a.Description', 'a.Location Code', 'a.Responsible Employee')
             ->get();
-        });
 
         return response()->json($data);
     }
