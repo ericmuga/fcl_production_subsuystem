@@ -682,25 +682,27 @@
                                     60 &&
                                     s_weight <= 75)) {
                                 classification_code.value = "CLS01";
-                            } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (
+                            } else if ((meat_percent >= 11 && meat_percent < 13) && carcass_type == "G0110" && (
                                     s_weight >= 60 &&
-                                    s_weight <= 75)) {
-                                classification_code.value = "CLS02";
-                            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
-                                classification_code.value = "CLS02";
-                            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
+                                    s_weight <= 85)) {
+                                classification_code.value = "CLS02";                            
+                            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 75)) {
                                 classification_code.value = "CLS03";
-                            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
                                 classification_code.value = "CLS04";
-                            } else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
                                 classification_code.value = "CLS05";
-                            } else if (carcass_type == "G0110" && (s_weight >= 86 &&
-                                    s_weight <= 100)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 40 &&
+                                    s_weight <= 49)) {
                                 classification_code.value = "CLS06";
-                            } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
+                            } else if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100)) {
                                 classification_code.value = "CLS07";
-                            } else if (carcass_type == "G0110" && s_weight > 120) {
+                            } else if (carcass_type == "G0110" && s_weight >= 101 && s_weight <= 120) {
                                 classification_code.value = "CLS08";
+                            } else if (carcass_type == "G0110" && s_weight > 120) {
+                                classification_code.value = "CLS09";
+                            } else if (carcass_type == "G0110" && s_weight < 40) {
+                                classification_code.value = "CLS11";
                             } else if (carcass_type == "G0111") {
                                 classification_code.value = "SOW-3P";
                             } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
