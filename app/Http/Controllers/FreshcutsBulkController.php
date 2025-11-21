@@ -362,7 +362,11 @@ class FreshcutsBulkController extends Controller
             ->leftJoin('users', 'idt_transfers.user_id', '=', 'users.id')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
-            ->where('idt_transfers.location_code', $request->transfer_to)
+            ->when($request->transfer_to == '3535', function ($q) {
+                $q->whereIn('idt_transfers.location_code', ['3535', '3600']);
+            }, function ($q) use ($request) {
+                $q->where('idt_transfers.location_code', $request->transfer_to);
+            })
             ->select('idt_transfers.id', 'idt_transfers.product_code', 'idt_transfers.location_code', 'idt_transfers.chiller_code', 'idt_transfers.total_crates', 'idt_transfers.total_pieces',
             'idt_transfers.total_weight', 'idt_transfers.description', 'idt_transfers.batch_no', 'idt_transfers.transfer_type', 'idt_transfers.receiver_total_crates', 
             'idt_transfers.receiver_total_pieces', 'idt_transfers.receiver_total_weight', 'idt_transfers.production_date', 'idt_transfers.manual_weight',

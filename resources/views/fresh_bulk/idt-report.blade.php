@@ -115,6 +115,7 @@
                             <option value="2500">Bacon & Ham Bulk</option>
                             <option value="4400">Kitchen</option>
                             <option value="3035">Petfood</option>
+                            <option value="3535">Despatch</option>
                         </select>
                     </div>
             </div>
