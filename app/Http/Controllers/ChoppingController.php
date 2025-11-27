@@ -574,7 +574,14 @@ class ChoppingController extends Controller
 
         foreach ($spices as $sp) {
             if (!in_array($sp->item_code, $processedItems)) {
-                $weight = ((float)$sp->units_per_100 * (float)$request->batch_size) * 2;
+                // Exception for H134011 - don't multiply by 2
+                if (($sp->item_code === 'H134011' || $sp->item_code ==='H231051') && $chopping_id === '1230M19') {
+                    $weight = ((float)$sp->units_per_100 * (float)$request->batch_size);
+                
+                } else {
+                    $weight = ((float)$sp->units_per_100 * (float)$request->batch_size) * 2;
+                }
+
                 $choppingLines[] = [
                     'chopping_id' => $request->complete_run_number,
                     'item_code' => $sp->item_code,
