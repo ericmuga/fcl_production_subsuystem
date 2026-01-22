@@ -604,214 +604,248 @@
 
     //classification code logic on input
     function getClassificationCode() {
-        var s_weight = $('#settlement_weight').val();
+        var s_weight = parseFloat($('#settlement_weight').val());
 
-        if (s_weight != 0.00) {
-            var rosemark_vendor_list = ["PF99901", "PF99902", "PF99903", "PF99904", "PF99905"];
-            var meat_percent = $('#meat_percent').val();
-            var vendor_number = $('#vendor_no').val();
-            var carcass_type = $('#carcass_type').val();
-            var total_received = $('#delivered_per_vendor').val();
-
-            var classification_code = document.getElementById('classification_code');
-
-            // suckling pigs classification
-            if (carcass_type == "G0113") {
-                classification_code.value = "*";
-                return; // Ensure this is the default and exit further checks
-            }
-
-            if (meat_percent != null) {
-
-                if (vendor_number != null) {
-                    // check if vendor number exists in special vendor list
-                    if (rosemark_vendor_list.includes(vendor_number)) {
-                        // Rosemark classification
-
-                        if (carcass_type != "G0113" && s_weight < 40) {
-                            $('#classification_code').val("RMPK SUB40");
-                        } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
-                                60 &&
-                                s_weight <= 75)) {
-                            classification_code.value = "RM-CLS01";
-                        } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >=
-                                60 &&
-                                s_weight <= 75)) {
-                            classification_code.value = "RM-CLS02";
-                        } else if (carcass_type == "G0110" && (s_weight >= 56 &&
-                                s_weight <= 59)) {
-                            classification_code.value = "RM-CLS02";
-                        } else if (carcass_type == "G0110" && (s_weight >= 76 &&
-                                s_weight <= 85)) {
-                            classification_code.value = "RM-CLS03";
-                        } else if (carcass_type == "G0110" && (s_weight >= 50 &&
-                                s_weight <= 55)) {
-                            classification_code.value = "RM-CLS04";
-                        } else if (carcass_type == "G0110" && (s_weight >= 40 &&
-                                s_weight <= 49)) {
-                            classification_code.value = "RM-CLS05";
-                        } else if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100)) {
-                            classification_code.value = "RM-CLS06";
-                        } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
-                            classification_code.value = "RM-CLS07";
-                        } else if (carcass_type == "G0110" && s_weight > 120) {
-                            classification_code.value = "RM-CLS08";
-                        } else if (carcass_type == "G0111") {
-                            classification_code.value = "SOW-RM";
-                        } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight <= 7)) {
-                            classification_code.value = "RM-SK1";
-                        } else if (carcass_type == "G0113" && (s_weight >= 7 && s_weight < 9)) {
-                            classification_code.value = "RM-SK2";
-                        } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 16)) {
-                            classification_code.value = "RM-SK3";
-                        } else if (carcass_type == "G0113" && (s_weight >= 17 && s_weight < 20)) {
-                            classification_code.value = "RM-SK4";
-                        } else {
-                            classification_code.value = "";
-                        }
-
-                    } else {
-                        // non rosemark vendors classification list
-                        if (total_received > 2) {
-                            // contract vendors classification
-
-                            if (carcass_type == "G0110" && s_weight < 40) {
-                                classification_code.value = "PK SUB-40";
-                            } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (
-                                    s_weight >=
-                                    60 &&
-                                    s_weight <= 75)) {
-                                classification_code.value = "CLS01";
-                            } else if ((meat_percent >= 11 && meat_percent < 13) && carcass_type == "G0110" && (
-                                    s_weight >= 60 &&
-                                    s_weight <= 85)) {
-                                classification_code.value = "CLS02";                            
-                            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 75)) {
-                                classification_code.value = "CLS03";
-                            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
-                                classification_code.value = "CLS04";
-                            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
-                                classification_code.value = "CLS05";
-                            } else if (carcass_type == "G0110" && (s_weight >= 40 &&
-                                    s_weight <= 49)) {
-                                classification_code.value = "CLS06";
-                            } else if (carcass_type == "G0110" && (s_weight >= 86 && s_weight <= 100)) {
-                                classification_code.value = "CLS07";
-                            } else if (carcass_type == "G0110" && s_weight >= 101 && s_weight <= 120) {
-                                classification_code.value = "CLS08";
-                            } else if (carcass_type == "G0110" && s_weight > 120) {
-                                classification_code.value = "CLS09";
-                            } else if (carcass_type == "G0110" && s_weight < 40) {
-                                classification_code.value = "CLS11";
-                            } else if (carcass_type == "G0111") {
-                                classification_code.value = "SOW-3P";
-                            } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
-                                classification_code.value = "3P-SK4";
-                            } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
-                                classification_code.value = "3P-SK5";
-                            } else {
-                                classification_code.value = "";
-                            }
-
-                        } else {
-                            // non contract vendor classification(less than 2 delivered)
-
-                            if (carcass_type == "G0110" && s_weight < 40) {
-                                classification_code.value = "PK SUB-40";
-                            } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (
-                                    s_weight >=
-                                    60 &&
-                                    s_weight <= 75)) {
-                                classification_code.value = "NC-CLS01";
-                            } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (
-                                    s_weight >= 60 &&
-                                    s_weight <= 75)) {
-                                classification_code.value = "NC-CLS02";
-                            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
-                                classification_code.value = "NC-CLS02";
-                            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
-                                classification_code.value = "NC-CLS03";
-                            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
-                                classification_code.value = "NC-CLS04";
-                            } else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
-                                classification_code.value = "NC-CLS05";
-                            } else if (carcass_type == "G0110" && (s_weight >= 86 &&
-                                    s_weight <= 100)) {
-                                classification_code.value = "NC-CLS06";
-                            } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
-                                classification_code.value = "NC-CLS07";
-                            } else if (carcass_type == "G0110" && s_weight > 120) {
-                                classification_code.value = "NC-CLS08";
-                            } else if (carcass_type == "G0111") {
-                                classification_code.value = "SOW-3P";
-                            } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
-                                classification_code.value = "3P-SK4";
-                            } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
-                                classification_code.value = "3P-SK5";
-                            } else {
-                                classification_code.value = "";
-                            }
-                        }
-                    }
-
-                } else {
-                    //vendor number is null
-                    alert("vendor number is not available");
-                }
-
-            }
-        } else {
+        if (!s_weight) {
             alert('please take the reading first. reading is: ' + s_weight);
+            return;
         }
+
+        var rosemark_vendor_list = ["PF99901", "PF99902", "PF99903", "PF99904", "PF99905"];
+        var meat_percent = parseFloat($('#meat_percent').val());
+        var vendor_number = $('#vendor_no').val();
+        var carcass_type = $('#carcass_type').val();
+        var classification_code = document.getElementById('classification_code');
+
+        // suckling pigs classification
+        if (carcass_type === "G0113") {
+            classification_code.value = "*";
+            return;
+        }
+
+        if (isNaN(meat_percent)) {
+            classification_code.value = "";
+            console.log("Meat % is not set; cannot determine classification code");
+            return;
+        }
+
+        if (!vendor_number) {
+            alert("vendor number is not available");
+            return;
+        }
+
+        var isRosemark = rosemark_vendor_list.includes(vendor_number);
+
+        // Helper to prefix Rosemark classes
+        var prefix = isRosemark ? 'RM-' : '';
+
+        if (carcass_type === "G0110") {
+            // Baconers (standard pigs)
+
+            // Sub-40
+            if (s_weight < 40) {
+                classification_code.value = isRosemark ? "RMPK SUB-40" : "PK SUB-40";
+                return;
+            }
+
+            // CLS01 – Export Large Eye: 60–75kg, fat 8–10mm
+            if (s_weight >= 60 && s_weight <= 75 && meat_percent >= 8 && meat_percent <= 10) {
+                classification_code.value = prefix + "CLS01";
+                return;
+            }
+
+            // CLS02 – Standard Pig (Heavy Hogs): 60–90kg, fat 11–13mm
+            if (s_weight >= 60 && s_weight <= 90 && meat_percent >= 11 && meat_percent <= 13) {
+                classification_code.value = prefix + "CLS02";
+                return;
+            }
+
+            // CLS03 – Standard Pig: 56–59kg, all fat levels
+            if (s_weight >= 56 && s_weight <= 59) {
+                classification_code.value = prefix + "CLS03";
+                return;
+            }
+
+            // CLS03 – Standard Pig: 60–75kg, fat 1–7mm & 14–100mm
+            if (s_weight >= 60 && s_weight <= 75 && (meat_percent <= 7 || meat_percent >= 14)) {
+                classification_code.value = prefix + "CLS03";
+                return;
+            }
+
+            // CLS04 – Production (Manufacturing): 76–90kg, fat 1–10mm & 14–100mm
+            if (s_weight >= 76 && s_weight <= 90 && (meat_percent <= 10 || meat_percent >= 14)) {
+                classification_code.value = prefix + "CLS04";
+                return;
+            }
+
+            // CLS04 – Production (Manufacturing): 91–100kg, all fat levels
+            if (s_weight >= 91 && s_weight <= 100) {
+                classification_code.value = prefix + "CLS04";
+                return;
+            }
+
+            // CLS05 – Production (Porkers): 50–55kg, all fat levels
+            if (s_weight >= 50 && s_weight <= 55) {
+                classification_code.value = prefix + "CLS05";
+                return;
+            }
+
+            // CLS06 – Production (Porkers): 40–49kg, all fat levels
+            if (s_weight >= 40 && s_weight <= 49) {
+                classification_code.value = prefix + "CLS06";
+                return;
+            }
+
+            // CLS07 – Production (Heavy Hogs): 101–120kg, all fat levels
+            if (s_weight >= 101 && s_weight <= 120) {
+                classification_code.value = prefix + "CLS07";
+                return;
+            }
+
+            // CLS08 – Production (Heavy Hogs): Above 120kg, all fat levels
+            if (s_weight > 120) {
+                classification_code.value = prefix + "CLS08";
+                return;
+            }
+
+            // Fallback for any unmapped G0110
+            classification_code.value = prefix + "CLS09";
+            return;
+        }
+
+        // Sows and suckling pigs (Rosemark/non-Rosemark specific labels)
+        if (carcass_type === "G0111") {
+            classification_code.value = isRosemark ? "RMSOW-3P" : "SOW-3P";
+            return;
+        }
+
+        if (carcass_type === "G0113") {
+            if (s_weight >= 5 && s_weight < 8) {
+                classification_code.value = isRosemark ? "RM3P-SK4" : "3P-SK4";
+            } else if (s_weight >= 9 && s_weight < 20) {
+                classification_code.value = "3P-SK5";
+            } else {
+                classification_code.value = "";
+            }
+            return;
+        }
+
+        // Default if nothing matches
+        classification_code.value = "";
+        console.log("Unable to determine classification code, please check meat % and settlement weight");
     }
 
     function getClassificationCode2() {
-        var s_weight = $('#settlement_weight').val();
-
-        var meat_percent = $('#ms_meat_pc').val();
+        var s_weight = parseFloat($('#ms_settlement_weight').val());
+        var meat_percent = parseFloat($('#ms_meat_pc').val());
         var carcass_type = $('#ms_carcass_type').val();
+        var $classification = $('#ms_classification');
 
-        if (s_weight > 0) {
+        if (!s_weight) {
+            alert('Please get scale reading. Current settlement is: ' + s_weight);
+            $classification.val("");
+            return;
+        }
 
-            if (carcass_type == "G0110" && s_weight < 40) {
-                $('#ms_classification').val("PK SUB-40");
-            } else if ((meat_percent >= 8 && meat_percent <= 10) && carcass_type == "G0110" && (s_weight >=
-                    60 &&
-                    s_weight <= 75)) {
-                $('#ms_classification').val("CLS01");
-            } else if ((meat_percent < 8 || meat_percent > 10) && carcass_type == "G0110" && (s_weight >= 60 &&
-                    s_weight <= 75)) {
-                $('#ms_classification').val("CLS02");
-            } else if (carcass_type == "G0110" && (s_weight >= 56 && s_weight <= 59)) {
-                $('#ms_classification').val("CLS02");
-            } else if (carcass_type == "G0110" && (s_weight >= 76 && s_weight <= 85)) {
-                $('#ms_classification').val("CLS03");
-            } else if (carcass_type == "G0110" && (s_weight >= 50 && s_weight <= 55)) {
-                $('#ms_classification').val("CLS04");
-            } else if (carcass_type == "G0110" && (s_weight >= 40 && s_weight <= 49)) {
-                $('#ms_classification').val("CLS05");
-            } else if (carcass_type == "G0110" && (s_weight >= 86 &&
-                    s_weight <= 100)) {
-                $('#ms_classification').val("CLS06");
-            } else if (carcass_type == "G0110" && (s_weight >= 101 && s_weight <= 120)) {
-                $('#ms_classification').val("CLS07");
-            } else if (carcass_type == "G0110" && s_weight > 120) {
-                classification_code.value = "CLS08";
-                $('#ms_classification').val("PK SUB-40");
-            } else if (carcass_type == "G0111") {
-                $('#ms_classification').val("SOW-3P");
-            } else if (carcass_type == "G0113" && (s_weight >= 5 && s_weight < 8)) {
-                $('#ms_classification').val("3P-SK4");
-            } else if (carcass_type == "G0113" && (s_weight >= 9 && s_weight < 20)) {
-                $('#ms_classification').val("3P-SK5");
-            } else {
-                $('#ms_classification').val("");
+        // Baconers (standard pigs)
+        if (carcass_type === "G0110") {
+            if (isNaN(meat_percent)) {
+                $classification.val("");
+                console.log("Meat % is not set; cannot determine classification code");
+                return;
             }
 
-        } else {
-            alert('Please get scale reading. current settlement is: ' + s_weight);
-            $('#ms_classification').val("");
+            // Sub-40
+            if (s_weight < 40) {
+                $classification.val("PK SUB-40");
+                return;
+            }
+
+            // CLS01 – Export Large Eye: 60–75kg, fat 8–10mm
+            if (s_weight >= 60 && s_weight <= 75 && meat_percent >= 8 && meat_percent <= 10) {
+                $classification.val("CLS01");
+                return;
+            }
+
+            // CLS02 – Standard Pig (Heavy Hogs): 60–90kg, fat 11–13mm
+            if (s_weight >= 60 && s_weight <= 90 && meat_percent >= 11 && meat_percent <= 13) {
+                $classification.val("CLS02");
+                return;
+            }
+
+            // CLS03 – Standard Pig: 56–59kg, all fat levels
+            if (s_weight >= 56 && s_weight <= 59) {
+                $classification.val("CLS03");
+                return;
+            }
+
+            // CLS03 – Standard Pig: 60–75kg, fat 1–7mm & 14–100mm
+            if (s_weight >= 60 && s_weight <= 75 && (meat_percent <= 7 || meat_percent >= 14)) {
+                $classification.val("CLS03");
+                return;
+            }
+
+            // CLS04 – Production (Manufacturing): 76–90kg, fat 1–10mm & 14–100mm
+            if (s_weight >= 76 && s_weight <= 90 && (meat_percent <= 10 || meat_percent >= 14)) {
+                $classification.val("CLS04");
+                return;
+            }
+
+            // CLS04 – Production (Manufacturing): 91–100kg, all fat levels
+            if (s_weight >= 91 && s_weight <= 100) {
+                $classification.val("CLS04");
+                return;
+            }
+
+            // CLS05 – Production (Porkers): 50–55kg, all fat levels
+            if (s_weight >= 50 && s_weight <= 55) {
+                $classification.val("CLS05");
+                return;
+            }
+
+            // CLS06 – Production (Porkers): 40–49kg, all fat levels
+            if (s_weight >= 40 && s_weight <= 49) {
+                $classification.val("CLS06");
+                return;
+            }
+
+            // CLS07 – Production (Heavy Hogs): 101–120kg, all fat levels
+            if (s_weight >= 101 && s_weight <= 120) {
+                $classification.val("CLS07");
+                return;
+            }
+
+            // CLS08 – Production (Heavy Hogs): Above 120kg, all fat levels
+            if (s_weight > 120) {
+                $classification.val("CLS08");
+                return;
+            }
+
+            // Fallback for any unmapped G0110
+            $classification.val("CLS09");
+            return;
         }
+
+        // Sows
+        if (carcass_type === "G0111") {
+            $classification.val("SOW-3P");
+            return;
+        }
+
+        // Suckling pigs
+        if (carcass_type === "G0113") {
+            if (s_weight >= 5 && s_weight < 8) {
+                $classification.val("3P-SK4");
+            } else if (s_weight >= 9 && s_weight < 20) {
+                $classification.val("3P-SK5");
+            } else {
+                $classification.val("");
+            }
+            return;
+        }
+
+        // Default if nothing matches
+        $classification.val("");
     }
 
     function getNet() {
