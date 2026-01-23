@@ -125,6 +125,8 @@ class FreshcutsBulkController extends Controller
                 break;
         }
 
+        $manual_weight = $request->has('manual_weight') ? 1 : 0;
+
         try {
             // try save
             if ($location == '2055') {
@@ -145,6 +147,7 @@ class FreshcutsBulkController extends Controller
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
+                    'manual_weight' => $manual_weight,
 
                     //receiver
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
@@ -171,6 +174,8 @@ class FreshcutsBulkController extends Controller
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
+                    'manual_weight' => $manual_weight,
+
 
                     //receiver
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
@@ -197,6 +202,7 @@ class FreshcutsBulkController extends Controller
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
+                    'manual_weight' => $manual_weight,
 
                     //receiver
                     'receiver_total_pieces' => $request->no_of_pieces ?: 0,
@@ -222,6 +228,7 @@ class FreshcutsBulkController extends Controller
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
+                    'manual_weight' => $manual_weight,
 
                     //QA approval
                     'requires_approval' => 1,
@@ -245,6 +252,7 @@ class FreshcutsBulkController extends Controller
                     'order_no' => $request->order_no,
                     'batch_no' => $request->batch_no,
                     'user_id' => Auth::id(),
+                    'manual_weight' => $manual_weight,
                 ]);
             }
 
