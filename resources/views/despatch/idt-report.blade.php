@@ -200,6 +200,7 @@
                                 <th>Received Total Pieces</th>
                                 <th>Received Total Weight</th>
                                 <th>Flagged Variance?</th>
+                                <th>Issued By</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
@@ -228,6 +229,7 @@
                                 <th>Received Total Pieces</th>
                                 <th>Received Total Weight</th>
                                 <th>Flagged Variance?</th>
+                                <th>Issued By</th>
                                 <th>Received By</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
@@ -265,7 +267,7 @@
                                 @else
                                 <td><span class="badge badge-success">No</span></td>
                                 @endif
-
+                                <td>{{ $data->issuer_username }}</td>
                                 <td>{{ $data->username }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
