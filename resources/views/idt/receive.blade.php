@@ -253,8 +253,8 @@
                     <input type="hidden" name="location_code" id="location_code" value="3535">
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-primary btn-prevent-multiple-submits" type="submit" onclick="return validateOnSubmit()">Save</button>
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary btn-lg btn-prevent-multiple-submits" type="submit" onclick="return validateOnSubmit()">Save</button>
                 </div>
                 <div id="loading_f" class="collapse">
                     <div class="row d-flex justify-content-center">
