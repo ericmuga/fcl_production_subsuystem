@@ -12,40 +12,26 @@
 <!-- Left navbar links -->
 <ul class="navbar-nav">
     <li class="nav-item">
-        <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
+        <a href="{{ route('qa_dashboard') }}" class="nav-link">Dashboard</a>
     </li>
-    <li class="nav-item">
-        <a id="dropdownSubMenu1"  href="{{ route('sausage_idt') }}"aria-haspopup="true" aria-expanded="false" class="nav-link">Issue IDT </a>
-    </li>
+
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle">Receive IDT</a>
+            class="nav-link dropdown-toggle">IDTs</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="{{ route('stuffing_weights') }}" class="dropdown-item">Stuffing IDTs</a></li>
+            <li><a href="{{ route('qa_issue_idt') }}" class="dropdown-item">Issue IDTs</a></li>
             <hr class="dropdown-divider"/>
-            <li><a href="{{ route('sausage_idt_receive') }}" class="dropdown-item">Butchery IDTs</a>
-            </li>
-            <hr class="dropdown-divider" />
-            <li><a href="{{ route('list_receive', ['from_location' => '2595', 'to_location' => '2055']) }}" class="dropdown-item">HighCare -IDTs</a>
-            </li>
-            <hr class="dropdown-divider" />
-            <li><a href="{{ route('list_receive', ['from_location' => '3535', 'to_location' => '2055']) }}" class="dropdown-item">Despatch -IDTs</a>
-            </li>
-            <hr class="dropdown-divider" />
-            <li><a href="{{ route('list_receive', ['from_location' => '4450', 'to_location' => '2055']) }}" class="dropdown-item">QA -IDTs</a>
-            </li>
+            <li><a href="{{ route('qa_receive_idt') }}" class="dropdown-item">Receive IDTs</a>
+            </li>            
         </ul>
     </li>
+    
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle">Data Management</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="{{ route('sausage_entries') }}" class="dropdown-item"> Today's
+            <li><a href="#" class="dropdown-item"> Today's
                     Entries
-                </a>
-            </li>
-            <li class="dropdown-divider"></li>
-            <li><a href="{{ route('items_list') }}" class="dropdown-item"> Items List
                 </a>
             </li>
             <li class="dropdown-divider"></li>                        
@@ -66,17 +52,6 @@
                 </ul>
             </li>
             <!-- End Level two -->
-        </ul>
-    </li>
-    <li class="nav-item dropdown">
-        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle">Scale Settings</a>
-        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li>
-                <a href="{{ route('scale_settings', 'stuffing') }}" class="dropdown-item">
-                   Scale Settings - Stuffing Weights
-                </a>
-            </li>
         </ul>
     </li>
 </ul>

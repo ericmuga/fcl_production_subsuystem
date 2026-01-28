@@ -13,6 +13,8 @@
     @include('layouts.headers.petfood_header')
 @elseif(request()->query('from_location') == '3535')
     @include('layouts.headers.despatch_header')
+@elseif(request()->query('from_location') == '4450')
+    @include('layouts.headers.qa_header')
 @endif
 
 <!-- /.navbar -->
@@ -193,8 +195,7 @@
         </div>
         <div class="card-body">
             <div class="table-responsive">
-                <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
-                    width="100%">
+                <table id="example1" class="table display nowrap table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>IDT No</th>
@@ -404,6 +405,9 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
+        // Load product details (including unit of measure) when product changes
+        $('#product_code').on('change', loadProductDetails);
+
         let reading = document.getElementById('reading');
         var configs = {{ $configs }};
 
@@ -512,37 +516,30 @@
     }
 
 function loadProductDetails (event) {
-    // get the product
-    input = event.target;
-    item_code = input.value;
+    // get the selected product
+    const input = event.target;
+    const item_code = input.value;
     selectedProduct = products.find(product => product.code === item_code);
-    pcCrateInput = document.getElementById('pc_total_crates');
 
-    // update the unit measure input
-    productUnitMeasure = selectedProduct.unit_of_measure;
-    document.getElementById('unit_measure').value = productUnitMeasure;
-
-    // show weight or pieces input based on the unit of measure
-    const scaleInputs = document.getElementById('scaleInputs');
-    const pcWeightInputs = document.getElementById('pcWeightInputs');
-    if (productUnitMeasure == 'KG') {
-        scaleInputs.removeAttribute('hidden');
-        pcWeightInputs.setAttribute('hidden', true);
-        carriage.removeAttribute('disabled');
-        pcCrateInput.removeAttribute('required');
-    } else if (productUnitMeasure == 'PC') {
-        pcCrateInput.setAttribute('required', true);
-        crates_fields.setAttribute("hidden", "hidden");
-        document.getElementById('unit_crate_count').value = selectedProduct.unit_count_per_crate;
-        carriage.value = 'crate';
-        carriage.setAttribute('disabled', true);
-        scaleInputs.setAttribute('hidden', true);
-        pcWeightInputs.removeAttribute('hidden');
-        calculatePiecesAndWeight();
+    if (!selectedProduct) {
+        return;
     }
 
-    // set max for pieces in incomplete crate
-    document.getElementById('incomplete_pieces').max = selectedProduct.unit_count_per_crate;
+    const productUnitMeasure = selectedProduct.unit_of_measure;
+
+    // If unit of measure is PC, compute net weight from piece count
+    // net_weight = qty_per_unit_of_measure * pcs_count
+    if (productUnitMeasure === 'PC') {
+        $('#no_of_pieces').off('input.pc').on('input.pc', function () {
+            const pcs = parseFloat(this.value) || 0;
+            const weightPerUnit = parseFloat(selectedProduct.qty_per_unit_of_measure) || 0;
+            const totalWeight = pcs * weightPerUnit;
+            $('#net').val(totalWeight.toFixed(2));
+        });
+    } else {
+        // For non-PC items, remove the special handler so scale logic applies
+        $('#no_of_pieces').off('input.pc');
+    }
 }
 
 const defaultCrateCounts = (product_code) => {

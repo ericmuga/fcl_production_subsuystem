@@ -17,6 +17,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PetfoodController;
 use App\Http\Controllers\SausageController;
+use App\Http\Controllers\QAController;
 use App\Http\Controllers\SlaughterController;
 use App\Http\Controllers\SpicesController;
 use App\Http\Controllers\TestKraApi;
@@ -320,6 +321,14 @@ Route::prefix('idt')->group(function () {
     Route::post('/beef-combined-export', [IDTController::class, 'beefCombinedExport'])->name('beef_combined_export');
 });
 /*-------------End IDT ------------------ */
+
+/*-------------Start QA ----------------- */
+Route::prefix('qa')->group(function () {
+    Route::get('/dashboard', [QAController::class, 'dashboard'])->name('qa_dashboard');
+    Route::get('/issue-idt', [QAController::class, 'issue'])->name('qa_issue_idt');
+    Route::get('/receive-idt', [QAController::class, 'receive'])->name('qa_receive_idt');
+});
+/*-------------End QA ------------------ */
 
 /*-------------Start Petfood ----------------- */
 Route::prefix('petfood')->group(function () {

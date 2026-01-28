@@ -15,6 +15,8 @@
     @include('layouts.headers.petfood_header')
 @elseif(request()->query('to_location') == '4400')
     @include('layouts.headers.freshcuts-bulk_header')
+@elseif(request()->query('to_location') == '4450')
+    @include('layouts.headers.qa_header')
 @endif
 
 <!-- /.navbar -->
@@ -22,7 +24,10 @@
 @endsection
 
 @section('content-header')
-<h1 class="m-2">Receive IDTs from {{ $locations[request()->get('from_location')] }} to {{ $locations[request()->get('to_location')]  }}</h1>
+<h1 class="m-2">
+    @php($fromLocation = $locations[request()->get('from_location')] ?? null)
+    Receive IDTs {{ $fromLocation ? 'from '.$fromLocation.' ' : '' }}to {{ $locations[request()->get('to_location')] ?? '' }}
+</h1>
 @endsection
 
 @section('content')
@@ -38,7 +43,7 @@
             <!-- /.card-header -->
             <div class="card-body">
                 <div class="table-responsive">
-                    <table id="example1" class="table display nowrap table-striped table-bordered table-hover"
+                    <table id="example1" class="table display table-striped table-bordered table-hover"
                         width="100%">
                         <thead>
                             <tr>

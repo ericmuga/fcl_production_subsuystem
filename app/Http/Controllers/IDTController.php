@@ -43,16 +43,27 @@ class IDTController extends Controller
 
         $locations = self::locations;
 
-        if ($from_location == null || $to_location == null || !array_key_exists($from_location, $locations) || !array_key_exists($to_location, $locations)) {
-           abort(404);
-        };
+        $fromValid = $from_location !== null && array_key_exists((string) $from_location, $locations);
+        $toValid   = $to_location !== null && array_key_exists((string) $to_location, $locations);
 
-        // Combine products and items using UNION
-        $allItems = DB::table('products')
-            ->select('code', 'description') // Select columns from products
-            ->union(
-                DB::table('items')
-                ->select('code', 'description') // Select columns from items
+        // Only abort if neither location is valid
+        if (!$fromValid && !$toValid) {
+            Log::warning('Invalid IDT receive locations', [
+                'from_location' => $from_location,
+                'to_location'   => $to_location,
+            ]);
+
+            abort(404);
+        }
+
+        // Combine products and items using UNION (as a query builder for joinSub)
+        $allItems = DB::table('beef_lamb_items')
+            ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
+            ->unionAll(
+                DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+            )
+            ->unionAll(
+                DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
             );
 
         // Join the combined result with the main table
@@ -64,23 +75,25 @@ class IDTController extends Controller
             })
             // Apply filters
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
-            ->where(function ($query) {
-                $to_location = request()->query('to_location');
-                $query->where('idt_transfers.location_code', $to_location);
-                
-                if ($to_location == '2595') {
-                    $query->orWhere('idt_transfers.location_code', '2500');
-                }
-            })
-            ->where(function ($query) {
-                $from_location = request()->query('from_location');
-                $query->where('idt_transfers.transfer_from', $from_location);
+            ->when($toValid, function ($query) use ($to_location) {
+                $query->where(function ($q) use ($to_location) {
+                    $q->where('idt_transfers.location_code', $to_location);
 
-                if ($from_location == '3535') {
-                    $query->orWhere('idt_transfers.transfer_from', '3600') // Export
+                    if ($to_location == '2595') {
+                        $q->orWhere('idt_transfers.location_code', '2500');
+                    }
+                });
+            })
+            ->when($fromValid, function ($query) use ($from_location) {
+                $query->where(function ($q) use ($from_location) {
+                    $q->where('idt_transfers.transfer_from', $from_location);
+
+                    if ($from_location == '3535') {
+                        $q->orWhere('idt_transfers.transfer_from', '3600') // Export
                           ->orWhere('idt_transfers.transfer_from', '3540') // Third Party
                           ->orWhere('idt_transfers.transfer_from', '3555'); // Old Factory
-                }
+                    }
+                });
             })
             ->where(function ($query) {
                 $query->where('idt_transfers.requires_approval', 0)
@@ -101,7 +114,13 @@ class IDTController extends Controller
             ->get();
 
 
-        $configs = DB::table('scale_configs')->where('section', $locations[$to_location])->where('scale', 'IDT')->get();
+        $configs = collect();
+        if ($toValid) {
+            $configs = DB::table('scale_configs')
+                ->where('section', $locations[$to_location])
+                ->where('scale', 'IDT')
+                ->get();
+        }
        
         return view('idt.receive', compact('title', 'configs', 'transfer_lines', 'locations', 'helpers'));
     }
@@ -163,12 +182,14 @@ class IDTController extends Controller
             abort(404);
         };
 
-        // Combine products and items using UNION
-        $allItems = DB::table('products')
-            ->select('code', 'description') // Select columns from products
-            ->union(
-                DB::table('items')
-                ->select('code', 'description') // Select columns from items
+        // Combine products and items using UNION (as a query builder for joinSub)
+        $allItems = DB::table('beef_lamb_items')
+            ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
+            ->unionAll(
+                DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+            )
+            ->unionAll(
+                DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
             );
 
         $chillers = DB::table('chillers')->get();
@@ -199,8 +220,19 @@ class IDTController extends Controller
             $products = DB::table('items')->whereIn('code', $petfood_item_codes)->get();
         } elseif ($from_location == '3535') {
             $products = DB::table('items')->get();
+        } elseif ($from_location == '4450') {
+            // QA: union of beef_lamb_items, items, and products
+            $products = DB::table('beef_lamb_items')
+                ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
+                ->unionAll(
+                    DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+                )
+                ->unionAll(
+                    DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
+                )
+                ->get();
         } else {
-            $products = DB::table('products')->get();
+            $products = DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))->get();
         }
         
         $configs = DB::table('scale_configs')->where('section', $locations[$from_location])->where('scale', 'IDT')->get();
@@ -209,6 +241,7 @@ class IDTController extends Controller
     }
 
     public function saveIssueIdt(Request $request) {
+        // dd($request->all());
         try {
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,

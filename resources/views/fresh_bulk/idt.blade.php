@@ -32,6 +32,7 @@
                             <option value="3535">Despatch</option>
                             <option value="3035">Pet Food</option>
                             <option value="4400">Kitchen</option>
+                            <option value="4450">QA</option>
                             <option value="4300">Incineration</option>
                         </select>
                     </div>
@@ -477,7 +478,7 @@
             //receiver div
             let element_recv = document.getElementById("receiver_div")
 
-            const noReceiverLocations = ['3535', '2055', '3035', '4400'];
+            const noReceiverLocations = ['3535', '2055', '4400', '4450']; //despatch, sausage, kitchen, QA
 
             // Check if the selected value is '3535' (Despatch)
             if (noReceiverLocations.includes($(this).val())) {
