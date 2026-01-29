@@ -356,38 +356,85 @@ class IDTController extends Controller
         $title = 'IDT Beef Combined Report';
 
         $q =  DB::table('idt_transfers as transfers')
-        ->leftJoin('beef_lamb_items as items', 'transfers.product_code', '=', 'items.code')
-        ->where('transfers.transfer_from', 'B3535')
-        ->where('transfers.location_code', '1570')
-        ->select(
-            'product_code',
-            'items.description as item_description',
-            DB::raw('SUM(CASE WHEN receiver_total_weight IS NULL THEN total_weight ELSE 0 END) as sent_weight'),
-            DB::raw('SUM(receiver_total_weight) as received_weight'),
-            DB::raw('SUM(CASE WHEN receiver_total_pieces IS NULL THEN total_pieces ELSE 0 END) as sent_pieces'),
-            DB::raw('SUM(receiver_total_pieces) as received_pieces'),
-        )
-        ->groupBy('product_code', 'items.description'); // Group by item code
+            ->leftJoin('beef_lamb_items as items', 'transfers.product_code', '=', 'items.code')
+            ->where('transfers.transfer_from', 'B3535')
+            ->where('transfers.location_code', '1570')
+            ->select(
+                'product_code',
+                'items.description as item_description',
+                DB::raw('SUM(CASE WHEN receiver_total_weight IS NULL THEN total_weight ELSE 0 END) as sent_weight'),
+                DB::raw('SUM(receiver_total_weight) as received_weight'),
+                DB::raw('SUM(CASE WHEN receiver_total_pieces IS NULL THEN total_pieces ELSE 0 END) as sent_pieces'),
+                DB::raw('SUM(receiver_total_pieces) as received_pieces'),
+            )
+            ->groupBy('product_code', 'items.description'); // Group by item code
 
-    if ($request->from_date) {
-        $q->whereDate('transfers.created_at', '>=', $request->from_date);
-        $title .= ' from ' . $request->from_date;
-    }
+        if ($request->from_date) {
+            $q->whereDate('transfers.created_at', '>=', $request->from_date);
+            $title .= ' from ' . $request->from_date;
+        }
 
-    if ($request->to_date) {
-        $q->whereDate('transfers.created_at', '<=', $request->to_date);
-        $title .= ' to ' . $request->from_date;
-    }
+        if ($request->to_date) {
+            $q->whereDate('transfers.created_at', '<=', $request->to_date);
+            $title .= ' to ' . $request->from_date;
+        }
 
-    if (!$request->from_date && !$request->to_date) {
-        $q->whereDate('transfers.created_at', '>=', now()->subDays(30));
-        $title .= " for the last 30 days";
-    }
+        if (!$request->from_date && !$request->to_date) {
+            $q->whereDate('transfers.created_at', '>=', now()->subDays(30));
+            $title .= " for the last 30 days";
+        }
 
-    $data = $q->get();
+        $data = $q->get();
 
         $exports = Session::put('session_export_data', $data);
 
         return Excel::download(new IDTSummaryExport, $title . '.xlsx');
+    }
+
+    public function idtHistory(Request $request, Helpers $helpers, $filter = null)
+    {
+        $title = 'IDT Transfer History';
+
+        //filter can either be ;today or history
+        if ($filter == 'today') {
+            $days_filter = 1;
+        } elseif ($filter == 'history') {
+            $days_filter = 7;
+        } else {
+            $days_filter = 7; // default to 7 days
+        }  
+
+        $limiter = 1000;
+
+        $query = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->leftJoin('users as issuers', 'idt_transfers.user_id', '=', 'issuers.id')
+            ->select(
+                'idt_transfers.*',
+                'items.description as product',
+                'items.qty_per_unit_of_measure',
+                'items.unit_count_per_crate',
+                'users.username',
+                'issuers.username as issuer_username'
+            )
+            ->where(function ($q) use ($request) {
+                $q->where('location_code', $request->to_location)
+                  ->orWhere('transfer_from', $request->from_location); // QA
+            })
+            ->when($days_filter == 1,
+                function ($q) {
+                    $q->whereDate('idt_transfers.created_at', today());
+                },
+                function ($q) use ($days_filter) {
+                    $q->whereDate('idt_transfers.created_at', '>=', now()->subDays($days_filter));
+                }
+            )
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->limit($limiter);
+
+        $transfer_lines = $query->get();
+
+        return view('idt.history', compact('title', 'days_filter', 'helpers', 'transfer_lines', 'limiter'));
     }
 }

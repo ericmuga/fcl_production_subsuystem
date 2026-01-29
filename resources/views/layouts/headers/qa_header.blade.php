@@ -29,26 +29,21 @@
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
             class="nav-link dropdown-toggle">Data Management</a>
-        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-            <li><a href="#" class="dropdown-item"> Today's
-                    Entries
-                </a>
-            </li>
-            <li class="dropdown-divider"></li>                        
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">                    
             <!-- Level two dropdown-->
             <li class="dropdown-submenu dropdown-hover">
                 <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false" class="dropdown-item dropdown-toggle">Reports</a>
                 <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                    <li>
-                        <a tabindex="-1" href="{{ route('sausage_idt_report', 'history') }}"
-                            class="dropdown-item"> IDT History</a>
+                    <li><a href="{{ route('qa_idt_report', 'today') }}" class="dropdown-item"> Today's
+                            Entries
+                        </a>
                     </li>
-                    <li class="dropdown-divider"></li>
+                    <hr class="dropdown-divider"/>
                     <li>
-                        <a tabindex="-1" href="{{ route('per_batch_sausage') }}"
-                            class="dropdown-item"> Per Batch Today</a>
-                    </li>                                
+                        <a tabindex="-1" href="{{ route('qa_idt_report', 'history') }}"
+                            class="dropdown-item"> IDT History</a>
+                    </li>                               
                 </ul>
             </li>
             <!-- End Level two -->

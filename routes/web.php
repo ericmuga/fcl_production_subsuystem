@@ -319,6 +319,9 @@ Route::prefix('idt')->group(function () {
     Route::post('/approve', [IDTController::class, 'approveIdt'])->name('approve_idt');
     Route::get('/beef-combined-report', [IDTController::class, 'beefCombinedReport'])->name('beef_combined_report');
     Route::post('/beef-combined-export', [IDTController::class, 'beefCombinedExport'])->name('beef_combined_export');
+    Route::get('/history/{filter?}', [IDTController::class, 'idtHistory'])->name('idt_history');
+    Route::post('/history/export', [IDTController::class, 'exportIdtHistory'])->name('export_idt_history');
+    Route::post('/summary/export', [IDTController::class, 'exportIdtSummary'])->name('export_idt_summary');
 });
 /*-------------End IDT ------------------ */
 
@@ -327,6 +330,7 @@ Route::prefix('qa')->group(function () {
     Route::get('/dashboard', [QAController::class, 'dashboard'])->name('qa_dashboard');
     Route::get('/issue-idt', [QAController::class, 'issue'])->name('qa_issue_idt');
     Route::get('/receive-idt', [QAController::class, 'receive'])->name('qa_receive_idt');
+    Route::get('/idt-report/{filter?}', [QAController::class, 'idtReport'])->name('qa_idt_report');
 });
 /*-------------End QA ------------------ */
 

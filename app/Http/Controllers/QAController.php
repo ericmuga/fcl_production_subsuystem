@@ -65,4 +65,21 @@ class QAController extends Controller
         // Use generic IDT receive screen; from_location is left open via query string
         return redirect()->route('list_receive', ['to_location' => '4450']);
     }
+
+    public function idtReport($filter = null)
+    {
+        $title = 'QA IDT Transfer Report';
+
+        // Determine date filter
+        $days_filter = 7;
+        if ($filter && is_numeric($filter)) {
+            $days_filter = (int)$filter;
+        }
+
+        return redirect()->route('idt_history', [
+            'filter'        => $filter,
+            'from_location' => '4450', // QA
+            'to_location'   => '4450',
+        ]);
+    }
 }
