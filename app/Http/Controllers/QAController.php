@@ -31,7 +31,7 @@ class QAController extends Controller
             ->whereDate('created_at', today())
             ->where('location_code', '4450')
             ->select(
-                DB::raw('COUNT(*) as total_transfers'),
+                DB::raw('COUNT(received_by) as total_transfers'),
                 DB::raw('SUM(receiver_total_pieces) as total_pieces'),
                 DB::raw('SUM(receiver_total_weight) as total_weight')
             )->first();
@@ -66,7 +66,7 @@ class QAController extends Controller
         return redirect()->route('list_receive', ['to_location' => '4450']);
     }
 
-    public function idtReport($filter = null)
+    public function idtReport($filter = null, $filter2 = null)
     {
         $title = 'QA IDT Transfer Report';
 
@@ -78,6 +78,7 @@ class QAController extends Controller
 
         return redirect()->route('idt_history', [
             'filter'        => $filter,
+            'filter2'       => $filter2,
             'from_location' => '4450', // QA
             'to_location'   => '4450',
         ]);

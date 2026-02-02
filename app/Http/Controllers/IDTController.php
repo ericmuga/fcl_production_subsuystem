@@ -75,6 +75,7 @@ class IDTController extends Controller
             })
             // Apply filters
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
+            ->where('idt_transfers.received_by', null)
             ->when($toValid, function ($query) use ($to_location) {
                 $query->where(function ($q) use ($to_location) {
                     $q->where('idt_transfers.location_code', $to_location);
@@ -391,21 +392,39 @@ class IDTController extends Controller
         return Excel::download(new IDTSummaryExport, $title . '.xlsx');
     }
 
-    public function idtHistory(Request $request, Helpers $helpers, $filter = null)
+    public function idtHistory(Request $request, Helpers $helpers, $filter = null, $filter2 = null)
     {
         $title = 'IDT Transfer History';
-
-        //filter can either be ;today or history
-        if ($filter == 'today') {
-            $days_filter = 1;
-        } elseif ($filter == 'history') {
-            $days_filter = 7;
-        } else {
-            $days_filter = 7; // default to 7 days
-        }  
-
         $limiter = 1000;
 
+        $fromLocation = $request->from_location;
+        $toLocation   = $request->to_location;
+
+        // -------------------------
+        // Date window control
+        // -------------------------
+        $applyDateFilter = true;
+
+        if ($filter === 'today') {
+            $days_filter = 1;
+        } else {
+            $days_filter = 7;
+        }
+
+        // -------------------------
+        // Title handling
+        // -------------------------
+        if ($filter2 === 'sent') {
+            $title .= ' - Sent Transfers';
+        } elseif ($filter2 === 'received') {
+            $title .= ' - Received Transfers';
+        } elseif ($filter2 === 'approvals') {
+            $title .= ' - Pending Approvals';
+        }
+
+        // -------------------------
+        // Base query
+        // -------------------------
         $query = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
@@ -417,24 +436,69 @@ class IDTController extends Controller
                 'items.unit_count_per_crate',
                 'users.username',
                 'issuers.username as issuer_username'
-            )
-            ->where(function ($q) use ($request) {
-                $q->where('location_code', $request->to_location)
-                  ->orWhere('transfer_from', $request->from_location); // QA
-            })
-            ->when($days_filter == 1,
-                function ($q) {
-                    $q->whereDate('idt_transfers.created_at', today());
-                },
-                function ($q) use ($days_filter) {
-                    $q->whereDate('idt_transfers.created_at', '>=', now()->subDays($days_filter));
+            );
+
+        // -------------------------
+        // Filter logic
+        // -------------------------
+        switch ($filter2) {
+
+            case 'sent':
+                if ($fromLocation) {
+                    $query->where('transfer_from', $fromLocation);
                 }
-            )
+                break;
+
+            case 'received':
+
+            if ($toLocation) {
+                $query->where('idt_transfers.location_code', $toLocation);
+            }
+
+            $query->whereDate('idt_transfers.created_at', today())
+                ->whereNotNull('idt_transfers.received_by');
+
+            break;
+
+            case 'approvals':
+
+            $query->where('idt_transfers.requires_approval', 1)
+                ->whereNull('idt_transfers.approved');
+
+            $transfer_lines = $query
+                ->orderBy('idt_transfers.created_at', 'DESC')
+                ->limit($limiter)
+                ->get();
+
+            return view(
+                'idt.history',
+                compact('title', 'helpers', 'transfer_lines', 'limiter')
+            );
+        }
+
+        // -------------------------
+        // Apply date filter (only if allowed)
+        // -------------------------
+        if ($applyDateFilter) {
+            if ($filter === 'today') {
+                $query->whereDate('idt_transfers.created_at', today());
+            } else {
+                $query->whereDate(
+                    'idt_transfers.created_at',
+                    '>=',
+                    now()->subDays($days_filter)
+                );
+            }
+        }
+
+        $transfer_lines = $query
             ->orderBy('idt_transfers.created_at', 'DESC')
-            ->limit($limiter);
+            ->limit($limiter)
+            ->get();
 
-        $transfer_lines = $query->get();
-
-        return view('idt.history', compact('title', 'days_filter', 'helpers', 'transfer_lines', 'limiter'));
+        return view(
+            'idt.history',
+            compact('title', 'days_filter', 'helpers', 'transfer_lines', 'limiter')
+        );
     }
 }
