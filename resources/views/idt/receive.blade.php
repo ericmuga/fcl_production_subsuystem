@@ -145,7 +145,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="receiveModalLabel">Receive IDT From Butchery</h5>
+                    <h5 class="modal-title" id="receiveModalLabel">Receive IDT</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">×</span>
                     </button>
@@ -181,10 +181,10 @@
                                 <div id="crate_inputs" class="form-group row" hidden>
                                     <div class="col-sm-6">
                                         <div class="row">
-                                            <label for="inputEmail3" class="col-sm-5 col-form-label">Total Crates
+                                            <label for="inputEmail3" class="col-sm-5 col-form-label">Total Crates(incl.black)
                                             </label>
                                             <div class="col-sm-7">
-                                                <input type="number" class="form-control tareweight" value="1" min="1" oninput="updateTare()" onchange="updateBlackMax()"
+                                                <input type="number" class="form-control tareweight" value="2" min="1" oninput="updateTare()" onchange="updateBlackMax()"
                                                     id="f_no_of_crates" placeholder="">
                                             </div>
                                         </div>
