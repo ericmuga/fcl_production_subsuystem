@@ -39,8 +39,8 @@ class QAController extends Controller
         // Pending approvals entries where QA is involved (either from or to QA)
         $pending_approvals = DB::table('idt_transfers')
             ->where(function ($q) {
-                $q->where('location_code', '4450')
-                  ->orWhere('transfer_from', '4450');
+                $q->where('transfer_from', '<>','4450')
+                  ->Where('location_code', '<>','4450');
             })
             ->where('requires_approval', 1)
             ->whereNull('approved')

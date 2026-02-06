@@ -305,7 +305,9 @@
                                     </button>
                                     @elseif($data->approved == 1)
                                     <span class="badge badge-success">Approved</span>
-                                    @elseif($data->approved == 0)
+                                    @elseif($data->requires_approval && $data->approved == null)
+                                    <span class="badge badge-warning">Pending Approval</span>
+                                    @elseif($data->requires_approval && $data->approved == 0)
                                     <span class="badge badge-danger">Rejected</span>
                                     @else
                                     <span class="text-muted">-</span>
