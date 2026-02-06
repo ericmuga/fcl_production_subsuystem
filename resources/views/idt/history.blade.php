@@ -227,7 +227,7 @@
                                 <th>Batch No</th>
                                 <th>Issue Date</th>
                                 <th>Receipt Date</th>
-                                {{-- <th>Action</th> --}}
+                                <th>Action</th>
                         </thead>
                         <tfoot>
                             <tr>
@@ -256,7 +256,7 @@
                                 <th>Batch No</th>
                                 <th>Issue Date</th>
                                 <th>Receipt Date</th>
-                                {{-- <th>Action</th> --}}
+                                <th>Action</th> 
                             </tr>
                         </tfoot>
                         <tbody>
@@ -294,16 +294,24 @@
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 <td>{{ $helpers->amPmDate($data->updated_at) }}</td>
-                                {{-- <td>
-                                    <button type="button" data-id="{{$data->id}}"
-                                data-product="{{ $data->product_code }}"
-                                data-unit_count="{{ $data->unit_count_per_crate }}"
-                                data-unit_measure="{{ number_format($data->qty_per_unit_of_measure, 2) }}"
-                                data-item="{{ $data->product }}" class="btn btn-primary btn-xs"
-                                title="Correct Received transfer" id="despatchCorrectionModalShow"><i
-                                    class="fas fa-edit"></i>
-                                </button>
-                                </td> --}}
+                                
+                                <td>
+                                    @if($data->requires_approval && is_null($data->approved))
+                                    <button type="button" class="btn btn-sm btn-outline-primary qa-approve-trigger"
+                                        data-id="{{ $data->id }}" data-product="{{ $data->product }}"
+                                        data-batch="{{ $data->batch_no }}" data-pieces="{{ $data->total_pieces }}"
+                                        data-weight="{{ $data->total_weight }}">
+                                        QA Approval
+                                    </button>
+                                    @elseif($data->approved == 1)
+                                    <span class="badge badge-success">Approved</span>
+                                    @elseif($data->approved == 0)
+                                    <span class="badge badge-danger">Rejected</span>
+                                    @else
+                                    <span class="text-muted">-</span>
+                                    @endif
+                                </td>
+
                             </tr>
                             @endforeach
                         </tbody>
@@ -434,6 +442,60 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="qaApproveModal" tabindex="-1" role="dialog" aria-labelledby="qaApproveModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <form class="modal-content" action="{{ route('approve_idt') }}" method="post">
+            @csrf
+            <input type="hidden" name="id" id="qa_approve_id" value="">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qaApproveModalLabel">QA Approval</h5>
+                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="qa_approve_product">Product</label>
+                            <input type="text" class="form-control" id="qa_approve_product" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="qa_approve_batch">Batch No</label>
+                            <input type="text" class="form-control" id="qa_approve_batch" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="qa_approve_pieces">Pieces</label>
+                            <input type="text" class="form-control" id="qa_approve_pieces" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="qa_approve_weight">Weight</label>
+                            <input type="text" class="form-control" id="qa_approve_weight" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="qa_narration">Narration (optional)</label>
+                    <textarea class="form-control" name="narration" id="qa_narration" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-danger" name="approve" value="0">Reject</button>
+                <button type="submit" class="btn btn-primary" name="approve" value="1">Approve</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -470,6 +532,18 @@
             $('#unit_measure').val(unit_measure);
 
             $('#despatchCorrectionModal').modal('show');
+        });
+
+        $('body').on('click', '.qa-approve-trigger', function () {
+            const btn = $(this);
+
+            $('#qa_approve_id').val(btn.data('id'));
+            $('#qa_approve_product').val(btn.data('product'));
+            $('#qa_approve_batch').val(btn.data('batch'));
+            $('#qa_approve_pieces').val(btn.data('pieces'));
+            $('#qa_approve_weight').val(btn.data('weight'));
+
+            $('#qaApproveModal').modal('show');
         });
     });
 
