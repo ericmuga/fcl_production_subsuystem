@@ -538,7 +538,7 @@ class DespatchController extends Controller
 
             $transfer_from = $request->tranfer_type;
 
-            $requires_approval = (substr($request->product_code, 0, 1) === 'J'); 
+            $requires_approval = (substr($request->product_code, 0, 1) === 'J') && ($request->location_code !== '4450'); // requires approval if product code starts with J and not going to QA
 
             if($request->unit_crate_count > 0) {
                 // save for calculated weight
