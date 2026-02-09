@@ -29,6 +29,7 @@
                             <option value="1570">Butchery</option>
                             <option value="2055">Sausage</option>
                             <option value="3535">Despatch</option>
+                            <option value="4450">QA</option>
                         </select>
                     </div>
                     <div class="col-md-6">
