@@ -60,11 +60,12 @@ class IDTController extends Controller
         $allItems = DB::table('beef_lamb_items')
             ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
             ->unionAll(
-                DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+            DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
             )
             ->unionAll(
-                DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
-            );
+            DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
+            )
+            ->distinct('code');
 
         // Join the combined result with the main table
         $transfer_lines = DB::table('idt_transfers')
@@ -112,8 +113,8 @@ class IDTController extends Controller
             )
             // Order by the creation date
             ->orderBy('idt_transfers.created_at', 'DESC')
+            ->distinct()
             ->get();
-
 
         $configs = collect();
         if ($toValid) {
@@ -392,8 +393,10 @@ class IDTController extends Controller
         return Excel::download(new IDTSummaryExport, $title . '.xlsx');
     }
 
-    public function idtHistory(Request $request, Helpers $helpers, $filter = null, $filter2 = null)
+    public function idtHistory(Request $request, $filter  = null, $filter2 = null)
     {
+        $helpers = new Helpers();
+
         $title = 'IDT Transfer History';
         $limiter = 1000;
 
@@ -404,12 +407,7 @@ class IDTController extends Controller
         // Date window control
         // -------------------------
         $applyDateFilter = true;
-
-        if ($filter === 'today') {
-            $days_filter = 1;
-        } else {
-            $days_filter = 7;
-        }
+        $days_filter = ($filter === 'today') ? 1 : 7;
 
         // -------------------------
         // Title handling
@@ -426,7 +424,7 @@ class IDTController extends Controller
         // Base query
         // -------------------------
         $query = DB::table('idt_transfers')
-            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->join('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->leftJoin('users as issuers', 'idt_transfers.user_id', '=', 'issuers.id')
             ->select(
@@ -447,6 +445,12 @@ class IDTController extends Controller
                 if ($fromLocation) {
                     $query->where('transfer_from', $fromLocation);
                 }
+
+                // match dashboard count: sent from QA today
+                if ($filter === 'today') {
+                    $query->whereDate('idt_transfers.created_at', today());
+                    $applyDateFilter = false;
+                }
                 break;
 
             case 'received':
@@ -455,15 +459,36 @@ class IDTController extends Controller
                 $query->where('idt_transfers.location_code', $toLocation);
             }
 
-            $query->whereDate('idt_transfers.created_at', today())
-                ->whereNotNull('idt_transfers.received_by');
+            $query->whereNotNull('idt_transfers.received_by');
+
+            // match dashboard count: received into QA today
+            if ($filter === 'today') {
+                $query->whereDate('idt_transfers.created_at', today());
+                $applyDateFilter = false;
+            }
 
             break;
 
             case 'approvals':
 
+            // pending approvals (no date restriction)
+            $applyDateFilter = false;
+
             $query->where('idt_transfers.requires_approval', 1)
                 ->whereNull('idt_transfers.approved');
+
+            //match dashboard/SQL logic: exclude specified locations (e.g. QA 4450)
+            if ($fromLocation || $toLocation) {
+                $query->where(function ($q) use ($fromLocation, $toLocation) {
+                    if ($fromLocation) {
+                        $q->where('transfer_from', '<>', $fromLocation);
+                    }
+
+                    if ($toLocation) {
+                        $q->where('idt_transfers.location_code', '<>', $toLocation);
+                    }
+                });
+            }
 
             $transfer_lines = $query
                 ->orderBy('idt_transfers.created_at', 'DESC')
@@ -472,7 +497,7 @@ class IDTController extends Controller
 
             return view(
                 'idt.history',
-                compact('title', 'helpers', 'transfer_lines', 'limiter')
+                compact('title', 'helpers', 'transfer_lines', 'limiter', 'days_filter')
             );
         }
 

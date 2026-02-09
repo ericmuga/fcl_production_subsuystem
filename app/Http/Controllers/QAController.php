@@ -45,7 +45,7 @@ class QAController extends Controller
             ->where('requires_approval', 1)
             ->whereNull('approved')
             ->select(
-                DB::raw('COUNT(*) as total_transfers'),
+                DB::raw('COUNT(id) as total_transfers'),
                 DB::raw('SUM(total_pieces) as total_pieces'),
                 DB::raw('SUM(total_weight) as total_weight')
             )->first();
@@ -79,8 +79,9 @@ class QAController extends Controller
         return redirect()->route('idt_history', [
             'filter'        => $filter,
             'filter2'       => $filter2,
-            'from_location' => '4450', // QA
-            'to_location'   => '4450',
+            'from_location' => 4450,
+            'to_location'   => 4450,
         ]);
+
     }
 }
