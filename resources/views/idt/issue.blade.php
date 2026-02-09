@@ -70,6 +70,7 @@
                         <label for="carriage_type">Carriage Type</label>
                         <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
                             <option disabled selected value> -- select an option -- </option>
+                            <option value="none">No Carriage</option>
                             <option value="crate">Crate</option>
                             <option value="van">Van</option>
                         </select>
@@ -374,6 +375,8 @@
             tare = 0
         } else if (carriage.value == 'van') {
             tare = 40
+        } else if(carriage.value == 'none') {
+            tare = 0
         } else {
             tare = (parseFloat(1.8) * parseFloat(total_crates)) + parseFloat(black_crates) * 0.2
         }
@@ -535,6 +538,7 @@ function loadProductDetails (event) {
             const weightPerUnit = parseFloat(selectedProduct.qty_per_unit_of_measure) || 0;
             const totalWeight = pcs * weightPerUnit;
             $('#net').val(totalWeight.toFixed(2));
+            $('#reading').val(totalWeight.toFixed(2));
         });
     } else {
         // For non-PC items, remove the special handler so scale logic applies
