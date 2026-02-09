@@ -115,6 +115,8 @@
                                             data-product-name="{{ $data->description }}"
                                             data-issued-pieces="{{ $data->total_pieces }}"
                                             data-issued-weight="{{ $data->total_weight }}"
+                                            data-unit-measure="{{ $data->unit_of_measure }}"
+                                            data-unit-measure-value="{{ $data->qty_per_unit_of_measure }}"
                                             class="btn btn-warning btn-xs"
                                             title="Receive transfer"
                                             onclick="updateReceiveModalInputs(event)">
@@ -170,9 +172,9 @@
                                             id="receiver_total_pieces" name="receiver_total_pieces" placeholder="" required>
                                     </div>
                                 </div>
-                                <div class="form-group form-row">
+                                <div class="form-group form-row" id="carriage_type_group">
                                     <label for="carriage_type" class="col-sm-4 col-form-label">Carriage Type</label>
-                                    <select class="form-control col-sm-8" id="carriage_type" name="carriage_type" required onchange="toggleCrateInputs(event)">
+                                    <select class="form-control col-sm-8" id="carriage_type" name="carriage_type" onchange="toggleCrateInputs(event)">
                                         <option disabled selected value="">Select Carriage Type</option>
                                         <option value="van">Van</option>
                                         <option value="crate">Crates</option>
@@ -203,6 +205,8 @@
                                 <input type="hidden" id="f_issued_pieces" name="issued_pieces" value="0">
                                 <input type="hidden" id="f_issued_weight" name="issued_weight" value="0">
                                 <input type="hidden" id="f_valid_match" name="valid_match" value="1">
+                                <input type="" id="unit_measure" name="unit_measure" value="">
+                                <input type="" id="unit_measure_value" name="unit_measure_value" value="">
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -275,6 +279,8 @@
     const tareInput = document.getElementById('f_tareweight');
     const weightInput = document.getElementById('f_weight');
     const netInput = document.getElementById('net');
+    const unitMeasureInput = document.getElementById('unit_measure');
+    const unitMeasureValueInput = document.getElementById('unit_measure_value');
 
     function toggleCrateInputs(event) {
         let selected = event.target.value;
@@ -314,6 +320,32 @@
         const blackCratesInput = document.getElementById('f_black_crates');
         blackCratesInput.max = totalCrates;
     }
+
+    function isPieceBased() {
+        const unit = (unitMeasureInput.value || '').toUpperCase();
+        return unit === 'PC';
+    }
+
+    function calculateWeightFromPieces() {
+        if (!isPieceBased()) {
+            return;
+        }
+
+        const pieces = parseFloat(document.getElementById('receiver_total_pieces').value || 0);
+        const unitVal = parseFloat(unitMeasureValueInput.value || 0);
+
+        if (!pieces || !unitVal) {
+            weightInput.value = 0;
+            tareInput.value = 0;
+            getNet();
+            return;
+        }
+
+        const weight = pieces * unitVal;
+        weightInput.value = weight.toFixed(2);
+        tareInput.value = 0; // no carriage/tare for piece-based items
+        getNet();
+    }
     
     function updateReceiveModalInputs(event) {
         let button = event.currentTarget;
@@ -321,6 +353,8 @@
         let product_name = button.getAttribute('data-product-name');
         let issued_pieces = button.getAttribute('data-issued-pieces');
         let issued_weight = button.getAttribute('data-issued-weight');
+        let unit_measure = button.getAttribute('data-unit-measure');
+        let unit_measure_value = button.getAttribute('data-unit-measure-value');
 
         console.log('updating issued pieces: ' + issued_pieces + ' issued weight: ' + issued_weight);
 
@@ -328,6 +362,30 @@
         document.getElementById('f_item').value = product_name;
         document.getElementById('f_issued_pieces').value = issued_pieces;
         document.getElementById('f_issued_weight').value = issued_weight;
+        unitMeasureInput.value = unit_measure;
+        unitMeasureValueInput.value = unit_measure_value;
+
+        const carriageGroup = document.getElementById('carriage_type_group');
+        const carriageSelect = document.getElementById('carriage_type');
+        const crateInputs = document.getElementById('crate_inputs');
+
+        if (isPieceBased()) {
+            if (carriageGroup) {
+                carriageGroup.style.display = 'none';
+            }
+            if (carriageSelect) {
+                carriageSelect.value = '';
+            }
+            if (crateInputs) {
+                crateInputs.setAttribute('hidden', true);
+            }
+
+            calculateWeightFromPieces();
+        } else {
+            if (carriageGroup) {
+                carriageGroup.style.display = '';
+            }
+        }
     }
 
     $(document).ready(function () {
@@ -351,6 +409,10 @@
                 reading.readOnly = true;
             }           
         }); 
+
+        $('#receiver_total_pieces').on('input', function () {
+            calculateWeightFromPieces();
+        });
 
     });
 

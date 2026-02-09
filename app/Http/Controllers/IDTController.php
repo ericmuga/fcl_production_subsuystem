@@ -107,7 +107,7 @@ class IDTController extends Controller
             // Select columns from the joined tables
             ->select(
                 'idt_transfers.*', // Select all columns from idt_transfers
-                'all_items.description', 'all_items.code', // Columns from the all_items subquery
+                'all_items.description', 'all_items.code', 'all_items.unit_of_measure', 'all_items.qty_per_unit_of_measure', // Columns from the all_items subquery
                 'issuer.username as issued_by', // Alias for issuer username
                 'receiver.username as received_by' // Alias for receiver username
             )
