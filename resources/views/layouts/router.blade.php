@@ -132,6 +132,8 @@
                         <i class="fas fa-exchange-alt fa-4x"></i>
                     </div>
                 </div>
+                
+                @if(Session()->get('session_userRole') == 'QA')
                 <div class="col-md-3 card p-2 bg-warning" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
                         href="{{ route('qa_dashboard') }}">
@@ -143,6 +145,7 @@
                         <i class="fas fa-certificate fa-4x"></i>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>

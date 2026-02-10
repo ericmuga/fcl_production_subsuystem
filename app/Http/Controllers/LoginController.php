@@ -96,6 +96,7 @@ class LoginController extends Controller
 
         //Log username into session
         Session::put('session_username', $request->username);
+        Session::put('session_userRole', $user->role);
 
         # Redirecting
         Toastr::success('Successful login', 'Success');
