@@ -14,8 +14,15 @@
     <li class="nav-item">
         <a href="{{ route('sausage_dashboard') }}" class="nav-link">Dashboard</a>
     </li>
-    <li class="nav-item">
-        <a id="dropdownSubMenu1"  href="{{ route('sausage_idt') }}"aria-haspopup="true" aria-expanded="false" class="nav-link">Issue IDT </a>
+    <li class="nav-item dropdown">
+        <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+            class="nav-link dropdown-toggle">Issue IDTs</a>
+        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
+            <li><a href="{{ route('sausage_idt') }}" class="dropdown-item">Despatch IDTs</a></li>
+            <hr class="dropdown-divider"/>
+            <li><a href="{{ route('sausage_idt', 'highcare') }}" class="dropdown-item">Continental IDTs</a>
+            </li>            
+        </ul>
     </li>
     <li class="nav-item dropdown">
         <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
@@ -73,8 +80,14 @@
             class="nav-link dropdown-toggle">Scale Settings</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('scale_settings', 'stuffing') }}" class="dropdown-item">
+                <a href="{{ route('scale_settings', ['stuffing', 'sausage']) }}" class="dropdown-item">
                    Scale Settings - Stuffing Weights
+                </a>
+            </li>
+            <li class="dropdown-divider"></li>
+            <li>
+                <a href="{{ route('scale_settings', ['continental_mass', 'sausage']) }}" class="dropdown-item">
+                   Scale Settings - Continentals Mixes
                 </a>
             </li>
         </ul>

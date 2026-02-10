@@ -237,8 +237,8 @@
                         @foreach($transfer_lines as $data)
                             <tr>
                                 <td id="editIdtModalShow" data-id="{{ $data->id }}"
-                                    data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}"
-                                    data-unit_measure="{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}"
+                                    data-product="{{ $products->firstWhere('code', $data->product_code)->description ?? $data->description }}"
+                                    data-unit_measure="{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? $data->unit_of_measure }}"
                                     data-total_pieces="{{ $data->total_pieces }}"
                                     data-total_weight="{{ $data->total_weight }}"
                                     data-transfer_type="{{ $data->transfer_type }}"
@@ -246,8 +246,8 @@
                                     data-batch_no="{{ $data->batch_no }}"><a href="#">{{ $data->id }}</a>
                                 </td>
                                 <td>{{ $data->product_code }}</td>
-                                <td>{{ $products->firstWhere('code', $data->product_code)->description ?? 'N/A' }}</td>
-                                <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? 'N/A' }}</td>
+                                <td>{{ $products->firstWhere('code', $data->product_code)->description ?? $data->description }}</td>
+                                <td>{{ $products->firstWhere('code', $data->product_code)->unit_of_measure ?? $data->unit_of_measure }}</td>
                                 <td>{{ $data->location_code }}</td>
                                 <td>{{ $data->chiller_code }}</td>
                                 <td>{{ $data->total_crates ?? 0 }}</td>
@@ -443,6 +443,26 @@
         $('.crates').on("keyup change", function () {
             validateCrates()
         })
+    });
+
+    $("body").on("click", "#editIdtModalShow", function (e) {
+        e.preventDefault();
+
+        let id = $(this).data('id');
+        let product = $(this).data('product');
+        let weight = $(this).data('total_weight');
+        let transfer_type = $(this).data('transfer_type');
+        let batch_no = $(this).data('batch_no');
+
+        $('#item_id').val(id);
+        $('#edit_product').val(product);
+        $('#weight_edit').val(weight);
+        $('#for_export_edit').val(transfer_type);
+        $('#batch_no_edit').val(batch_no);
+
+        $('#for_export_edit').select2('destroy').select2();
+
+        $('#editIdtModal').modal('show');
     });
 
     const validateOnSubmit = () => {

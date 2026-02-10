@@ -212,8 +212,13 @@ class SausageController extends Controller
         }
     }
 
-    public function getIdt(Helpers $helpers)
+    public function getIdt(Helpers $helpers, $filter = null)
     {
+        // dd($filter);
+        if($filter == 'highcare') {
+            return redirect()->route('list_issued_idt', ['from_location' => '2055', 'to_location' => '2500']);
+        } 
+        
         $title = "IDT";
 
         $filter = '';

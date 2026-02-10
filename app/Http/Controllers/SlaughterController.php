@@ -664,7 +664,7 @@ class SlaughterController extends Controller
         return Excel::download(new SlaughterForNavExport, 'SlaughterForNavImport-' . $request->date . '.csv');
     }
 
-    public function scaleSettings(Helpers $helpers, $section = null)
+    public function scaleSettings(Helpers $helpers, $section = null, $layout = null)
     {
         $title = "scale";
 
@@ -672,7 +672,7 @@ class SlaughterController extends Controller
             ->where('section', $section)
             ->get();
 
-        return view('slaughter.scale_settings', compact('title','section', 'scale_settings', 'helpers'));
+        return view('slaughter.scale_settings', compact('title','section', 'scale_settings', 'helpers', 'layout'));
     }
 
     public function UpdateScaleSettings(Request $request, Helpers $helpers)

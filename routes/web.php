@@ -165,7 +165,7 @@ Route::prefix('freshcuts_bulk')->group(function () {
 
 /*-------------Sausage------------------ */
 Route::get('/sausage/dashboard', [SausageController::class, 'index'])->name('sausage_dashboard');
-Route::get('/sausage/create-idt', [SausageController::class, 'getIdt'])->name('sausage_idt');
+Route::get('/sausage/create-idt/{filter?}', [SausageController::class, 'getIdt'])->name('sausage_idt');
 Route::get('/sausage/receive-idt', [SausageController::class, 'getReceiveIdt'])->name('sausage_idt_receive');
 Route::post('/item/details-axios', [SausageController::class, 'getItemDetails'])->name('item_details');
 Route::post('/fetch-transferToLocations-axios', [SausageController::class, 'getTransferToLocations'])->name('fetch_transfer_locations');
@@ -296,7 +296,7 @@ Route::prefix('asset')->group(function () {
 
 /*-------------Start Scale----------------- */
 Route::prefix('scale-settings')->group(function () {
-    Route::get('/{section}', [SlaughterController::class, 'scaleSettings'])->name('scale_settings');
+    Route::get('/{section}/{layout?}', [SlaughterController::class, 'scaleSettings'])->name('scale_settings');
     Route::post('/update', [SlaughterController::class, 'UpdateScaleSettings'])->name('update_scale_settings');
 });
 /*-------------End Scale------------------ */

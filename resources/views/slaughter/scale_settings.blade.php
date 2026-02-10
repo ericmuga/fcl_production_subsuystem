@@ -1,4 +1,6 @@
-@extends($section === 'stuffing' ? 'layouts.sausage_master' : 'layouts.slaughter_master')
+{{-- @extends($section === 'stuffing' ? 'layouts.sausage_master' : 'layouts.slaughter_master') --}}
+
+@extends('layouts.'.$layout.'_master')
 
 @section('content-header')
 <div class="container">

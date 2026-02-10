@@ -177,6 +177,7 @@ class IDTController extends Controller
         $title = "Issue IDT";
 
         $from_location = $request->query('from_location');
+        $to_location   = $request->query('to_location');
 
         $locations = self::locations;
 
@@ -184,15 +185,29 @@ class IDTController extends Controller
             abort(404);
         };
 
-        // Combine products and items using UNION (as a query builder for joinSub)
-        $allItems = DB::table('beef_lamb_items')
-            ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
-            ->unionAll(
-                DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
-            )
-            ->unionAll(
-                DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
-            );
+        // Item master for joining existing transfer lines
+        if ($to_location === '2500') {
+            // For transfers going to 2500, restrict items to template mixes
+            $allItems = DB::table('template_lines')
+                ->where('main_product', 'Yes')
+                ->where('description', 'like', '%Mix for%')
+                ->select(
+                    'item_code as code',
+                    'description',
+                    DB::raw("'KG' as unit_of_measure"),
+                    DB::raw('1 as qty_per_unit_of_measure')
+                );
+        } else {
+            // Default: union of beef_lamb_items, items and products
+            $allItems = DB::table('beef_lamb_items')
+                ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
+                ->unionAll(
+                    DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+                )
+                ->unionAll(
+                    DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
+                );
+        }
 
         $chillers = DB::table('chillers')->get();
 
@@ -209,7 +224,7 @@ class IDTController extends Controller
             // Select columns from the joined tables
             ->select(
                 'idt_transfers.*', // Select all columns from idt_transfers
-                'all_items.description', 'all_items.code', // Columns from the all_items subquery
+                'all_items.description', 'all_items.code', 'all_items.unit_of_measure', 'all_items.qty_per_unit_of_measure', // Columns from the all_items subquery
                 'issuer.username as issued_by', // Alias for issuer username
                 'receiver.username as received_by' // Alias for receiver username
             )
@@ -217,7 +232,14 @@ class IDTController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        if ($from_location == '3035') {
+        if ($to_location === '2500') {
+            // When issuing to 2500, only allow template mix products
+            $products = DB::table('template_lines')
+                ->where('main_product', 'Yes')
+                ->where('description', 'like', '%Mix for%')
+                ->select('item_code as code', 'description', DB::raw("'KG' as unit_of_measure"))
+                ->get();
+        } elseif ($from_location == '3035') {
             $petfood_item_codes = ['J31080101', 'J31080106', 'J31080201', 'J31080302', 'J31090171'];
             $products = DB::table('items')->whereIn('code', $petfood_item_codes)->get();
         } elseif ($from_location == '3535') {
@@ -237,7 +259,14 @@ class IDTController extends Controller
             $products = DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))->get();
         }
         
-        $configs = DB::table('scale_configs')->where('section', $locations[$from_location])->where('scale', 'IDT')->get();
+        $configs = DB::table('scale_configs')
+            ->when($to_location == '2500', function ($query) {
+                 $query->where('section', 'continental_mass');
+            })
+            ->when($to_location !== '2500', function ($query) use ($to_location, $locations) {
+                 $query->where('section', $locations[$to_location]);
+            })
+            ->get();
        
         return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
     }
