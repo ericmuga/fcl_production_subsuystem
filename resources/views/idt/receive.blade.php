@@ -205,8 +205,8 @@
                                 <input type="hidden" id="f_issued_pieces" name="issued_pieces" value="0">
                                 <input type="hidden" id="f_issued_weight" name="issued_weight" value="0">
                                 <input type="hidden" id="f_valid_match" name="valid_match" value="1">
-                                <input type="" id="unit_measure" name="unit_measure" value="">
-                                <input type="" id="unit_measure_value" name="unit_measure_value" value="">
+                                <input type="hidden" id="unit_measure" name="unit_measure" value="">
+                                <input type="hidden" id="unit_measure_value" name="unit_measure_value" value="">
                             </div>
                         </div>
                         <div class="col-md-6">

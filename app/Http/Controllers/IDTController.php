@@ -56,16 +56,29 @@ class IDTController extends Controller
             abort(404);
         }
 
-        // Combine products and items using UNION (as a query builder for joinSub)
-        $allItems = DB::table('beef_lamb_items')
-            ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
-            ->unionAll(
-            DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
-            )
-            ->unionAll(
-            DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
-            )
-            ->distinct('code');
+        // Item master for joining existing transfer lines
+        if ($to_location === '2500') {
+            // For transfers going to 2500, restrict items to template mixes
+            $allItems = DB::table('template_lines')
+                ->where('main_product', 'Yes')
+                ->where('description', 'like', '%Mix for%')
+                ->select(
+                    'item_code as code',
+                    'description',
+                    DB::raw("'KG' as unit_of_measure"),
+                    DB::raw('1 as qty_per_unit_of_measure')
+                );
+        } else {
+            // Default: union of beef_lamb_items, items and products
+            $allItems = DB::table('beef_lamb_items')
+                ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
+                ->unionAll(
+                    DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
+                )
+                ->unionAll(
+                    DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
+                );
+        }
 
         // Join the combined result with the main table
         $transfer_lines = DB::table('idt_transfers')

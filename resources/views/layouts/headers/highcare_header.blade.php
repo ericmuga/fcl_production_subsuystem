@@ -39,6 +39,10 @@
             </li>
             <hr class="dropdown-divider" />
             <li>
+                <a href="{{ route('list_receive', ['from_location' => '2055', 'to_location' => '2500']) }}" class="dropdown-item">Sausage IDT</a>
+            </li>
+            <hr class="dropdown-divider" />
+            <li>
                 <a href="{{ route('list_receive', ['from_location' => '3535', 'to_location' => '2595']) }}" class="dropdown-item">Despatch IDT</a>
             </li>
         </ul>
