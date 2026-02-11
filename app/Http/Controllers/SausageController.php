@@ -7,7 +7,6 @@ use App\Models\Helpers;
 use App\Models\SausageEntry;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
-use Faker\Core\Barcode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -16,7 +15,6 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
-use Mockery\Matcher\Type;
 
 class SausageController extends Controller
 {
