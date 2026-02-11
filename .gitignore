@@ -17,6 +17,5 @@ yarn-error.log
 /.idea
 /.vscoderr
 .rr.yaml
-bootstrap/*
-bootstrap/cache/routes-v7.php
-bootstrap/cache/config.php
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
