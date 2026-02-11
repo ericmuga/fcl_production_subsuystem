@@ -22,7 +22,6 @@
         "rap2hpoutre/laravel-log-viewer": "^1.7"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.6",
         "facade/ignition": "^2.5",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "*",
