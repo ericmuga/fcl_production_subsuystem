@@ -271,14 +271,17 @@ class IDTController extends Controller
         } else {
             $products = DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))->get();
         }
+
+        // dd($locations);
+        // dd($request->all());
         
         $configs = DB::table('scale_configs')
             ->when($to_location == '2500', function ($query) {
                  $query->where('section', 'continental_mass');
             })
-            ->when($to_location !== '2500', function ($query) use ($to_location, $locations) {
-                 $query->where('section', $locations[$to_location]);
-            })
+            // ->when($to_location !== '2500', function ($query) use ($to_location, $locations) {
+            //      $query->where('section', $locations);
+            // })
             ->get();
        
         return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
