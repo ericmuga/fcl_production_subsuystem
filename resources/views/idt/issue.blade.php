@@ -412,7 +412,7 @@
         $('#product_code').on('change', loadProductDetails);
 
         let reading = document.getElementById('reading');
-        var configs = {{ $configs }};
+        const configs = @json($configs);
 
         if (($('#old_manual').val()) == "on" ||  configs.length == 0) {
             $('#manual_weight').prop('checked', true);
