@@ -14,9 +14,11 @@
                     <div class="form-group mb-3">
                         <label for="product_code">Product Name</label>
                         <select class="custom-select" id="product_code" name="product_code" required>
-                            <option value="">Choose...</option>
+                            <option value="" {{ old('product_code') ? '' : 'selected' }}>Choose...</option>
                             @foreach ($productCodes as $key => $value)
-                                <option value={{ $key }}>{{ $key }} {{ $value }}</option>
+                                <option value="{{ $key }}" {{ old('product_code') == $key ? 'selected' : '' }}>
+                                    {{ $key }} {{ $value }}
+                                </option>
                             @endforeach
                         </select>    
                     </div>
@@ -24,7 +26,7 @@
                     <div class="row">
                         <div class="col-12">
                             @if(count($configs) === 0)
-                                <small>No comport conifgured</small>
+                                <small>No comport configured</small>
                             @else
                             <small>
                                 <label>Reading from ComPort:</label>
