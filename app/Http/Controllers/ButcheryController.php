@@ -8,13 +8,8 @@ use App\Exports\BreakingCombinedExport;
 use App\Exports\BreakingLinesExport;
 use App\Exports\DebonedCombinedExport;
 use App\Exports\DebonedLinesExport;
-use App\Models\BeheadingData;
-use App\Models\ButcheryData;
 use App\Models\Helpers;
 use App\Models\Product;
-use App\Models\Sale;
-use App\Models\DebonedData;
-use App\Models\SlaughterData;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Session;
@@ -22,7 +17,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -993,6 +987,10 @@ class ButcheryController extends Controller
         $scale_settings = DB::table('scale_configs')
             ->where('section', $filter)
             ->get();
+        
+        if($filter == 'stuffing'){
+            $filter = 'sausage';
+        }
 
         $layout = $lay;
 

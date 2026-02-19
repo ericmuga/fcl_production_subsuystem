@@ -80,13 +80,13 @@
             class="nav-link dropdown-toggle">Scale Settings</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('scale_settings', ['stuffing', 'sausage']) }}" class="dropdown-item">
+                <a href="{{ route('butchery_scale_settings', ['stuffing', 'sausage']) }}" class="dropdown-item">
                    Scale Settings - Stuffing Weights
                 </a>
             </li>
             <li class="dropdown-divider"></li>
             <li>
-                <a href="{{ route('scale_settings', ['continental_mass', 'sausage']) }}" class="dropdown-item">
+                <a href="{{ route('butchery_scale_settings', ['continental_mass', 'sausage']) }}" class="dropdown-item">
                    Scale Settings - Continentals Mixes
                 </a>
             </li>
