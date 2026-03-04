@@ -367,9 +367,11 @@ class DespatchController extends Controller
             ->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
             ->get();
 
-        $chillers = DB::table('chillers')
+        $chillers = Cache::remember('despatch_chillers', now()->addHours(12), function () {
+            return DB::table('chillers')
             ->where('location_code', '3535')
             ->get();
+        });
 
         $data = DB::table('stocks')
             ->join('items', 'stocks.product_code', '=', 'items.code')
