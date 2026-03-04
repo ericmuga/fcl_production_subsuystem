@@ -136,8 +136,13 @@ class IDTController extends Controller
                 ->where('scale', 'IDT')
                 ->get();
         }
+
+        $chillers = Cache::remember('chillers', now()->addHours(12), function () {
+            return DB::table('chillers')->get();
+        });
+
        
-        return view('idt.receive', compact('title', 'configs', 'transfer_lines', 'locations', 'helpers'));
+        return view('idt.receive', compact('title', 'configs', 'transfer_lines', 'locations', 'helpers', 'chillers'));
     }
 
     public function updateReceiveIdt(Request $request, Helpers $helpers)
@@ -222,7 +227,9 @@ class IDTController extends Controller
                 );
         }
 
-        $chillers = DB::table('chillers')->get();
+        $chillers = Cache::remember('chillers', now()->addHours(12), function () {
+            return DB::table('chillers')->get();
+        });
 
         // Join the combined result with the main table
         $transfer_lines = DB::table('idt_transfers')

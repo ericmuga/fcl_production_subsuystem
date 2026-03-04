@@ -252,11 +252,11 @@ class SausageController extends Controller
 
     public function getTransferToLocations(Request $request)
     {
-        $data = DB::table('chillers')
-            ->leftJoin('item_location_combinations', 'item_location_combinations.location', '=', 'chillers.location_code')
-            ->where('item_location_combinations.item_code', $request->product_code)
-            ->select('chillers.chiller_code', 'chillers.location_code', 'chillers.description')
-            ->get();
+        $data = Cache::remember('chillers', now()->addHours(12), function () {
+            return DB::table('chillers')
+                ->select('chillers.chiller_code', 'chillers.location_code', 'chillers.description')
+                ->get();
+        });
 
         return response()->json($data);
     }
