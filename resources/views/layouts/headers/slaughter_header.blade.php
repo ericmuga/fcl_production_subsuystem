@@ -77,14 +77,14 @@
             class="nav-link dropdown-toggle">Settings</a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('scale_settings', 'slaughter') }}"
+                <a href="{{ route('scale_settings', ['slaughter', 'slaughter']) }}"
                     class="dropdown-item">
                     Scale settings - Slaughter
                 </a>
             </li>
             <hr class="dropdown-divider" />
             <li>
-                <a href="{{ route('scale_settings', 'offals') }}"
+                <a href="{{ route('scale_settings', ['offals', 'slaughter']) }}"
                     class="dropdown-item">
                     Scale settings - Offals
                 </a>

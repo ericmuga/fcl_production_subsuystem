@@ -666,6 +666,7 @@ class SlaughterController extends Controller
 
     public function scaleSettings(Helpers $helpers, $section = null, $layout = null)
     {
+        // dd($section, $layout);
         $title = "scale";
 
         $scale_settings = DB::table('scale_configs')
