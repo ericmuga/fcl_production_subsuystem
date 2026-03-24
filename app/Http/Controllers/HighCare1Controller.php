@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\IDTController;
 
 class HighCare1Controller extends Controller
 {
@@ -38,10 +39,18 @@ class HighCare1Controller extends Controller
     {
         $title = "IDT";
 
+        $locations = IDTController::locations;
+
         $items = Cache::remember('items_list_highcare', now()->addHours(10), function () {
             return DB::table('items')
                 ->where('blocked', '!=', 1)
                 ->select('code', 'barcode', 'description', 'qty_per_unit_of_measure', 'unit_count_per_crate')
+                ->get();
+        });
+
+        $chillers = Cache::remember('chillers', now()->addHours(10), function () {
+            return DB::table('chillers')
+                ->select('chiller_code as code', 'location_code', 'description')
                 ->get();
         });
 
@@ -55,7 +64,7 @@ class HighCare1Controller extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter'));
+        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter', 'locations', 'chillers'));
     }
 
     public function getIdtBulk(Helpers $helpers)

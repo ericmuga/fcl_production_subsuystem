@@ -63,17 +63,20 @@
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Transfer To </label>
                         <div class="col-sm-9">
                             <div class="row form-group">
-                                <div class="col-md-7">
-                                    <select class="form-control select2 locations" name="chiller_code" id="chiller_code"
-                                        required>
+                                <div class="col-md-5">
+                                    <select class="form-control select2" name="location_code" id="location_code" required>
+                                        <option value="" disabled selected>Select location</option>
+                                        @foreach($locations as $code => $name)
+                                            <option value="{{ $code }}" {{ old('location_code', '3535') == $code ? 'selected' : '' }}>{{ $code }} - {{ $name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <select class="form-control select2 locations" name="chiller_code" id="chiller_code" required>
                                         <option value="">Select chiller</option>
                                     </select>
                                 </div>
-                                <div class=" col-md-5">
-                                    {{-- <div class="custom-control custom-switch">
-                                        <input type="checkbox" class="custom-control-input" id="for_export" name="for_export" value="3600">
-                                        <label class="custom-control-label" for="for_export">For Export?</label>
-                                    </div> --}}
+                                <div class=" col-md-3">
                                     <select class="form-control select2" name="for_export" id="for_export" required>
                                         <option value="" selected disabled>Transfer Type </option>
                                         <option value="0"> Local</option>
@@ -84,21 +87,21 @@
                             </div>
                         </div>
                     </div><br>
-                    <div class="row">
+                    <div class="row crate-fields">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Total Crates</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control crates" id="total_crates" name="total_crates"
                                 value="" required onkeyup="handleChange()" placeholder="">
                         </div>
                     </div><br>
-                    <div class="row">
+                    <div class="row crate-fields">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">No. of full Crates</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control crates" value="" id="full_crates"
                                 name="full_crates" required onkeyup="handleChange()" placeholder="">
                         </div>
                     </div><br>
-                    <div class="row incomplete_pieces">
+                    <div class="row incomplete_pieces crate-fields">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Pieces in incomplete Crate</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control crates" value="0" id="incomplete_pieces"
@@ -159,8 +162,7 @@
                 </div>
             </div>
         </div>
-        <input type="hidden" name="location_code" id="location_code" value="3535">
-        <input type="" name="transfer_from" id="transfer_from" value="{{ $filter ?? '2595' }}">
+        <input type="hidden" name="transfer_from" id="transfer_from" value="{{ $filter ?? '2595' }}">
     </form>
     <div id="loading" class="collapse">
         <div class="row d-flex justify-content-center">
@@ -191,7 +193,7 @@
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Unit Measure</th>
-                                <th>Location </th>
+                                <th>Transfer To </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
                                 <th>Full Crates</th>
@@ -201,6 +203,7 @@
                                 <th>Export No</th>
                                 <th>Batch No</th>
                                 <th>Date</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -209,7 +212,7 @@
                                 <th>Product Code</th>
                                 <th>Product</th>
                                 <th>Std Unit Measure</th>
-                                <th>Location </th>
+                                <th>Transfer To </th>
                                 <th>Chiller</th>
                                 <th>Total Crates</th>
                                 <th>Full Crates</th>
@@ -219,6 +222,7 @@
                                 <th>Export No</th>
                                 <th>Batch No</th>
                                 <th>Date</th>
+                                <th>Status</th>
                             </tr>
                         </tfoot>
                         <tbody>
@@ -245,6 +249,31 @@
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
                                 <td>{{ $helpers->amPmDate($data->created_at) }}</td>
+                                <td>
+                                    @if($data->total_weight == 0)
+                                        <span class="badge badge-danger">cancelled</span>
+                                    @elseif($data->requires_approval && !$data->approved_by && auth()->user()->role == 'QA')
+                                        <button type="button" data-toggle="modal" data-target="#approveModal"
+                                                class="btn btn-sm btn-primary"
+                                                data-id="{{ $data->id }}"
+                                                data-product="{{ $data->product ?? $data->product2 ?? $data->beef_product }}"
+                                                data-weight="{{ $data->total_weight }}"
+                                                data-pieces="{{ $data->total_pieces }}"
+                                                data-batch_no="{{ $data->batch_no }}"
+                                                data-send-location="{{ $data->location_code }}"
+                                                onclick="updateApprovalModal(event)">
+                                            Approve
+                                        </button>
+                                    @elseif($data->requires_approval && !$data->approved_by)
+                                        <span class="badge badge-info">waiting approval</span>
+                                    @elseif($data->requires_approval && $data->approved_by && $data->approved == 0)
+                                        <span class="badge badge-info">rejected</span>
+                                    @elseif($data->received_by)
+                                        <span class="badge badge-success">received</span>
+                                    @else
+                                        <span class="badge badge-info">waiting receipt</span>
+                                    @endif
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -376,6 +405,18 @@
             fetchTransferToLocations(product_code);
             loadProductDetails(product_code);
         });
+
+        $('#location_code').change(function () {
+            let product_code = $('#product').val()
+            fetchTransferToLocations(product_code)
+        })
+
+        if (!$('#location_code').val()) {
+            $('#location_code').val('3535')
+        }
+        $('#location_code').trigger('change')
+
+        fetchTransferToLocations($('#product').val())
 
         $("#pieces_edit").on("keyup", function (e) {
             calculateWeightEdit()
@@ -544,13 +585,18 @@
         return axios.post(url, request_data)
             .then((res) => {
                 if (res) {
+                    const selectedLocation = $('#location_code').val()
+
                     //empty the select list first
                     $(".locations").empty();
+                    $(".locations").append($("<option></option>").attr("value", "").text("Select chiller"))
 
                     $.each(res.data, function (key, value) {
-                        $(".locations").append($("<option></option>").attr("value", value
-                                .chiller_code)
-                            .text(value.location_code + ' ' + value.description));
+                        if (!selectedLocation || value.location_code == selectedLocation) {
+                            $(".locations").append($("<option></option>").attr("value", value
+                                    .chiller_code)
+                                .text(value.location_code + ' ' + value.description));
+                        }
                     });
                 }
             })
@@ -619,6 +665,12 @@
         let total_crates = $("#total_crates").val();
         let full_crates = $("#full_crates").val();
 
+        if (total_crates === '' || full_crates === '') {
+            setCratesValidity(0)
+            setCratesValidityMessage('succ1', 'err1', '', 'enter crate counts')
+            return
+        }
+
         let diff = parseInt(total_crates) - parseInt(full_crates)
 
         if (parseInt(incomplete_pieces) >= parseInt(crate_unit_count)) {
@@ -648,6 +700,10 @@
         let crate_unit_count = $('#unit_crate_count').val()
         let incomplete_pieces = $('#incomplete_pieces').val()
         let unit_measure = $('#unit_measure').val()
+
+        if (full_crates === '' || crate_unit_count === '' || incomplete_pieces === '' || unit_measure === '') {
+            return
+        }
 
         let pieces = (parseInt(full_crates) * parseInt(crate_unit_count)) + parseInt(incomplete_pieces)
         let weight = pieces * unit_measure

@@ -22,7 +22,7 @@
             class="nav-link dropdown-toggle">Create IDT </a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
-                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">HighCare To Despatch IDT</a>
+                <a href="{{ route('highcare1_idt') }}" class="dropdown-item">HighCare To Others IDT</a>
             </li>
             <hr class="dropdown-divider" />
             <li>
