@@ -439,8 +439,6 @@ class DespatchController extends Controller
 
     public function issueIdt()
     {
-        dd('test');
-
         $locations = [
             '1570' => 'Butchery',
             '2595' => 'Highcare',
