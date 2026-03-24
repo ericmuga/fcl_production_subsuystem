@@ -439,6 +439,8 @@ class DespatchController extends Controller
 
     public function issueIdt()
     {
+        dd('test');
+
         $locations = [
             '1570' => 'Butchery',
             '2595' => 'Highcare',
@@ -459,7 +461,7 @@ class DespatchController extends Controller
                 ->where('scale', 'Despatch Issue 2')
                 ->get();
 
-        $imported_products = ['G1091', 'G1093','G1094','G1098', 'G1071'];
+        $imported_products = config('app.imported_products');
        
         $products = DB::table('products')
             ->select(DB::raw('TRIM(code) as code'), 'description', 'unit_of_measure', DB::raw('0 as unit_count_per_crate'), DB::raw('0 as qty_per_unit_of_measure')) // Select columns from products

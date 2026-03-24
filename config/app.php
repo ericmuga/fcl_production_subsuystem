@@ -41,6 +41,9 @@ return [
     'rabbitmq_exchange_name' => env('EXCHANGE_NAME', ''),
     'rabbitmq_slaughter_routing_key' => env('SLAUGHTER_LINE_ROUTING_KEY', ''),
 
+    'imported_products' => explode(',', env('IMPORTED_PRODUCTS', '')),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
