@@ -19,14 +19,14 @@
     </li> -->
     <li class="nav-item dropdown">
         <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-            class="nav-link dropdown-toggle">Create IDT </a>
+            class="nav-link dropdown-toggle">Issue IDT </a>
         <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
             <li>
                 <a href="{{ route('highcare1_idt') }}" class="dropdown-item">HighCare To Others IDT</a>
             </li>
             <hr class="dropdown-divider" />
             <li>
-                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item">Curing To Despatch IDT </a>
+                <a href="{{ route('highcare1_idt', '2500') }}" class="dropdown-item">Curing To Others IDT </a>
             </li>
         </ul>
     </li>    
