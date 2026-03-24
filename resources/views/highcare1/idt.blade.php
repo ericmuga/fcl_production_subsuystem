@@ -54,6 +54,19 @@
                                     id="unit_measure" name="unit_measure" placeholder="">
                             </div>
                         </div>
+                        <div class="row">
+                            <label for="scale_reading" class="col-sm-3 col-form-label">Scale Reading</label>
+                            <div class="col-sm-9">
+                                <div class="input-group">
+                                    <div class="input-group-append mr-2">
+                                        <button class="btn btn-primary" type="button" id="btn-weigh" onclick="return handleWeigh()"><i class="fas fa-balance-scale"></i> Weigh</button>
+                                    </div>
+                                    <input type="number" step="0.01" class="form-control" value="0" id="scale_reading" name="scale_reading"
+                                        placeholder="Enter reading or weigh">
+                                </div>
+                                <small>Reading from: <input style="font-weight: bold; border: none;" type="text" id="comport_value" value="{{ $configs[0]->comport ?? '' }}" disabled></small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -88,7 +101,7 @@
                         </div>
                     </div><br>
                     <div class="row crate-fields">
-                        <label for="inputEmail3" class="col-sm-3 col-form-label">Total Crates</label>
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Total Crates (Excl. black)</label>
                         <div class="col-sm-9">
                             <input type="number" class="form-control crates" id="total_crates" name="total_crates"
                                 value="" required onkeyup="handleChange()" placeholder="">
@@ -99,6 +112,13 @@
                         <div class="col-sm-9">
                             <input type="number" class="form-control crates" value="" id="full_crates"
                                 name="full_crates" required onkeyup="handleChange()" placeholder="">
+                        </div>
+                    </div><br>
+                    <div class="row crate-fields">
+                        <label for="black_crates" class="col-sm-3 col-form-label">Black Crates</label>
+                        <div class="col-sm-9">
+                            <input type="number" class="form-control crates" value="0" id="black_crates"
+                                name="black_crates" min="0" placeholder="" required onkeyup="updateTare()">
                         </div>
                     </div><br>
                     <div class="row incomplete_pieces crate-fields">
@@ -130,6 +150,22 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <label for="inputEmail3" class="col-sm-3 col-form-label">Tare Wght| Net Wght(Kgs)</label>
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <input type="number" class="form-control" value="0" id="tare_weight" name="tare_weight"
+                                        placeholder="" readonly>
+                                </div>
+                                <div class="col-sm-6">
+                                    <input type="number" step=".01" class="form-control" value="0" id="net_weight"
+                                        name="net_weight" placeholder="" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="row">
                         <label for="inputEmail3" class="col-sm-3 col-form-label">Description </label>
                         <div class="col-sm-9">
@@ -469,6 +505,11 @@
 
         $('.crates').on("keyup change", function () {
             validateCrates()
+            updateTare()
+        })
+
+        $('#scale_reading').on('input change', function () {
+            updateTare()
         })
 
         $("#validate").on("click", function () {
@@ -515,6 +556,8 @@
 
         let pieces = $('#pieces').val();
         let weight = $('#weight').val();
+
+        updateTare()
 
         let crates_validity = $("#crates_valid").val();
         let user_validity = $("#user_valid").val();
@@ -710,6 +753,7 @@
 
         $('#pieces').val(pieces)
         $('#weight').val(weight.toFixed(2))
+        updateTare()
     }
 
     const calculateWeightEdit = () => {
@@ -723,6 +767,67 @@
 
     const setCratesValidity = (status) => {
         $("#crates_valid").val(status);
+    }
+
+    const updateTare = () => {
+        const CRATE_TARE = 1.8
+        const BLACK_EXTRA = 0.2
+
+        const totalCrates = parseFloat($('#total_crates').val()) || 0
+        const blackCrates = parseFloat($('#black_crates').val()) || 0
+        const reading = parseFloat($('#scale_reading').val()) || 0
+
+        const tare = (totalCrates * CRATE_TARE) + (blackCrates * BLACK_EXTRA)
+        $('#tare_weight').val(tare.toFixed(2))
+
+        const net = reading - tare
+        $('#net_weight').val(net.toFixed(2))
+    }
+
+    const handleWeigh = () => {
+        const comport = $('#comport_value').val()
+
+        if (!comport) {
+            alert('Please set comport value first')
+            return false
+        }
+
+        $.ajax({
+            type: 'GET',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{ url('butchery/read-scale-api-service') }}",
+            data: { comport },
+            dataType: 'JSON',
+            success: function (data) {
+                let obj = null
+                try {
+                    obj = JSON.parse(data)
+                } catch (err) {
+                    alert('Invalid response from scale service')
+                    return
+                }
+
+                if (obj && obj.success === true) {
+                    $('#scale_reading').val(obj.response)
+                    updateTare()
+                    const net = parseFloat($('#net_weight').val()) || 0
+                    if (net < 0) {
+                        alert('Net weight cannot be negative; check your scale reading or crate counts')
+                    }
+                } else if (obj && obj.success === false) {
+                    alert('error occured in response: ' + obj.response)
+                } else {
+                    alert('No response from service')
+                }
+            },
+            error: function () {
+                alert('error occured when sending request')
+            }
+        })
+
+        return false
     }
 
     const LdapApiRequest = (user_name, pass) => {

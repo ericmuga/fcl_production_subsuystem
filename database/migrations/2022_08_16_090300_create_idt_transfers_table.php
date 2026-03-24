@@ -22,7 +22,8 @@ class CreateIdtTransfersTable extends Migration
             $table->integer('full_crates')->default(0);
             $table->integer('incomplete_crate_pieces')->default(0);
             $table->integer('total_pieces')->default(0);
-            $table->decimal('total_weight');
+            $table->decimal('total_weight')->nullable();
+            $table->decimal('total_weight2')->nullable();
             $table->text('description')->nullable();
             $table->string('order_no')->nullable();
             $table->string('batch_no');
@@ -38,6 +39,7 @@ class CreateIdtTransfersTable extends Migration
             $table->float('receiver_incomplete_crate_pieces')->nullable();
             $table->float('receiver_total_pieces')->nullable();
             $table->decimal('receiver_total_weight')->nullable();
+            $table->decimal('receiver_total_weight2')->nullable();
             $table->date('production_date')->nullable();
             $table->tinyInteger('manual_weight')->nullable();
             $table->tinyInteger('edited')->default(0);

@@ -41,6 +41,15 @@ class HighCare1Controller extends Controller
 
         $locations = IDTController::locations;
 
+        $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'highcare1')
+                ->where('scale', 'Highcare1')
+                ->select('scale', 'tareweight', 'comport')
+                ->get()
+                ->toArray();
+        });
+
         $items = Cache::remember('items_list_highcare', now()->addHours(10), function () {
             return DB::table('items')
                 ->where('blocked', '!=', 1)
@@ -64,7 +73,7 @@ class HighCare1Controller extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter', 'locations', 'chillers'));
+        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter', 'locations', 'chillers', 'configs'));
     }
 
     public function getIdtBulk(Helpers $helpers)
@@ -222,6 +231,7 @@ class HighCare1Controller extends Controller
                 'incomplete_crate_pieces' => $request->incomplete_pieces,
                 'total_pieces' => $request->pieces,
                 'total_weight' => $request->weight,
+                'total_weight2' => $request->net_weight,
                 'transfer_type' => $request->for_export,
                 'transfer_from' => $request->transfer_from,
                 'description' => $request->desc,
