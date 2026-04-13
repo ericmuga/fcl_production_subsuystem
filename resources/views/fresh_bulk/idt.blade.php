@@ -698,24 +698,25 @@
         let no_of_crates = $('#no_of_crates').val()
         let black_crates = $('#black_crates').val()
 
-        if (tare == null || no_of_crates == null || black_crates == null) {
+        if (tare == null || tare == '') {
             return 0
         }
 
-        if (tare == 1.8 && (no_of_crates == '' || black_crates == '')) {
-            alert('please enter total crates and black crates count')
-
-        } else {
-            if (parseFloat(tare) == 40) {
-                // meat van
-                $('#total_tare').val(tare)
-                total_tare += parseFloat(tare)
+        if (parseFloat(tare) == 1.8) {
+            // crate option
+            if (no_of_crates == '' || black_crates == '') {
+                alert('please enter total crates and black crates count')
+                return 0
             } else {
                 let total = 0
                 let black_tare_add = parseFloat(black_crates) * 0.2
                 total = (parseFloat(tare) * parseFloat(no_of_crates)) + black_tare_add
                 total_tare += total
             }
+        } else if (parseFloat(tare) == 48) {
+            // meat van
+            $('#total_tare').val(tare)
+            total_tare = parseFloat(tare)
         }
         $('#total_tare').val(total_tare.toFixed(2))
 
