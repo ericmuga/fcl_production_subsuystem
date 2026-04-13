@@ -51,7 +51,7 @@
                         <select class="form-control select2" name="carriage_type" id="carriage_type" required>
                             <option disabled selected value> -- select an option -- </option>
                             <option value="1.8">Crate</option>
-                            <option value="40">Van</option>
+                            <option value="48">Van</option>
                         </select>
                     </div>
                     <div hidden id="crates_div" class="col-md-7">
