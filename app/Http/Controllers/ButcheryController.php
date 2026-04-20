@@ -988,7 +988,7 @@ class ButcheryController extends Controller
             ->where('section', $filter)
             ->get();
         
-        if($filter == 'stuffing'){
+        if($filter == 'stuffing' || $filter == 'continental_mass'){
             $filter = 'sausage';
         }
 
