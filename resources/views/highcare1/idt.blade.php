@@ -55,7 +55,7 @@
                             </div>
                         </div>
                         <div class="row">
-                            <label for="scale_reading" class="col-sm-3 col-form-label">Scale Reading</label>
+                            <label for="scale_reading" class="col-sm-3 col-form-label">Scale Reading </label>
                             <div class="col-sm-9">
                                 <div class="input-group">
                                     <div class="input-group-append mr-2">

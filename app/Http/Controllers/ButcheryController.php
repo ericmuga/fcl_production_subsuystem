@@ -983,18 +983,25 @@ class ButcheryController extends Controller
     public function scaleSettings(Helpers $helpers, $filter, $lay = null)
     {
         $title = "Scale";
+        $forwarded_filter = $filter;
+
+        // dd($filter);
 
         $scale_settings = DB::table('scale_configs')
             ->where('section', $filter)
             ->get();
+
+        if($filter =='continental_mass'){
+            $forwarded_filter = 'continental_mass';
+        }
         
         if($filter == 'stuffing' || $filter == 'continental_mass'){
             $filter = 'sausage';
-        }
-
+        }   
+             
         $layout = $lay;
 
-        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers', 'layout', 'filter'));
+        return view($filter . '.scale_settings', compact('title', 'scale_settings', 'helpers', 'layout', 'filter', 'forwarded_filter'));
     }
 
     public function UpdateScalesettings(Request $request, Helpers $helpers)

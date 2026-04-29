@@ -285,6 +285,11 @@ class IDTController extends Controller
             $configs = DB::table('scale_configs')
                 ->where('section', 'continental_mass')
                 ->get();
+        } elseif($from_location == '2055' && $to_location == '2500') {
+            $configs = DB::table('scale_configs')
+                ->where('section', 'continental_mass')
+                ->get();
+
         } elseif ($from_location !== null && array_key_exists((string) $from_location, $locations)) {
             $configs = DB::table('scale_configs')
                 ->where('section', $locations[$from_location])

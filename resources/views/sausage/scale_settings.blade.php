@@ -126,7 +126,7 @@
                     <div class="form-group error">
 
                     </div>
-                    @if($filter == 'chopping' || $filter == 'sausage')
+                    @if(($filter == 'chopping' || $filter == 'sausage') && (!(isset($forwarded_filter)) || $forwarded_filter != 'continental_mass'))
                         <div class="form-group">
                             <label for="baud">Scale Host Ip Address:</label>
                             <input type="text" class="form-control" id="edit_ip_address" name="edit_ip_address" value=""
@@ -245,11 +245,20 @@
     const getComportListv2 = () => {
         const button = document.getElementById('refreshButton');
         const comportListEndpoint = "{{ config('app.comport_list_endpoint') }}";
-        let ipAddress = document.getElementById('edit_ip_address').value;
+        const ipAddressInput = document.getElementById('edit_ip_address');
+        const isContinentalMass = "{{ $forwarded_filter ?? '' }}" === 'continental_mass' || "{{ $filter ?? '' }}" === 'continental_mass';
 
-        if (!isValidIpAddress(ipAddress)) {
-            displayError('Invalid IP address.');
-            return;
+        let host = 'localhost';
+
+        if (!isContinentalMass) {
+            const ipAddress = ipAddressInput ? ipAddressInput.value : '';
+
+            if (!isValidIpAddress(ipAddress)) {
+                displayError('Invalid IP address.');
+                return;
+            }
+
+            host = ipAddress;
         }
 
         if (!isValidEndpoint(comportListEndpoint)) {
@@ -257,7 +266,7 @@
             return;
         }
 
-        const fullUrl = 'http://' + ipAddress + comportListEndpoint;
+        const fullUrl = 'http://' + host + comportListEndpoint;
 
         // Change button label to 'loading...' and disable it
         button.innerHTML = '<strong>Loading...</strong>';
