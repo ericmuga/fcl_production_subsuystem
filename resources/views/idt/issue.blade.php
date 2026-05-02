@@ -489,52 +489,51 @@
     }
 
     //read scale
-    const getScaleReading = () => {
+    const getScaleReading = async () => {
         var comport = $('#comport_value').val();
+        var endpointPath = @json(config('app.get_weight_endpoint'));
+        var baseScaleUrl = 'http://localhost' + endpointPath;
 
-        if (comport != null) {
-            $.ajax({
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                        .attr('content')
-                },
-                url: "{{ url('butchery/read-scale-api-service') }}",
-
-                data: {
-                    'comport': comport,
-
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    // console.log(data);
-
-                    var obj = JSON.parse(data);
-                    // console.log(obj.success);
-
-                    if (obj.success == true) {
-                        var reading = document.getElementById('reading');
-                        // console.log('weight: ' + obj.response);
-                        reading.value = obj.response;
-                        getNet();
-
-                    } else if (obj.success == false) {
-                        alert('error occured in response: ' + obj.response);
-
-                    } else {
-                        alert('No response from service');
-
-                    }
-
-                },
-                error: function (data) {
-                    var errors = data.responseJSON;
-                    // console.log(errors);
-                    alert('error occured when sending request');
-                }
-            });
-        } else {
+        if (!comport) {
             alert("Please set comport value first");
+            return;
+        }
+
+        var fullScaleUrl = baseScaleUrl + '/' + encodeURIComponent(comport);
+
+        console.log('Weigh full URL:', fullScaleUrl);
+
+        try {
+            const response = await fetch(fullScaleUrl, {
+                method: 'GET'
+            });
+
+            if (!response.ok) {
+                alert('error occurred when sending request');
+                return;
+            }
+
+            const raw = await response.text();
+            let obj;
+
+            try {
+                obj = JSON.parse(raw);
+            } catch (e) {
+                alert('Invalid response from scale service');
+                return;
+            }
+
+            if (obj.success == true) {
+                var reading = document.getElementById('reading');
+                reading.value = obj.response;
+                getNet();
+            } else if (obj.success == false) {
+                alert('error occurred in response: ' + obj.response);
+            } else {
+                alert('No response from service');
+            }
+        } catch (error) {
+            alert('error occurred when sending request');
         }
     }
 
