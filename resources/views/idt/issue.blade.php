@@ -492,7 +492,7 @@
     const getScaleReading = async () => {
         var comport = $('#comport_value').val();
         var endpointPath = @json(config('app.get_weight_endpoint'));
-        var baseScaleUrl = 'http://localhost' + endpointPath;
+        var baseScaleUrl = 'http://100.100.2.197' + endpointPath;
 
         if (!comport) {
             alert("Please set comport value first");
