@@ -59,7 +59,7 @@ class IDTController extends Controller
         // Item master for joining existing transfer lines
         if ($to_location === '2500') {
             // For transfers going to 2500, restrict items to template mixes
-            $allItems = DB::table('template_lines')
+            $itemSources = DB::table('template_lines')
                 ->where('main_product', 'Yes')
                 ->where('description', 'like', '%Mix for%')
                 ->select(
@@ -70,7 +70,7 @@ class IDTController extends Controller
                 );
         } else {
             // Default: union of beef_lamb_items, items and products
-            $allItems = DB::table('beef_lamb_items')
+            $itemSources = DB::table('beef_lamb_items')
                 ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
                 ->unionAll(
                     DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
@@ -79,6 +79,17 @@ class IDTController extends Controller
                     DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
                 );
         }
+
+        // Avoid multiplying rows when the same code exists in multiple source tables.
+        $allItems = DB::query()
+            ->fromSub($itemSources, 'item_sources')
+            ->select(
+                'code',
+                DB::raw('MAX(description) as description'),
+                DB::raw('MAX(unit_of_measure) as unit_of_measure'),
+                DB::raw('MAX(qty_per_unit_of_measure) as qty_per_unit_of_measure')
+            )
+            ->groupBy('code');
 
         // Join the combined result with the main table
         $transfer_lines = DB::table('idt_transfers')
@@ -206,7 +217,7 @@ class IDTController extends Controller
         // Item master for joining existing transfer lines
         if ($to_location === '2500') {
             // For transfers going to 2500, restrict items to template mixes
-            $allItems = DB::table('template_lines')
+            $itemSources = DB::table('template_lines')
                 ->where('main_product', 'Yes')
                 ->where('description', 'like', '%Mix for%')
                 ->select(
@@ -217,7 +228,7 @@ class IDTController extends Controller
                 );
         } else {
             // Default: union of beef_lamb_items, items and products
-            $allItems = DB::table('beef_lamb_items')
+            $itemSources = DB::table('beef_lamb_items')
                 ->select('code', 'description', DB::raw("'KG' as unit_of_measure"), DB::raw('1 as qty_per_unit_of_measure'))
                 ->unionAll(
                     DB::table('items')->select('code', 'description', 'unit_of_measure', 'qty_per_unit_of_measure')
@@ -226,6 +237,17 @@ class IDTController extends Controller
                     DB::table('products')->select('code', 'description', 'unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
                 );
         }
+
+        // Avoid multiplying rows when the same code exists in multiple source tables.
+        $allItems = DB::query()
+            ->fromSub($itemSources, 'item_sources')
+            ->select(
+                'code',
+                DB::raw('MAX(description) as description'),
+                DB::raw('MAX(unit_of_measure) as unit_of_measure'),
+                DB::raw('MAX(qty_per_unit_of_measure) as qty_per_unit_of_measure')
+            )
+            ->groupBy('code');
 
         $chillers = Cache::remember('chillers', now()->addHours(12), function () {
             return DB::table('chillers')->get();
@@ -295,6 +317,8 @@ class IDTController extends Controller
                 ->where('section', $locations[$from_location])
                 ->get();
         }
+
+        // dd('here');
        
         return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
     }
