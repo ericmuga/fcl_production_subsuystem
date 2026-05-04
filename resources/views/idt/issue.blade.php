@@ -374,7 +374,7 @@
         if (!carriage.value) {
             tare = 0
         } else if (carriage.value == 'van') {
-            tare = 40
+            tare = 48
         } else if(carriage.value == 'none') {
             tare = 0
         } else {
