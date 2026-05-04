@@ -328,10 +328,7 @@ class HighCare1Controller extends Controller
     {
         $title = "Bacon Production";
 
-        $configs = DB::table('scale_configs')
-            ->where('scale', 'BaconSlicing')
-            ->select('scale', 'tareweight', 'comport')
-            ->get()->toArray();
+        $isAdminFilter = ($filter === 'admin');
 
         $bacon_products = ['G3813', 'G4501', 'G3810', 'G4536', 'G3814', 'G4547', 'G3812', 'G4544', 'G3804', 'G4503', 'G3813X', 'G4501X', 'G3591', 'G4525', 'G3802', 'G4452', 'G4540', 'G3309', 'G4522', 'G38101'];
 
@@ -352,18 +349,17 @@ class HighCare1Controller extends Controller
             ->leftJoin('products', 'bacon_slicing.item_code', '=', 'products.code')
             ->select('bacon_slicing.*', 'product_types.code AS type_id', 'product_types.description AS product_type', 'processes.process', 'processes.process_code', 'products.description')
             ->orderBy('bacon_slicing.created_at', 'DESC')
-            ->when($filter == 'admin', function ($q) {
+            ->when($isAdminFilter, function ($q) {
                 $q->whereBetween(
                     'bacon_slicing.created_at',
                     [now()->startOfWeek(), now()->endOfWeek()]
                 ); // today plus last 7 days
             })
-            ->when($filter != 'admin', function ($q) {
+            ->when(!$isAdminFilter, function ($q) {
                 $q->whereDate('bacon_slicing.created_at', today()->subDays(3)); // 3 days only
             })
             ->get();
-
-        // dd($products);
+        
         $configs = Cache::remember('BaconConfigs', now()->addHours(12), function () {
             return DB::table('scale_configs')
                 ->where('scale', 'BaconSlicing')
