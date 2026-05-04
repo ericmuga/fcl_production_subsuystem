@@ -366,12 +366,10 @@ class HighCare1Controller extends Controller
         // dd($products);
         $configs = Cache::remember('BaconConfigs', now()->addHours(12), function () {
             return DB::table('scale_configs')
-                // ->where('scale', 'BaconSlicing')
+                ->where('scale', 'BaconSlicing')
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });
-
-        // dd($configs);
 
         return view('highcare1.bacon_slicing', compact('title', 'filter', 'bacon_data', 'products', 'helpers', 'configs'));
     }
