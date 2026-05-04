@@ -216,7 +216,7 @@
                                         @endif
                                         <td>{{ $data->process }}</td>
                                         <td>{{ $data->no_of_crates }}</td>
-                                        <td>{{ $data->actual_weight }}</td>
+                                        <td>{{ number_format($data->actual_weight, 2) }}</td>
                                         <td>{{ number_format($data->actual_weight - $data->net_weight, 2) }}</td>
                                         <td>{{ number_format($data->net_weight, 2) }}</td>
                                         <td>{{ $data->no_of_pieces }}</td>

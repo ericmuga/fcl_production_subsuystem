@@ -355,9 +355,13 @@ class HighCare1Controller extends Controller
                     [now()->startOfWeek(), now()->endOfWeek()]
                 ); // today plus last 7 days
             })
-            ->when(!$isAdminFilter, function ($q) {
-                $q->whereDate('bacon_slicing.created_at', today()->subDays(3)); // 3 days only
+            ->when(! $isAdminFilter, function ($q) {
+                $q->whereBetween(
+                    'bacon_slicing.created_at',
+                    [now()->subDays(3)->startOfDay(), now()->endOfDay()]
+                ); // last 3 days including today
             })
+
             ->get();
         
         $configs = Cache::remember('BaconConfigs', now()->addHours(12), function () {
