@@ -300,7 +300,9 @@ class FreshcutsBulkController extends Controller
                     ->update([
                         'total_pieces' => 0,
                         'total_weight' => 0,
-                        'edited' => 1,
+                        'receiver_total_pieces' => 0,
+                        'receiver_total_weight' => 0,
+                        'received_by' => null
                     ]);
 
                 //insert change logs
