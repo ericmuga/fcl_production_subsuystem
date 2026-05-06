@@ -44,7 +44,7 @@
                                                 <label for="inputEmail3" class="col-sm-5 col-form-label">Total Crates
                                                 </label>
                                                 <div class="col-sm-7">
-                                                    <input type="number" class="form-control tareweight" value="0"
+                                                    <input type="number" class="form-control tareweight" value="0" step="1"
                                                         id="f_no_of_crates" placeholder="">
                                                 </div>
                                             </div>
