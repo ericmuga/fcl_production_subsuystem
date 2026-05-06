@@ -150,10 +150,10 @@ class FreshcutsBulkController extends Controller
                     'manual_weight' => $manual_weight,
 
                     //receiver
-                    // 'receiver_total_pieces' => $request->no_of_pieces ?: 0,
-                    // 'receiver_total_weight' => $request->net,
-                    // 'received_by' => $request->receiver_id,
-                    // 'with_variance' => 1,
+                    'receiver_total_pieces' => $request->no_of_pieces ?: 0,
+                    'receiver_total_weight' => $request->net,
+                    'received_by' => $request->receiver_id,
+                    'with_variance' => 1,
                 ]);
                 
             } elseif ($location == '2500') {
