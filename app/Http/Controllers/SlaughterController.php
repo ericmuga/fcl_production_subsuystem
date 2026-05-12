@@ -498,7 +498,7 @@ class SlaughterController extends Controller
                 foreach ($rowData as $key => $row) {
                     try {
                         // Log the row being processed
-                        Log::info("Processing row $key: ", $row);
+                        // Log::info("Processing row $key: ", $row);
 
                         DB::table('receipts')->updateOrInsert(
                             [
