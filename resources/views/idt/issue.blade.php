@@ -136,8 +136,8 @@
                             <select class="form-control locations" name="chiller_code" id="chiller_code" required>
                                 <option disabled selected value> -- select an option -- </option>
                                 @foreach($chillers as $chiller)
-                                    <option value="{{ $chiller->chiller_code }}">
-                                        {{ $chiller->chiller_code }} - {{ $chiller->description }}
+                                    <option value="{{ $chiller->chiller_code ?? $chiller->code }}">
+                                        {{ $chiller->chiller_code ?? $chiller->code }} - {{ $chiller->description }}
                                     </option>
                                 @endforeach
                             </select>

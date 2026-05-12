@@ -148,7 +148,7 @@ class IDTController extends Controller
                 ->get();
         }
 
-        $chillers = Cache::remember('chillers', now()->addHours(12), function () {
+        $chillers = Cache::remember('idt_chillers', now()->addHours(12), function () {
             return DB::table('chillers')->get();
         });
 
@@ -249,7 +249,7 @@ class IDTController extends Controller
             )
             ->groupBy('code');
 
-        $chillers = Cache::remember('chillers', now()->addHours(12), function () {
+        $chillers = Cache::remember('idt_chillers', now()->addHours(12), function () {
             return DB::table('chillers')->get();
         });
 
