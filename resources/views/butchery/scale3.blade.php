@@ -15,6 +15,7 @@
 <form id="form-save-scale3" class="form-prevent-multiple-submits"
     action="{{ route('butchery_scale3_save') }}" method="post">
     @csrf
+    <input type="hidden" id="selected_scale" name="selected_scale" value="{{ $selectedScaleConfig->scale ?? '' }}">
     <div class="card-group">
         <div class="card">
             <div class="card-body " style="">
@@ -65,10 +66,24 @@
                             name="production_process_code" value="">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="scale_selector">Scale Configuration</label>
+                    <select class="form-control" id="scale_selector" {{ count($configs) ? '' : 'disabled' }}>
+                        @forelse($configs as $config)
+                            <option value="{{ $config->scale }}" data-comport="{{ $config->comport }}"
+                                data-tareweight="{{ $config->tareweight }}"
+                                {{ isset($selectedScaleConfig) && strcasecmp($selectedScaleConfig->scale, $config->scale) === 0 ? 'selected' : '' }}>
+                                {{ $config->scale }} | {{ $config->comport }} | Tare {{ $config->tareweight }}
+                            </option>
+                        @empty
+                            <option value="">No scale config found</option>
+                        @endforelse
+                    </select>
+                </div>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
-                    <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport }}"
+                    <small>Reading from <input type="text" id="comport_value" value="{{ $selectedScaleConfig->comport ?? '' }}"
                             style="border:none" disabled></small>
                 </div>
 
@@ -87,11 +102,17 @@
                 </div> <br>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="row">
+                    @php
+                        $initialCrateWeight = old('crate_weight', $selectedScaleConfig->tareweight ?? '1.8');
+                    @endphp
                     <div class="col-6 form-group">
                         <label for="crate_weight">Crate Weight</label>
                         <select class="form-control" id="crate_weight" name="crate_weight" onchange="updateTotalTare()">
-                            <option selected value="1.8">1.8</option>
-                            <option value="1.5">1.5</option>
+                            <option value="1.8" {{ (string)$initialCrateWeight === '1.8' ? 'selected' : '' }}>1.8</option>
+                            <option value="1.5" {{ (string)$initialCrateWeight === '1.5' ? 'selected' : '' }}>1.5</option>
+                            @if(!in_array((string)$initialCrateWeight, ['1.8', '1.5']))
+                                <option value="{{ $initialCrateWeight }}" selected>{{ $initialCrateWeight }}</option>
+                            @endif
                         </select>
                     </div>
                     <div class="col-6 form-group">
@@ -442,6 +463,54 @@
 
 @section('scripts')
 <script>
+    function applyScaleSelection(persistSelection = false) {
+        var selectedOption = $('#scale_selector option:selected');
+        var selectedScale = selectedOption.val();
+        var comport = selectedOption.data('comport');
+        var tareweight = selectedOption.data('tareweight');
+
+        if (!selectedScale) {
+            return;
+        }
+
+        $('#selected_scale').val(selectedScale);
+        $('#comport_value').val(comport || '');
+
+        if (tareweight !== undefined && tareweight !== null && tareweight !== '') {
+            var tareweightString = tareweight.toString();
+            var crateWeightSelect = $('#crate_weight');
+
+            if (crateWeightSelect.find("option[value='" + tareweightString + "']").length === 0) {
+                crateWeightSelect.append(new Option(tareweightString, tareweightString));
+            }
+
+            crateWeightSelect.val(tareweightString);
+        }
+
+        updateTotalTare();
+
+        if (persistSelection) {
+            persistScaleSelection(selectedScale);
+        }
+    }
+
+    function persistScaleSelection(scaleName) {
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{ route('butchery_scale3_config') }}",
+            data: {
+                'scale': scaleName,
+            },
+            dataType: 'JSON',
+            error: function () {
+                alert('Failed to save selected scale for this session.');
+            }
+        });
+    }
+
     function updateBlackCratesMax() {
         black_crates_input = document.getElementById('black_crates');
         no_of_crates = document.getElementById('no_of_crates').value;
@@ -467,7 +536,11 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        updateTotalTare();
+        applyScaleSelection(false);
+
+        $('#scale_selector').change(function () {
+            applyScaleSelection(true);
+        });
 
         let reading = document.getElementById('reading');
         if (($('#old_manual').val()) == "on") {
@@ -940,7 +1013,7 @@
     function getScaleReading() {
         var comport = $('#comport_value').val();
 
-        if (comport != null) {
+        if (comport && comport.trim() !== '') {
             $.ajax({
                 type: "GET",
                 headers: {

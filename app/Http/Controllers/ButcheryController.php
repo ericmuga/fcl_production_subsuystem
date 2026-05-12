@@ -591,13 +591,8 @@ class ButcheryController extends Controller
 
         $filter = Session::get('session_role');
 
-        $configs = Cache::remember('deboning_configs', now()->addMinutes(120), function () {
-            return DB::table('scale_configs')
-                ->where('section', 'butchery')
-                ->where('scale', 'deboning')
-                ->select('scale', 'tareweight', 'comport')
-                ->get()->toArray();
-        });
+        $configs = $this->getDeboningScaleConfigs();
+        $selectedScaleConfig = $this->resolveDeboningScaleSelection($configs);
 
         $products = Cache::remember('all_products_scale3', now()->addMinutes(480), function () {
             return DB::table('products')
@@ -627,12 +622,47 @@ class ButcheryController extends Controller
             })
             ->get();
 
-        return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers'));
+        return view('butchery.scale3', compact('title', 'products', 'configs', 'selectedScaleConfig', 'deboning_data', 'helpers'));
+    }
+
+    public function updateScaleThreeConfig(Request $request)
+    {
+        $selectedScale = trim((string) $request->input('scale'));
+
+        if ($selectedScale === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Scale is required.',
+            ], 422);
+        }
+
+        $configs = $this->getDeboningScaleConfigs();
+        $selectedScaleConfig = $this->resolveDeboningScaleSelection($configs, $selectedScale);
+
+        if (!$selectedScaleConfig || strcasecmp(trim($selectedScaleConfig->scale), $selectedScale) !== 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Selected scale configuration was not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'scale' => $selectedScaleConfig->scale,
+                'comport' => $selectedScaleConfig->comport,
+                'tareweight' => $selectedScaleConfig->tareweight,
+            ],
+        ]);
     }
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
+            // Persist the selected scale per user session so each user keeps their own COM/tare setup.
+            $configs = $this->getDeboningScaleConfigs();
+            $this->resolveDeboningScaleSelection($configs, $request->input('selected_scale'));
+
             $product_type = match ($request->product_type) {
                 "By Product" => 2,
                 "Intake" => 3,
@@ -1362,5 +1392,38 @@ class ButcheryController extends Controller
         $exports = Session::put('session_export_data', $deboned_data);
 
         return Excel::download(new DebonedLinesExport, 'DebonedPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+    }
+
+    private function getDeboningScaleConfigs()
+    {
+        return Cache::remember('deboning_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'butchery')
+                ->whereIn(DB::raw('LOWER(scale)'), ['deboning', 'deboning2'])
+                ->select('scale', 'tareweight', 'comport')
+                ->orderBy('scale')
+                ->get();
+        });
+    }
+
+    private function resolveDeboningScaleSelection($configs, $requestedScale = null)
+    {
+        $selectedScale = trim((string) ($requestedScale ?: Session::get('butchery_scale3_selected_scale', '')));
+
+        $selectedScaleConfig = $configs->first(function ($config) use ($selectedScale) {
+            return strcasecmp(trim($config->scale), $selectedScale) === 0;
+        });
+
+        if (!$selectedScaleConfig) {
+            $selectedScaleConfig = $configs->first();
+        }
+
+        if ($selectedScaleConfig) {
+            Session::put('butchery_scale3_selected_scale', $selectedScaleConfig->scale);
+            Session::put('butchery_scale3_selected_comport', $selectedScaleConfig->comport);
+            Session::put('butchery_scale3_selected_tareweight', $selectedScaleConfig->tareweight);
+        }
+
+        return $selectedScaleConfig;
     }
 }
