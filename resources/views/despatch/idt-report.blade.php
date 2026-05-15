@@ -57,7 +57,7 @@
                                                     <option value="1570">Butchery</option>
                                                     <option value="2055">Sausage</option>
                                                     <option value="2595">Bacon & Ham</option>
-                                                    <option value="2500">Bacon & Ham Curing</option>
+                                                    <option value="2500">Curing</option>
                                                     <option value="3535">Despatch</option>
                                                     <option value="3035">Petfood</option>
                                                     <option value="3555">old Factory</option>
