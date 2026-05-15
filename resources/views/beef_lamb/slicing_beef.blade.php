@@ -49,7 +49,7 @@
                         <select class="form-control select2" name="intake_type" id="intake_type" required>
                             <option value="">Select Intake Item</option>
                             @foreach($products as $product)
-                                @if($product->product_type == 3)
+                                @if($product->product_type == 3 )
                                     <option value="{{ $product->product_code }}">{{ $product->product_code }} {{ $product->description }}</option>
                                 @endif
                             @endforeach
@@ -402,7 +402,7 @@
             var data = $(this).val();
             var product_type_code = data.split(':')[4];
 
-            if (product_type_code == '1') {
+            if (product_type_code == '1' || product_type_code == '2') { // Intake/main requires intake item selection
                 $('#intake_type').prop('disabled', false);
                 $('#intake_type').prop('required', true);
             } else {
@@ -412,14 +412,14 @@
             }
         });
 
-        // On form submit, validate intake_type if product_type == 1
+        // On form submit, validate intake_type if product_type == 1 || 2 (Main or By Product)
         $('#form-save-scale3').on('submit', function (e) {
             var data = $('#product').val();
             var product_type_code = data ? data.split(':')[4] : '';
             var intake_type = $('#intake_type').val();
 
-            if (product_type_code == '1' && !intake_type) {
-                alert('Please select Intake Item for Main Product.');
+            if ((product_type_code == '1' || product_type_code == '2') && !intake_type) {
+                alert('Please select Intake Item for Main or By Product.');
                 $('#intake_type').focus();
                 e.preventDefault();
                 return false;
