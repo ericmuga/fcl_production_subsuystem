@@ -1036,11 +1036,7 @@ class ButcheryController extends Controller
 
     public function UpdateScalesettings(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
-        try {
-            // forget configs cache
-            Cache::flush();
-
+        try {            
             //update
             DB::table('scale_configs')
                 ->where('id', $request->item_id)
@@ -1049,7 +1045,15 @@ class ButcheryController extends Controller
                     'ip_address' => $request->edit_ip_address,
                     'tareweight' => $request->edit_tareweight,
                     'updated_at' => Carbon::now(),
-                ]);
+                    ]);
+                
+            // forget configs cache
+            Cache::flush();
+            
+            // re-cache again
+            Cache::remember('global_scale_configs', 600, function () {
+                return DB::table('scale_configs')->get();
+            });
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
