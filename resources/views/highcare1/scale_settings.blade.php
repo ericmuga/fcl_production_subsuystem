@@ -3,9 +3,9 @@
 @section('content-header')
 <div class="container">
     <div class="row mb-2">
-        <div class="col-sm-6">
+        <div class="col-sm-10">
             {{-- <h1 class="m-0"> {{ $title }}<small></small></h1> --}}
-            <h1 class="card-title"> HighCare1 Scale configs | <span id="subtext-h1-title"><small> view and edit scale
+            <h1 class="card-title"> Scale configs | <span id="subtext-h1-title"><small> view and edit scale
                         configs</small> </span></h1>
         </div><!-- /.col -->
     </div><!-- /.row -->
@@ -30,7 +30,10 @@
                                 <th style="width: 10px">#</th>
                                 <th>Scale Name</th>
                                 <th>ComPort</th>
-                                <th>BaudRate</th>
+                                @if($filter == 'highcare1')
+                                    <th>Ip Address</th>
+                                @endif
+                                {{-- <th>BaudRate</th> --}}
                                 <th>Tareweight</th>
                                 <Th>Date Created</Th>
                                 <th style="width: 30px">Config</th>
@@ -41,7 +44,10 @@
                                 <th style="width: 10px">#</th>
                                 <th>Scale Name</th>
                                 <th>ComPort</th>
-                                <th>BaudRate</th>
+                                @if($filter == 'highcare1')
+                                    <th>Ip Address</th>
+                                @endif
+                                {{-- <th>BaudRate</th> --}}
                                 <th>Tareweight</th>
                                 <Th>Date Created</Th>
                                 <th style="width: 30px">Config</th>
@@ -49,23 +55,27 @@
                         </tfoot>
                         <tbody>
                             @foreach($scale_settings as $data)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $data->scale }}</td>
-                                <td>{{ $data->comport }}</td>
-                                <td>{{ $data->baudrate }}</td>
-                                <td>{{ number_format($data->tareweight, 2) }}</td>
-                                <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
-                                <td>
-                                    <button type="button" data-id="{{ $data->id }}" data-item="{{ $data->scale }}"
-                                        data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}"
-                                        data-tareweight="{{ number_format($data->tareweight, 2) }}"
-                                        class="btn btn-primary btn-sm " id="editScaleModalShow"><i
-                                            class="nav-icon fas fa-edit"></i>
-                                        Edit</button>
-                                </td>
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $data->scale }}</td>
+                                    <td>{{ $data->comport }}</td>
+                                    @if($filter == 'highcare1')
+                                        <td>{{ $data->ip_address }}</td>
+                                    @endif
+                                    {{-- <td>{{ $data->baudrate }}</td> --}}
+                                    <td>{{ number_format($data->tareweight, 2) }}</td>
+                                    <td>{{ $helpers->dateToHumanFormat($data->created_at) }}</td>
+                                    <td>
+                                        <button type="button" data-id="{{ $data->id }}"
+                                            data-item="{{ $data->scale }}" data-comport="{{ $data->comport ?? '' }}"
+                                            data-ip_address="{{ $data->ip_address ?? '' }}"
+                                            data-tareweight="{{ number_format($data->tareweight, 2) }}"
+                                            class="btn btn-primary btn-sm " id="editScaleModalShow"><i
+                                                class="nav-icon fas fa-edit"></i>
+                                            Edit</button>
+                                    </td>
 
-                            </tr>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -80,7 +90,8 @@
 <div id="editScaleModal" class="modal fade" role="dialog">
     <div class="modal-dialog">
         <!-- Modal content-->
-        <form id="form-edit-scale" action="{{ route('butchery_update_scale_settings') }}" method="post">
+        <form id="form-edit-scale" action="{{ route('butchery_update_scale_settings') }}"
+            method="post">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -95,13 +106,12 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <label for="baud">ComPort:</label>
-                                <select class="form-control" name="edit_comport" id="edit_comport" required>
+                                <select class="form-control select2" name="edit_comport" id="edit_comport">
 
                                 </select>
                             </div>
                             <div class="col-md-4" style="padding-top: 6.5%">
-                                <button class="btn btn-outline-info btn-sm form-control" type="button"
-                                    onclick="getComportList()">
+                                <button id="refreshButton" class="btn btn-outline-info btn-sm form-control" type="button" onclick="getComportListv2()">
                                     <strong>Refresh Comports</strong>
                                 </button>
                             </div>
@@ -113,11 +123,17 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="baud">BaudRate:</label>
-                        <input type="number" class="form-control" id="edit_baud" name="edit_baud" value=""
-                            placeholder="" required>
+                    <div class="form-group error">
+
                     </div>
+                    @if($filter == 'highcare1')
+                        <div class="form-group">
+                            <label for="baud">Scale Host Ip Address(Optional):</label>
+                            <input type="text" class="form-control" id="edit_ip_address" name="edit_ip_address" value=""
+                                placeholder="eg. 100.100.3.47">
+                        </div>
+                        <input type="hidden" id="filter" name="filter" value="{{ $filter }}">
+                    @endif
                     <div class="form-group">
                         <label for="baud">Tareweight:</label>
                         <input type="number" class="form-control" id="edit_tareweight" step="0.01" value=""
@@ -148,16 +164,17 @@
         $("body").on("click", "#editScaleModalShow", function (a) {
             a.preventDefault();
 
-            var scale = $(this).data('item');
-            var comport = $(this).data('comport');
-            var tareweight = $(this).data('tareweight');
-            var baud = $(this).data('baudrate');
-            var id = $(this).data('id');
+            let scale = $(this).data('item');
+            let comport = $(this).data('comport');
+            let tareweight = $(this).data('tareweight');
+            let ipAddress = $(this).data('ip_address');
+            let id = $(this).data('id');
 
             $('#item_name').val(scale);
             $('#edit_comport').val(comport);
-            $('#edit_baud').val(baud);
+            $('#edit_comport').select2('destroy').select2();
             $('#edit_tareweight').val(tareweight);
+            $('#edit_ip_address').val(ipAddress);
             $('#item_id').val(id);
 
 
@@ -165,6 +182,13 @@
         });
 
     });
+
+    // Function to display error messages
+    function displayError(message) {
+        const errorDiv = document.querySelector('.form-group.error');
+        errorDiv.textContent = message;
+        errorDiv.style.color = 'red';
+    }
 
     function getComportList() {
         $.ajax({
@@ -176,10 +200,8 @@
             url: "{{ url('butchery/comport-list-api-service') }}",
             dataType: 'JSON',
             success: function (data) {
-                console.log(data);
 
                 var obj = JSON.parse(data);
-                console.log(obj.success);
 
                 if (obj.success == true) {
 
@@ -208,6 +230,87 @@
                 alert('error occured when sending request');
             }
         });
+    }
+
+    const isValidIpAddress = (ipAddress) => {
+        const ipPattern =
+            /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+        return ipPattern.test(ipAddress);
+    }
+
+    const isValidEndpoint = (endpoint) => {
+        return endpoint && endpoint.trim() !== '';
+    }
+
+    const getComportListv2 = () => {
+        const button = document.getElementById('refreshButton');
+        const comportListEndpoint = "{{ config('app.comport_list_endpoint') }}";
+        const ipAddressInput = document.getElementById('edit_ip_address');
+        const isContinentalMass = "{{ $forwarded_filter ?? '' }}" === 'continental_mass' || "{{ $filter ?? '' }}" === 'continental_mass';
+
+        let host = 'localhost';
+
+        if (!isContinentalMass) {
+            const ipAddress = ipAddressInput ? ipAddressInput.value.trim() : '';
+
+            if (ipAddress === '') {
+                host = 'localhost';
+            } else if (!isValidIpAddress(ipAddress)) {
+                displayError('Invalid IP address.');
+                return;
+            } else {
+                host = ipAddress;
+            }
+        }
+
+        if (!isValidEndpoint(comportListEndpoint)) {
+            displayError('Invalid endpoint.');
+            return;
+        }
+        
+        const fullUrl = 'http://' + host + comportListEndpoint;
+
+        // Change button label to 'loading...' and disable it
+        button.innerHTML = '<strong>Loading...</strong>';
+        button.disabled = true;
+
+        axios.get(fullUrl)
+            .then(function (response) {
+                if (response.data.success) {
+                    // Clear any previous error messages
+                    displayError('');
+
+                    $('#comports_success').show();
+                    $('#comports_error').hide();
+                    const comports = response.data.response;
+                    const selectElement = document.getElementById('edit_comport');
+
+                    // Clear any existing options
+                    selectElement.innerHTML = '';
+
+                    // Add new options to the select element
+                    comports.forEach(function (comport) {
+                        const option = document.createElement('option');
+                        option.value = comport;
+                        option.textContent = comport;
+                        selectElement.appendChild(option);
+                    });
+                } else {
+                    displayError('API call was not successful.');
+
+                    $('#comports_success').hide();
+                    $('#comports_error').show();
+                    console.error('API call was not successful.');
+                }
+            })
+            .catch(function (error) {
+                displayError('There was an error making the request: ' + error.message);
+            })
+            .finally(function () {
+                // Reset button to original state
+                button.innerHTML = '<strong>Refresh Comports</strong>';
+                button.disabled = false;
+            });
     }
 
 </script>
