@@ -72,8 +72,24 @@
                 <div class="form-group" style="padding-left: 30%; padding-top: 5%">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br>
-                    <small>Reading from : <input style="font-weight: bold; border: none" type="text" id="comport_value"
-                            value="{{ $configs[0]->comport }}" style="border:none" disabled></small>
+                    <div class="mt-2 d-flex align-items-center" style="gap: 10px;">
+                        <small class="mb-0">Scale:</small>
+                        <select class="form-control form-control-sm" id="bulk_scale_selector" style="max-width: 220px;">
+                            @foreach($configs as $cfg)
+                                <option value="{{ $cfg->scale }}"
+                                        data-comport="{{ $cfg->comport ?? '' }}"
+                                        data-ip_address="{{ $cfg->ip_address ?? '' }}"
+                                        {{ (($selected_config->scale ?? '') === $cfg->scale) ? 'selected' : '' }}>
+                                    {{ $cfg->scale }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <small class="mb-0">Reading from:</small>
+                        <input style="font-weight: bold; border: none; max-width: 100px;" type="text" id="comport_value"
+                            value="{{ $selected_config->comport ?? '' }}" disabled>
+                        <input type="hidden" id="bulk_scale_ip_address" value="{{ $selected_config->ip_address ?? '' }}">
+                    </div>
+                    <div class="form-group error mt-2 mb-0"></div>
                 </div>
             </div>
         </div>
@@ -429,6 +445,11 @@
             getNet()
         });
 
+        $('#bulk_scale_selector').on('change', function () {
+            updateBulkScaleDisplay()
+            persistBulkScaleSelection()
+        })
+
         $("body").on("click", "#editIdtModalShow", function (e) {
             e.preventDefault();
 
@@ -474,6 +495,34 @@
             .catch((error) => {
                 console.log(error);
             })
+    }
+
+    const updateBulkScaleDisplay = () => {
+        const selected = $('#bulk_scale_selector option:selected')
+        const comport = selected.data('comport') || ''
+        const ipAddress = selected.data('ip_address') || ''
+
+        $('#comport_value').val(comport)
+        $('#bulk_scale_ip_address').val(ipAddress)
+    }
+
+    const persistBulkScaleSelection = () => {
+        const selectedScale = $('#bulk_scale_selector').val()
+
+        if (!selectedScale) {
+            return
+        }
+
+        return axios.post("{{ route('highcare1_idt_bulk_scale_selection') }}", {
+            scale: selectedScale
+        }).then((response) => {
+            if (response.data && response.data.success) {
+                $('#comport_value').val(response.data.comport || '')
+                $('#bulk_scale_ip_address').val(response.data.ip_address || '')
+            }
+        }).catch((error) => {
+            console.log(error)
+        })
     }
 
     const getTotalTareweight = () => {
@@ -542,54 +591,66 @@
         return $valid;
     }
 
-    //read scale
-    const getScaleReading = () => {
-        var comport = $('#comport_value').val();
+    const getWeightV2 = (ip, comport) => {
+        const weightUrl = (@json(config('app.get_weight_endpoint')) || '') + '';
+        const button = document.getElementById('weigh')
 
-        if (comport != null) {
-            $.ajax({
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                        .attr('content')
-                },
-                url: "{{ url('butchery/read-scale-api-service') }}",
-
-                data: {
-                    'comport': comport,
-
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    // console.log(data);
-
-                    var obj = JSON.parse(data);
-                    // console.log(obj.success);
-
-                    if (obj.success == true) {
-                        var reading = document.getElementById('reading');
-                        // console.log('weight: ' + obj.response);
-                        reading.value = obj.response;
-                        getNet();
-
-                    } else if (obj.success == false) {
-                        alert('error occured in response: ' + obj.response);
-
-                    } else {
-                        alert('No response from service');
-
-                    }
-
-                },
-                error: function (data) {
-                    var errors = data.responseJSON;
-                    // console.log(errors);
-                    alert('error occured when sending request');
-                }
-            });
-        } else {
-            alert("Please set comport value first");
+        if (!comport) {
+            alert('Scale COM port is not configured.')
+            return
         }
+
+        const host = ip && ip.trim() !== '' ? ip.trim() : 'localhost'
+        const fullUrl = 'http://' + host + weightUrl + '/' + encodeURIComponent(comport)
+
+        const errorBox = document.querySelector('.form-group.error')
+        if (errorBox) {
+            errorBox.innerHTML = ''
+        }
+
+        button.disabled = true
+        const originalLabel = button.innerHTML
+        button.innerHTML = '<strong>Reading...</strong>'
+
+        const source = axios.CancelToken.source()
+        const timeoutId = setTimeout(() => {
+            source.cancel('No response received from scale')
+        }, 5000)
+
+        axios.get(fullUrl, { cancelToken: source.token })
+            .then((response) => {
+                clearTimeout(timeoutId)
+
+                if (response.data && response.data.success) {
+                    const readingInput = document.getElementById('reading')
+                    readingInput.value = parseFloat(response.data.response).toFixed(2)
+                    getNet()
+                } else if (errorBox) {
+                    errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">API call was not successful.</div>'
+                }
+            })
+            .catch((error) => {
+                clearTimeout(timeoutId)
+
+                const message = axios.isCancel(error)
+                    ? error.message
+                    : 'Error on request: ' + error.message
+
+                if (errorBox) {
+                    errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">' + message + '</div>'
+                }
+            })
+            .finally(() => {
+                button.disabled = false
+                button.innerHTML = originalLabel
+            })
+    }
+
+    const getScaleReading = () => {
+        const comport = $('#comport_value').val()
+        const ipAddress = $('#bulk_scale_ip_address').val()
+
+        getWeightV2(ipAddress, comport)
     }
 
 </script>

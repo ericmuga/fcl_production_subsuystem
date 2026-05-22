@@ -1048,7 +1048,7 @@ class ButcheryController extends Controller
                     ]);
                 
             // forget configs cache
-            Cache::flush();
+            $helpers->optimizeCache();
             
             // re-cache again
             Cache::remember('global_scale_configs', 600, function () {

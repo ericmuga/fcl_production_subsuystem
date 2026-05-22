@@ -259,9 +259,11 @@ Route::prefix('highcare1')->group(function () {
     Route::get('/idt-receive', [HighCare1Controller::class, 'getReceiveIdt'])->name('highcare_idt_receive');
     Route::post('/idt/receive-update', [HighCare1Controller::class, 'updateReceiveIdt'])->name('update_idt_receive_highcare');
     Route::get('/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
+    Route::post('/idt/scale-selection', [HighCare1Controller::class, 'setIdtScaleSelection'])->name('highcare1_idt_scale_selection');
     Route::post('/save/high-care-idt', [HighCare1Controller::class, 'saveTransfer'])->name('save_idt_high_care');
 
     Route::get('/idt-bulk', [HighCare1Controller::class, 'getIdtBulk'])->name('highcare1_idt_bulk');
+    Route::post('/idt-bulk/scale-selection', [HighCare1Controller::class, 'setIdtBulkScaleSelection'])->name('highcare1_idt_bulk_scale_selection');
     Route::post('/idt-bulk/save', [HighCare1Controller::class, 'saveIdtBulk'])->name('highcare1_idt_save_bulk');
 
     Route::get('/slicing', [HighCare1Controller::class, 'getBaconSlicing'])->name('bacon_slicing');

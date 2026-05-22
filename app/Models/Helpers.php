@@ -309,6 +309,8 @@ class Helpers
         $clear = Artisan::call('cache:clear');
         $optimize = Artisan::call('optimize');
         $view = Artisan::call('view:cache');
+
+        info('cache optimized successfully');
     }
 
     public function generateIdtBatch($production_date)

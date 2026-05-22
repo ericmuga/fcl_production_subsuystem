@@ -64,7 +64,23 @@
                                     <input type="number" step="0.01" class="form-control" value="0" id="scale_reading" name="scale_reading"
                                         placeholder="Enter reading or weigh">
                                 </div>
-                                <small>Reading from: <input style="font-weight: bold; border: none;" type="text" id="comport_value" value="{{ $configs[0]->comport ?? '' }}" disabled></small>
+                                <div class="mt-2 d-flex align-items-center" style="gap: 10px;">
+                                    <small class="mb-0">Scale:</small>
+                                    <select class="form-control form-control-sm" id="scale_selector" style="max-width: 220px;">
+                                        @foreach($configs as $cfg)
+                                            <option value="{{ $cfg->scale }}"
+                                                    data-comport="{{ $cfg->comport ?? '' }}"
+                                                    data-ip_address="{{ $cfg->ip_address ?? '' }}"
+                                                    {{ (($selected_config->scale ?? '') === $cfg->scale) ? 'selected' : '' }}>
+                                                {{ $cfg->scale }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="mb-0">Reading from:</small>
+                                    <input style="font-weight: bold; border: none; max-width: 100px;" type="text" id="comport_value" value="{{ $selected_config->comport ?? '' }}" disabled>
+                                    <input type="hidden" id="scale_ip_address" value="{{ $selected_config->ip_address ?? '' }}">
+                                </div>
+                                <div class="form-group error mt-2 mb-0"></div>
                             </div>
                         </div>
                     </div>
@@ -515,7 +531,39 @@
         $("#validate").on("click", function () {
             validateUser()
         });
+
+        $('#scale_selector').on('change', function () {
+            updateScaleComportDisplay()
+            persistSelectedScale()
+        })
     });
+
+    const updateScaleComportDisplay = () => {
+        const selected = $('#scale_selector option:selected')
+        const comport = selected.data('comport') || ''
+        const ipAddress = selected.data('ip_address') || ''
+        $('#comport_value').val(comport)
+        $('#scale_ip_address').val(ipAddress)
+    }
+
+    const persistSelectedScale = () => {
+        const selectedScale = $('#scale_selector').val()
+
+        if (!selectedScale) {
+            return
+        }
+
+        return axios.post("{{ route('highcare1_idt_scale_selection') }}", {
+            scale: selectedScale
+        }).then((response) => {
+            if (response.data && response.data.success) {
+                $('#comport_value').val(response.data.comport || '')
+                $('#scale_ip_address').val(response.data.ip_address || '')
+            }
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     const defaultCrateCounts = (product_code) => {
         const list = {
@@ -784,49 +832,74 @@
         $('#net_weight').val(net.toFixed(2))
     }
 
-    const handleWeigh = () => {
-        const comport = $('#comport_value').val()
+    const getWeightV2 = (ip, comport) => {
+        const weightUrl = (@json(config('app.get_weight_endpoint')) || '') + '';
+        const button = document.getElementById('btn-weigh')
 
         if (!comport) {
-            alert('Please set comport value first')
-            return false
+            alert('Scale COM port is not configured.')
+            return
         }
 
-        $.ajax({
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: "{{ url('butchery/read-scale-api-service') }}",
-            data: { comport },
-            dataType: 'JSON',
-            success: function (data) {
-                let obj = null
-                try {
-                    obj = JSON.parse(data)
-                } catch (err) {
-                    alert('Invalid response from scale service')
-                    return
-                }
+        const host = ip && ip.trim() !== '' ? ip.trim() : 'localhost'
+        const fullUrl = 'http://' + host + weightUrl + '/' + encodeURIComponent(comport)
 
-                if (obj && obj.success === true) {
-                    $('#scale_reading').val(obj.response)
+        console.log('Requesting weight from scale at: ' + fullUrl)
+
+        const errorBox = document.querySelector('.form-group.error')
+        if (errorBox) {
+            errorBox.innerHTML = ''
+        }
+
+        button.disabled = true
+        const originalLabel = button.innerHTML
+        button.innerHTML = '<strong>Reading...</strong>'
+
+        const source = axios.CancelToken.source()
+        const timeoutId = setTimeout(() => {
+            source.cancel('No response received from scale')
+        }, 5000)
+
+        axios.get(fullUrl, { cancelToken: source.token })
+            .then((response) => {
+                clearTimeout(timeoutId)
+
+                if (response.data && response.data.success) {
+                    $('#scale_reading').val(parseFloat(response.data.response).toFixed(2))
                     updateTare()
+
                     const net = parseFloat($('#net_weight').val()) || 0
                     if (net < 0) {
                         alert('Net weight cannot be negative; check your scale reading or crate counts')
                     }
-                } else if (obj && obj.success === false) {
-                    alert('error occured in response: ' + obj.response)
                 } else {
-                    alert('No response from service')
+                    if (errorBox) {
+                        errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">API call was not successful.</div>'
+                    }
                 }
-            },
-            error: function () {
-                alert('error occured when sending request')
-            }
-        })
+            })
+            .catch((error) => {
+                clearTimeout(timeoutId)
 
+                const message = axios.isCancel(error)
+                    ? error.message
+                    : 'Error on request: ' + error.message
+
+                if (errorBox) {
+                    errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">' + message + '</div>'
+                }
+            })
+            .finally(() => {
+                button.disabled = false
+                button.innerHTML = originalLabel
+            })
+    }
+
+    const handleWeigh = () => {
+        const comport = $('#comport_value').val()
+        const ipAddress = $('#scale_ip_address').val()
+
+        getWeightV2(ipAddress, comport)
         return false
     }
 

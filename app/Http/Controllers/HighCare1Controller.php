@@ -44,11 +44,18 @@ class HighCare1Controller extends Controller
         $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
             return DB::table('scale_configs')
                 ->where('section', 'highcare1')
-                ->where('scale', 'Highcare1')
-                ->select('scale', 'tareweight', 'comport')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
                 ->get()
                 ->toArray();
         });
+
+        $selected_scale_name = session('highcare1_selected_scale');
+        $selected_config = collect($configs)->firstWhere('scale', $selected_scale_name);
+
+        if (!$selected_config && !empty($configs)) {
+            $selected_config = $configs[0];
+            session(['highcare1_selected_scale' => $selected_config->scale]);
+        }
 
         $items = Cache::remember('items_list_highcare', now()->addHours(10), function () {
             return DB::table('items')
@@ -73,20 +80,61 @@ class HighCare1Controller extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter', 'locations', 'chillers', 'configs'));
+        return view('highcare1.idt', compact('title', 'items', 'transfer_lines', 'helpers', 'filter', 'locations', 'chillers', 'configs', 'selected_config'));
+    }
+
+    public function setIdtScaleSelection(Request $request)
+    {
+        $request->validate([
+            'scale' => 'required|string',
+        ]);
+
+        $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'highcare1')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
+                ->get()
+                ->toArray();
+        });
+
+        $selected_config = collect($configs)->firstWhere('scale', $request->scale);
+
+        if (!$selected_config) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid scale selected.'
+            ], 422);
+        }
+
+        session(['highcare1_selected_scale' => $selected_config->scale]);
+
+        return response()->json([
+            'success' => true,
+            'scale' => $selected_config->scale,
+            'comport' => $selected_config->comport,
+            'tareweight' => $selected_config->tareweight,
+            'ip_address' => $selected_config->ip_address,
+        ]);
     }
 
     public function getIdtBulk(Helpers $helpers)
     {
         $title = "IDT";
 
-        $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
+        $configs = Cache::remember('highcare1_bulk_configs', now()->addHours(12), function () {
             return DB::table('scale_configs')
                 ->where('section', 'highcare1')
-                ->where('scale', 'Highcare1')
-                ->select('scale', 'tareweight', 'comport')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
                 ->get()->toArray();
         });
+
+        $selected_scale_name = session('highcare1_bulk_selected_scale', 'Highcare_bulk');
+        $selected_config = collect($configs)->firstWhere('scale', $selected_scale_name);
+
+        if (!$selected_config && !empty($configs)) {
+            $selected_config = collect($configs)->firstWhere('scale', 'Highcare_bulk') ?? $configs[0];
+            session(['highcare1_bulk_selected_scale' => $selected_config->scale]);
+        }
 
         $items = Cache::remember('items_list_sausage_bulk', now()->addHours(10), function () {
             $items = DB::table('items')
@@ -127,7 +175,41 @@ class HighCare1Controller extends Controller
             ->orderByDesc('idt_transfers.id')
             ->get();
 
-        return view('highcare1.idt-bulk', compact('title', 'items', 'transfer_lines', 'configs', 'helpers', 'tags'));
+        return view('highcare1.idt-bulk', compact('title', 'items', 'transfer_lines', 'configs', 'helpers', 'tags', 'selected_config'));
+    }
+
+    public function setIdtBulkScaleSelection(Request $request)
+    {
+        $request->validate([
+            'scale' => 'required|string',
+        ]);
+
+        $configs = Cache::remember('highcare1_bulk_configs', now()->addHours(12), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'highcare1')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
+                ->get()
+                ->toArray();
+        });
+
+        $selected_config = collect($configs)->firstWhere('scale', $request->scale);
+
+        if (!$selected_config) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid scale selected.'
+            ], 422);
+        }
+
+        session(['highcare1_bulk_selected_scale' => $selected_config->scale]);
+
+        return response()->json([
+            'success' => true,
+            'scale' => $selected_config->scale,
+            'comport' => $selected_config->comport,
+            'tareweight' => $selected_config->tareweight,
+            'ip_address' => $selected_config->ip_address,
+        ]);
     }
 
     public function saveIdtBulk(Request $request, Helpers $helpers)
@@ -256,8 +338,7 @@ class HighCare1Controller extends Controller
 
         $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
             return DB::table('scale_configs')
-                ->where('section', 'highcare1')
-                ->where('scale', 'Highcare1')
+                ->where('section', 'highcare1')                
                 ->select('scale', 'tareweight', 'comport')
                 ->get()->toArray();
         });
