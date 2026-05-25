@@ -336,12 +336,20 @@ class HighCare1Controller extends Controller
     {
         $title = "IDT-Receive";
 
-        $configs = Cache::remember('highcare1_configs', now()->addHours(12), function () {
+        $configs = Cache::remember('highcare1_receive_configs', now()->addHours(12), function () {
             return DB::table('scale_configs')
                 ->where('section', 'highcare1')                
-                ->select('scale', 'tareweight', 'comport')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
                 ->get()->toArray();
         });
+
+        $selected_scale_name = session('highcare1_receive_selected_scale');
+        $selected_config = collect($configs)->firstWhere('scale', $selected_scale_name);
+
+        if (!$selected_config && !empty($configs)) {
+            $selected_config = collect($configs)->firstWhere('scale', 'Highcare1') ?? $configs[0];
+            session(['highcare1_receive_selected_scale' => $selected_config->scale]);
+        }
 
         $transfer_lines = DB::table('idt_transfers')
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
@@ -356,7 +364,41 @@ class HighCare1Controller extends Controller
             ->orderByDesc('idt_transfers.id')
             ->get();
 
-        return view('highcare1.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers'));
+        return view('highcare1.idt-receive', compact('title', 'transfer_lines', 'configs', 'helpers', 'selected_config'));
+    }
+
+    public function setIdtReceiveScaleSelection(Request $request)
+    {
+        $request->validate([
+            'scale' => 'required|string',
+        ]);
+
+        $configs = Cache::remember('highcare1_receive_configs', now()->addHours(12), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'highcare1')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
+                ->get()
+                ->toArray();
+        });
+
+        $selected_config = collect($configs)->firstWhere('scale', $request->scale);
+
+        if (!$selected_config) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid scale selected.'
+            ], 422);
+        }
+
+        session(['highcare1_receive_selected_scale' => $selected_config->scale]);
+
+        return response()->json([
+            'success' => true,
+            'scale' => $selected_config->scale,
+            'comport' => $selected_config->comport,
+            'tareweight' => $selected_config->tareweight,
+            'ip_address' => $selected_config->ip_address,
+        ]);
     }
 
     public function updateReceiveIdt(Request $request, Helpers $helpers)

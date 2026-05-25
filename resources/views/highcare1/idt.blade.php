@@ -79,6 +79,8 @@
                                     <small class="mb-0">Reading from:</small>
                                     <input style="font-weight: bold; border: none; max-width: 100px;" type="text" id="comport_value" value="{{ $selected_config->comport ?? '' }}" disabled>
                                     <input type="hidden" id="scale_ip_address" value="{{ $selected_config->ip_address ?? '' }}">
+                                    <small class="mb-0">Host:</small>
+                                    <span class="badge badge-secondary" id="scale_host_badge">localhost</span>
                                 </div>
                                 <div class="form-group error mt-2 mb-0"></div>
                             </div>
@@ -445,6 +447,8 @@
 
 @section('scripts')
 <script>
+    @include('highcare1.partials.scale-weight-helper')
+
     $(document).ready(function () {
         $('.incomplete_pieces').hide();
 
@@ -536,6 +540,8 @@
             updateScaleComportDisplay()
             persistSelectedScale()
         })
+
+        updateScaleComportDisplay()
     });
 
     const updateScaleComportDisplay = () => {
@@ -544,6 +550,7 @@
         const ipAddress = selected.data('ip_address') || ''
         $('#comport_value').val(comport)
         $('#scale_ip_address').val(ipAddress)
+        window.highcareScaleHelper.updateHostBadge('#scale_host_badge', ipAddress)
     }
 
     const persistSelectedScale = () => {
@@ -559,6 +566,7 @@
             if (response.data && response.data.success) {
                 $('#comport_value').val(response.data.comport || '')
                 $('#scale_ip_address').val(response.data.ip_address || '')
+                window.highcareScaleHelper.updateHostBadge('#scale_host_badge', response.data.ip_address || '')
             }
         }).catch((error) => {
             console.log(error)
@@ -832,74 +840,27 @@
         $('#net_weight').val(net.toFixed(2))
     }
 
-    const getWeightV2 = (ip, comport) => {
-        const weightUrl = (@json(config('app.get_weight_endpoint')) || '') + '';
-        const button = document.getElementById('btn-weigh')
-
-        if (!comport) {
-            alert('Scale COM port is not configured.')
-            return
-        }
-
-        const host = ip && ip.trim() !== '' ? ip.trim() : 'localhost'
-        const fullUrl = 'http://' + host + weightUrl + '/' + encodeURIComponent(comport)
-
-        console.log('Requesting weight from scale at: ' + fullUrl)
-
-        const errorBox = document.querySelector('.form-group.error')
-        if (errorBox) {
-            errorBox.innerHTML = ''
-        }
-
-        button.disabled = true
-        const originalLabel = button.innerHTML
-        button.innerHTML = '<strong>Reading...</strong>'
-
-        const source = axios.CancelToken.source()
-        const timeoutId = setTimeout(() => {
-            source.cancel('No response received from scale')
-        }, 5000)
-
-        axios.get(fullUrl, { cancelToken: source.token })
-            .then((response) => {
-                clearTimeout(timeoutId)
-
-                if (response.data && response.data.success) {
-                    $('#scale_reading').val(parseFloat(response.data.response).toFixed(2))
-                    updateTare()
-
-                    const net = parseFloat($('#net_weight').val()) || 0
-                    if (net < 0) {
-                        alert('Net weight cannot be negative; check your scale reading or crate counts')
-                    }
-                } else {
-                    if (errorBox) {
-                        errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">API call was not successful.</div>'
-                    }
-                }
-            })
-            .catch((error) => {
-                clearTimeout(timeoutId)
-
-                const message = axios.isCancel(error)
-                    ? error.message
-                    : 'Error on request: ' + error.message
-
-                if (errorBox) {
-                    errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">' + message + '</div>'
-                }
-            })
-            .finally(() => {
-                button.disabled = false
-                button.innerHTML = originalLabel
-            })
-    }
-
     const handleWeigh = () => {
         const comport = $('#comport_value').val()
         const ipAddress = $('#scale_ip_address').val()
 
-        getWeightV2(ipAddress, comport)
+        window.highcareScaleHelper.getWeight({
+            ip: ipAddress,
+            comport: comport,
+            endpointPath: (@json(config('app.get_weight_endpoint')) || '') + '',
+            buttonId: 'btn-weigh',
+            errorSelector: '.form-group.error',
+            onSuccess: (value) => {
+                $('#scale_reading').val(value.toFixed(2))
+                updateTare()
+
+                const net = parseFloat($('#net_weight').val()) || 0
+                if (net < 0) {
+                    alert('Net weight cannot be negative; check your scale reading or crate counts')
+                }
+            }
+        })
+
         return false
     }
 

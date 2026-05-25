@@ -257,6 +257,7 @@ Route::prefix('highcare1')->group(function () {
         ->where('filter', '[0-9]+')
         ->name('highcare1_idt');
     Route::get('/idt-receive', [HighCare1Controller::class, 'getReceiveIdt'])->name('highcare_idt_receive');
+    Route::post('/idt-receive/scale-selection', [HighCare1Controller::class, 'setIdtReceiveScaleSelection'])->name('highcare1_idt_receive_scale_selection');
     Route::post('/idt/receive-update', [HighCare1Controller::class, 'updateReceiveIdt'])->name('update_idt_receive_highcare');
     Route::get('/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
     Route::post('/idt/scale-selection', [HighCare1Controller::class, 'setIdtScaleSelection'])->name('highcare1_idt_scale_selection');

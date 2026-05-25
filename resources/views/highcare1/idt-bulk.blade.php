@@ -69,7 +69,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="form-group" style="padding-left: 30%; padding-top: 5%">
+                <div class="form-group" style="padding-top: 5%">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br>
                     <div class="mt-2 d-flex align-items-center" style="gap: 10px;">
@@ -88,6 +88,8 @@
                         <input style="font-weight: bold; border: none; max-width: 100px;" type="text" id="comport_value"
                             value="{{ $selected_config->comport ?? '' }}" disabled>
                         <input type="hidden" id="bulk_scale_ip_address" value="{{ $selected_config->ip_address ?? '' }}">
+                        <small class="mb-0">Host:</small>
+                        <span class="badge badge-secondary" id="bulk_scale_host_badge">localhost</span>
                     </div>
                     <div class="form-group error mt-2 mb-0"></div>
                 </div>
@@ -367,6 +369,8 @@
 
 @section('scripts')
 <script>
+    @include('highcare1.partials.scale-weight-helper')
+
     $(document).ready(function () {
 
         $('.form-prevent-multiple-submits').on('submit', function () {
@@ -450,6 +454,8 @@
             persistBulkScaleSelection()
         })
 
+        updateBulkScaleDisplay()
+
         $("body").on("click", "#editIdtModalShow", function (e) {
             e.preventDefault();
 
@@ -504,6 +510,7 @@
 
         $('#comport_value').val(comport)
         $('#bulk_scale_ip_address').val(ipAddress)
+        window.highcareScaleHelper.updateHostBadge('#bulk_scale_host_badge', ipAddress)
     }
 
     const persistBulkScaleSelection = () => {
@@ -519,6 +526,7 @@
             if (response.data && response.data.success) {
                 $('#comport_value').val(response.data.comport || '')
                 $('#bulk_scale_ip_address').val(response.data.ip_address || '')
+                window.highcareScaleHelper.updateHostBadge('#bulk_scale_host_badge', response.data.ip_address || '')
             }
         }).catch((error) => {
             console.log(error)
@@ -591,66 +599,22 @@
         return $valid;
     }
 
-    const getWeightV2 = (ip, comport) => {
-        const weightUrl = (@json(config('app.get_weight_endpoint')) || '') + '';
-        const button = document.getElementById('weigh')
-
-        if (!comport) {
-            alert('Scale COM port is not configured.')
-            return
-        }
-
-        const host = ip && ip.trim() !== '' ? ip.trim() : 'localhost'
-        const fullUrl = 'http://' + host + weightUrl + '/' + encodeURIComponent(comport)
-
-        const errorBox = document.querySelector('.form-group.error')
-        if (errorBox) {
-            errorBox.innerHTML = ''
-        }
-
-        button.disabled = true
-        const originalLabel = button.innerHTML
-        button.innerHTML = '<strong>Reading...</strong>'
-
-        const source = axios.CancelToken.source()
-        const timeoutId = setTimeout(() => {
-            source.cancel('No response received from scale')
-        }, 5000)
-
-        axios.get(fullUrl, { cancelToken: source.token })
-            .then((response) => {
-                clearTimeout(timeoutId)
-
-                if (response.data && response.data.success) {
-                    const readingInput = document.getElementById('reading')
-                    readingInput.value = parseFloat(response.data.response).toFixed(2)
-                    getNet()
-                } else if (errorBox) {
-                    errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">API call was not successful.</div>'
-                }
-            })
-            .catch((error) => {
-                clearTimeout(timeoutId)
-
-                const message = axios.isCancel(error)
-                    ? error.message
-                    : 'Error on request: ' + error.message
-
-                if (errorBox) {
-                    errorBox.innerHTML = '<div class="alert alert-danger small-alert mb-0">' + message + '</div>'
-                }
-            })
-            .finally(() => {
-                button.disabled = false
-                button.innerHTML = originalLabel
-            })
-    }
-
     const getScaleReading = () => {
         const comport = $('#comport_value').val()
         const ipAddress = $('#bulk_scale_ip_address').val()
 
-        getWeightV2(ipAddress, comport)
+        window.highcareScaleHelper.getWeight({
+            ip: ipAddress,
+            comport: comport,
+            endpointPath: (@json(config('app.get_weight_endpoint')) || '') + '',
+            buttonId: 'weigh',
+            errorSelector: '.form-group.error',
+            onSuccess: (value) => {
+                const readingInput = document.getElementById('reading')
+                readingInput.value = value.toFixed(2)
+                getNet()
+            }
+        })
     }
 
 </script>
