@@ -229,9 +229,9 @@ class ChoppingController extends Controller
         $lines = DB::table('production_lines')
             ->where('batches.status', 'posted')
             ->where('template_lines.type', 'Intake')
-            // ->when($filter == 'today', function ($q) {
-            //     $q->whereDate('production_lines.created_at', today()); // today
-            // })
+            ->when($filter == 'today', function ($q) {
+                $q->whereDate('production_lines.created_at', today()); // today
+            })
             ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
             ->join('template_lines', function ($join) use ($table) {
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
@@ -261,7 +261,7 @@ class ChoppingController extends Controller
                 'batches.batch_no'
             )
             ->orderBy('batches.batch_no')
-            ->get()->dd();
+            ->get();
 
         return view('chopping.production-summary-report', compact('title', 'lines', 'helpers'));
     }
