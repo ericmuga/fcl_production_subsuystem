@@ -660,7 +660,8 @@ class ChoppingController extends Controller
                 'chopping_id' => $request->complete_run_number,
                 'item_code' => $output->item_code,
                 'weight' => $totalInsertedWeight,
-                'output' => 1
+                'output' => 1,
+                'created_at' => now(),
             ]);
         }
     }
@@ -778,7 +779,7 @@ class ChoppingController extends Controller
                 'a.created_at'
             )
             ->orderBy('a.chopping_id', 'asc')
-            ->get()->dd();
+            ->get();
 
         $exports = Session::put('session_export_data', $lines);
 
