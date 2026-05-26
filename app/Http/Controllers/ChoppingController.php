@@ -776,7 +776,7 @@ class ChoppingController extends Controller
                 DB::raw("CASE WHEN a.output = 1 THEN 'Output' ELSE 'Input' END as output_type"),
                 'a.weight', 
                 'a.batch_no', 
-                'a.created_at'
+                DB::raw("CONVERT(varchar(23), a.created_at, 121) as created_at")
             )
             ->orderBy('a.chopping_id', 'asc')
             ->get();
