@@ -617,9 +617,15 @@
         var carcass_type = $('#carcass_type').val();
         var classification_code = document.getElementById('classification_code');
 
-        // suckling pigs classification
+        // Suckling pigs classification (Option B): always use threshold bands
         if (carcass_type === "G0113") {
-            classification_code.value = "*";
+            if (s_weight >= 5 && s_weight < 8) {
+                classification_code.value = "3P-SK4";
+            } else if (s_weight >= 9 && s_weight < 20) {
+                classification_code.value = "3P-SK5";
+            } else {
+                classification_code.value = "";
+            }
             return;
         }
 
@@ -716,17 +722,6 @@
         // Sows and suckling pigs (Rosemark/non-Rosemark specific labels)
         if (carcass_type === "G0111") {
             classification_code.value = isRosemark ? "RMSOW-3P" : "SOW-3P";
-            return;
-        }
-
-        if (carcass_type === "G0113") {
-            if (s_weight >= 5 && s_weight < 8) {
-                classification_code.value = isRosemark ? "RM3P-SK4" : "3P-SK4";
-            } else if (s_weight >= 9 && s_weight < 20) {
-                classification_code.value = "3P-SK5";
-            } else {
-                classification_code.value = "";
-            }
             return;
         }
 

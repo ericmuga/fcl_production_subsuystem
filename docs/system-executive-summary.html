@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WMS Executive Summary</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 32px; color: #111; line-height: 1.45; }
+    h1 { margin: 0 0 6px 0; }
+    h2 { margin: 16px 0 6px 0; font-size: 18px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+    p { margin: 6px 0; }
+    ul { margin: 6px 0 6px 20px; }
+    li { margin: 3px 0; }
+    .muted { color: #666; font-size: 12px; }
+    .kpi { border: 1px solid #ddd; border-radius: 6px; padding: 10px; margin-top: 8px; }
+    .kpi-title { font-weight: bold; margin-bottom: 4px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media print {
+      body { margin: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <h1>WMS Executive Summary</h1>
+  <p class="muted">System overview for leadership and panel review</p>
+
+  <h2>1. What the System Is</h2>
+  <p>
+    WMS is an integrated operations platform for meat-processing workflows, built in-house.
+    It is implemented on open-source architecture, making it practical to tweak and extend across modules.
+    It unifies slaughter weighing, production processing, inter-department transfers (IDT), receiving,
+    despatch, and reporting into one governed system.
+  </p>
+
+  <h2>2.1 Core Technology Stack</h2>
+  <ul>
+    <li>Backend: PHP with Laravel framework.</li>
+    <li>Frontend: Vanilla JavaScript with jQuery on Blade-rendered pages.</li>
+    <li>Data layer: Structured relational database model for transactional integrity and reporting.</li>
+  </ul>
+
+  <h2>3. Business Value Delivered</h2>
+  <ul>
+    <li>Single source of operational truth across departments.</li>
+    <li>Real-time, scale-driven data capture to reduce manual errors.</li>
+    <li>Controlled stock and transfer movement with issue, receive, and approval paths.</li>
+    <li>Faster management reporting through downloadable line and summary exports.</li>
+    <li>Improved auditability through timestamped records and role-based workflows.</li>
+  </ul>
+
+  <h2>4. Core Functional Coverage</h2>
+  <div class="two-col">
+    <div class="kpi">
+      <div class="kpi-title">Production Domains</div>
+      <ul>
+        <li>Slaughter and carcass classification</li>
+        <li>Butchery (beheading, breaking, deboning)</li>
+        <li>Spices and chopping (batch and lines)</li>
+        <li>Sausage and beef/lamb flows</li>
+      </ul>
+    </div>
+    <div class="kpi">
+      <div class="kpi-title">Movement and Control</div>
+      <ul>
+        <li>IDT issue and receiving</li>
+        <li>Highcare and despatch transfer operations</li>
+        <li>Variance and approval handling</li>
+        <li>Stock and asset movement support</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>5. Integrations at a Glance</h2>
+  <ul>
+    <li>LDAP/domain authentication API integration for enterprise user sign-in (domain credentials).</li>
+    <li>Scale integrations with configurable COM-port/IP endpoint settings.</li>
+    <li>API interfaces for inbound/outbound production and slaughter data exchange.</li>
+    <li>Excel/CSV reporting exports for business and ERP handoff use cases.</li>
+    <li>Messaging capability via RabbitMQ for event-based integration patterns.</li>
+    <li>Support integrations for SMS notifications and operational log visibility.</li>
+  </ul>
+
+  <h2>6. Governance and Reliability</h2>
+  <ul>
+    <li>Authenticated web workflows with LDAP/domain-backed login integration.</li>
+    <li>Token-protected and rate-limited external API endpoints.</li>
+    <li>Validation and rule-driven transaction posting.</li>
+    <li>Cached lookups and configuration refresh controls for performance and consistency.</li>
+  </ul>
+
+  <h2>7. Executive Conclusion</h2>
+  <p>
+    WMS provides an end-to-end digital backbone for production execution and transfer accountability.
+    It combines operational speed, data integrity, and integration readiness, giving management a
+    reliable platform for day-to-day control and strategic reporting.
+  </p>
+</body>
+</html>

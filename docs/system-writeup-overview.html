@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>WMS System Writeup</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; line-height: 1.45; color: #111; }
+    h1, h2, h3 { margin: 0 0 8px 0; }
+    h2 { margin-top: 20px; border-bottom: 1px solid #ddd; padding-bottom: 4px; }
+    h3 { margin-top: 12px; }
+    p { margin: 6px 0; }
+    ul { margin: 6px 0 6px 20px; }
+    li { margin: 3px 0; }
+    .muted { color: #666; font-size: 12px; }
+    .small { font-size: 12px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .box { border: 1px solid #ddd; padding: 10px; border-radius: 6px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td { border: 1px solid #ccc; padding: 6px; font-size: 12px; text-align: left; vertical-align: top; }
+    .mono { font-family: Consolas, monospace; font-size: 12px; }
+    @media print {
+      .pagebreak { page-break-before: always; }
+    }
+  </style>
+</head>
+<body>
+  <h1>WMS System Writeup</h1>
+  <p class="muted">Comprehensive business and technical overview for panel presentation</p>
+
+  <h2>1. Executive Summary</h2>
+  <p>
+    WMS is an in-house developed production and transfer management platform supporting slaughter operations,
+    butchery processing, highcare workflows, despatch, QA, spices/chopping, sausage, beef/lamb, and related
+    internal stock and asset movements. Built on open-source architecture, it is easy to tweak and extend for
+    changing operational needs. The system combines real-time scale capture, transaction controls,
+    IDT transfers, reporting/exports, and API-based data exchange.
+  </p>
+
+  <h2>1.1 Core Technology Stack</h2>
+  <ul>
+    <li>Backend: PHP with Laravel framework.</li>
+    <li>Frontend: Vanilla JavaScript with jQuery in Blade-rendered UI flows.</li>
+    <li>Database: Structured relational data model supporting transactional and reporting workloads.</li>
+  </ul>
+
+  <h2>2. Architecture Snapshot</h2>
+  <div class="grid">
+    <div class="box">
+      <h3>Application Layer</h3>
+      <ul>
+        <li>Laravel 8 web application with Blade views and controller-driven workflows.</li>
+        <li>Domain controllers per operational area (slaughter, butchery, despatch, highcare, etc.).</li>
+        <li>Helper-driven integrations for scale reads, queue publishing, and utility formatting.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Data and Integration Layer</h3>
+      <ul>
+        <li>Relational DB-backed operational tables (weights, transfers, stock, receipt lines).</li>
+        <li>HTTP API exposure for downstream consumers and upstream imports.</li>
+        <li>Excel/CSV export pipeline for reports and NAV-oriented outputs.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>3. Major Functional Components</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Component</th>
+        <th>Primary Function</th>
+        <th>Key Capabilities</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Authentication and User Management</td>
+        <td>Access control and user session management</td>
+        <td>LDAP/domain authentication API login, local user provisioning, logout/session controls, user updates, permission editing, role-driven behavior on screens</td>
+      </tr>
+      <tr>
+        <td>Slaughter</td>
+        <td>Inbound livestock weighing and classification</td>
+        <td>Scale read, net and settlement computation, grading/classification, missing slap handling, disease flags, SMS triggers, slaughter exports</td>
+      </tr>
+      <tr>
+        <td>Butchery</td>
+        <td>Processing operations across multiple scale stages</td>
+        <td>Scale 1/2/3 workflows, production process mapping, marination, splitting, beheading/breaking/deboning reports and exports</td>
+      </tr>
+      <tr>
+        <td>Highcare 1</td>
+        <td>IDT issue/receive/bulk/slicing workflows</td>
+        <td>Scale selection persistence, host-aware scale reads, IDT reporting, highcare-specific transfer logic</td>
+      </tr>
+      <tr>
+        <td>Sausage</td>
+        <td>IDT, production entries, stuffing flow</td>
+        <td>IDT create/receive, rights validation, item details APIs, per-batch and entries reporting</td>
+      </tr>
+      <tr>
+        <td>Spices and Chopping</td>
+        <td>Batch production and line-level execution</td>
+        <td>Template import, batch lifecycle, chopping v1/v2, posted lines reports and exports</td>
+      </tr>
+      <tr>
+        <td>Despatch</td>
+        <td>Dispatch-side transfer issue/receive and stock control</td>
+        <td>IDT issue and receive, variance and chiller views, stock take/import, history and summary exports</td>
+      </tr>
+      <tr>
+        <td>Generic IDT Module</td>
+        <td>Cross-department transfer orchestration</td>
+        <td>Issue, receive, approval queues, location-based filtering, historical reporting, summary exports</td>
+      </tr>
+      <tr>
+        <td>QA and Beef/Lamb</td>
+        <td>Specialized transfer and processing flows</td>
+        <td>QA issue/receive/reporting and beef/lamb slicing/receiving history</td>
+      </tr>
+      <tr>
+        <td>Assets and Stocks</td>
+        <td>Non-production movement and stock visibility</td>
+        <td>Asset movement lifecycle and stock transactions dashboard</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>4. API Integrations and Interfaces</h2>
+
+  <h3>4.1 Internal Web-AJAX Endpoints</h3>
+  <ul>
+    <li>Slaughter weigh AJAX endpoints for receipt and vendor reconciliation before posting.</li>
+    <li>Scale read and COM-port listing endpoints used by weigh screens.</li>
+    <li>IDT and module-specific AJAX for product lookup, rights checks, and transfer metadata.</li>
+  </ul>
+
+  <h3>4.2 Public/External API Surface</h3>
+  <ul>
+    <li>Token-protected and throttled endpoints for data extraction:
+      <span class="mono">/api/v1/fetch-slaughter-data</span>,
+      <span class="mono">/api/v1/fetch-missing-slaps</span>,
+      <span class="mono">/api/v1/fetch-beheading-data</span>,
+      <span class="mono">/api/v1/fetch-breaking-data</span>,
+      <span class="mono">/api/v1/fetch-deboning-data</span>,
+      <span class="mono">/api/v1/fetch-chopping-data</span>.</li>
+    <li>Inbound ingestion endpoints for slaughter receipts and line pushes.</li>
+    <li>Auxiliary API endpoints for barcode inserts and last-insert checks.</li>
+  </ul>
+
+  <h3>4.3 External Service Integrations</h3>
+  <ul>
+    <li>LDAP/domain authentication API integration for enterprise sign-in (domain user credential validation).</li>
+    <li>Scale API integration via configurable host/endpoints and COM-port routing.</li>
+    <li>RabbitMQ integration capability for transfer/production event publishing.</li>
+    <li>SMS service integration via configurable sender, API key, and destination settings.</li>
+    <li>Mail service connectors (Mailgun/Postmark/SES) available in service configuration.</li>
+  </ul>
+
+  <h2>5. Scale Configuration and Weighing Controls</h2>
+
+  <h3>5.1 Scale Configuration Model</h3>
+  <ul>
+    <li>Scale definitions are stored in scale configuration records keyed by section/workflow.</li>
+    <li>Core attributes include scale name, COM port, tare weight, IP address, and optional baud rate.</li>
+    <li>Scale settings are editable from dedicated module settings screens.</li>
+  </ul>
+
+  <h3>5.2 Runtime Scale Read Behavior</h3>
+  <ul>
+    <li>Screens invoke API-based reads using selected COM-port + host endpoint.</li>
+    <li>Highcare helper resolves blank IP addresses to localhost fallback for resiliency.</li>
+    <li>UI feedback includes host badge visibility, reading timeout handling, and friendly error states.</li>
+  </ul>
+
+  <h3>5.3 Caching and Refresh</h3>
+  <ul>
+    <li>Scale configs are cached for performance.</li>
+    <li>Config update flows flush cache to guarantee fresh read behavior after edits.</li>
+  </ul>
+
+  <h2>6. IDT Transfer Lifecycle (Core Cross-Module Process)</h2>
+
+  <h3>6.1 Standard Lifecycle</h3>
+  <ol>
+    <li>Issue transfer from a source location with product, pieces/crates, and weight.</li>
+    <li>Route transfer to destination location and chiller where applicable.</li>
+    <li>Receive transfer with receiver totals and variance indication.</li>
+    <li>Apply approval flow for transfers flagged as requires_approval.</li>
+    <li>Track outcomes in history, summary reports, and export outputs.</li>
+  </ol>
+
+  <h3>6.2 Location Mapping and Governance</h3>
+  <ul>
+    <li>IDT defines explicit operational location map (e.g., Butchery, Curing, Highcare, Sausage, Despatch, QA).</li>
+    <li>Queries and UI filters use from/to locations to enforce contextual visibility.</li>
+    <li>Special handling exists for specific despatch-linked location groups and approval queues.</li>
+  </ul>
+
+  <h3>6.3 Reporting and Export</h3>
+  <ul>
+    <li>IDT history export produces line-level transfer outputs over selected date windows.</li>
+    <li>IDT summary export aggregates sent vs received weight and pieces by product.</li>
+    <li>Department-specific IDT reports (Despatch, Highcare, QA, Sausage, Freshcuts) support operational accountability.</li>
+  </ul>
+
+  <div class="pagebreak"></div>
+
+  <h2>7. Data Flows and Operational Reporting</h2>
+
+  <h3>7.1 Inbound Data Flows</h3>
+  <ul>
+    <li>Receipt imports (including API-driven inserts) feed slaughter pre-weigh context.</li>
+    <li>Master data (items/products/chillers/templates) drives validation and dropdown controls.</li>
+  </ul>
+
+  <h3>7.2 Processing Data Flows</h3>
+  <ul>
+    <li>Scale reading and tare calculations produce net and settlement weights.</li>
+    <li>Classification logic maps carcass type + settlement + meat percent to final class codes.</li>
+    <li>IDT workflows propagate stock movement between operational locations.</li>
+  </ul>
+
+  <h3>7.3 Outbound Data Flows</h3>
+  <ul>
+    <li>Excel and CSV exports support downstream finance/ERP and audit use cases.</li>
+    <li>API fetch endpoints provide controlled access for external analytics/consumer systems.</li>
+    <li>Queue publishing hooks support event-driven integration patterns where enabled.</li>
+  </ul>
+
+  <h2>8. Security, Controls, and Reliability</h2>
+  <ul>
+    <li>Web features are primarily protected by authentication middleware and LDAP/domain-authenticated login flow.</li>
+    <li>Public API extraction endpoints are protected via token middleware and request throttling.</li>
+    <li>Server-side validation is used in key save/update paths and API date-range requests.</li>
+    <li>Caching is used for heavy lookups; cache invalidation is included in settings updates.</li>
+    <li>Operational logs are available through an integrated log viewer endpoint.</li>
+  </ul>
+
+  <h2>9. Key Technical Dependencies</h2>
+  <ul>
+    <li>Laravel 8 and PHP 7.3/8.0 compatibility.</li>
+    <li>Maatwebsite Excel for export pipelines.</li>
+    <li>Guzzle HTTP client for external HTTP integrations.</li>
+    <li>php-amqplib for RabbitMQ messaging capability.</li>
+    <li>Toastr notifications and Laravel Log Viewer for operational UX and supportability.</li>
+  </ul>
+
+  <h2>10. Suggested Future Enhancements</h2>
+  <ul>
+    <li>Consolidate integration configuration into an environment matrix by module and site.</li>
+    <li>Expand API observability with endpoint-level monitoring and error budgets.</li>
+    <li>Introduce workflow-level audit trails for approval and override events.</li>
+    <li>Add standardized integration contracts for downstream ERP/NAV handoffs.</li>
+    <li>Document SLA/SLO targets for scale read latency and transfer posting turnaround.</li>
+  </ul>
+
+  <p class="small muted">
+    End of writeup.
+  </p>
+</body>
+</html>
