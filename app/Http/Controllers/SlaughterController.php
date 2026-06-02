@@ -195,9 +195,9 @@ class SlaughterController extends Controller
     {
         try {
             // try save
-            $manual_weight = 0;
+            $manual_weight = 0; //auto
             if ($request->manual_weight == 'on') {
-                $manual_weight = 1;
+                $manual_weight = 1; //manual
             }
 
             $data = [
@@ -239,7 +239,7 @@ class SlaughterController extends Controller
             $data['timestamp'] = now()->toDateTimeString();
 
             // Publish data to RabbitMQ
-            //$helpers->publishToQueue($data, 'slaughter_line.bc');
+            //$helpers->publishToQueue($data, 'slaughter_linebc');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
