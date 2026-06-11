@@ -1403,7 +1403,7 @@ class ButcheryController extends Controller
         return Cache::remember('deboning_configs', now()->addMinutes(120), function () {
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
-                ->whereIn(DB::raw('LOWER(scale)'), ['deboning', 'deboning2'])
+                ->whereIn(DB::raw('LOWER(scale)'), ['deboning', 'deboning2', 'deboning3'])
                 ->select('scale', 'tareweight', 'comport')
                 ->orderBy('scale')
                 ->get();
