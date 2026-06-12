@@ -100,6 +100,7 @@
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div>
+                <input type="hidden" name="manual_weight_available" value="1">
                 @endif
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-row">
@@ -212,6 +213,7 @@
                             <th>Description</th>
                             <th>Batch No</th>
                             <th>Status</th>
+                            <th>Scale Status</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -230,6 +232,7 @@
                             <th>Description</th>
                             <th>Batch No</th>
                             <th>Status</th>
+                            <th>Scale Status</th>
                             <th>Date</th>
                         </tr>
                     </tfoot>
@@ -263,6 +266,15 @@
                                 @else
                                 <td><span class="badge badge-info">waiting receipt</span></td>
                                 @endif
+                                <td>
+                                    @if (is_null($data->manual_weight))
+                                        <span class="badge badge-primary">No scale</span>
+                                    @elseif ($data->manual_weight == 1)
+                                        <span class="badge badge-warning">Manual weight</span>
+                                    @else
+                                        <span class="badge badge-success">Scale weight</span>
+                                    @endif
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
                             </tr>
                         @endforeach

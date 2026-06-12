@@ -319,8 +319,6 @@ class IDTController extends Controller
                 ->where('section', $locations[$from_location])
                 ->get();
         }
-
-        // dd('here');
        
         return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
     }
@@ -328,6 +326,13 @@ class IDTController extends Controller
     public function saveIssueIdt(Request $request) {
         // dd($request->all());
         try {
+            $manual_weight = null;
+
+            // Persist 1/0 only when the UI included manual-capture controls.
+            if ($request->has('manual_weight_available')) {
+                $manual_weight = $request->has('manual_weight') ? 1 : 0;
+            }
+
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
                 'location_code' => $request->transfer_type == 1 ? '3600' : $request->location_code,
@@ -342,6 +347,7 @@ class IDTController extends Controller
                 'transfer_from' => $request->transfer_from,
                 'description' => $request->description,
                 'batch_no' => $request->batch_no,
+                'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
             ]);
 
