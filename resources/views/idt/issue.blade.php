@@ -61,18 +61,18 @@
                     <div class="col-md-4 form-group">
                         <label for="carriage_type">Transfer Type</label>
                         <select class="form-control" name="transfer_type" id="transfer_type" required>
-                            <option disabled selected value> -- select an option -- </option>
-                            <option value="0"> Local</option>
+                            {{-- <option disabled selected value> -- select an option -- </option> --}}
+                            <option selected value="0"> Local</option>
                             <option value="1"> Export</option>
                         </select>
                     </div>
                     <div class="col-md-4 form-group">
                         <label for="carriage_type">Carriage Type</label>
                         <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
-                            <option disabled selected value> -- select an option -- </option>
+                            {{-- <option disabled selected value> -- select an option -- </option> --}}
                             <option value="none">No Carriage</option>
                             <option value="crate">Crate</option>
-                            <option value="van">Van</option>
+                            <option selected value="van">Van</option>
                         </select>
                     </div>
                 </div>
@@ -135,10 +135,11 @@
                         <div class="col-md-6">
                             <label for="chiller_code">Transfer To Chiller </label>
                             <select class="form-control locations" name="chiller_code" id="chiller_code" required>
-                                <option disabled selected value> -- select an option -- </option>
+                                <option disabled value> -- select an option -- </option>
                                 @foreach($chillers as $chiller)
-                                    <option value="{{ $chiller->chiller_code ?? $chiller->code }}">
-                                        {{ $chiller->chiller_code ?? $chiller->code }} - {{ $chiller->description }}
+                                    @php $chillerValue = $chiller->chiller_code ?? $chiller->code; @endphp
+                                    <option value="{{ $chillerValue }}" @if(old('chiller_code', 'H') == $chillerValue) selected @endif>
+                                        {{ $chillerValue }} - {{ $chiller->description }}
                                     </option>
                                 @endforeach
                             </select>
