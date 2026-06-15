@@ -69,10 +69,10 @@
                     <div class="col-md-4 form-group">
                         <label for="carriage_type">Carriage Type</label>
                         <select class="form-control" name="carriage_type" id="carriage_type" onchange="updateCarriage(event)" required>
-                            {{-- <option disabled selected value> -- select an option -- </option> --}}
+                            <option disabled selected value> -- select an option -- </option>
                             <option value="none">No Carriage</option>
                             <option value="crate">Crate</option>
-                            <option selected value="van">Van</option>
+                            <option value="van">Van</option>
                         </select>
                     </div>
                 </div>
