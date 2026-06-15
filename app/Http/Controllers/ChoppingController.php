@@ -491,13 +491,14 @@ class ChoppingController extends Controller
                         'chopping_id' => $request->batch,
                         'item_code' => $request->product,
                         'weight' => $request->net,
+                        'created_at' => now()
                     ]);
 
             return response()->json([
                 'success' => true,
                 'data' => $request->batch,
                 'reading' => $request->reading,
-                'message' => 'Chopping weight inserted successfully!',
+                'message' =>'Chopping weight inserted successfully!',
             ], 200);
             
         } catch (\Exception $e) {
@@ -635,7 +636,7 @@ class ChoppingController extends Controller
 
     private function insertChoppingLines($choppingLines)
     {
-        if (!empty($choppingLines)) {
+        if (!empty($choppingLines)) {           
             DB::table('chopping_lines')->insert($choppingLines);
         }
     }
@@ -662,6 +663,7 @@ class ChoppingController extends Controller
                 'weight' => $totalInsertedWeight,
                 'output' => 1,
                 'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }
