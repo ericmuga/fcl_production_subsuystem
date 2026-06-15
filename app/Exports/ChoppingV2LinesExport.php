@@ -21,7 +21,7 @@ class ChoppingV2LinesExport implements FromCollection, WithHeadings
     {
         return
             [
-                'Run Id', 'Recipe Name', 'item Code', 'Item Name', 'Item Type', 'Weight', 'Batch No', 'Timestamp'
+                'Serial No','Run Id', 'Recipe Name', 'item Code', 'Item Name', 'Item Type', 'Weight', 'Batch No', 'Timestamp'
             ];
     }
 }

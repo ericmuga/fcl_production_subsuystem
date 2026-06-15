@@ -769,6 +769,7 @@ class ChoppingController extends Controller
             ->whereDate('a.created_at', '>=', $from_date)
             ->whereDate('a.created_at', '<=', $to_date)
             ->select(
+                'a.id',
                 'a.chopping_id', 
                 'c.template_name', 
                 'a.item_code', 
