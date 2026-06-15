@@ -655,7 +655,7 @@
             }
 
             // CLS01 – Export Large Eye: 60–75kg, fat 8–10mm
-            if (s_weight >= 60 && s_weight <= 75 && meat_percent >= 8 && meat_percent <= 10) {
+            if (s_weight >= 60 && s_weight <= 90 && meat_percent >= 8 && meat_percent <= 10) {
                 classification_code.value = prefix + "CLS01";
                 return;
             }
@@ -757,7 +757,7 @@
             }
 
             // CLS01 – Export Large Eye: 60–75kg, fat 8–10mm
-            if (s_weight >= 60 && s_weight <= 75 && meat_percent >= 8 && meat_percent <= 10) {
+            if (s_weight >= 60 && s_weight <= 90 && meat_percent >= 8 && meat_percent <= 10) {
                 $classification.val("CLS01");
                 return;
             }
