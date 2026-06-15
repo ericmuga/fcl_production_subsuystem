@@ -663,7 +663,6 @@ class ChoppingController extends Controller
                 'weight' => $totalInsertedWeight,
                 'output' => 1,
                 'created_at' => now(),
-                'updated_at' => now(),
             ]);
         }
     }
@@ -779,7 +778,7 @@ class ChoppingController extends Controller
                 DB::raw("CASE WHEN a.output = 1 THEN 'Output' ELSE 'Input' END as output_type"),
                 'a.weight', 
                 'a.batch_no', 
-                DB::raw("CONVERT(varchar(23), a.updated_at, 121) as updated_at")
+                'a.updated_at',
             )
             ->orderBy('a.chopping_id', 'asc')
             ->get();
