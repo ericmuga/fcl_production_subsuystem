@@ -652,6 +652,7 @@ class ButcheryController extends Controller
                 'scale' => $selectedScaleConfig->scale,
                 'comport' => $selectedScaleConfig->comport,
                 'tareweight' => $selectedScaleConfig->tareweight,
+                'ip_address' => $selectedScaleConfig->ip_address,
             ],
         ]);
     }
@@ -1404,7 +1405,7 @@ class ButcheryController extends Controller
             return DB::table('scale_configs')
                 ->where('section', 'butchery')
                 ->whereIn(DB::raw('LOWER(scale)'), ['deboning', 'deboning2', 'deboning3'])
-                ->select('scale', 'tareweight', 'comport')
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
                 ->orderBy('scale')
                 ->get();
         });
@@ -1426,6 +1427,7 @@ class ButcheryController extends Controller
             Session::put('butchery_scale3_selected_scale', $selectedScaleConfig->scale);
             Session::put('butchery_scale3_selected_comport', $selectedScaleConfig->comport);
             Session::put('butchery_scale3_selected_tareweight', $selectedScaleConfig->tareweight);
+            Session::put('butchery_scale3_selected_ip_address', $selectedScaleConfig->ip_address);
         }
 
         return $selectedScaleConfig;

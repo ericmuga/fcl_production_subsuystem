@@ -71,7 +71,7 @@
                     <select class="form-control" id="scale_selector" {{ count($configs) ? '' : 'disabled' }}>
                         @forelse($configs as $config)
                             <option value="{{ $config->scale }}" data-comport="{{ $config->comport }}"
-                                data-tareweight="{{ $config->tareweight }}"
+                                data-tareweight="{{ $config->tareweight }}" data-ip_address="{{ $config->ip_address ?? '' }}"
                                 {{ isset($selectedScaleConfig) && strcasecmp($selectedScaleConfig->scale, $config->scale) === 0 ? 'selected' : '' }}>
                                 {{ $config->scale }} | {{ $config->comport }} | Tare {{ $config->tareweight }}
                             </option>
@@ -85,6 +85,7 @@
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
                     <small>Reading from <input type="text" id="comport_value" value="{{ $selectedScaleConfig->comport ?? '' }}"
                             style="border:none" disabled></small>
+                    <input type="hidden" id="scale_ip_value" value="{{ $selectedScaleConfig->ip_address ?? '' }}">
                 </div>
 
             </div>
@@ -468,6 +469,7 @@
         var selectedScale = selectedOption.val();
         var comport = selectedOption.data('comport');
         var tareweight = selectedOption.data('tareweight');
+        var ipAddress = selectedOption.data('ip_address');
 
         if (!selectedScale) {
             return;
@@ -475,6 +477,7 @@
 
         $('#selected_scale').val(selectedScale);
         $('#comport_value').val(comport || '');
+        $('#scale_ip_value').val(ipAddress || '');
 
         if (tareweight !== undefined && tareweight !== null && tareweight !== '') {
             var tareweightString = tareweight.toString();
@@ -1012,6 +1015,10 @@
     //read scale
     function getScaleReading() {
         var comport = $('#comport_value').val();
+        var endpointPath = @json(config('app.get_weight_endpoint'));
+        var configuredScaleIp = $('#scale_ip_value').val();
+        var scaleHost = (configuredScaleIp && configuredScaleIp.trim() !== '') ? configuredScaleIp.trim() : 'localhost';
+        var fullScaleUrl = 'http://' + scaleHost + endpointPath + '/' + encodeURIComponent(comport);
 
         if (comport && comport.trim() !== '') {
             $.ajax({
@@ -1020,17 +1027,14 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
                         .attr('content')
                 },
-                url: "{{ url('butchery/read-scale-api-service') }}",
-
-                data: {
-                    'comport': comport,
-
+                url: fullScaleUrl,
+                beforeSend: function() {
+                    console.log('Requesting weight from scale at: ' + fullScaleUrl);
                 },
-                dataType: 'JSON',
                 success: function (data) {
                     // console.log(data);
 
-                    var obj = JSON.parse(data);
+                    var obj = (typeof data === 'string') ? JSON.parse(data) : data;
                     // console.log(obj.success);
 
                     if (obj.success == true) {
