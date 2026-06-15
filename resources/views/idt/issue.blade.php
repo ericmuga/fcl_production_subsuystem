@@ -147,7 +147,7 @@
                     @endif
                     <div class="col-md-6">
                         <label for="no_of_pieces">No. of pieces </label>
-                        <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
+                        <input type="number" class="form-control" value="0" id="no_of_pieces" name="no_of_pieces"
                             required>
                     </div>
                 </div>
