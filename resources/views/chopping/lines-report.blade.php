@@ -102,7 +102,7 @@
                                         </span>
                                     </td>
                                     <td>{{ number_format($data->weight, 2) }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($data->updated_at)->format('d/m/Y H:i') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
