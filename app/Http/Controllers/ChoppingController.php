@@ -767,8 +767,8 @@ class ChoppingController extends Controller
             ->leftJoin(DB::raw('(SELECT id, template_no, template_name FROM template_header) as c'), function($join) {
                 $join->on(DB::raw("LEFT(a.chopping_id, CHARINDEX('-', a.chopping_id) - 1)"), '=', 'c.template_no');
             })
-            ->whereDate('a.updated_at', '>=', $from_date)
-            ->whereDate('a.updated_at', '<=', $to_date)
+            ->whereDate('a.created_at', '>=', $from_date)
+            ->whereDate('a.created_at', '<=', $to_date)
             ->select(
                 'a.id',
                 'a.chopping_id', 
@@ -778,7 +778,7 @@ class ChoppingController extends Controller
                 DB::raw("CASE WHEN a.output = 1 THEN 'Output' ELSE 'Input' END as output_type"),
                 'a.weight', 
                 'a.batch_no', 
-                'a.updated_at',
+                'a.created_at',
             )
             ->orderBy('a.chopping_id', 'asc')
             ->get();
