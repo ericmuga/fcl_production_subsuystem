@@ -661,8 +661,8 @@ class ChoppingController extends Controller
                 'chopping_id' => $request->complete_run_number,
                 'item_code' => $output->item_code,
                 'weight' => $totalInsertedWeight,
-                'output' => 1,
-                'created_at' => now(),
+                'output' => 1
+                // 'created_at' => now(),
             ]);
         }
     }
@@ -778,7 +778,7 @@ class ChoppingController extends Controller
                 DB::raw("CASE WHEN a.output = 1 THEN 'Output' ELSE 'Input' END as output_type"),
                 'a.weight', 
                 'a.batch_no', 
-                'a.updated_at',
+                'a.created_at',
             )
             ->orderBy('a.chopping_id', 'asc')
             ->get();
