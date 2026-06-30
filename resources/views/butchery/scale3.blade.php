@@ -1012,37 +1012,12 @@
         return $valid;
     }
 
-    // Returns the host for the scale request when no IP is stored in the DB.
-    // Uses the server-detected client IP when valid; falls back to a localStorage
-    // cached value from a previous session when the app sits behind a reverse proxy.
-    function resolveScaleHost() {
-        var LS_KEY = 'scale_client_ip';
-        var hostname = window.location.hostname;
-
-        if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            return 'localhost';
-        }
-
-        // Server-detected IP — not usable when behind a proxy (returns 127.0.0.1/::1)
-        var serverIp = @json($clientIp ?? null);
-        var isLoopback = !serverIp || serverIp === '127.0.0.1' || serverIp === '::1';
-        if (!isLoopback) {
-            localStorage.setItem(LS_KEY, serverIp);
-            return serverIp;
-        }
-
-        // Proxy in front of the app — use the IP cached from a previous successful session
-        var cached = localStorage.getItem(LS_KEY);
-        if (cached) return cached;
-
-        return 'localhost';
-    }
-
     //read scale
     function getScaleReading() {
         var comport = $('#comport_value').val();
         var endpointPath = @json(config('app.get_weight_endpoint'));
         var configuredScaleIp = $('#scale_ip_value').val();
+        var scaleHost = (configuredScaleIp && configuredScaleIp.trim() !== '') ? configuredScaleIp.trim() : @json($clientIp ?? 'localhost');
 
         function fireRequest(scaleHost) {
             if (!comport || comport.trim() === '') {
@@ -1080,11 +1055,7 @@
                 });
         }
 
-        if (configuredScaleIp && configuredScaleIp.trim() !== '') {
-            fireRequest(configuredScaleIp.trim());
-        } else {
-            fireRequest(resolveScaleHost());
-        }
+        fireRequest(scaleHost);
     }
 
 </script>
