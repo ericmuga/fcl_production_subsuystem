@@ -1012,54 +1012,101 @@
         return $valid;
     }
 
+    // Detects the client machine's actual LAN IP via WebRTC — used only when no
+    // scale IP is configured, so the request targets the client instead of 'localhost'
+    // (which can fail from hosted/HTTPS origins due to CORS or mixed-content policy).
+    function getClientLocalIP() {
+        return new Promise(function(resolve) {
+            var RTC = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+            if (!RTC) { resolve(null); return; }
+            var pc = new RTC({ iceServers: [] });
+            var foundIPs = [];
+            pc.createDataChannel('');
+            pc.createOffer()
+                .then(function(offer) { return pc.setLocalDescription(offer); })
+                .catch(function() { resolve(null); });
+            pc.onicecandidate = function(e) {
+                if (!e || !e.candidate) {
+                    pc.close();
+                    var privateIP = foundIPs.find(function(ip) {
+                        return /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(ip);
+                    });
+                    resolve(privateIP || foundIPs[0] || null);
+                    return;
+                }
+                var match = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate);
+                if (match && !foundIPs.includes(match[1])) { foundIPs.push(match[1]); }
+            };
+            setTimeout(function() {
+                pc.close();
+                var privateIP = foundIPs.find(function(ip) {
+                    return /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(ip);
+                });
+                resolve(privateIP || foundIPs[0] || null);
+            }, 1500);
+        });
+    }
+
     //read scale
     function getScaleReading() {
         var comport = $('#comport_value').val();
         var endpointPath = @json(config('app.get_weight_endpoint'));
         var configuredScaleIp = $('#scale_ip_value').val();
-        var scaleHost = (configuredScaleIp && configuredScaleIp.trim() !== '') ? configuredScaleIp.trim() : 'localhost';
-        var fullScaleUrl = 'http://' + scaleHost + endpointPath + '/' + encodeURIComponent(comport);
 
-        if (comport && comport.trim() !== '') {
-            $.ajax({
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                        .attr('content')
-                },
-                url: fullScaleUrl,
-                beforeSend: function() {
-                    console.log('Requesting weight from scale at: ' + fullScaleUrl);
-                },
-                success: function (data) {
-                    // console.log(data);
+        function fireRequest(scaleHost) {
+            var fullScaleUrl = 'http://' + scaleHost + endpointPath + '/' + encodeURIComponent(comport);
 
-                    var obj = (typeof data === 'string') ? JSON.parse(data) : data;
-                    // console.log(obj.success);
+            if (comport && comport.trim() !== '') {
+                $.ajax({
+                    type: "GET",
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
+                            .attr('content')
+                    },
+                    url: fullScaleUrl,
+                    beforeSend: function() {
+                        console.log('Requesting weight from scale at: ' + fullScaleUrl);
+                    },
+                    success: function (data) {
+                        // console.log(data);
 
-                    if (obj.success == true) {
-                        var reading = document.getElementById('reading');
-                        console.log('weight: ' + obj.response);
-                        reading.value = obj.response;
-                        getNet();
+                        var obj = (typeof data === 'string') ? JSON.parse(data) : data;
+                        // console.log(obj.success);
 
-                    } else if (obj.success == false) {
-                        alert('error occured in response: ' + obj.response);
+                        if (obj.success == true) {
+                            var reading = document.getElementById('reading');
+                            console.log('weight: ' + obj.response);
+                            reading.value = obj.response;
+                            getNet();
 
-                    } else {
-                        alert('No response from service');
+                        } else if (obj.success == false) {
+                            alert('error occured in response: ' + obj.response);
 
+                        } else {
+                            alert('No response from service');
+
+                        }
+
+                    },
+                    error: function (data) {
+                        var errors = data.responseJSON;
+                        // console.log(errors);
+                        alert('error occured when sending request');
                     }
+                });
+            } else {
+                alert("Please set comport value first");
+            }
+        }
 
-                },
-                error: function (data) {
-                    var errors = data.responseJSON;
-                    // console.log(errors);
-                    alert('error occured when sending request');
-                }
-            });
+        if (configuredScaleIp && configuredScaleIp.trim() !== '') {
+            fireRequest(configuredScaleIp.trim());
         } else {
-            alert("Please set comport value first");
+            // No IP stored — detect the client's LAN IP so the request goes to
+            // the client machine, not the server's localhost
+            getClientLocalIP().then(function(detectedIp) {
+                fireRequest(detectedIp || 'localhost');
+            });
         }
     }
 
