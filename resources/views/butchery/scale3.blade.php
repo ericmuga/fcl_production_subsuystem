@@ -1012,10 +1012,9 @@
         return $valid;
     }
 
-    // Detects the client machine's actual LAN IP via WebRTC — used only when no
-    // scale IP is configured, so the request targets the client instead of 'localhost'
-    // (which can fail from hosted/HTTPS origins due to CORS or mixed-content policy).
-    function getClientLocalIP() {
+    // WebRTC local IP detection — Chrome 75+ replaces LAN IPs with obfuscated
+    // .local mDNS names, so this only works reliably on Firefox / older Chrome.
+    function tryWebRTCLocalIP() {
         return new Promise(function(resolve) {
             var RTC = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
             if (!RTC) { resolve(null); return; }
@@ -1027,7 +1026,7 @@
                 .catch(function() { resolve(null); });
             pc.onicecandidate = function(e) {
                 if (!e || !e.candidate) {
-                    pc.close();
+                    try { pc.close(); } catch(ex) {}
                     var privateIP = foundIPs.find(function(ip) {
                         return /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(ip);
                     });
@@ -1038,12 +1037,55 @@
                 if (match && !foundIPs.includes(match[1])) { foundIPs.push(match[1]); }
             };
             setTimeout(function() {
-                pc.close();
+                try { pc.close(); } catch(ex) {}
                 var privateIP = foundIPs.find(function(ip) {
                     return /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(ip);
                 });
                 resolve(privateIP || foundIPs[0] || null);
             }, 1500);
+        });
+    }
+
+    // Resolves the host to use for scale requests when no IP is stored in DB.
+    // Strategy (in order):
+    //   1. Local app (hostname is localhost/127.0.0.1) → 'localhost' always works.
+    //   2. Hosted app → check localStorage for a previously entered/detected IP.
+    //   3. Try WebRTC (works on Firefox; Chrome 75+ blocks LAN IP exposure).
+    //   4. Prompt user once, save answer to localStorage for future requests.
+    function resolveScaleHost() {
+        var LS_KEY = 'scale_client_ip';
+
+        // On the local dev app localhost is correct — no detection needed
+        var hostname = window.location.hostname;
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return Promise.resolve('localhost');
+        }
+
+        // Hosted app: check localStorage first (fastest, works every time after first use)
+        var saved = localStorage.getItem(LS_KEY);
+        if (saved) {
+            return Promise.resolve(saved);
+        }
+
+        // Try WebRTC (may work on Firefox or older Chrome)
+        return tryWebRTCLocalIP().then(function(detectedIp) {
+            if (detectedIp) {
+                localStorage.setItem(LS_KEY, detectedIp);
+                return detectedIp;
+            }
+
+            // WebRTC blocked — ask user once and persist the answer
+            var userIp = prompt(
+                'Your machine\'s local IP address is needed to connect to the scale.\n' +
+                'Find it by running  ipconfig  in Command Prompt and look for "IPv4 Address".\n\n' +
+                'Enter your IPv4 address (e.g. 192.168.1.45):'
+            );
+            if (userIp && userIp.trim()) {
+                localStorage.setItem(LS_KEY, userIp.trim());
+                return userIp.trim();
+            }
+
+            return 'localhost'; // last resort
         });
     }
 
@@ -1102,10 +1144,8 @@
         if (configuredScaleIp && configuredScaleIp.trim() !== '') {
             fireRequest(configuredScaleIp.trim());
         } else {
-            // No IP stored — detect the client's LAN IP so the request goes to
-            // the client machine, not the server's localhost
-            getClientLocalIP().then(function(detectedIp) {
-                fireRequest(detectedIp || 'localhost');
+            resolveScaleHost().then(function(scaleHost) {
+                fireRequest(scaleHost);
             });
         }
     }
