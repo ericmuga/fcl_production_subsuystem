@@ -622,7 +622,9 @@ class ButcheryController extends Controller
             })
             ->get();
 
-        return view('butchery.scale3', compact('title', 'products', 'configs', 'selectedScaleConfig', 'deboning_data', 'helpers'));
+        $clientIp = request()->ip();
+
+        return view('butchery.scale3', compact('title', 'products', 'configs', 'selectedScaleConfig', 'deboning_data', 'helpers', 'clientIp'));
     }
 
     public function updateScaleThreeConfig(Request $request)

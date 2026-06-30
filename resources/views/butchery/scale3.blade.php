@@ -1012,81 +1012,30 @@
         return $valid;
     }
 
-    // WebRTC local IP detection — Chrome 75+ replaces LAN IPs with obfuscated
-    // .local mDNS names, so this only works reliably on Firefox / older Chrome.
-    function tryWebRTCLocalIP() {
-        return new Promise(function(resolve) {
-            var RTC = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-            if (!RTC) { resolve(null); return; }
-            var pc = new RTC({ iceServers: [] });
-            var foundIPs = [];
-            pc.createDataChannel('');
-            pc.createOffer()
-                .then(function(offer) { return pc.setLocalDescription(offer); })
-                .catch(function() { resolve(null); });
-            pc.onicecandidate = function(e) {
-                if (!e || !e.candidate) {
-                    try { pc.close(); } catch(ex) {}
-                    var privateIP = foundIPs.find(function(ip) {
-                        return /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(ip);
-                    });
-                    resolve(privateIP || foundIPs[0] || null);
-                    return;
-                }
-                var match = /([0-9]{1,3}(\.[0-9]{1,3}){3})/.exec(e.candidate.candidate);
-                if (match && !foundIPs.includes(match[1])) { foundIPs.push(match[1]); }
-            };
-            setTimeout(function() {
-                try { pc.close(); } catch(ex) {}
-                var privateIP = foundIPs.find(function(ip) {
-                    return /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(ip);
-                });
-                resolve(privateIP || foundIPs[0] || null);
-            }, 1500);
-        });
-    }
-
-    // Resolves the host to use for scale requests when no IP is stored in DB.
-    // Strategy (in order):
-    //   1. Local app (hostname is localhost/127.0.0.1) → 'localhost' always works.
-    //   2. Hosted app → check localStorage for a previously entered/detected IP.
-    //   3. Try WebRTC (works on Firefox; Chrome 75+ blocks LAN IP exposure).
-    //   4. Prompt user once, save answer to localStorage for future requests.
+    // Returns the host for the scale request when no IP is stored in the DB.
+    // Uses the server-detected client IP when valid; falls back to a localStorage
+    // cached value from a previous session when the app sits behind a reverse proxy.
     function resolveScaleHost() {
         var LS_KEY = 'scale_client_ip';
-
-        // On the local dev app localhost is correct — no detection needed
         var hostname = window.location.hostname;
+
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            return Promise.resolve('localhost');
+            return 'localhost';
         }
 
-        // Hosted app: check localStorage first (fastest, works every time after first use)
-        var saved = localStorage.getItem(LS_KEY);
-        if (saved) {
-            return Promise.resolve(saved);
+        // Server-detected IP — not usable when behind a proxy (returns 127.0.0.1/::1)
+        var serverIp = @json($clientIp ?? null);
+        var isLoopback = !serverIp || serverIp === '127.0.0.1' || serverIp === '::1';
+        if (!isLoopback) {
+            localStorage.setItem(LS_KEY, serverIp);
+            return serverIp;
         }
 
-        // Try WebRTC (may work on Firefox or older Chrome)
-        return tryWebRTCLocalIP().then(function(detectedIp) {
-            if (detectedIp) {
-                localStorage.setItem(LS_KEY, detectedIp);
-                return detectedIp;
-            }
+        // Proxy in front of the app — use the IP cached from a previous successful session
+        var cached = localStorage.getItem(LS_KEY);
+        if (cached) return cached;
 
-            // WebRTC blocked — ask user once and persist the answer
-            var userIp = prompt(
-                'Your machine\'s local IP address is needed to connect to the scale.\n' +
-                'Find it by running  ipconfig  in Command Prompt and look for "IPv4 Address".\n\n' +
-                'Enter your IPv4 address (e.g. 192.168.1.45):'
-            );
-            if (userIp && userIp.trim()) {
-                localStorage.setItem(LS_KEY, userIp.trim());
-                return userIp.trim();
-            }
-
-            return 'localhost'; // last resort
-        });
+        return 'localhost';
     }
 
     //read scale
@@ -1096,57 +1045,45 @@
         var configuredScaleIp = $('#scale_ip_value').val();
 
         function fireRequest(scaleHost) {
-            var fullScaleUrl = 'http://' + scaleHost + endpointPath + '/' + encodeURIComponent(comport);
-
-            if (comport && comport.trim() !== '') {
-                $.ajax({
-                    type: "GET",
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                            .attr('content')
-                    },
-                    url: fullScaleUrl,
-                    beforeSend: function() {
-                        console.log('Requesting weight from scale at: ' + fullScaleUrl);
-                    },
-                    success: function (data) {
-                        // console.log(data);
-
-                        var obj = (typeof data === 'string') ? JSON.parse(data) : data;
-                        // console.log(obj.success);
-
-                        if (obj.success == true) {
-                            var reading = document.getElementById('reading');
-                            console.log('weight: ' + obj.response);
-                            reading.value = obj.response;
-                            getNet();
-
-                        } else if (obj.success == false) {
-                            alert('error occured in response: ' + obj.response);
-
-                        } else {
-                            alert('No response from service');
-
-                        }
-
-                    },
-                    error: function (data) {
-                        var errors = data.responseJSON;
-                        // console.log(errors);
-                        alert('error occured when sending request');
-                    }
-                });
-            } else {
+            if (!comport || comport.trim() === '') {
                 alert("Please set comport value first");
+                return;
             }
+
+            var fullScaleUrl = 'http://' + scaleHost + endpointPath + '/' + encodeURIComponent(comport);
+            console.log('Requesting weight from scale at: ' + fullScaleUrl);
+
+            fetch(fullScaleUrl)
+                .then(function(response) {
+                    if (!response.ok) {
+                        return response.text().then(function(body) {
+                            throw new Error('HTTP ' + response.status + ': ' + body);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(function(obj) {
+                    if (obj.success === true) {
+                        var reading = document.getElementById('reading');
+                        console.log('weight: ' + obj.response);
+                        reading.value = obj.response;
+                        getNet();
+                    } else if (obj.success === false) {
+                        alert('error occured in response: ' + obj.response);
+                    } else {
+                        alert('No response from service');
+                    }
+                })
+                .catch(function(error) {
+                    console.error('Scale request failed:', error.message);
+                    alert('Error connecting to scale: ' + error.message);
+                });
         }
 
         if (configuredScaleIp && configuredScaleIp.trim() !== '') {
             fireRequest(configuredScaleIp.trim());
         } else {
-            resolveScaleHost().then(function(scaleHost) {
-                fireRequest(scaleHost);
-            });
+            fireRequest(resolveScaleHost());
         }
     }
 
