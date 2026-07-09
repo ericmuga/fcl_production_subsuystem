@@ -619,7 +619,7 @@
 
         // Suckling pigs classification (Option B): always use threshold bands
         if (carcass_type === "G0113") {
-            if (s_weight >= 5 && s_weight < 8) {
+            if (s_weight >= 5 && s_weight <= 8) {
                 classification_code.value = "3P-SK4";
             } else if (s_weight >= 9 && s_weight < 20) {
                 classification_code.value = "3P-SK5";
