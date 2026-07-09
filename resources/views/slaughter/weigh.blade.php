@@ -829,7 +829,7 @@
 
         // Suckling pigs
         if (carcass_type === "G0113") {
-            if (s_weight >= 5 && s_weight < 8) {
+            if (s_weight >= 5 && s_weight <= 8) {
                 $classification.val("3P-SK4");
             } else if (s_weight >= 9 && s_weight < 20) {
                 $classification.val("3P-SK5");
