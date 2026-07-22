@@ -118,9 +118,9 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="ip_address">Ip address:</label>
+                        <label for="ip_address">Ip address:(optional)</label>
                         <input type="text" class="form-control" id="edit_ip_address" name="edit_ip_address" value=""
-                            placeholder="" required>
+                            placeholder="">
                     </div>
                     <div class="form-group">
                         <label for="baud">BaudRate:</label>
