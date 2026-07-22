@@ -239,9 +239,12 @@ class ButcheryController extends Controller
         return response()->json($result);
     }
 
-    public function comportlistApiService(Helpers $helpers)
+    public function comportlistApiService(Request $request, Helpers $helpers)
     {
-        $result = $helpers->get_comport_list();
+        $result = $helpers->get_comport_list(
+            $request->input('ip_address'),
+            $request->input('port', 3000)
+        );
 
         return response()->json($result);
     }

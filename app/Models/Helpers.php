@@ -137,14 +137,19 @@ class Helpers
         return $url = 'http://' . $ip . ':3000/api/get-scale-reading';
     }
 
-    public function getComportListServiceUrl()
+    public function getComportListServiceUrl($ipAddress = null, $port = 3000)
     {
-        $ip = \Request::getClientIp(true);
-
-        if ($ip == '::1') {
-            $ip = '127.0.0.1';
+        $host = trim((string) $ipAddress);
+        if ($host === '' || strtolower($host) === 'null') {
+            $host = 'localhost';
         }
-        return $url = 'http://' . $ip . ':3000/api/get-comport-list';
+
+        $servicePort = (int) $port;
+        if ($servicePort <= 0) {
+            $servicePort = 3000;
+        }
+
+        return $url = 'http://' . $host . ':' . $servicePort . '/api/get-comport-list';
     }
 
     public function get_scale_read($comport)
@@ -171,11 +176,13 @@ class Helpers
         return $response;
     }
 
-    public function get_comport_list()
+    public function get_comport_list($ipAddress = null, $port = 3000)
     {
         $curl = curl_init();
 
-        $url = $this->getComportListServiceUrl();
+        $url = $this->getComportListServiceUrl($ipAddress, $port);
+
+        Log::info('Comport list service URL: ' . $url);
 
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
