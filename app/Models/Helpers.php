@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -304,13 +303,47 @@ class Helpers
         ]);
     }
 
-    public function optimizeCache()
+    public function optimizeCache(array $keys = [])
     {
-        $clear = Artisan::call('cache:clear');
-        $optimize = Artisan::call('optimize');
-        $view = Artisan::call('view:cache');
+        // Prefer targeted invalidation over framework optimize calls during web requests
+        // so session flash messages survive redirects.
+        $cacheKeys = !empty($keys) ? $keys : [
+            'global_scale_configs',
+            'scale12_configs',
+            'deboning_configs',
+            'marination_configs',
+            'despatch_configs',
+            'freshcuts_configs',
+            'highcare1_configs',
+            'highcare1_bulk_configs',
+            'highcare1_receive_configs',
+            'BaconConfigs',
+            'sausage_configs',
+            'stuffing_weigh_configs',
+            'weigh_configs',
+            'offals_weigh_configs',
+        ];
 
-        info('cache optimized successfully');
+        foreach (array_unique($cacheKeys) as $key) {
+            Cache::forget($key);
+        }
+
+        info('cache keys invalidated successfully', ['keys' => $cacheKeys]);
+    }
+
+    public function getScaleConfigCacheKeysBySection($section)
+    {
+        $cacheKeysBySection = [
+            'butchery' => ['global_scale_configs', 'scale12_configs', 'deboning_configs', 'marination_configs'],
+            'despatch' => ['global_scale_configs', 'despatch_configs'],
+            'freshcuts' => ['global_scale_configs', 'freshcuts_configs'],
+            'highcare1' => ['global_scale_configs', 'highcare1_configs', 'highcare1_bulk_configs', 'highcare1_receive_configs', 'BaconConfigs'],
+            'sausage' => ['global_scale_configs', 'sausage_configs', 'stuffing_weigh_configs'],
+            'stuffing' => ['global_scale_configs', 'sausage_configs', 'stuffing_weigh_configs'],
+            'slaughter' => ['global_scale_configs', 'weigh_configs', 'offals_weigh_configs'],
+        ];
+
+        return $cacheKeysBySection[$section] ?? ['global_scale_configs'];
     }
 
     public function generateIdtBatch($production_date)

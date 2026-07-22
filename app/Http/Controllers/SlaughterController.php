@@ -679,8 +679,9 @@ class SlaughterController extends Controller
     public function UpdateScaleSettings(Request $request, Helpers $helpers)
     {
         try {
-            // forgetCache weigh_configs
-            Cache::flush();
+            $configSection = DB::table('scale_configs')
+                ->where('id', $request->item_id)
+                ->value('section');
 
             $data = [
                 'comport' => $request->comport,
@@ -698,6 +699,9 @@ class SlaughterController extends Controller
             DB::table('scale_configs')
             ->where('id', $request->item_id)
             ->update($data);
+
+            $keysToInvalidate = $helpers->getScaleConfigCacheKeysBySection($configSection);
+            $helpers->optimizeCache($keysToInvalidate);
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();

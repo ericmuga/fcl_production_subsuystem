@@ -1040,6 +1040,10 @@ class ButcheryController extends Controller
     public function UpdateScalesettings(Request $request, Helpers $helpers)
     {
         try {            
+            $configSection = DB::table('scale_configs')
+                ->where('id', $request->item_id)
+                ->value('section');
+
             //update
             DB::table('scale_configs')
                 ->where('id', $request->item_id)
@@ -1050,13 +1054,10 @@ class ButcheryController extends Controller
                     'updated_at' => Carbon::now(),
                     ]);
                 
-            // forget configs cache
-            $helpers->optimizeCache();
-            
-            // re-cache again
-            Cache::remember('global_scale_configs', 600, function () {
-                return DB::table('scale_configs')->get();
-            });
+            $keysToInvalidate = $helpers->getScaleConfigCacheKeysBySection($configSection);
+
+            // Invalidate only the keys affected by this section update.
+            $helpers->optimizeCache($keysToInvalidate);
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
