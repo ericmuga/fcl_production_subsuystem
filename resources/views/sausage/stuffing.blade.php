@@ -110,6 +110,95 @@
 
 </div>
 
+<div class="col-md-12 text-left" style="margin-bottom: 1%">
+    <button class="btn btn-success btn-lg" data-toggle="collapse" data-target="#export_production_orders"><i
+            class="fas fa-file-excel"></i> Export Generated Production Orders</button>
+    <div id="export_production_orders" class="collapse"><br>
+        <div class="form-inputs">
+            <div class="row">
+                <div class="col-lg-8" style="margin: 0 auto; float: none;">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fa fa-user-secret"></i>
+                            Export data</div>
+                        <div class="card-body">
+                            <form action="{{ route('export_generated_production_orders') }}" method="post"
+                                id="export-production-orders-form">
+                                @csrf
+
+                                <h6>*Filter by date range</h6>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label for="orders_from_date">From: (dd/mm/yyyy)</label>
+                                        <input type="date" class="form-control" name="from_date"
+                                            id="orders_from_date" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="orders_to_date">To: (dd/mm/yyyy)</label>
+                                        <input type="date" class="form-control" name="to_date"
+                                            id="orders_to_date" required>
+                                    </div>
+                                </div>
+
+                                <h6>*Narrow down (optional)</h6>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label for="orders_packed_item">Packed Item</label>
+                                        <select class="form-control select2" name="packed_item" id="orders_packed_item">
+                                            <option value="all" selected>All packed items</option>
+                                            @foreach($generated_packed_items as $packed)
+                                                <option value="{{ $packed->packed_item }}">
+                                                    {{ $packed->packed_item }}{{ $packed->description ? ' - ' . $packed->description : '' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="orders_process">Process</label>
+                                        <select class="form-control select2" name="process" id="orders_process">
+                                            <option value="all" selected>All processes</option>
+                                            @foreach($generated_processes as $process)
+                                                <option value="{{ $process }}">{{ $process }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <label for="orders_line_type">Line Type</label>
+                                        <select class="form-control" name="line_type" id="orders_line_type">
+                                            <option value="all" selected>All lines</option>
+                                            <option value="output">Output only</option>
+                                            <option value="consumption">Consumption only</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="orders_published">Status</label>
+                                        <select class="form-control" name="published" id="orders_published">
+                                            <option value="all" selected>All</option>
+                                            <option value="1">Published</option>
+                                            <option value="0">Pending</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="orders_batch_no">Batch No</label>
+                                        <input type="text" class="form-control" name="batch_no" id="orders_batch_no"
+                                            placeholder="leave blank for all">
+                                    </div>
+                                </div> <br>
+                                <div class="div" align="center">
+                                    <button type="submit" class="btn btn-primary "><i class="fa fa-paper-plane"
+                                            aria-hidden="true"></i> Export now</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="row col-md-12 card m-2">
     <div class="card-header">
         <h3 class="card-title">Generated Production Orders |

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\GeneratedProductionOrdersExport;
 use App\Exports\SausageEntriesExport;
 use App\Models\Helpers;
 use App\Models\SausageEntry;
@@ -560,7 +561,63 @@ class SausageController extends Controller
             ->get()
             ->groupBy('production_order_no');
 
-        return view('sausage.stuffing', compact('title','items', 'configs', 'stuffing_transfers', 'recipe_outputs', 'generated_orders', 'helpers'));
+        // Filter options for the export form, taken from what has actually been
+        // generated so the dropdowns never offer an empty selection.
+        $generated_packed_items = DB::table('generated_production_orders')
+            ->leftJoin('items', 'items.code', '=', 'generated_production_orders.packed_item')
+            ->select('generated_production_orders.packed_item', 'items.description')
+            ->whereNotNull('generated_production_orders.packed_item')
+            ->distinct()
+            ->orderBy('generated_production_orders.packed_item')
+            ->get();
+
+        $generated_processes = DB::table('generated_production_orders')
+            ->select('process')
+            ->whereNotNull('process')
+            ->distinct()
+            ->orderBy('process')
+            ->pluck('process');
+
+        return view('sausage.stuffing', compact('title','items', 'configs', 'stuffing_transfers', 'recipe_outputs', 'generated_orders', 'generated_packed_items', 'generated_processes', 'helpers'));
+    }
+
+    public function exportGeneratedProductionOrders(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $entries = DB::table('generated_production_orders')
+            ->leftJoin('items', 'items.code', '=', 'generated_production_orders.item_no')
+            ->leftJoin('users', 'users.id', '=', 'generated_production_orders.user_id')
+            ->whereDate('generated_production_orders.created_at', '>=', $from_date)
+            ->whereDate('generated_production_orders.created_at', '<=', $to_date)
+            // Each narrowing filter is skipped when left at 'all', so a bare date
+            // range still exports everything. filled() rather than a truthy check,
+            // so 'Pending' (published = '0') is not silently dropped.
+            ->when($request->filled('packed_item') && $request->packed_item != 'all', function ($q) use ($request) {
+                $q->where('generated_production_orders.packed_item', $request->packed_item);
+            })
+            ->when($request->filled('process') && $request->process != 'all', function ($q) use ($request) {
+                $q->where('generated_production_orders.process', $request->process);
+            })
+            ->when($request->filled('line_type') && $request->line_type != 'all', function ($q) use ($request) {
+                $q->where('generated_production_orders.line_type', $request->line_type);
+            })
+            ->when($request->filled('published') && $request->published != 'all', function ($q) use ($request) {
+                $q->where('generated_production_orders.published', $request->published);
+            })
+            ->when($request->batch_no, function ($q) use ($request) {
+                $q->where('generated_production_orders.batch_no', 'like', '%' . $request->batch_no . '%');
+            })
+            ->select('generated_production_orders.production_order_no', 'generated_production_orders.transaction_date', 'generated_production_orders.line_no', 'generated_production_orders.line_type', 'generated_production_orders.item_no', 'items.description as item_description', 'generated_production_orders.quantity', 'generated_production_orders.uom', 'generated_production_orders.location_code', 'generated_production_orders.bin_code', 'generated_production_orders.routing', 'generated_production_orders.process', 'generated_production_orders.recipe', 'generated_production_orders.step', 'generated_production_orders.external_document_no', 'generated_production_orders.batch_no', 'generated_production_orders.weighed_item', 'generated_production_orders.packed_item', 'generated_production_orders.net_weight', 'generated_production_orders.idt_transfer_id', DB::raw("(CASE WHEN generated_production_orders.published = '1' THEN 'Yes' ELSE 'No' END) AS published"), 'users.username as generated_by', 'generated_production_orders.created_at')
+            ->orderBy('generated_production_orders.production_order_no', 'ASC')
+            ->orderBy('generated_production_orders.line_no', 'ASC')
+            ->get();
+
+        $exports = Session::put('session_export_data', $entries);
+
+        return Excel::download(new GeneratedProductionOrdersExport, "GeneratedProductionOrders from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     private function stuffingItems()
