@@ -229,9 +229,9 @@ class ChoppingController extends Controller
         $lines = DB::table('production_lines')
             ->where('batches.status', 'posted')
             ->where('template_lines.type', 'Intake')
-            // ->when($filter == 'today', function ($q) {
-            //     $q->whereDate('production_lines.created_at', today()); // today
-            // })
+            ->when($filter == 'today', function ($q) {
+                $q->whereDate('production_lines.created_at', today()); // today
+            })
             ->leftJoin('batches', 'production_lines.batch_no', '=', 'batches.batch_no')
             ->join('template_lines', function ($join) use ($table) {
                 $join->on($table . '.item_code', '=',  'template_lines.item_code');
@@ -261,7 +261,7 @@ class ChoppingController extends Controller
                 'batches.batch_no'
             )
             ->orderBy('batches.batch_no')
-            ->get()->dd();
+            ->get();
 
         return view('chopping.production-summary-report', compact('title', 'lines', 'helpers'));
     }
@@ -491,13 +491,14 @@ class ChoppingController extends Controller
                         'chopping_id' => $request->batch,
                         'item_code' => $request->product,
                         'weight' => $request->net,
+                        'created_at' => now()
                     ]);
 
             return response()->json([
                 'success' => true,
                 'data' => $request->batch,
                 'reading' => $request->reading,
-                'message' => 'Chopping weight inserted successfully!',
+                'message' =>'Chopping weight inserted successfully!',
             ], 200);
             
         } catch (\Exception $e) {
@@ -635,7 +636,7 @@ class ChoppingController extends Controller
 
     private function insertChoppingLines($choppingLines)
     {
-        if (!empty($choppingLines)) {
+        if (!empty($choppingLines)) {           
             DB::table('chopping_lines')->insert($choppingLines);
         }
     }
@@ -661,6 +662,7 @@ class ChoppingController extends Controller
                 'item_code' => $output->item_code,
                 'weight' => $totalInsertedWeight,
                 'output' => 1
+                // 'created_at' => now(),
             ]);
         }
     }
@@ -768,6 +770,7 @@ class ChoppingController extends Controller
             ->whereDate('a.created_at', '>=', $from_date)
             ->whereDate('a.created_at', '<=', $to_date)
             ->select(
+                'a.id',
                 'a.chopping_id', 
                 'c.template_name', 
                 'a.item_code', 
@@ -775,7 +778,7 @@ class ChoppingController extends Controller
                 DB::raw("CASE WHEN a.output = 1 THEN 'Output' ELSE 'Input' END as output_type"),
                 'a.weight', 
                 'a.batch_no', 
-                'a.created_at'
+                'a.created_at',
             )
             ->orderBy('a.chopping_id', 'asc')
             ->get();

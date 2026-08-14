@@ -239,9 +239,12 @@ class ButcheryController extends Controller
         return response()->json($result);
     }
 
-    public function comportlistApiService(Helpers $helpers)
+    public function comportlistApiService(Request $request, Helpers $helpers)
     {
-        $result = $helpers->get_comport_list();
+        $result = $helpers->get_comport_list(
+            $request->input('ip_address'),
+            $request->input('port', 3000)
+        );
 
         return response()->json($result);
     }
@@ -591,13 +594,8 @@ class ButcheryController extends Controller
 
         $filter = Session::get('session_role');
 
-        $configs = Cache::remember('deboning_configs', now()->addMinutes(120), function () {
-            return DB::table('scale_configs')
-                ->where('section', 'butchery')
-                ->where('scale', 'deboning')
-                ->select('scale', 'tareweight', 'comport')
-                ->get()->toArray();
-        });
+        $configs = $this->getDeboningScaleConfigs();
+        $selectedScaleConfig = $this->resolveDeboningScaleSelection($configs);
 
         $products = Cache::remember('all_products_scale3', now()->addMinutes(480), function () {
             return DB::table('products')
@@ -627,12 +625,50 @@ class ButcheryController extends Controller
             })
             ->get();
 
-        return view('butchery.scale3', compact('title', 'products', 'configs', 'deboning_data', 'helpers'));
+        $clientIp = request()->ip();
+
+        return view('butchery.scale3', compact('title', 'products', 'configs', 'selectedScaleConfig', 'deboning_data', 'helpers', 'clientIp'));
+    }
+
+    public function updateScaleThreeConfig(Request $request)
+    {
+        $selectedScale = trim((string) $request->input('scale'));
+
+        if ($selectedScale === '') {
+            return response()->json([
+                'success' => false,
+                'message' => 'Scale is required.',
+            ], 422);
+        }
+
+        $configs = $this->getDeboningScaleConfigs();
+        $selectedScaleConfig = $this->resolveDeboningScaleSelection($configs, $selectedScale);
+
+        if (!$selectedScaleConfig || strcasecmp(trim($selectedScaleConfig->scale), $selectedScale) !== 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Selected scale configuration was not found.',
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'scale' => $selectedScaleConfig->scale,
+                'comport' => $selectedScaleConfig->comport,
+                'tareweight' => $selectedScaleConfig->tareweight,
+                'ip_address' => $selectedScaleConfig->ip_address,
+            ],
+        ]);
     }
 
     public function saveScaleThreeData(Request $request, Helpers $helpers)
     {
         try {
+            // Persist the selected scale per user session so each user keeps their own COM/tare setup.
+            $configs = $this->getDeboningScaleConfigs();
+            $this->resolveDeboningScaleSelection($configs, $request->input('selected_scale'));
+
             $product_type = match ($request->product_type) {
                 "By Product" => 2,
                 "Intake" => 3,
@@ -1006,10 +1042,10 @@ class ButcheryController extends Controller
 
     public function UpdateScalesettings(Request $request, Helpers $helpers)
     {
-        // dd($request->all());
-        try {
-            // forget configs cache
-            Cache::flush();
+        try {            
+            $configSection = DB::table('scale_configs')
+                ->where('id', $request->item_id)
+                ->value('section');
 
             //update
             DB::table('scale_configs')
@@ -1019,7 +1055,12 @@ class ButcheryController extends Controller
                     'ip_address' => $request->edit_ip_address,
                     'tareweight' => $request->edit_tareweight,
                     'updated_at' => Carbon::now(),
-                ]);
+                    ]);
+                
+            $keysToInvalidate = $helpers->getScaleConfigCacheKeysBySection($configSection);
+
+            // Invalidate only the keys affected by this section update.
+            $helpers->optimizeCache($keysToInvalidate);
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
@@ -1362,5 +1403,39 @@ class ButcheryController extends Controller
         $exports = Session::put('session_export_data', $deboned_data);
 
         return Excel::download(new DebonedLinesExport, 'DebonedPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+    }
+
+    private function getDeboningScaleConfigs()
+    {
+        return Cache::remember('deboning_configs', now()->addMinutes(120), function () {
+            return DB::table('scale_configs')
+                ->where('section', 'butchery')
+                ->whereIn(DB::raw('LOWER(scale)'), ['deboning', 'deboning2', 'deboning3'])
+                ->select('scale', 'tareweight', 'comport', 'ip_address')
+                ->orderBy('scale')
+                ->get();
+        });
+    }
+
+    private function resolveDeboningScaleSelection($configs, $requestedScale = null)
+    {
+        $selectedScale = trim((string) ($requestedScale ?: Session::get('butchery_scale3_selected_scale', '')));
+
+        $selectedScaleConfig = $configs->first(function ($config) use ($selectedScale) {
+            return strcasecmp(trim($config->scale), $selectedScale) === 0;
+        });
+
+        if (!$selectedScaleConfig) {
+            $selectedScaleConfig = $configs->first();
+        }
+
+        if ($selectedScaleConfig) {
+            Session::put('butchery_scale3_selected_scale', $selectedScaleConfig->scale);
+            Session::put('butchery_scale3_selected_comport', $selectedScaleConfig->comport);
+            Session::put('butchery_scale3_selected_tareweight', $selectedScaleConfig->tareweight);
+            Session::put('butchery_scale3_selected_ip_address', $selectedScaleConfig->ip_address);
+        }
+
+        return $selectedScaleConfig;
     }
 }

@@ -106,6 +106,7 @@ Route::post('/butchery/sales-returns', [ButcheryController::class, 'updateSalesR
 Route::post('/butchery/scale-2-update', [ButcheryController::class, 'updateScaleTwoData'])->name('butchery_scale2_update');
 Route::get('/slaughter-data-ajax', [ButcheryController::class, 'loadSlaughterDataAjax'])->name('load_slaughter_data');
 Route::get('/butchery/scale-3', [ButcheryController::class, 'scaleThree'])->name('butchery_scale3');
+Route::post('/butchery/scale-3/config', [ButcheryController::class, 'updateScaleThreeConfig'])->name('butchery_scale3_config');
 Route::post('/butchery/scale-3-save', [ButcheryController::class, 'saveScaleThreeData'])->name('butchery_scale3_save');
 Route::post('/butchery/scale-3-update', [ButcheryController::class, 'updateScaleThreeData'])->name('butchery_scale3_update');
 Route::get('/product_details_ajax', [ButcheryController::class, 'getProductDetailsAjax'])->name('product_type_ajax');
@@ -252,13 +253,18 @@ Route::post('/import-stocks', [DespatchController::class, 'importStocks'])->name
 /*-------------Start HighCare1------------------ */
 Route::prefix('highcare1')->group(function () {
     Route::get('/dashboard', [HighCare1Controller::class, 'index'])->name('highcare1_dashboard');
-    Route::get('/idt/{filter?}', [HighCare1Controller::class, 'getIdt'])->name('highcare1_idt');
+    Route::get('/idt/{filter?}', [HighCare1Controller::class, 'getIdt'])
+        ->where('filter', '[0-9]+')
+        ->name('highcare1_idt');
     Route::get('/idt-receive', [HighCare1Controller::class, 'getReceiveIdt'])->name('highcare_idt_receive');
+    Route::post('/idt-receive/scale-selection', [HighCare1Controller::class, 'setIdtReceiveScaleSelection'])->name('highcare1_idt_receive_scale_selection');
     Route::post('/idt/receive-update', [HighCare1Controller::class, 'updateReceiveIdt'])->name('update_idt_receive_highcare');
     Route::get('/idt/report/{filter?}', [HighCare1Controller::class, 'idtReport'])->name('highcare1_idt_report');
+    Route::post('/idt/scale-selection', [HighCare1Controller::class, 'setIdtScaleSelection'])->name('highcare1_idt_scale_selection');
     Route::post('/save/high-care-idt', [HighCare1Controller::class, 'saveTransfer'])->name('save_idt_high_care');
 
     Route::get('/idt-bulk', [HighCare1Controller::class, 'getIdtBulk'])->name('highcare1_idt_bulk');
+    Route::post('/idt-bulk/scale-selection', [HighCare1Controller::class, 'setIdtBulkScaleSelection'])->name('highcare1_idt_bulk_scale_selection');
     Route::post('/idt-bulk/save', [HighCare1Controller::class, 'saveIdtBulk'])->name('highcare1_idt_save_bulk');
 
     Route::get('/slicing', [HighCare1Controller::class, 'getBaconSlicing'])->name('bacon_slicing');

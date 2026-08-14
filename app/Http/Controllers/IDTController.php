@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Helpers;
+use App\Exports\DespatchIdtHistoryExport;
 use App\Exports\IDTSummaryExport;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -148,7 +150,7 @@ class IDTController extends Controller
                 ->get();
         }
 
-        $chillers = Cache::remember('chillers', now()->addHours(12), function () {
+        $chillers = Cache::remember('idt_chillers', now()->addHours(12), function () {
             return DB::table('chillers')->get();
         });
 
@@ -249,7 +251,7 @@ class IDTController extends Controller
             )
             ->groupBy('code');
 
-        $chillers = Cache::remember('chillers', now()->addHours(12), function () {
+        $chillers = Cache::remember('idt_chillers', now()->addHours(12), function () {
             return DB::table('chillers')->get();
         });
 
@@ -317,8 +319,6 @@ class IDTController extends Controller
                 ->where('section', $locations[$from_location])
                 ->get();
         }
-
-        // dd('here');
        
         return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
     }
@@ -326,6 +326,13 @@ class IDTController extends Controller
     public function saveIssueIdt(Request $request) {
         // dd($request->all());
         try {
+            $manual_weight = null;
+
+            // Persist 1/0 only when the UI included manual-capture controls.
+            if ($request->has('manual_weight_available')) {
+                $manual_weight = $request->has('manual_weight') ? 1 : 0;
+            }
+
             DB::table('idt_transfers')->insert([
                 'product_code' => $request->product_code,
                 'location_code' => $request->transfer_type == 1 ? '3600' : $request->location_code,
@@ -340,6 +347,7 @@ class IDTController extends Controller
                 'transfer_from' => $request->transfer_from,
                 'description' => $request->description,
                 'batch_no' => $request->batch_no,
+                'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
             ]);
 
@@ -605,6 +613,105 @@ class IDTController extends Controller
         return view(
             'idt.history',
             compact('title', 'days_filter', 'helpers', 'transfer_lines', 'limiter')
+        );
+    }
+
+    public function exportIdtHistory(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $entries = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
+            ->leftJoin('users as issuers', 'idt_transfers.user_id', '=', 'issuers.id')
+            ->whereDate('idt_transfers.created_at', '>=', $from_date)
+            ->whereDate('idt_transfers.created_at', '<=', $to_date)
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_from == '3535') {
+                    $query->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3540']);
+                } else {
+                    $query->where('idt_transfers.transfer_from', $request->transfer_from);
+                }
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_to == '3535') {
+                    $query->whereIn('idt_transfers.location_code', ['3535', '3600', '3540']);
+                } else {
+                    $query->where('idt_transfers.location_code', $request->transfer_to);
+                }
+            })
+            ->select(
+                'idt_transfers.id',
+                'idt_transfers.product_code',
+                'items.description as product',
+                'items.qty_per_unit_of_measure',
+                'idt_transfers.location_code',
+                'idt_transfers.transfer_from',
+                'idt_transfers.description as customer_code',
+                'idt_transfers.order_no',
+                'idt_transfers.total_pieces',
+                'idt_transfers.total_weight',
+                'idt_transfers.receiver_total_pieces',
+                'idt_transfers.receiver_total_weight',
+                DB::raw("(CASE WHEN idt_transfers.with_variance = '0' THEN 'Yes' ELSE 'No' END) AS with_variance"),
+                'idt_transfers.batch_no',
+                'users.username as received_by',
+                'issuers.username as issuer_username',
+                'idt_transfers.created_at'
+            )
+            ->orderBy('idt_transfers.created_at', 'DESC')
+            ->get();
+
+        Session::put('session_export_data', $entries);
+
+        return Excel::download(
+            new DespatchIdtHistoryExport,
+            "IdtHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext"
+        );
+    }
+
+    public function exportIdtSummary(Request $request)
+    {
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $entries = DB::table('idt_transfers')
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
+            ->whereDate('idt_transfers.created_at', '>=', $from_date)
+            ->whereDate('idt_transfers.created_at', '<=', $to_date)
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_from == '3535') {
+                    $query->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3540']);
+                } else {
+                    $query->where('idt_transfers.transfer_from', $request->transfer_from);
+                }
+            })
+            ->where(function ($query) use ($request) {
+                if ($request->transfer_to == '3535') {
+                    $query->whereIn('idt_transfers.location_code', ['3535', '3600', '3540']);
+                } else {
+                    $query->where('idt_transfers.location_code', $request->transfer_to);
+                }
+            })
+            ->select(
+                'idt_transfers.product_code',
+                'items.description as product',
+                DB::raw('SUM(idt_transfers.total_weight) as total_weight'),
+                DB::raw('SUM(idt_transfers.receiver_total_weight) as receiver_total_weight'),
+                DB::raw('SUM(idt_transfers.total_pieces) as total_pieces'),
+                DB::raw('SUM(idt_transfers.receiver_total_pieces) as receiver_total_pieces')
+            )
+            ->groupBy('idt_transfers.product_code', 'items.description')
+            ->get();
+
+        Session::put('session_export_data', $entries);
+
+        return Excel::download(
+            new IDTSummaryExport,
+            "IdtSummaryHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext"
         );
     }
 }

@@ -64,6 +64,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Serial No</th>
                                 <th>Chopping No</th>
                                 <th>Template Name</th>
                                 <th>Item No</th>
@@ -76,6 +77,7 @@
                         <tfoot>
                             <tr>
                                 <th>#</th>
+                                <th>Serial No</th>
                                 <th>Chopping No</th>
                                 <th>Template Name</th>
                                 <th>Item No</th>
@@ -89,6 +91,7 @@
                             @foreach($lines as $data)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $data->id }}</td>
                                     <td>{{ $data->chopping_id }}</td>
                                     <td>{{ $data->template_name }}</td>
                                     <td>{{ $data->item_code }}</td>
@@ -99,7 +102,7 @@
                                         </span>
                                     </td>
                                     <td>{{ number_format($data->weight, 2) }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
+                                    <td>{{ $data->updated_at }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

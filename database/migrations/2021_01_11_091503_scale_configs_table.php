@@ -16,10 +16,10 @@ class ScaleConfigsTable extends Migration
         Schema::create('scale_configs', function (Blueprint $table) {
             $table->id();
             $table->string('scale', 20)->unique();
-            $table->string('comport', 20);
-            $table->string('baudrate', 20);
+            $table->string('comport', 20)->nullable();
+            $table->string('baudrate', 20)->nullable();
             $table->float('tareweight', 8, 2);
-            $table->string('section', 50);
+            $table->string('section', 50)->nullable();
             $table->string('ip_address')->nullable();
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->useCurrent();

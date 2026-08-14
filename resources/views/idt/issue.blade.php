@@ -61,8 +61,8 @@
                     <div class="col-md-4 form-group">
                         <label for="carriage_type">Transfer Type</label>
                         <select class="form-control" name="transfer_type" id="transfer_type" required>
-                            <option disabled selected value> -- select an option -- </option>
-                            <option value="0"> Local</option>
+                            {{-- <option disabled selected value> -- select an option -- </option> --}}
+                            <option selected value="0"> Local</option>
                             <option value="1"> Export</option>
                         </select>
                     </div>
@@ -100,6 +100,7 @@
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div>
+                <input type="hidden" name="manual_weight_available" value="1">
                 @endif
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="form-row">
@@ -134,10 +135,11 @@
                         <div class="col-md-6">
                             <label for="chiller_code">Transfer To Chiller </label>
                             <select class="form-control locations" name="chiller_code" id="chiller_code" required>
-                                <option disabled selected value> -- select an option -- </option>
+                                <option disabled value> -- select an option -- </option>
                                 @foreach($chillers as $chiller)
-                                    <option value="{{ $chiller->chiller_code }}">
-                                        {{ $chiller->chiller_code }} - {{ $chiller->description }}
+                                    @php $chillerValue = $chiller->chiller_code ?? $chiller->code; @endphp
+                                    <option value="{{ $chillerValue }}" @if(old('chiller_code', 'H') == $chillerValue) selected @endif>
+                                        {{ $chillerValue }} - {{ $chiller->description }}
                                     </option>
                                 @endforeach
                             </select>
@@ -145,7 +147,7 @@
                     @endif
                     <div class="col-md-6">
                         <label for="no_of_pieces">No. of pieces </label>
-                        <input type="number" class="form-control" value="" id="no_of_pieces" name="no_of_pieces"
+                        <input type="number" class="form-control" value="0" id="no_of_pieces" name="no_of_pieces"
                             required>
                     </div>
                 </div>
@@ -212,6 +214,7 @@
                             <th>Description</th>
                             <th>Batch No</th>
                             <th>Status</th>
+                            <th>Scale Status</th>
                             <th>Date</th>
                         </tr>
                     </thead>
@@ -230,6 +233,7 @@
                             <th>Description</th>
                             <th>Batch No</th>
                             <th>Status</th>
+                            <th>Scale Status</th>
                             <th>Date</th>
                         </tr>
                     </tfoot>
@@ -263,6 +267,15 @@
                                 @else
                                 <td><span class="badge badge-info">waiting receipt</span></td>
                                 @endif
+                                <td>
+                                    @if (is_null($data->manual_weight))
+                                        <span class="badge badge-primary">No scale</span>
+                                    @elseif ($data->manual_weight == 1)
+                                        <span class="badge badge-warning">Manual weight</span>
+                                    @else
+                                        <span class="badge badge-success">Scale weight</span>
+                                    @endif
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($data->created_at)->format('d/m/Y H:i') }}</td>
                             </tr>
                         @endforeach

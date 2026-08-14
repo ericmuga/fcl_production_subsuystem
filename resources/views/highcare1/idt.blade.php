@@ -64,7 +64,25 @@
                                     <input type="number" step="0.01" class="form-control" value="0" id="scale_reading" name="scale_reading"
                                         placeholder="Enter reading or weigh">
                                 </div>
-                                <small>Reading from: <input style="font-weight: bold; border: none;" type="text" id="comport_value" value="{{ $configs[0]->comport ?? '' }}" disabled></small>
+                                <div class="mt-2 d-flex align-items-center" style="gap: 10px;">
+                                    <small class="mb-0">Scale:</small>
+                                    <select class="form-control form-control-sm" id="scale_selector" style="max-width: 220px;">
+                                        @foreach($configs as $cfg)
+                                            <option value="{{ $cfg->scale }}"
+                                                    data-comport="{{ $cfg->comport ?? '' }}"
+                                                    data-ip_address="{{ $cfg->ip_address ?? '' }}"
+                                                    {{ (($selected_config->scale ?? '') === $cfg->scale) ? 'selected' : '' }}>
+                                                {{ $cfg->scale }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <small class="mb-0">Reading from:</small>
+                                    <input style="font-weight: bold; border: none; max-width: 100px;" type="text" id="comport_value" value="{{ $selected_config->comport ?? '' }}" disabled>
+                                    <input type="hidden" id="scale_ip_address" value="{{ $selected_config->ip_address ?? '' }}">
+                                    <small class="mb-0">Host:</small>
+                                    <span class="badge badge-secondary" id="scale_host_badge">localhost</span>
+                                </div>
+                                <div class="form-group error mt-2 mb-0"></div>
                             </div>
                         </div>
                     </div>
@@ -429,6 +447,8 @@
 
 @section('scripts')
 <script>
+    @include('highcare1.partials.scale-weight-helper')
+
     $(document).ready(function () {
         $('.incomplete_pieces').hide();
 
@@ -515,7 +535,43 @@
         $("#validate").on("click", function () {
             validateUser()
         });
+
+        $('#scale_selector').on('change', function () {
+            updateScaleComportDisplay()
+            persistSelectedScale()
+        })
+
+        updateScaleComportDisplay()
     });
+
+    const updateScaleComportDisplay = () => {
+        const selected = $('#scale_selector option:selected')
+        const comport = selected.data('comport') || ''
+        const ipAddress = selected.data('ip_address') || ''
+        $('#comport_value').val(comport)
+        $('#scale_ip_address').val(ipAddress)
+        window.highcareScaleHelper.updateHostBadge('#scale_host_badge', ipAddress)
+    }
+
+    const persistSelectedScale = () => {
+        const selectedScale = $('#scale_selector').val()
+
+        if (!selectedScale) {
+            return
+        }
+
+        return axios.post("{{ route('highcare1_idt_scale_selection') }}", {
+            scale: selectedScale
+        }).then((response) => {
+            if (response.data && response.data.success) {
+                $('#comport_value').val(response.data.comport || '')
+                $('#scale_ip_address').val(response.data.ip_address || '')
+                window.highcareScaleHelper.updateHostBadge('#scale_host_badge', response.data.ip_address || '')
+            }
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
 
     const defaultCrateCounts = (product_code) => {
         const list = {
@@ -786,44 +842,22 @@
 
     const handleWeigh = () => {
         const comport = $('#comport_value').val()
+        const ipAddress = $('#scale_ip_address').val()
 
-        if (!comport) {
-            alert('Please set comport value first')
-            return false
-        }
+        window.highcareScaleHelper.getWeight({
+            ip: ipAddress,
+            comport: comport,
+            endpointPath: (@json(config('app.get_weight_endpoint')) || '') + '',
+            buttonId: 'btn-weigh',
+            errorSelector: '.form-group.error',
+            onSuccess: (value) => {
+                $('#scale_reading').val(value.toFixed(2))
+                updateTare()
 
-        $.ajax({
-            type: 'GET',
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            url: "{{ url('butchery/read-scale-api-service') }}",
-            data: { comport },
-            dataType: 'JSON',
-            success: function (data) {
-                let obj = null
-                try {
-                    obj = JSON.parse(data)
-                } catch (err) {
-                    alert('Invalid response from scale service')
-                    return
+                const net = parseFloat($('#net_weight').val()) || 0
+                if (net < 0) {
+                    alert('Net weight cannot be negative; check your scale reading or crate counts')
                 }
-
-                if (obj && obj.success === true) {
-                    $('#scale_reading').val(obj.response)
-                    updateTare()
-                    const net = parseFloat($('#net_weight').val()) || 0
-                    if (net < 0) {
-                        alert('Net weight cannot be negative; check your scale reading or crate counts')
-                    }
-                } else if (obj && obj.success === false) {
-                    alert('error occured in response: ' + obj.response)
-                } else {
-                    alert('No response from service')
-                }
-            },
-            error: function () {
-                alert('error occured when sending request')
             }
         })
 

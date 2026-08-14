@@ -49,9 +49,9 @@
                         <select class="form-control select2" name="intake_type" id="intake_type" required>
                             <option value="">Select Intake Item</option>
                             @foreach($products as $product)
-                                @if($product->product_type == 3)
+                                {{-- @if($product->product_type == 3 ) --}}
                                     <option value="{{ $product->product_code }}">{{ $product->product_code }} {{ $product->description }}</option>
-                                @endif
+                                {{-- @endif --}}
                             @endforeach
                         </select>
                     </div>
@@ -91,17 +91,34 @@
                     <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                     <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                 </div>
-                <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
+                <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}"> <br>
                 <div class="row form-group">                    
-                    <div class="crates col-md-6">
+                    <div class="col-md-4">
+                        <label for="crate_mode">Crate Mode</label>
+                        <select class="form-control" id="crate_mode" name="crate_mode">
+                            <option value="single" selected>Single Crate Type</option>
+                            <option value="mix">Mix Crates (Normal + Small)</option>
+                        </select>
+                    </div>
+                    <div class="crates col-md-4">
                         <label for="exampleInputPassword1">Total Crates </label>
-                        <input type="number" class="form-control" id="total_crates" value="" name="total_crates" min="2"
+                        <input type="number" class="form-control" id="total_crates" value="" name="total_crates" min="0"
                             placeholder="" required>
                     </div>
-                    <div class="crates col-md-6">
+                    <div class="crates col-md-4">
                         <label for="exampleInputPassword1">Black Crates </label>
-                        <input type="number" class="form-control" id="black_crates" value="" name="black_crates" min="1"
+                        <input type="number" class="form-control" id="black_crates" value="" name="black_crates" min="0"
                             placeholder="" required>
+                    </div>
+                </div>
+                <div class="row form-group d-none" id="mix_crates_row">
+                    <div class="col-md-6">
+                        <label for="normal_crates">Normal Crates (1.8)</label>
+                        <input type="number" class="form-control" id="normal_crates" value="" min="0" placeholder="0">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="small_crates">Small Crates (1.4)</label>
+                        <input type="number" class="form-control" id="small_crates" value="" min="0" placeholder="0">
                     </div>
                 </div>
                 <div class="row form-group">                    
@@ -381,33 +398,33 @@
         setProductionDate() //set production date default
 
         // Add rule for intake_type based on selected product
-        $('#product').change(function () {
-            var data = $(this).val();
-            var product_type_code = data.split(':')[4];
+        // $('#product').change(function () {
+        //     var data = $(this).val();
+        //     var product_type_code = data.split(':')[4];
 
-            if (product_type_code == '1') {
-                $('#intake_type').prop('disabled', false);
-                $('#intake_type').prop('required', true);
-            } else {
-                $('#intake_type').val('');
-                $('#intake_type').prop('disabled', true);
-                $('#intake_type').prop('required', false);
-            }
-        });
+        //     if (product_type_code == '1' || product_type_code == '2') { // Intake/main requires intake item selection
+        //         $('#intake_type').prop('disabled', false);
+        //         $('#intake_type').prop('required', true);
+        //     } else {
+        //         $('#intake_type').val('');
+        //         $('#intake_type').prop('disabled', true);
+        //         $('#intake_type').prop('required', false);
+        //     }
+        // });
 
-        // On form submit, validate intake_type if product_type == 1
-        $('#form-save-scale3').on('submit', function (e) {
-            var data = $('#product').val();
-            var product_type_code = data ? data.split(':')[4] : '';
-            var intake_type = $('#intake_type').val();
+        // On form submit, validate intake_type if product_type == 1 || 2 (Main or By Product)
+        // $('#form-save-scale3').on('submit', function (e) {
+        //     var data = $('#product').val();
+        //     var product_type_code = data ? data.split(':')[4] : '';
+        //     var intake_type = $('#intake_type').val();
 
-            if (product_type_code == '1' && !intake_type) {
-                alert('Please select Intake Item for Main Product.');
-                $('#intake_type').focus();
-                e.preventDefault();
-                return false;
-            }
-        });
+        //     if ((product_type_code == '1' || product_type_code == '2') && !intake_type) {
+        //         alert('Please select Intake Item for Main or By Product.');
+        //         $('#intake_type').focus();
+        //         e.preventDefault();
+        //         return false;
+        //     }
+        // });
 
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
@@ -492,9 +509,57 @@
         $('#reading').on("input", function () {
             getNet()
         });
+
+        $('#crate_mode').on('change', function () {
+            toggleCrateMode();
+            getTareweight();
+            getNet();
+        });
+
+        $('#normal_crates, #small_crates, #black_crates').on('input', function () {
+            if ($('#crate_mode').val() === 'mix') {
+                getTareweight();
+                getNet();
+            }
+        });
+
+        toggleCrateMode();
     });
 
+    const toggleCrateMode = () => {
+        let mode = $('#crate_mode').val();
+        let isMix = mode === 'mix';
+
+        $('#mix_crates_row').toggleClass('d-none', !isMix);
+        $('#crate_type').prop('disabled', isMix);
+        $('#total_crates').prop('readonly', isMix);
+
+        if (isMix) {
+            $('#normal_crates').prop('required', true);
+            $('#small_crates').prop('required', true);
+            $('#black_crates').prop('readonly', false);
+        } else {
+            $('#normal_crates').prop('required', false).val('');
+            $('#small_crates').prop('required', false).val('');
+            $('#black_crates').prop('readonly', false);
+        }
+    }
+
     const getTareweight = () => {
+        let mode = $('#crate_mode').val()
+
+        if (mode === 'mix') {
+            let normal_crates = parseInt($('#normal_crates').val()) || 0
+            let small_crates = parseInt($('#small_crates').val()) || 0
+            let black_crates = parseInt($('#black_crates').val()) || 0
+            let total = normal_crates + small_crates
+            let tareweight = (normal_crates * 1.8) + (small_crates * 1.4) + (black_crates * 0.2)
+
+            $('#total_crates').val(total)
+            $('#tareweight').val(Math.round((tareweight + Number.EPSILON) * 100) / 100)
+            return
+        }
+
         let total_crates = $('#total_crates').val()
         let black_crates = $('#black_crates').val()
         let crate_type = $('#crate_type').val()
@@ -509,6 +574,17 @@
 
     function validateOnSubmit() {
         $valid = true;
+
+        var crate_mode = $('#crate_mode').val();
+        if (crate_mode == 'mix') {
+            var normal_crates = parseInt($('#normal_crates').val()) || 0;
+            var small_crates = parseInt($('#small_crates').val()) || 0;
+
+            if ((normal_crates + small_crates) < 1) {
+                $valid = false;
+                alert("Please enter at least one crate in Mix Crates mode.");
+            }
+        }
 
         var net = $('#net').val();
         var product_type = $('#product_type').val();

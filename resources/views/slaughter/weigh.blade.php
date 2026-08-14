@@ -35,7 +35,7 @@
 
                 @if (in_array($sessionUsername, $allowedUsernames))
                     <div class="form-check">
-                        <input type="checkbox" class="form-check-input" id="manual_weight">
+                        <input type="checkbox" class="form-check-input" id="manual_weight" name="manual_weight">
                         <label class="form-check-label" for="manual_weight">Enter Manual weight</label>
                     </div>
                 @else
@@ -617,9 +617,15 @@
         var carcass_type = $('#carcass_type').val();
         var classification_code = document.getElementById('classification_code');
 
-        // suckling pigs classification
+        // Suckling pigs classification (Option B): always use threshold bands
         if (carcass_type === "G0113") {
-            classification_code.value = "*";
+            if (s_weight >= 5 && s_weight <= 8) {
+                classification_code.value = "3P-SK4";
+            } else if (s_weight >= 9 && s_weight < 20) {
+                classification_code.value = "3P-SK5";
+            } else {
+                classification_code.value = "";
+            }
             return;
         }
 
@@ -649,7 +655,7 @@
             }
 
             // CLS01 – Export Large Eye: 60–75kg, fat 8–10mm
-            if (s_weight >= 60 && s_weight <= 75 && meat_percent >= 8 && meat_percent <= 10) {
+            if (s_weight >= 60 && s_weight <= 90 && meat_percent >= 8 && meat_percent <= 10) {
                 classification_code.value = prefix + "CLS01";
                 return;
             }
@@ -719,17 +725,6 @@
             return;
         }
 
-        if (carcass_type === "G0113") {
-            if (s_weight >= 5 && s_weight < 8) {
-                classification_code.value = isRosemark ? "RM3P-SK4" : "3P-SK4";
-            } else if (s_weight >= 9 && s_weight < 20) {
-                classification_code.value = "3P-SK5";
-            } else {
-                classification_code.value = "";
-            }
-            return;
-        }
-
         // Default if nothing matches
         classification_code.value = "";
         console.log("Unable to determine classification code, please check meat % and settlement weight");
@@ -762,7 +757,7 @@
             }
 
             // CLS01 – Export Large Eye: 60–75kg, fat 8–10mm
-            if (s_weight >= 60 && s_weight <= 75 && meat_percent >= 8 && meat_percent <= 10) {
+            if (s_weight >= 60 && s_weight <= 90 && meat_percent >= 8 && meat_percent <= 10) {
                 $classification.val("CLS01");
                 return;
             }
@@ -834,7 +829,7 @@
 
         // Suckling pigs
         if (carcass_type === "G0113") {
-            if (s_weight >= 5 && s_weight < 8) {
+            if (s_weight >= 5 && s_weight <= 8) {
                 $classification.val("3P-SK4");
             } else if (s_weight >= 9 && s_weight < 20) {
                 $classification.val("3P-SK5");

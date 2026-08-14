@@ -15,6 +15,7 @@
 <form id="form-save-scale3" class="form-prevent-multiple-submits"
     action="{{ route('butchery_scale3_save') }}" method="post">
     @csrf
+    <input type="hidden" id="selected_scale" name="selected_scale" value="{{ $selectedScaleConfig->scale ?? '' }}">
     <div class="card-group">
         <div class="card">
             <div class="card-body " style="">
@@ -65,11 +66,26 @@
                             name="production_process_code" value="">
                     </div>
                 </div>
+                <div class="form-group">
+                    <label for="scale_selector">Scale Configuration</label>
+                    <select class="form-control" id="scale_selector" {{ count($configs) ? '' : 'disabled' }}>
+                        @forelse($configs as $config)
+                            <option value="{{ $config->scale }}" data-comport="{{ $config->comport }}"
+                                data-tareweight="{{ $config->tareweight }}" data-ip_address="{{ $config->ip_address ?? '' }}"
+                                {{ isset($selectedScaleConfig) && strcasecmp($selectedScaleConfig->scale, $config->scale) === 0 ? 'selected' : '' }}>
+                                {{ $config->scale }} | {{ $config->comport }} | Tare {{ $config->tareweight }}
+                            </option>
+                        @empty
+                            <option value="">No scale config found</option>
+                        @endforelse
+                    </select>
+                </div>
                 <div class="form-group" style="padding-left: 30%;">
                     <button type="button" onclick="getScaleReading()" id="weigh" value=""
                         class="btn btn-primary btn-lg"><i class="fas fa-balance-scale"></i> Weigh</button> <br><br>
-                    <small>Reading from <input type="text" id="comport_value" value="{{ $configs[0]->comport }}"
+                    <small>Reading from <input type="text" id="comport_value" value="{{ $selectedScaleConfig->comport ?? '' }}"
                             style="border:none" disabled></small>
+                    <input type="hidden" id="scale_ip_value" value="{{ $selectedScaleConfig->ip_address ?? '' }}">
                 </div>
 
             </div>
@@ -87,11 +103,17 @@
                 </div> <br>
                 <input type="hidden" id="old_manual" value="{{ old('manual_weight') }}">
                 <div class="row">
+                    @php
+                        $initialCrateWeight = old('crate_weight', $selectedScaleConfig->tareweight ?? '1.8');
+                    @endphp
                     <div class="col-6 form-group">
                         <label for="crate_weight">Crate Weight</label>
                         <select class="form-control" id="crate_weight" name="crate_weight" onchange="updateTotalTare()">
-                            <option selected value="1.8">1.8</option>
-                            <option value="1.5">1.5</option>
+                            <option value="1.8" {{ (string)$initialCrateWeight === '1.8' ? 'selected' : '' }}>1.8</option>
+                            <option value="1.5" {{ (string)$initialCrateWeight === '1.5' ? 'selected' : '' }}>1.5</option>
+                            @if(!in_array((string)$initialCrateWeight, ['1.8', '1.5']))
+                                <option value="{{ $initialCrateWeight }}" selected>{{ $initialCrateWeight }}</option>
+                            @endif
                         </select>
                     </div>
                     <div class="col-6 form-group">
@@ -442,6 +464,56 @@
 
 @section('scripts')
 <script>
+    function applyScaleSelection(persistSelection = false) {
+        var selectedOption = $('#scale_selector option:selected');
+        var selectedScale = selectedOption.val();
+        var comport = selectedOption.data('comport');
+        var tareweight = selectedOption.data('tareweight');
+        var ipAddress = selectedOption.data('ip_address');
+
+        if (!selectedScale) {
+            return;
+        }
+
+        $('#selected_scale').val(selectedScale);
+        $('#comport_value').val(comport || '');
+        $('#scale_ip_value').val(ipAddress || '');
+
+        if (tareweight !== undefined && tareweight !== null && tareweight !== '') {
+            var tareweightString = tareweight.toString();
+            var crateWeightSelect = $('#crate_weight');
+
+            if (crateWeightSelect.find("option[value='" + tareweightString + "']").length === 0) {
+                crateWeightSelect.append(new Option(tareweightString, tareweightString));
+            }
+
+            crateWeightSelect.val(tareweightString);
+        }
+
+        updateTotalTare();
+
+        if (persistSelection) {
+            persistScaleSelection(selectedScale);
+        }
+    }
+
+    function persistScaleSelection(scaleName) {
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: "{{ route('butchery_scale3_config') }}",
+            data: {
+                'scale': scaleName,
+            },
+            dataType: 'JSON',
+            error: function () {
+                alert('Failed to save selected scale for this session.');
+            }
+        });
+    }
+
     function updateBlackCratesMax() {
         black_crates_input = document.getElementById('black_crates');
         no_of_crates = document.getElementById('no_of_crates').value;
@@ -467,7 +539,11 @@
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
 
-        updateTotalTare();
+        applyScaleSelection(false);
+
+        $('#scale_selector').change(function () {
+            applyScaleSelection(true);
+        });
 
         let reading = document.getElementById('reading');
         if (($('#old_manual').val()) == "on") {
@@ -939,51 +1015,47 @@
     //read scale
     function getScaleReading() {
         var comport = $('#comport_value').val();
+        var endpointPath = @json(config('app.get_weight_endpoint'));
+        var configuredScaleIp = $('#scale_ip_value').val();
+        var scaleHost = (configuredScaleIp && configuredScaleIp.trim() !== '') ? configuredScaleIp.trim() : @json($clientIp ?? 'localhost');
 
-        if (comport != null) {
-            $.ajax({
-                type: "GET",
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
-                        .attr('content')
-                },
-                url: "{{ url('butchery/read-scale-api-service') }}",
+        function fireRequest(scaleHost) {
+            if (!comport || comport.trim() === '') {
+                alert("Please set comport value first");
+                return;
+            }
 
-                data: {
-                    'comport': comport,
+            var fullScaleUrl = 'http://' + scaleHost + endpointPath + '/' + encodeURIComponent(comport);
+            console.log('Requesting weight from scale at: ' + fullScaleUrl);
 
-                },
-                dataType: 'JSON',
-                success: function (data) {
-                    // console.log(data);
-
-                    var obj = JSON.parse(data);
-                    // console.log(obj.success);
-
-                    if (obj.success == true) {
+            fetch(fullScaleUrl)
+                .then(function(response) {
+                    if (!response.ok) {
+                        return response.text().then(function(body) {
+                            throw new Error('HTTP ' + response.status + ': ' + body);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(function(obj) {
+                    if (obj.success === true) {
                         var reading = document.getElementById('reading');
                         console.log('weight: ' + obj.response);
                         reading.value = obj.response;
                         getNet();
-
-                    } else if (obj.success == false) {
+                    } else if (obj.success === false) {
                         alert('error occured in response: ' + obj.response);
-
                     } else {
                         alert('No response from service');
-
                     }
-
-                },
-                error: function (data) {
-                    var errors = data.responseJSON;
-                    // console.log(errors);
-                    alert('error occured when sending request');
-                }
-            });
-        } else {
-            alert("Please set comport value first");
+                })
+                .catch(function(error) {
+                    console.error('Scale request failed:', error.message);
+                    alert('Error connecting to scale: ' + error.message);
+                });
         }
+
+        fireRequest(scaleHost);
     }
 
 </script>

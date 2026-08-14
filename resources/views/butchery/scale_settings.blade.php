@@ -29,6 +29,7 @@
                             <tr>
                                 <th style="width: 10px">#</th>
                                 <th>Scale Name</th>
+                                <th>IP?</th>
                                 <th>ComPort</th>
                                 <th>BaudRate</th>
                                 <th>Tareweight</th>
@@ -40,6 +41,7 @@
                             <tr>
                                 <th style="width: 10px">#</th>
                                 <th>Scale Name</th>
+                                <th>IP?</th>
                                 <th>ComPort</th>
                                 <th>BaudRate</th>
                                 <th>Tareweight</th>
@@ -52,6 +54,7 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $data->scale }}</td>
+                                <td>{{ $data->ip_address }}</td>
                                 <td>{{ $data->comport }}</td>
                                 <td>{{ $data->baudrate }}</td>
                                 <td>{{ number_format($data->tareweight, 2) }}</td>
@@ -59,6 +62,7 @@
                                 <td>
                                     <button type="button" data-id="{{ $data->id }}" data-item="{{ $data->scale }}"
                                         data-comport="{{ $data->comport }}" data-baudrate="{{ $data->baudrate }}"
+                                        data-ip-address="{{ $data->ip_address }}" data-port="{{ $data->port ?? 3000 }}"
                                         data-tareweight="{{ number_format($data->tareweight, 2) }}"
                                         class="btn btn-primary btn-sm " id="editScaleModalShow"><i
                                             class="nav-icon fas fa-edit"></i>
@@ -114,6 +118,11 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="ip_address">Ip address:(optional)</label>
+                        <input type="text" class="form-control" id="edit_ip_address" name="edit_ip_address" value=""
+                            placeholder="">
+                    </div>
+                    <div class="form-group">
                         <label for="baud">BaudRate:</label>
                         <input type="number" class="form-control" id="edit_baud" name="edit_baud" value=""
                             placeholder="" required>
@@ -124,6 +133,8 @@
                             name="edit_tareweight" placeholder="" required>
                     </div>
                     <input type="hidden" name="item_id" id="item_id" value="">
+                    <input type="hidden" id="selected_ip_address" value="">
+                    <input type="hidden" id="selected_port" value="3000">
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" type="submit">
@@ -152,6 +163,8 @@
             var comport = $(this).data('comport');
             var tareweight = $(this).data('tareweight');
             var baud = $(this).data('baudrate');
+            var ipAddress = $(this).data('ip-address');
+            var port = $(this).data('port') || 3000;
             var id = $(this).data('id');
 
             $('#item_name').val(scale);
@@ -159,6 +172,9 @@
             $('#edit_baud').val(baud);
             $('#edit_tareweight').val(tareweight);
             $('#item_id').val(id);
+            $('#edit_ip_address').val(ipAddress || '');
+            $('#selected_ip_address').val(ipAddress || '');
+            $('#selected_port').val(port);
 
 
             $('#editScaleModal').modal('show');
@@ -167,18 +183,42 @@
     });
 
     function getComportList() {
+        const defaultUrl = @json(config('app.list_comport_api_url'));
+        const ipAddress = ($.trim($('#edit_ip_address').val() || ''));
+        let newUrl = defaultUrl;
+
+        if (!defaultUrl) {
+            $('#comports_success').hide();
+            $('#comports_error').show();
+            alert('Default comport URL is missing in app config');
+            return;
+        }
+
+        if (ipAddress !== '') {
+            try {
+                const parsedUrl = new URL(defaultUrl);
+                parsedUrl.hostname = ipAddress;
+                newUrl = parsedUrl.toString();
+            } catch (e) {
+                // Fallback for malformed configured URLs.
+                newUrl = defaultUrl.replace(/\/\/[^/]+/, '//' + ipAddress);
+            }
+        }
+
+        console.log('Fetching comports from: ' + newUrl);
+
         $.ajax({
             type: "GET",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]')
                     .attr('content')
             },
-            url: "{{ url('butchery/comport-list-api-service') }}",
+            url: newUrl,
             dataType: 'JSON',
             success: function (data) {
                 console.log(data);
 
-                var obj = JSON.parse(data);
+                var obj = (typeof data === 'string') ? JSON.parse(data) : data;
                 console.log(obj.success);
 
                 if (obj.success == true) {

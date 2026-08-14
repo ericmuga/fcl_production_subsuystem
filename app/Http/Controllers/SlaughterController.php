@@ -195,9 +195,9 @@ class SlaughterController extends Controller
     {
         try {
             // try save
-            $manual_weight = 0;
+            $manual_weight = 0; //auto
             if ($request->manual_weight == 'on') {
-                $manual_weight = 1;
+                $manual_weight = 1; //manual
             }
 
             $data = [
@@ -239,7 +239,7 @@ class SlaughterController extends Controller
             $data['timestamp'] = now()->toDateTimeString();
 
             // Publish data to RabbitMQ
-            //$helpers->publishToQueue($data, 'slaughter_line.bc');
+            //$helpers->publishToQueue($data, 'slaughter_linebc');
 
             Toastr::success('record added successfully', 'Success');
             return redirect()
@@ -498,7 +498,7 @@ class SlaughterController extends Controller
                 foreach ($rowData as $key => $row) {
                     try {
                         // Log the row being processed
-                        Log::info("Processing row $key: ", $row);
+                        // Log::info("Processing row $key: ", $row);
 
                         DB::table('receipts')->updateOrInsert(
                             [
@@ -679,8 +679,9 @@ class SlaughterController extends Controller
     public function UpdateScaleSettings(Request $request, Helpers $helpers)
     {
         try {
-            // forgetCache weigh_configs
-            Cache::flush();
+            $configSection = DB::table('scale_configs')
+                ->where('id', $request->item_id)
+                ->value('section');
 
             $data = [
                 'comport' => $request->comport,
@@ -698,6 +699,9 @@ class SlaughterController extends Controller
             DB::table('scale_configs')
             ->where('id', $request->item_id)
             ->update($data);
+
+            $keysToInvalidate = $helpers->getScaleConfigCacheKeysBySection($configSection);
+            $helpers->optimizeCache($keysToInvalidate);
 
             Toastr::success("record {$request->item_name} updated successfully", 'Success');
             return redirect()->back();
