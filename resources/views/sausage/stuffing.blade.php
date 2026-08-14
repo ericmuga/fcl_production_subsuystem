@@ -30,6 +30,13 @@
                         </select>    
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label for="output_item">Stuffing for (Output)</label>
+                        <select class="custom-select select2" id="output_item" name="output_item">
+                            <option value="">Select output</option>
+                        </select>
+                    </div>
+
                     <div class="form-group" >
                         <label for="batch_no">Batch No</label>
                         <input type="text" class="form-control" id="batch_no" name="batch_no" value="" required>
@@ -100,7 +107,73 @@
             </div>
         </form>
     </div>
-    
+
+</div>
+
+<div class="row col-md-12 card m-2">
+    <div class="card-header">
+        <h3 class="card-title">Generated Production Orders |
+            <span><small>orders created between the weighed item and packing, last 2 days</small></span>
+        </h3>
+    </div>
+    <div class="card-body">
+        @forelse($generated_orders as $order_no => $lines)
+            @php $header = $lines->first(); @endphp
+            <div class="mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <strong>{{ $order_no }}</strong>
+                    <span>
+                        <span class="badge badge-secondary">Step {{ $header->step }} &middot; {{ $header->process }}</span>
+                        <span class="badge badge-info">{{ $header->routing }}</span>
+                        <span class="badge badge-light">{{ $header->weighed_item }} &rarr; {{ $header->packed_item }}</span>
+                        @if($header->published)
+                            <span class="badge badge-success">Published</span>
+                        @else
+                            <span class="badge badge-warning">Pending</span>
+                        @endif
+                    </span>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-sm table-bordered mb-0">
+                        <thead>
+                            <tr>
+                                <th>Line</th>
+                                <th>Item</th>
+                                <th>Type</th>
+                                <th class="text-right">Quantity</th>
+                                <th>UOM</th>
+                                <th>Location</th>
+                                <th>Recipe</th>
+                                <th>Ext. Doc</th>
+                                <th>Batch</th>
+                                <th>By</th>
+                                <th>Generated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($lines->sortBy('line_no') as $line)
+                                <tr @if($line->line_type === 'output') class="font-weight-bold" @endif>
+                                    <td>{{ $line->line_no }}</td>
+                                    <td>{{ $line->item_no }}</td>
+                                    <td>{{ ucfirst($line->line_type) }}</td>
+                                    <td class="text-right">{{ number_format($line->quantity, 2) }}</td>
+                                    <td>{{ $line->uom }}</td>
+                                    <td>{{ $line->location_code }}</td>
+                                    <td>{{ $line->recipe }}</td>
+                                    <td>{{ $line->external_document_no }}</td>
+                                    <td>{{ $line->batch_no }}</td>
+                                    <td>{{ $line->username }}</td>
+                                    <td>{{ $helpers->amPmDate($line->created_at) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @empty
+            <p class="text-muted mb-0">No production orders generated in the last 2 days.</p>
+        @endforelse
+    </div>
 </div>
 
 <hr />
@@ -183,6 +256,23 @@
     $(document).ready(function () {
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
+        });
+
+        // Outputs the selected product can be stuffed into, keyed by product (input) code
+        const recipeOutputs = @json($recipe_outputs);
+
+        $('#product_code').on('change', function () {
+            const outputs = recipeOutputs[this.value] || [];
+            const $output = $('#output_item');
+
+            $output.empty().append(new Option('Select output', ''));
+
+            outputs.forEach(function (row) {
+                const label = [row.output_item, row.output_item_dec].filter(Boolean).join(' - ');
+                $output.append(new Option(label, row.output_item));
+            });
+
+            $output.val('').trigger('change.select2');
         });
     });
 
@@ -353,6 +443,7 @@
                 },
                 body: JSON.stringify({
                     product_code: formData.get('product_code'),
+                    output_item: formData.get('output_item'),
                     batch_no: formData.get('batch_no'),
                     net_weight: formData.get('net_weight'),
                     manual_weight: formData.get('manual_weight'),
@@ -362,8 +453,18 @@
             .then(data => {
                 if (data.success) {
                     toastr.success('Receipt saved successfully');
+
+                    if (data.production_orders_message) {
+                        if (data.production_orders > 0) {
+                            toastr.info(data.production_orders_message);
+                        } else {
+                            toastr.warning(data.production_orders_message);
+                        }
+                    }
+
                     form.reset();
-                    location.reload();
+                    // brief pause so the generation result is readable before the reload
+                    setTimeout(() => location.reload(), 1500);
                 } else {
                     console.error(data);
                     toastr.error(data.message);
