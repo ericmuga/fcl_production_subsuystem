@@ -199,11 +199,20 @@
     </div>
 </div>
 
-<div class="row col-md-12 card m-2">
+<hr />
+
+<div class="div">
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#generated_production_orders"><i class="fa fa-plus"></i>
+        Generated Production Orders
+    </button>
+</div>
+
+<hr />
+
+<div id="generated_production_orders" class="collapse card">
     <div class="card-header">
-        <h3 class="card-title">Generated Production Orders |
-            <span><small>orders created between the weighed item and packing, last 2 days</small></span>
-        </h3>
+        <h3 class="card-title">Generated Production Orders | <span id="subtext-h1-title"><small> orders created
+                    between the weighed item and packing, last 2 days</small> </span></h3>
     </div>
     <div class="card-body">
         @forelse($generated_orders as $order_no => $lines)
