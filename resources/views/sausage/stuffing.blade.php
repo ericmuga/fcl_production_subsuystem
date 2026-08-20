@@ -215,62 +215,114 @@
                     between the weighed item and packing, last 2 days</small> </span></h3>
     </div>
     <div class="card-body">
-        @forelse($generated_orders as $order_no => $lines)
-            @php $header = $lines->first(); @endphp
-            <div class="mb-4">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                    <strong>{{ $order_no }}</strong>
-                    <span>
-                        <span class="badge badge-secondary">Step {{ $header->step }} &middot; {{ $header->process }}</span>
-                        <span class="badge badge-info">{{ $header->routing }}</span>
-                        <span class="badge badge-light">{{ $header->weighed_item }} &rarr; {{ $header->packed_item }}</span>
-                        @if($header->published)
-                            <span class="badge badge-success">Published</span>
-                        @else
-                            <span class="badge badge-warning">Pending</span>
-                        @endif
-                    </span>
+        @if($generated_orders->isEmpty())
+            <p class="text-muted mb-0">No production orders generated in the last 2 days.</p>
+        @else
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label for="filter_order_no" class="small mb-1">Order No</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_order_no" data-column="0">
+                        <option value="">All orders</option>
+                        @foreach($generated_orders->pluck('production_order_no')->unique()->sort() as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
                 </div>
-                <div class="table-responsive">
-                    <table class="table table-sm table-bordered mb-0">
-                        <thead>
-                            <tr>
-                                <th>Line</th>
-                                <th>Item</th>
-                                <th>Type</th>
-                                <th class="text-right">Quantity</th>
-                                <th>UOM</th>
-                                <th>Location</th>
-                                <th>Recipe</th>
-                                <th>Ext. Doc</th>
-                                <th>Batch</th>
-                                <th>By</th>
-                                <th>Generated</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($lines->sortBy('line_no') as $line)
-                                <tr @if($line->line_type === 'output') class="font-weight-bold" @endif>
-                                    <td>{{ $line->line_no }}</td>
-                                    <td>{{ $line->item_no }}</td>
-                                    <td>{{ ucfirst($line->line_type) }}</td>
-                                    <td class="text-right">{{ number_format($line->quantity, 2) }}</td>
-                                    <td>{{ $line->uom }}</td>
-                                    <td>{{ $line->location_code }}</td>
-                                    <td>{{ $line->recipe }}</td>
-                                    <td>{{ $line->external_document_no }}</td>
-                                    <td>{{ $line->batch_no }}</td>
-                                    <td>{{ $line->username }}</td>
-                                    <td>{{ $helpers->amPmDate($line->created_at) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                <div class="col-md-2">
+                    <label for="filter_process" class="small mb-1">Process</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_process" data-column="2">
+                        <option value="">All processes</option>
+                        @foreach($generated_orders->pluck('process')->filter()->unique()->sort() as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filter_packed_item" class="small mb-1">Packed Item</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_packed_item" data-column="15">
+                        <option value="">All packed items</option>
+                        @foreach($generated_orders->pluck('packed_item')->filter()->unique()->sort() as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter_line_type" class="small mb-1">Line Type</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_line_type" data-column="7">
+                        <option value="">All lines</option>
+                        <option value="Output">Output</option>
+                        <option value="Consumption">Consumption</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter_published" class="small mb-1">Status</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_published" data-column="16">
+                        <option value="">All</option>
+                        <option value="Published">Published</option>
+                        <option value="Pending">Pending</option>
+                    </select>
                 </div>
             </div>
-        @empty
-            <p class="text-muted mb-0">No production orders generated in the last 2 days.</p>
-        @endforelse
+
+            <div class="table-responsive">
+                <table id="generated_orders_table" class="table table-sm table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order No</th>
+                            <th>Step</th>
+                            <th>Process</th>
+                            <th>Routing</th>
+                            <th>Line</th>
+                            <th>Item</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th class="text-right">Quantity</th>
+                            <th>UOM</th>
+                            <th>Location</th>
+                            <th>Recipe</th>
+                            <th>Ext. Doc</th>
+                            <th>Batch</th>
+                            <th>Weighed Item</th>
+                            <th>Packed Item</th>
+                            <th>Status</th>
+                            <th>By</th>
+                            <th>Generated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($generated_orders as $line)
+                            <tr @if($line->line_type === 'output') class="font-weight-bold" @endif>
+                                <td>{{ $line->production_order_no }}</td>
+                                <td>{{ $line->step }}</td>
+                                <td>{{ $line->process }}</td>
+                                <td>{{ $line->routing }}</td>
+                                <td>{{ $line->line_no }}</td>
+                                <td>{{ $line->item_no }}</td>
+                                <td>{{ $line->item_description }}</td>
+                                <td>{{ ucfirst($line->line_type) }}</td>
+                                <td class="text-right">{{ number_format($line->quantity, 2) }}</td>
+                                <td>{{ $line->uom }}</td>
+                                <td>{{ $line->location_code }}</td>
+                                <td>{{ $line->recipe }}</td>
+                                <td>{{ $line->external_document_no }}</td>
+                                <td>{{ $line->batch_no }}</td>
+                                <td>{{ $line->weighed_item }}</td>
+                                <td>{{ $line->packed_item }}</td>
+                                <td>
+                                    @if($line->published)
+                                        <span class="badge badge-success">Published</span>
+                                    @else
+                                        <span class="badge badge-warning">Pending</span>
+                                    @endif
+                                </td>
+                                <td>{{ $line->username }}</td>
+                                <td>{{ $helpers->amPmDate($line->created_at) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
     </div>
 </div>
 
@@ -372,6 +424,37 @@
 
             $output.val('').trigger('change.select2');
         });
+
+        // Generated orders are one flat list; searching, the column filters and any
+        // re-sorting all happen here rather than server-side.
+        const $ordersTable = $('#generated_orders_table');
+
+        if ($ordersTable.length) {
+            const ordersTable = $ordersTable.DataTable({
+                responsive: false,
+                autoWidth: false,
+                lengthChange: true,
+                // Keep the order the controller sent: newest weighing first, then
+                // each order's steps and lines in sequence.
+                order: [],
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                buttons: ['excel', 'csv', 'pdf', 'colvis'],
+            });
+
+            ordersTable.buttons().container().appendTo('#generated_orders_table_wrapper .col-md-6:eq(0)');
+
+            $('.generated-orders-filter').on('change', function () {
+                const value = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
+
+                ordersTable.column($(this).data('column')).search(value, true, false).draw();
+            });
+
+            // The panel starts collapsed, so the table is measured at zero width
+            // until it is opened.
+            $('#generated_production_orders').on('shown.bs.collapse', function () {
+                ordersTable.columns.adjust();
+            });
+        }
     });
 
     const netWeightInput = document.getElementById('net_weight');
@@ -552,16 +635,9 @@
                 if (data.success) {
                     toastr.success('Receipt saved successfully');
 
-                    if (data.production_orders_message) {
-                        if (data.production_orders > 0) {
-                            toastr.info(data.production_orders_message);
-                        } else {
-                            toastr.warning(data.production_orders_message);
-                        }
-                    }
-
                     form.reset();
-                    // brief pause so the generation result is readable before the reload
+                    // Orders are generated after this response is sent, so the pause
+                    // gives that a moment to land before the panel is re-read.
                     setTimeout(() => location.reload(), 1500);
                 } else {
                     console.error(data);

@@ -553,13 +553,19 @@ class SausageController extends Controller
             ->whereDate('idt_transfers.created_at', '>=', today()->subDays(2))
             ->get();
 
+        // One flat list rather than a block per order: the panel is a DataTable that
+        // filters and re-sorts on any column, so the rows only need a stable
+        // sequence - newest weighing first, then the order's steps and lines in the
+        // sequence they are produced in.
         $generated_orders = DB::table('generated_production_orders')
             ->leftJoin('users', 'users.id', '=', 'generated_production_orders.user_id')
-            ->select('generated_production_orders.*', 'users.username')
+            ->leftJoin('items', 'items.code', '=', 'generated_production_orders.item_no')
+            ->select('generated_production_orders.*', 'users.username', 'items.description as item_description')
             ->whereDate('generated_production_orders.created_at', '>=', today()->subDays(2))
-            ->orderByDesc('generated_production_orders.id')
-            ->get()
-            ->groupBy('production_order_no');
+            ->orderByDesc('generated_production_orders.idt_transfer_id')
+            ->orderBy('generated_production_orders.step')
+            ->orderBy('generated_production_orders.line_no')
+            ->get();
 
         // Filter options for the export form, taken from what has actually been
         // generated so the dropdowns never offer an empty selection.
@@ -652,6 +658,16 @@ class SausageController extends Controller
     }
 
     /**
+     * The recipe table these routes and orders are built from - live RecipeData, or
+     * the editable draft copy while the generation is being proved out. Set with
+     * RECIPE_DATA_TABLE in .env; see config/recipes.php.
+     */
+    private function recipeTable(): string
+    {
+        return config('recipes.table', 'RecipeData');
+    }
+
+    /**
      * Walk the recipe graph forward from each given item until the Packing step and
      * return the packed items reachable from it, each with the route taken to get
      * there. Most items reach Packing in two steps (stuff, then pack); the ones that
@@ -659,7 +675,7 @@ class SausageController extends Controller
      */
     private function packingRoutesFor(array $itemCodes, int $maxDepth = 3)
     {
-        $edges = DB::table('RecipeData')
+        $edges = DB::table($this->recipeTable())
             ->whereNotNull('input_item')
             ->whereNotNull('output_item')
             ->select(
@@ -712,7 +728,7 @@ class SausageController extends Controller
 
         // output_item_dec is blank or the literal string 'NULL' on many rows, so take
         // it from wherever it is populated and fall back to the item master.
-        $descriptions = DB::table('RecipeData')
+        $descriptions = DB::table($this->recipeTable())
             ->whereIn('output_item', $packedCodes)
             ->whereNotNull('output_item_dec')
             ->whereNotIn('output_item_dec', ['', 'NULL'])
@@ -795,6 +811,61 @@ class SausageController extends Controller
     }
 
     /**
+     * Cheap, cache-backed check for whether this weighing can produce orders at all.
+     * Items with no recipe route to the chosen packed item are skipped here so no
+     * deferred work is scheduled for them - the recipe graph is already in cache, so
+     * this costs nothing on the request itself.
+     */
+    private function hasRecipeRoute(?string $weighedItem, ?string $packedItem, float $netWeight): bool
+    {
+        if (!$weighedItem || !$packedItem || $netWeight <= 0) {
+            return false;
+        }
+
+        if (in_array($weighedItem, self::ORDER_GENERATION_EXCLUSIONS) || in_array($packedItem, self::ORDER_GENERATION_EXCLUSIONS)) {
+            return false;
+        }
+
+        return (bool) collect($this->cachedPackingRoutes()[$weighedItem] ?? [])
+            ->firstWhere('output_item', $packedItem);
+    }
+
+    /**
+     * Hand the generation off to run once the response has been flushed. Walking the
+     * recipe graph and writing to ProductionData on the BC server must not sit
+     * between the operator and the next weighing, and nothing on screen waits on the
+     * result any more - the Generated Production Orders panel picks it up on reload.
+     */
+    private function deferProductionOrders(int $transferId, ?string $weighedItem, ?string $packedItem, float $netWeight, ?string $batchNo): void
+    {
+        if (!$this->hasRecipeRoute($weighedItem, $packedItem, $netWeight)) {
+            return;
+        }
+
+        // Resolved now, while the request's auth state is still the obvious source.
+        $userId = (int) Auth::id();
+        $username = Auth::user()->username ?? 'WMS';
+
+        dispatch(function () use ($transferId, $weighedItem, $packedItem, $netWeight, $batchNo, $userId, $username) {
+            try {
+                $result = $this->generateProductionOrders(
+                    $transferId, $weighedItem, $packedItem, $netWeight, $batchNo, $userId, $username
+                );
+
+                Log::info('Stuffing production orders: ' . $result['message'], ['transfer_id' => $transferId]);
+            } catch (\Exception $e) {
+                // The weight is already saved and the operator has moved on, so a
+                // failure here is logged rather than surfaced.
+                Log::error('Stuffing production order generation failed: ' . $e->getMessage(), [
+                    'transfer_id' => $transferId,
+                    'weighed_item' => $weighedItem,
+                    'packed_item' => $packedItem,
+                ]);
+            }
+        })->afterResponse();
+    }
+
+    /**
      * Generate one production order per step between the item just weighed and the
      * packed item chosen on the form - two steps normally (stuff, pack), three when
      * the chain passes through smoking.
@@ -804,14 +875,10 @@ class SausageController extends Controller
      * applied to the recipe's batch_size for the output line and to every other
      * input's qt_per for the consumption lines.
      */
-    private function generateProductionOrders(int $transferId, ?string $weighedItem, ?string $packedItem, float $netWeight, ?string $batchNo): array
+    private function generateProductionOrders(int $transferId, ?string $weighedItem, ?string $packedItem, float $netWeight, ?string $batchNo, int $userId, string $username): array
     {
-        if (!$weighedItem || !$packedItem || $netWeight <= 0) {
-            return ['orders' => 0, 'message' => 'No packed item selected - no production orders generated.'];
-        }
-
-        if (in_array($weighedItem, self::ORDER_GENERATION_EXCLUSIONS) || in_array($packedItem, self::ORDER_GENERATION_EXCLUSIONS)) {
-            return ['orders' => 0, 'message' => "{$weighedItem} is excluded from production order generation."];
+        if (!$this->hasRecipeRoute($weighedItem, $packedItem, $netWeight)) {
+            return ['orders' => 0, 'message' => "No recipe route from {$weighedItem} to {$packedItem} - skipped."];
         }
 
         if (DB::table('generated_production_orders')->where('idt_transfer_id', $transferId)->exists()) {
@@ -821,14 +888,10 @@ class SausageController extends Controller
         $option = collect($this->cachedPackingRoutes()[$weighedItem] ?? [])
             ->firstWhere('output_item', $packedItem);
 
-        if (!$option) {
-            return ['orders' => 0, 'message' => "No recipe route from {$weighedItem} to {$packedItem} - no production orders generated."];
-        }
-
         $route = $option->route;
         $finalRecipe = end($route)->recipe;
 
-        $recipeLines = DB::table('RecipeData')
+        $recipeLines = DB::table($this->recipeTable())
             ->whereIn('recipe', collect($route)->pluck('recipe')->unique()->toArray())
             ->select(
                 'recipe', 'process', 'output_item', 'output_item_uom', 'output_item_location',
@@ -882,7 +945,7 @@ class SausageController extends Controller
                 'packed_item' => $packedItem,
                 'batch_no' => $batchNo,
                 'net_weight' => $netWeight,
-                'user_id' => Auth::id(),
+                'user_id' => $userId,
                 'transaction_date' => $now->toDateString(),
                 'created_at' => $now,
                 'updated_at' => $now,
@@ -923,7 +986,7 @@ class SausageController extends Controller
 
         DB::table('generated_production_orders')->insert($rows);
 
-        $pushed = $this->pushToProductionData($rows);
+        $pushed = $this->pushToProductionData($rows, $username);
 
         $orders = count($route);
 
@@ -939,7 +1002,7 @@ class SausageController extends Controller
      * line number are skipped, mirroring the NOT EXISTS guard in the SQL script
      * this replaces.
      */
-    private function pushToProductionData(array $rows): string
+    private function pushToProductionData(array $rows, string $username): string
     {
         if (config('production_orders.target') !== 'production_data') {
             return '';
@@ -957,7 +1020,6 @@ class SausageController extends Controller
                 ->mapWithKeys(fn($r) => [$r->ProductionOrderNo . '|' . $r->LineNo => true]);
 
             $decimals = (int) config('production_orders.production_data_decimals', 2);
-            $username = Auth::user()->username ?? 'WMS';
 
             $pending = [];
 
@@ -1029,10 +1091,10 @@ class SausageController extends Controller
             $data['timestamp'] = now()->toDateTimeString();
             //$helpers->publishToQueue($data, 'stuffing_transfers.bc');
 
-            // A gap in the recipe data must not cost the operator their weight, so the
-            // orders are generated after the weight is safely saved and any failure is
-            // reported rather than thrown.
-            $generated = $this->generateProductionOrders(
+            // Queued to run once this response is on its way out, and skipped
+            // altogether when the item has no recipe route - the operator gets the
+            // scale back straight away either way.
+            $this->deferProductionOrders(
                 $transferId,
                 $request->product_code,
                 $request->output_item,
@@ -1040,12 +1102,18 @@ class SausageController extends Controller
                 $request->batch_no
             );
 
-            return response()->json([
+            $response = response()->json([
                 'success' => true,
                 'message' => 'Stuffing weight saved successfully',
-                'production_orders' => $generated['orders'],
-                'production_orders_message' => $generated['message'],
             ]);
+
+            // IIS runs PHP over FastCGI, where fastcgi_finish_request() does not
+            // exist, so the flush in Response::send() is all that ends the body. A
+            // declared length is what lets the browser treat it as complete instead
+            // of holding the connection open while the orders are generated.
+            $response->headers->set('Content-Length', strlen($response->getContent()));
+
+            return $response;
 
         } catch (\Exception $e) {
             Log::error($e->getMessage());
