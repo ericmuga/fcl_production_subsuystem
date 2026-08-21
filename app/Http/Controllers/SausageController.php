@@ -866,6 +866,131 @@ class SausageController extends Controller
     }
 
     /**
+     * Generate orders for stuffing weighings taken on or after a date that never got
+     * any - weighings taken while the feature was switched off, while a recipe was
+     * missing, or while the BC write was failing.
+     *
+     * Weighings that already have orders are left alone: they are filtered out here
+     * so the run reports honestly, and generateProductionOrders guards on the same
+     * condition anyway, so a repeat run is a no-op rather than a duplicate.
+     *
+     * Each weighing is stamped with its own timestamp, so a backfill produces the
+     * same rows the live run would have produced at the time.
+     *
+     * @param  callable|null  $onEach  Called with (stdClass $weighing, array $result)
+     *                                 after each one, for progress output.
+     */
+    public function backfillProductionOrders(string $from, ?string $to = null, bool $dryRun = false, ?callable $onEach = null): array
+    {
+        $fromDate = Carbon::parse($from)->startOfDay();
+        $toDate = $to ? Carbon::parse($to)->endOfDay() : now()->endOfDay();
+
+        if ($fromDate->gt($toDate)) {
+            throw new \InvalidArgumentException('From date is after the to date.');
+        }
+
+        $itemCodes = $this->stuffingItems()->pluck('item_code')->toArray();
+
+        $weighings = DB::table('idt_transfers')
+            ->leftJoin('users', 'users.id', '=', 'idt_transfers.user_id')
+            ->whereIn('idt_transfers.product_code', $itemCodes)
+            ->whereBetween('idt_transfers.created_at', [$fromDate, $toDate])
+            ->select(
+                'idt_transfers.id',
+                'idt_transfers.product_code',
+                'idt_transfers.description',
+                'idt_transfers.total_weight',
+                'idt_transfers.batch_no',
+                'idt_transfers.user_id',
+                'idt_transfers.created_at',
+                'users.username'
+            )
+            ->orderBy('idt_transfers.created_at')
+            ->get();
+
+        // Which of those already have orders, asked as a plain lookup on the indexed
+        // idt_transfer_id rather than a correlated NOT EXISTS - against 1.3M
+        // idt_transfers rows the optimiser picks a plan for the latter that does not
+        // finish. Chunked to stay under SQL Server's 2100 parameter limit.
+        $alreadyDone = $weighings->pluck('id')
+            ->chunk(1000)
+            ->flatMap(fn($ids) => DB::table('generated_production_orders')
+                ->whereIn('idt_transfer_id', $ids->all())
+                ->distinct()
+                ->pluck('idt_transfer_id'))
+            ->flip();
+
+        $weighings = $weighings->reject(fn($w) => $alreadyDone->has($w->id))->values();
+
+        $summary = [
+            'from' => $fromDate->toDateString(),
+            'to' => $toDate->toDateString(),
+            'candidates' => $weighings->count(),
+            'generated' => 0,
+            'orders' => 0,
+            'skipped' => 0,
+            'failed' => 0,
+            'dry_run' => $dryRun,
+        ];
+
+        foreach ($weighings as $weighing) {
+            // A weighing with no route to its packed item is a skip, not a failure -
+            // the live path ignores these too, and reporting them as errors would
+            // bury the ones that genuinely broke.
+            if (!$this->hasRecipeRoute($weighing->product_code, $weighing->description, (float) $weighing->total_weight)) {
+                $summary['skipped']++;
+                $result = ['orders' => 0, 'message' => 'No recipe route - skipped.'];
+
+                $onEach && $onEach($weighing, $result);
+
+                continue;
+            }
+
+            if ($dryRun) {
+                $summary['generated']++;
+                $result = ['orders' => 0, 'message' => 'Would generate (dry run).'];
+
+                $onEach && $onEach($weighing, $result);
+
+                continue;
+            }
+
+            try {
+                $result = $this->generateProductionOrders(
+                    (int) $weighing->id,
+                    $weighing->product_code,
+                    $weighing->description,
+                    (float) $weighing->total_weight,
+                    $weighing->batch_no,
+                    (int) $weighing->user_id,
+                    $weighing->username ?? 'WMS',
+                    Carbon::parse($weighing->created_at)
+                );
+
+                if ($result['orders'] > 0) {
+                    $summary['generated']++;
+                    $summary['orders'] += $result['orders'];
+                } else {
+                    $summary['skipped']++;
+                }
+            } catch (\Exception $e) {
+                $summary['failed']++;
+                $result = ['orders' => 0, 'message' => 'Failed: ' . $e->getMessage()];
+
+                Log::error('Stuffing production order backfill failed: ' . $e->getMessage(), [
+                    'transfer_id' => $weighing->id,
+                    'weighed_item' => $weighing->product_code,
+                    'packed_item' => $weighing->description,
+                ]);
+            }
+
+            $onEach && $onEach($weighing, $result);
+        }
+
+        return $summary;
+    }
+
+    /**
      * Generate one production order per step between the item just weighed and the
      * packed item chosen on the form - two steps normally (stuff, pack), three when
      * the chain passes through smoking.
@@ -875,7 +1000,7 @@ class SausageController extends Controller
      * applied to the recipe's batch_size for the output line and to every other
      * input's qt_per for the consumption lines.
      */
-    private function generateProductionOrders(int $transferId, ?string $weighedItem, ?string $packedItem, float $netWeight, ?string $batchNo, int $userId, string $username): array
+    private function generateProductionOrders(int $transferId, ?string $weighedItem, ?string $packedItem, float $netWeight, ?string $batchNo, int $userId, string $username, ?Carbon $at = null): array
     {
         if (!$this->hasRecipeRoute($weighedItem, $packedItem, $netWeight)) {
             return ['orders' => 0, 'message' => "No recipe route from {$weighedItem} to {$packedItem} - skipped."];
@@ -903,7 +1028,11 @@ class SausageController extends Controller
         $rows = [];
         $carriedItem = $weighedItem;
         $carriedQty = $netWeight;
-        $now = now();
+
+        // Backfills pass the time of the weighing, so orders generated after the
+        // fact carry the date they were produced on rather than the date they were
+        // caught up on - the export panel and BC's TransactionDate both read this.
+        $now = $at ? $at->copy() : now();
 
         foreach ($route as $index => $edge) {
             $step = $index + 1;

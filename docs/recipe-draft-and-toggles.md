@@ -230,3 +230,83 @@ storage/logs/laravel.log
 Orders are also visible on the stuffing screen under **Generated Production
 Orders** (last 2 days), as one flat table with filters for order no, process,
 packed item, line type and status.
+
+---
+
+## 7. Catching up weighings that never got orders
+
+Generation runs after the response is sent, so a weighing can end up with no orders
+— the feature was switched off at the time, a recipe was missing, or the BC write
+failed. `stuffing:backfill-orders` finds those and generates them after the fact.
+
+```bash
+# See what is missing without writing anything
+php artisan stuffing:backfill-orders --from=2026-08-10 --dry-run
+
+# Catch up a single day
+php artisan stuffing:backfill-orders --from=2026-08-10 --to=2026-08-10
+
+# Catch up from a date to today
+php artisan stuffing:backfill-orders --from=2026-08-10
+```
+
+Both dates default to today. The command prints which recipe table and which write
+target are in effect before it starts, and asks for confirmation when the target is
+`production_data` — pass `--force` to skip the prompt in a scheduled run.
+
+**It only ever adds.** Weighings that already have orders are filtered out, and
+`generateProductionOrders` guards on the same condition, so running it twice over
+the same range is a no-op rather than a source of duplicates.
+
+Backfilled orders are stamped with the **time of the weighing**, not the time of the
+run. An order caught up today for a weighing taken on the 10th carries the 10th as
+its `transaction_date` and `created_at`, so it lands in the right period in the
+export and in BC's `TransactionDate` — and it will *not* appear in the stuffing
+screen's Generated Production Orders panel, which only shows the last 2 days. Use
+the export to confirm a backfill landed.
+
+### Exit codes
+
+`0` when everything generated or was legitimately skipped, `1` when any weighing
+threw. Failures are logged individually to `laravel.log` with their transfer id.
+
+### A note on range size
+
+`idt_transfers` holds ~1.3M rows. Until the
+`2026_08_21_090000_add_lookup_indexes_to_idt_transfers_table` migration is applied,
+any date range wider than a couple of days causes a full table scan and the command
+will appear to hang. Apply that migration first — see the deployment note below.
+
+---
+
+## 8. Deploying the idt_transfers index migration
+
+`2026_08_21_090000_add_lookup_indexes_to_idt_transfers_table` adds two indexes to
+`idt_transfers`, which had only its clustered primary key despite being filtered by
+date on the stuffing panel, the per-batch report and the IDT dashboards. Those
+screens have been scanning all 1.3M rows on every load; this is what fixes that.
+
+**Run it in a maintenance window, not during production.** The server is SQL Server
+**Standard Edition**, where `CREATE INDEX` is offline only — it takes a schema
+modification lock on `idt_transfers` for the whole build, blocking every read and
+write to the table. On a running line that stalls the stuffing scale.
+
+**Budget around 7-8 minutes.** It took 440 seconds against a 1.3M row copy on a
+local SQL Server; live will differ with disk and load, but that is the order of
+magnitude to plan the window around.
+
+**Do not interrupt it.** Killing the build mid-flight rolls it back over the same
+1.3M rows, holding locks while it unwinds — which takes longer than letting it
+finish. Give it the time it needs.
+
+Verify afterwards:
+
+```sql
+SELECT i.name, i.type_desc
+FROM sys.indexes i
+JOIN sys.objects o ON o.object_id = i.object_id
+WHERE o.name = 'idt_transfers';
+```
+
+Expect `idt_transfers_product_created_idx` and `idt_transfers_created_at_idx`
+alongside the clustered `PK__idt_tran__...`.
