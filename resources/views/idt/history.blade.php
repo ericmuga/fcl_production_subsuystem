@@ -65,6 +65,7 @@
                                                     <option value="2595">2595-Bacon & Ham</option>
                                                     <option value="2500">2500-Curing</option>
                                                     <option value="3535">3535-Despatch</option>
+                                                    <option value="3600">3600-Export</option>
                                                     <option value="3035">3035-Petfood</option>
                                                     <option value="3555">3555-Old Factory</option>
                                                     <option value="4450">4450-QA</option>
@@ -80,6 +81,7 @@
                                                     <option value="2595">2595-Bacon & Ham</option>
                                                     <option value="2500">2500-Curing</option>
                                                     <option value="3535">3535-Despatch</option>
+                                                    <option value="3600">3600-Export</option>
                                                     <option value="3035">3035-Petfood</option>
                                                     <option value="3555">3555-Old Factory</option>
                                                     <option value="3540">3540-Third Party</option>
@@ -146,6 +148,7 @@
                                                     <option value="2595">2595-Bacon & Ham</option>
                                                     <option value="2500">2500-Curing</option>
                                                     <option value="3535">3535-Despatch</option>
+                                                    <option value="3600">3600-Export</option>
                                                     <option value="3035">3035-Petfood</option>
                                                     <option value="3555">3555-Old Factory</option>
                                                     <option value="4450">4450-QA</option>
@@ -161,6 +164,7 @@
                                                     <option value="2595">2595-Bacon & Ham</option>
                                                     <option value="2500">2500-Curing</option>
                                                     <option value="3535">3535-Despatch</option>
+                                                    <option value="3600">3600-Export</option>
                                                     <option value="3035">3035-Petfood</option>
                                                     <option value="3555">3555-Old Factory</option>
                                                     <option value="3540">3540-Third Party</option>
