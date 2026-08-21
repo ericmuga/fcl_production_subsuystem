@@ -16,6 +16,7 @@ use App\Http\Controllers\IDTController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PetfoodController;
+use App\Http\Controllers\RecipeDraftController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\QAController;
 use App\Http\Controllers\SlaughterController;
@@ -183,6 +184,7 @@ Route::get('/per-batch-report/{filter?}', [SausageController::class, 'perBatchRe
 Route::post('/sausage-get-batchno-axios', [SausageController::class, 'getBatchNoAxios']);
 Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
 Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveStuffingWeights'])->name('save_stuffing_weights');
+Route::post('/sausage/generated-production-orders/export', [SausageController::class, 'exportGeneratedProductionOrders'])->name('export_generated_production_orders');
 /*-------------End Admin------------------ */
 
 /*-------------Start Spices------------------ */
@@ -229,6 +231,23 @@ Route::prefix('v2/chopping')->group(function () {
 Route::get('/recipe-data', [ChoppingController::class, 'getRecipeData'])->name('get_recipe_data');
 Route::get('/production-data', [ChoppingController::class, 'getProductionData'])->name('get_production_data');
 Route::post('/recipe/upload', [ChoppingController::class, 'upload'])->name('recipe_upload');
+
+/*
+| Draft recipe table - the editable copy of RecipeData used while the stuffing
+| production order generation is being proved out. Nothing here touches live.
+*/
+Route::prefix('recipe-draft')->group(function () {
+    Route::get('/', [RecipeDraftController::class, 'index'])->name('recipe_draft_index');
+    Route::get('/create', [RecipeDraftController::class, 'create'])->name('recipe_draft_create');
+    Route::post('/', [RecipeDraftController::class, 'store'])->name('recipe_draft_store');
+    Route::get('/{id}/edit', [RecipeDraftController::class, 'edit'])->name('recipe_draft_edit');
+    Route::put('/{id}', [RecipeDraftController::class, 'update'])->name('recipe_draft_update');
+    Route::delete('/{id}', [RecipeDraftController::class, 'destroy'])->name('recipe_draft_destroy');
+    Route::get('/export', [RecipeDraftController::class, 'export'])->name('recipe_draft_export');
+    Route::post('/import', [RecipeDraftController::class, 'import'])->name('recipe_draft_import');
+    Route::post('/copy-from-live', [RecipeDraftController::class, 'copyFromLive'])->name('recipe_draft_copy_live');
+    Route::post('/truncate', [RecipeDraftController::class, 'truncate'])->name('recipe_draft_truncate');
+});
 
 /*-------------End Spices------------------ */
 

@@ -55,7 +55,11 @@
             <li><a href="{{ route('items_list') }}" class="dropdown-item"> Items List
                 </a>
             </li>
-            <li class="dropdown-divider"></li>                        
+            <li class="dropdown-divider"></li>
+            <li><a href="{{ route('recipe_draft_index') }}" class="dropdown-item"> Recipe Data (Draft)
+                </a>
+            </li>
+            <li class="dropdown-divider"></li>
             <!-- Level two dropdown-->
             <li class="dropdown-submenu dropdown-hover">
                 <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"

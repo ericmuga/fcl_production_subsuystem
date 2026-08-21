@@ -30,6 +30,13 @@
                         </select>    
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label for="output_item">Stuffing for (Output)</label>
+                        <select class="custom-select select2" id="output_item" name="output_item">
+                            <option value="">Select output</option>
+                        </select>
+                    </div>
+
                     <div class="form-group" >
                         <label for="batch_no">Batch No</label>
                         <input type="text" class="form-control" id="batch_no" name="batch_no" value="" required>
@@ -100,7 +107,223 @@
             </div>
         </form>
     </div>
-    
+
+</div>
+
+<div class="col-md-12 text-left" style="margin-bottom: 1%">
+    <button class="btn btn-success btn-lg" data-toggle="collapse" data-target="#export_production_orders"><i
+            class="fas fa-file-excel"></i> Export Generated Production Orders</button>
+    <div id="export_production_orders" class="collapse"><br>
+        <div class="form-inputs">
+            <div class="row">
+                <div class="col-lg-8" style="margin: 0 auto; float: none;">
+                    <div class="card mb-3">
+                        <div class="card-header">
+                            <i class="fa fa-user-secret"></i>
+                            Export data</div>
+                        <div class="card-body">
+                            <form action="{{ route('export_generated_production_orders') }}" method="post"
+                                id="export-production-orders-form">
+                                @csrf
+
+                                <h6>*Filter by date range</h6>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label for="orders_from_date">From: (dd/mm/yyyy)</label>
+                                        <input type="date" class="form-control" name="from_date"
+                                            id="orders_from_date" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="orders_to_date">To: (dd/mm/yyyy)</label>
+                                        <input type="date" class="form-control" name="to_date"
+                                            id="orders_to_date" required>
+                                    </div>
+                                </div>
+
+                                <h6>*Narrow down (optional)</h6>
+                                <div class="row form-group">
+                                    <div class="col-md-6">
+                                        <label for="orders_packed_item">Packed Item</label>
+                                        <select class="form-control select2" name="packed_item" id="orders_packed_item">
+                                            <option value="all" selected>All packed items</option>
+                                            @foreach($generated_packed_items as $packed)
+                                                <option value="{{ $packed->packed_item }}">
+                                                    {{ $packed->packed_item }}{{ $packed->description ? ' - ' . $packed->description : '' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="orders_process">Process</label>
+                                        <select class="form-control select2" name="process" id="orders_process">
+                                            <option value="all" selected>All processes</option>
+                                            @foreach($generated_processes as $process)
+                                                <option value="{{ $process }}">{{ $process }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-4">
+                                        <label for="orders_line_type">Line Type</label>
+                                        <select class="form-control" name="line_type" id="orders_line_type">
+                                            <option value="all" selected>All lines</option>
+                                            <option value="output">Output only</option>
+                                            <option value="consumption">Consumption only</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="orders_published">Status</label>
+                                        <select class="form-control" name="published" id="orders_published">
+                                            <option value="all" selected>All</option>
+                                            <option value="1">Published</option>
+                                            <option value="0">Pending</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="orders_batch_no">Batch No</label>
+                                        <input type="text" class="form-control" name="batch_no" id="orders_batch_no"
+                                            placeholder="leave blank for all">
+                                    </div>
+                                </div> <br>
+                                <div class="div" align="center">
+                                    <button type="submit" class="btn btn-primary "><i class="fa fa-paper-plane"
+                                            aria-hidden="true"></i> Export now</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<div class="div">
+    <button class="btn btn-primary " data-toggle="collapse" data-target="#generated_production_orders"><i class="fa fa-plus"></i>
+        Generated Production Orders
+    </button>
+</div>
+
+<hr />
+
+<div id="generated_production_orders" class="collapse card">
+    <div class="card-header">
+        <h3 class="card-title">Generated Production Orders | <span id="subtext-h1-title"><small> orders created
+                    between the weighed item and packing, last 2 days</small> </span></h3>
+    </div>
+    <div class="card-body">
+        @if($generated_orders->isEmpty())
+            <p class="text-muted mb-0">No production orders generated in the last 2 days.</p>
+        @else
+            <div class="row form-group">
+                <div class="col-md-3">
+                    <label for="filter_order_no" class="small mb-1">Order No</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_order_no" data-column="0">
+                        <option value="">All orders</option>
+                        @foreach($generated_orders->pluck('production_order_no')->unique()->sort() as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter_process" class="small mb-1">Process</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_process" data-column="2">
+                        <option value="">All processes</option>
+                        @foreach($generated_orders->pluck('process')->filter()->unique()->sort() as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="filter_packed_item" class="small mb-1">Packed Item</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_packed_item" data-column="15">
+                        <option value="">All packed items</option>
+                        @foreach($generated_orders->pluck('packed_item')->filter()->unique()->sort() as $value)
+                            <option value="{{ $value }}">{{ $value }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter_line_type" class="small mb-1">Line Type</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_line_type" data-column="7">
+                        <option value="">All lines</option>
+                        <option value="Output">Output</option>
+                        <option value="Consumption">Consumption</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label for="filter_published" class="small mb-1">Status</label>
+                    <select class="form-control form-control-sm generated-orders-filter" id="filter_published" data-column="16">
+                        <option value="">All</option>
+                        <option value="Published">Published</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table id="generated_orders_table" class="table table-sm table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Order No</th>
+                            <th>Step</th>
+                            <th>Process</th>
+                            <th>Routing</th>
+                            <th>Line</th>
+                            <th>Item</th>
+                            <th>Description</th>
+                            <th>Type</th>
+                            <th class="text-right">Quantity</th>
+                            <th>UOM</th>
+                            <th>Location</th>
+                            <th>Recipe</th>
+                            <th>Ext. Doc</th>
+                            <th>Batch</th>
+                            <th>Weighed Item</th>
+                            <th>Packed Item</th>
+                            <th>Status</th>
+                            <th>By</th>
+                            <th>Generated</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($generated_orders as $line)
+                            <tr @if($line->line_type === 'output') class="font-weight-bold" @endif>
+                                <td>{{ $line->production_order_no }}</td>
+                                <td>{{ $line->step }}</td>
+                                <td>{{ $line->process }}</td>
+                                <td>{{ $line->routing }}</td>
+                                <td>{{ $line->line_no }}</td>
+                                <td>{{ $line->item_no }}</td>
+                                <td>{{ $line->item_description }}</td>
+                                <td>{{ ucfirst($line->line_type) }}</td>
+                                <td class="text-right">{{ number_format($line->quantity, 2) }}</td>
+                                <td>{{ $line->uom }}</td>
+                                <td>{{ $line->location_code }}</td>
+                                <td>{{ $line->recipe }}</td>
+                                <td>{{ $line->external_document_no }}</td>
+                                <td>{{ $line->batch_no }}</td>
+                                <td>{{ $line->weighed_item }}</td>
+                                <td>{{ $line->packed_item }}</td>
+                                <td>
+                                    @if($line->published)
+                                        <span class="badge badge-success">Published</span>
+                                    @else
+                                        <span class="badge badge-warning">Pending</span>
+                                    @endif
+                                </td>
+                                <td>{{ $line->username }}</td>
+                                <td>{{ $helpers->amPmDate($line->created_at) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
 </div>
 
 <hr />
@@ -184,6 +407,54 @@
         $('.form-prevent-multiple-submits').on('submit', function () {
             $(".btn-prevent-multiple-submits").attr('disabled', true);
         });
+
+        // Outputs the selected product can be stuffed into, keyed by product (input) code
+        const recipeOutputs = @json($recipe_outputs);
+
+        $('#product_code').on('change', function () {
+            const outputs = recipeOutputs[this.value] || [];
+            const $output = $('#output_item');
+
+            $output.empty().append(new Option('Select output', ''));
+
+            outputs.forEach(function (row) {
+                const label = [row.output_item, row.output_item_dec].filter(Boolean).join(' - ');
+                $output.append(new Option(label, row.output_item));
+            });
+
+            $output.val('').trigger('change.select2');
+        });
+
+        // Generated orders are one flat list; searching, the column filters and any
+        // re-sorting all happen here rather than server-side.
+        const $ordersTable = $('#generated_orders_table');
+
+        if ($ordersTable.length) {
+            const ordersTable = $ordersTable.DataTable({
+                responsive: false,
+                autoWidth: false,
+                lengthChange: true,
+                // Keep the order the controller sent: newest weighing first, then
+                // each order's steps and lines in sequence.
+                order: [],
+                lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                buttons: ['excel', 'csv', 'pdf', 'colvis'],
+            });
+
+            ordersTable.buttons().container().appendTo('#generated_orders_table_wrapper .col-md-6:eq(0)');
+
+            $('.generated-orders-filter').on('change', function () {
+                const value = this.value ? '^' + $.fn.dataTable.util.escapeRegex(this.value) + '$' : '';
+
+                ordersTable.column($(this).data('column')).search(value, true, false).draw();
+            });
+
+            // The panel starts collapsed, so the table is measured at zero width
+            // until it is opened.
+            $('#generated_production_orders').on('shown.bs.collapse', function () {
+                ordersTable.columns.adjust();
+            });
+        }
     });
 
     const netWeightInput = document.getElementById('net_weight');
@@ -353,6 +624,7 @@
                 },
                 body: JSON.stringify({
                     product_code: formData.get('product_code'),
+                    output_item: formData.get('output_item'),
                     batch_no: formData.get('batch_no'),
                     net_weight: formData.get('net_weight'),
                     manual_weight: formData.get('manual_weight'),
@@ -362,8 +634,11 @@
             .then(data => {
                 if (data.success) {
                     toastr.success('Receipt saved successfully');
+
                     form.reset();
-                    location.reload();
+                    // Orders are generated after this response is sent, so the pause
+                    // gives that a moment to land before the panel is re-read.
+                    setTimeout(() => location.reload(), 1500);
                 } else {
                     console.error(data);
                     toastr.error(data.message);
