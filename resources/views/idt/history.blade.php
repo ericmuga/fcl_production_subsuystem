@@ -68,6 +68,7 @@
                                                     <option value="3600">3600-Export</option>
                                                     <option value="3035">3035-Petfood</option>
                                                     <option value="3555">3555-Old Factory</option>
+                                                    <option value="3540">3540-Third Party</option>
                                                     <option value="4450">4450-QA</option>
                                                 </select>
                                             </div>
@@ -151,6 +152,7 @@
                                                     <option value="3600">3600-Export</option>
                                                     <option value="3035">3035-Petfood</option>
                                                     <option value="3555">3555-Old Factory</option>
+                                                    <option value="3540">3540-Third Party</option>
                                                     <option value="4450">4450-QA</option>
                                                 </select>
                                             </div>

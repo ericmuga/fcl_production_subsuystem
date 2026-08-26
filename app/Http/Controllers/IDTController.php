@@ -628,20 +628,8 @@ class IDTController extends Controller
             ->leftJoin('users as issuers', 'idt_transfers.user_id', '=', 'issuers.id')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
-            ->where(function ($query) use ($request) {
-                if ($request->transfer_from == '3535') {
-                    $query->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3540']);
-                } else {
-                    $query->where('idt_transfers.transfer_from', $request->transfer_from);
-                }
-            })
-            ->where(function ($query) use ($request) {
-                if ($request->transfer_to == '3535') {
-                    $query->whereIn('idt_transfers.location_code', ['3535', '3600', '3540']);
-                } else {
-                    $query->where('idt_transfers.location_code', $request->transfer_to);
-                }
-            })
+            ->where('idt_transfers.transfer_from', $request->transfer_from)
+            ->where('idt_transfers.location_code', $request->transfer_to)
             ->select(
                 'idt_transfers.id',
                 'idt_transfers.product_code',
@@ -682,20 +670,8 @@ class IDTController extends Controller
             ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->whereDate('idt_transfers.created_at', '>=', $from_date)
             ->whereDate('idt_transfers.created_at', '<=', $to_date)
-            ->where(function ($query) use ($request) {
-                if ($request->transfer_from == '3535') {
-                    $query->whereIn('idt_transfers.transfer_from', ['3535', '3600', '3540']);
-                } else {
-                    $query->where('idt_transfers.transfer_from', $request->transfer_from);
-                }
-            })
-            ->where(function ($query) use ($request) {
-                if ($request->transfer_to == '3535') {
-                    $query->whereIn('idt_transfers.location_code', ['3535', '3600', '3540']);
-                } else {
-                    $query->where('idt_transfers.location_code', $request->transfer_to);
-                }
-            })
+            ->where('idt_transfers.transfer_from', $request->transfer_from)
+            ->where('idt_transfers.location_code', $request->transfer_to)
             ->select(
                 'idt_transfers.product_code',
                 'items.description as product',
