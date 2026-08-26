@@ -651,20 +651,21 @@ class SausageController extends Controller
     private function cachedPackingRoutes()
     {
         $itemCodes = $this->stuffingItems()->pluck('item_code')->toArray();
+        $recipeTable = $this->recipeTable();
 
-        return Cache::remember('stuffing_packing_outputs', now()->addHours(10), function () use ($itemCodes) {
+        return Cache::remember('stuffing_packing_outputs:' . $recipeTable, now()->addHours(10), function () use ($itemCodes) {
             return $this->packingRoutesFor($itemCodes);
         });
     }
 
     /**
-     * The recipe table these routes and orders are built from - live RecipeData, or
-     * the editable draft copy while the generation is being proved out. Set with
-     * RECIPE_DATA_TABLE in .env; see config/recipes.php.
+     * The recipe table these routes and orders are built from - live RecipeData,
+     * or the editable draft copy while the generation is being proved out. This
+     * source is independent of whether generated orders are inserted into BC.
      */
     private function recipeTable(): string
     {
-        return config('recipes.table', 'RecipeData');
+        return config('production_orders.recipe_table', config('recipes.table', 'RecipeData'));
     }
 
     /**

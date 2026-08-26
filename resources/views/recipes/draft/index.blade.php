@@ -30,7 +30,7 @@
         <p class="mb-0">
             Draft holds <strong>{{ number_format($draft_count) }}</strong> line(s),
             live {{ $live_table }} holds <strong>{{ number_format($live_count) }}</strong>.
-            Switch with <code>RECIPE_DATA_TABLE</code> in <code>.env</code> &mdash; see
+            Switch with <code>PRODUCTION_ORDERS_RECIPE_TABLE</code> in <code>.env</code> &mdash; see
             <code>docs/recipe-draft-and-toggles.md</code>.
         </p>
     </div>

@@ -9,7 +9,7 @@ separately from the recipe data.
 
 | Switch | Question it answers | Values |
 |---|---|---|
-| `RECIPE_DATA_TABLE` | Which recipes do we generate **from**? | `RecipeData` (live) / `recipe_data_draft` (test) |
+| `PRODUCTION_ORDERS_RECIPE_TABLE` | Which recipes do we generate **from**? | `RecipeData` (live) / `recipe_data_draft` (test) |
 | `PRODUCTION_ORDERS_TARGET` | Where do generated orders get **written**? | `local` (safe) / `production_data` (BC) |
 
 Both live in `.env`. Neither requires a code change.
@@ -18,20 +18,24 @@ Both live in `.env`. Neither requires a code change.
 
 ## 1. The switches
 
-### `RECIPE_DATA_TABLE` — the recipe source
+### `PRODUCTION_ORDERS_RECIPE_TABLE` — the recipe source
 
 ```dotenv
 # Test: read the editable draft copy
-RECIPE_DATA_TABLE=recipe_data_draft
+PRODUCTION_ORDERS_RECIPE_TABLE=recipe_data_draft
 
 # Live: read the real recipe table
-RECIPE_DATA_TABLE=RecipeData
+PRODUCTION_ORDERS_RECIPE_TABLE=RecipeData
 ```
 
-Config: `config/recipes.php`. Read by `SausageController::recipeTable()`, which
+Config: `config/production_orders.php`. Read by `SausageController::recipeTable()`, which
 feeds every recipe lookup the generation makes — the packing-route graph, the
 packed-item dropdown on the stuffing screen, and the recipe lines each order is
 built from.
+
+`RECIPE_DATA_TABLE` remains as a legacy fallback, but new deployments should use
+`PRODUCTION_ORDERS_RECIPE_TABLE` so the recipe source for this function is clearly
+separate from the production-order write target.
 
 `RecipeData` is **never written to** by this feature under either setting.
 
@@ -73,7 +77,7 @@ On IIS, recycle the app pool afterwards if `config:cache` is in use.
 
 ## 3. The four combinations
 
-| `RECIPE_DATA_TABLE` | `PRODUCTION_ORDERS_TARGET` | What it is for |
+| `PRODUCTION_ORDERS_RECIPE_TABLE` | `PRODUCTION_ORDERS_TARGET` | What it is for |
 |---|---|---|
 | `recipe_data_draft` | `local` | **Full sandbox.** Test recipes, nothing reaches BC. Start here. |
 | `recipe_data_draft` | `production_data` | Proving the BC write path with test recipes. Writes real rows to BC — use deliberately. |
@@ -185,14 +189,14 @@ definitions), so a faithful copy of live has to be allowed through.
 
 ## 5. Going live
 
-1. Confirm sign-off against `RECIPE_DATA_TABLE=RecipeData` +
+1. Confirm sign-off against `PRODUCTION_ORDERS_RECIPE_TABLE=RecipeData` +
    `PRODUCTION_ORDERS_TARGET=local`, so live recipes are proven before anything
    reaches BC.
 2. Apply the migrations intended for this release — see the release checklist in
    `docs/change-request-stuffing-production-orders.md`.
 3. Set both switches to live values in the server `.env`:
    ```dotenv
-   RECIPE_DATA_TABLE=RecipeData
+   PRODUCTION_ORDERS_RECIPE_TABLE=RecipeData
    PRODUCTION_ORDERS_TARGET=production_data
    PRODUCTION_DATA_TABLE=ProductionData
    ```
@@ -206,7 +210,7 @@ Set `PRODUCTION_ORDERS_TARGET=local` and clear the caches. Generation continues 
 `generated_production_orders` and stops reaching BC. No code change, no deployment.
 
 The draft table can be left in place — it costs nothing when
-`RECIPE_DATA_TABLE=RecipeData`.
+`PRODUCTION_ORDERS_RECIPE_TABLE=RecipeData`.
 
 ---
 

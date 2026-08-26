@@ -23,6 +23,16 @@ return [
     'target' => env('PRODUCTION_ORDERS_TARGET', 'local'),
 
     /*
+    | The recipe table used when generating stuffing production orders. This is
+    | intentionally separate from the write target above: recipes can be read from
+    | the draft or live table without changing whether orders are pushed to BC.
+    |
+    | RECIPE_DATA_TABLE is kept as a fallback for existing environments.
+    */
+
+    'recipe_table' => env('PRODUCTION_ORDERS_RECIPE_TABLE', env('RECIPE_DATA_TABLE', 'RecipeData')),
+
+    /*
     | The BC table written to when target is 'production_data'.
     */
 

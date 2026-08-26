@@ -17,7 +17,8 @@ use Maatwebsite\Excel\Facades\Excel;
  * stuffing production order generation out before it is pointed at live.
  *
  * Nothing here writes to RecipeData. Which of the two the generation actually
- * reads is decided by config('recipes.table'), set from RECIPE_DATA_TABLE in .env.
+ * reads is decided by config('production_orders.recipe_table'), set from
+ * PRODUCTION_ORDERS_RECIPE_TABLE in .env.
  */
 class RecipeDraftController extends Controller
 {
@@ -84,7 +85,7 @@ class RecipeDraftController extends Controller
             ->pluck('process');
 
         // Shown on the page so it is never a guess which table a weighing will read.
-        $active_table = config('recipes.table', 'RecipeData');
+        $active_table = config('production_orders.recipe_table', config('recipes.table', 'RecipeData'));
         $draft_table = $this->table();
         $live_table = $this->liveTable();
         $draft_count = DB::table($draft_table)->count();

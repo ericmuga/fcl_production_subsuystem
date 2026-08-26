@@ -7,8 +7,8 @@ return [
     | Recipe source table
     |--------------------------------------------------------------------------
     |
-    | Which table the recipe graph is read from when production orders are
-    | generated from a stuffing weighing.
+    | Legacy default for the recipe graph source. Production order generation has
+    | its own explicit switch at production_orders.recipe_table.
     |
     | 'RecipeData'        - the live table, kept in step with BC. Read-only as far
     |                       as this feature is concerned.
@@ -17,9 +17,8 @@ return [
     |                       Recipe Data (Draft). Use while proving the generation
     |                       out, so recipes can be corrected without touching live.
     |
-    | Flip it with RECIPE_DATA_TABLE in .env, then run `php artisan config:clear`
-    | and `php artisan cache:clear` - the recipe graph is cached for 10 hours, so
-    | the old table is read until that cache is dropped.
+    | Prefer PRODUCTION_ORDERS_RECIPE_TABLE for stuffing production orders. This
+    | value is still used as a fallback for existing environments.
     |
     */
 
@@ -42,6 +41,8 @@ return [
     'cache_keys' => [
         'recipe_data_cache',
         'stuffing_packing_outputs',
+        'stuffing_packing_outputs:RecipeData',
+        'stuffing_packing_outputs:recipe_data_draft',
         'stuffing_products',
     ],
 

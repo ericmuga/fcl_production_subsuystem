@@ -21,7 +21,7 @@ class BackfillProductionOrders extends Command
         $to = $this->option('to') ?: now()->toDateString();
         $dryRun = (bool) $this->option('dry-run');
 
-        $recipeTable = config('recipes.table');
+        $recipeTable = config('production_orders.recipe_table', config('recipes.table', 'RecipeData'));
         $target = config('production_orders.target');
 
         $this->line("Range:   {$from} to {$to}");

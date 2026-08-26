@@ -217,7 +217,7 @@ Two switches, both in `.env`, no code change to flip:
 
 | Switch | Test | Live |
 |---|---|---|
-| `RECIPE_DATA_TABLE` | `recipe_data_draft` | `RecipeData` |
+| `PRODUCTION_ORDERS_RECIPE_TABLE` | `recipe_data_draft` | `RecipeData` |
 | `PRODUCTION_ORDERS_TARGET` | `local` | `production_data` |
 
 Full detail: [`recipe-draft-and-toggles.md`](recipe-draft-and-toggles.md).
@@ -226,7 +226,7 @@ Full detail: [`recipe-draft-and-toggles.md`](recipe-draft-and-toggles.md).
 
 ## 8. UAT test scenarios
 
-Run with `RECIPE_DATA_TABLE=recipe_data_draft` and
+Run with `PRODUCTION_ORDERS_RECIPE_TABLE=recipe_data_draft` and
 `PRODUCTION_ORDERS_TARGET=local`.
 
 | # | Scenario | Expected result |
@@ -248,7 +248,7 @@ Run with `RECIPE_DATA_TABLE=recipe_data_draft` and
 | 15 | Delete a recipe line | Line removed |
 | 16 | Confirm no live change | `RecipeData` row count and contents unchanged throughout |
 
-Then repeat scenarios 1–3 with `RECIPE_DATA_TABLE=RecipeData` and
+Then repeat scenarios 1–3 with `PRODUCTION_ORDERS_RECIPE_TABLE=RecipeData` and
 `PRODUCTION_ORDERS_TARGET=local` as the final rehearsal on live recipes.
 
 ---
@@ -299,7 +299,7 @@ nullable on live, it requires a **new** migration or a manual `ALTER TABLE`.
 
 Set `PRODUCTION_ORDERS_TARGET=local` and clear the caches. Generation stops reaching
 BC immediately, with no deployment and no code change. The `recipe_data_draft`
-table can be left in place; it is inert while `RECIPE_DATA_TABLE=RecipeData`.
+table can be left in place; it is inert while `PRODUCTION_ORDERS_RECIPE_TABLE=RecipeData`.
 
 ---
 
