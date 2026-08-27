@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\GeneratedProductionOrdersExport;
 use App\Exports\SausageEntriesExport;
+use App\Exports\StuffingWeightsHistoryExport;
 use App\Models\Helpers;
 use App\Models\SausageEntry;
 use Brian2694\Toastr\Facades\Toastr;
@@ -585,6 +586,70 @@ class SausageController extends Controller
             ->pluck('process');
 
         return view('sausage.stuffing', compact('title','items', 'configs', 'stuffing_transfers', 'recipe_outputs', 'generated_orders', 'generated_packed_items', 'generated_processes', 'helpers'));
+    }
+
+    /**
+     * Cumulative stuffing weights per product code for the last 7 days by default;
+     * the export modal on this page re-runs the same totals over a chosen date range.
+     */
+    public function stuffingWeightsHistory()
+    {
+        $title = 'Stuffing Weights History';
+        $items = $this->stuffingItems();
+        $itemCodes = $items->pluck('item_code')->toArray();
+
+        $from_date = today()->subDays(6);
+        $to_date = today();
+
+        $summary = DB::table('idt_transfers')
+            ->whereIn('product_code', $itemCodes)
+            ->whereDate('created_at', '>=', $from_date)
+            ->whereDate('created_at', '<=', $to_date)
+            ->select(
+                'product_code',
+                DB::raw('COUNT(*) as entries'),
+                DB::raw('SUM(total_weight) as total_weight')
+            )
+            ->groupBy('product_code')
+            ->orderBy('product_code')
+            ->get()
+            ->map(function ($row) use ($items) {
+                $row->description = optional($items->firstWhere('item_code', $row->product_code))->description;
+                return $row;
+            });
+
+        return view('sausage.stuffing-history', compact('title', 'summary', 'from_date', 'to_date'));
+    }
+
+    public function exportStuffingWeightsHistory(Request $request)
+    {
+        $items = $this->stuffingItems();
+        $itemCodes = $items->pluck('item_code')->toArray();
+
+        $from_date = Carbon::parse($request->from_date);
+        $to_date = Carbon::parse($request->to_date);
+        $ext = '.xlsx';
+
+        $lines = DB::table('idt_transfers as a')
+            ->whereIn('a.product_code', $itemCodes)
+            ->whereDate('a.created_at', '>=', $from_date)
+            ->whereDate('a.created_at', '<=', $to_date)
+            ->select(
+                'a.product_code',
+                DB::raw('COUNT(*) as entries'),
+                DB::raw('SUM(a.total_weight) as total_weight')
+            )
+            ->groupBy('a.product_code')
+            ->orderBy('a.product_code')
+            ->get()
+            ->map(function ($row) use ($items) {
+                $row->description = optional($items->firstWhere('item_code', $row->product_code))->description;
+                return $row;
+            });
+
+        Session::put('session_export_data', $lines);
+
+        return Excel::download(new StuffingWeightsHistoryExport, "Stuffing Weights History from- {$request->from_date} to {$request->to_date}$ext");
     }
 
     public function exportGeneratedProductionOrders(Request $request)

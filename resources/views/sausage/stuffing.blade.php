@@ -330,7 +330,7 @@
 
 <div class="div">
     <button class="btn btn-primary " data-toggle="collapse" data-target="#chopping_receipts_entries"><i class="fa fa-plus"></i>
-        Entries
+        Today's Entries
     </button>
 </div>
 

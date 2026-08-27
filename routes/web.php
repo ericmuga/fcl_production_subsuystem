@@ -183,6 +183,8 @@ Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list'
 Route::get('/per-batch-report/{filter?}', [SausageController::class, 'perBatchReport'])->name('per_batch_sausage');
 Route::post('/sausage-get-batchno-axios', [SausageController::class, 'getBatchNoAxios']);
 Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
+Route::get('/sausage/stuffing-weights/history', [SausageController::class, 'stuffingWeightsHistory'])->name('export_stuffing_weights_history');
+Route::post('/sausage/stuffing-weights/history/export', [SausageController::class, 'exportStuffingWeightsHistory'])->name('stuffing_weights_history_export');
 Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveStuffingWeights'])->name('save_stuffing_weights');
 Route::post('/sausage/generated-production-orders/export', [SausageController::class, 'exportGeneratedProductionOrders'])->name('export_generated_production_orders');
 /*-------------End Admin------------------ */
