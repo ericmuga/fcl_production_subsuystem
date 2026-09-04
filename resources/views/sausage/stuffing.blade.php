@@ -352,6 +352,7 @@
                         <th>Product Description</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
+                        <th>Output Item?</th>
                         <th>Recorded by</th>
                         <th>Weigh Date</th>
                     </tr>
@@ -363,6 +364,7 @@
                         <th>Product Description</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
+                        <th>Output Item?</th>
                         <th>Recorded by</th>
                         <th>Weigh Date</th>
                     </tr>
@@ -389,6 +391,7 @@
                                 <span class="badge badge-danger">Yes</span>
                             </td>
                         @endif
+                        <td>{{ $data->output_item }}</td>
                         <td>{{ $data->username }}</td>
                         <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                     </tr>

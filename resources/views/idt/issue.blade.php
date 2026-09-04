@@ -43,6 +43,14 @@
                         @endforeach
                     </select>
                 </div>
+                @if(request()->get('to_location') == 2500 && request()->get('from_location') == 2055)
+                <div class="form-group">
+                    <label for="output_item">Stuffing for (Output)</label>
+                    <select class="custom-select select2" id="output_item" name="output_item" required>
+                        <option value="">Select output</option>
+                    </select>
+                </div>
+                @endif
                 <input type="hidden" id="transfer_from" name="transfer_from" value="{{ request()->get('from_location') }}">
                 @if (request()->get('to_location'))
                     <input type="hidden" id="transfer_to" name="location_code" value="{{ request()->get('to_location') }}">
@@ -213,6 +221,7 @@
                             <th>Total Weight</th>
                             <th>Description</th>
                             <th>Batch No</th>
+                            <th>Output Item</th>
                             <th>Status</th>
                             <th>Scale Status</th>
                             <th>Date</th>
@@ -232,6 +241,7 @@
                             <th>Total Weight</th>
                             <th>Description</th>
                             <th>Batch No</th>
+                            <th>Output Item</th>
                             <th>Status</th>
                             <th>Scale Status</th>
                             <th>Date</th>
@@ -260,6 +270,7 @@
                                 <td>{{ $data->total_weight }}</td>
                                 <td>{{ $data->description }}</td>
                                 <td>{{ $data->batch_no }}</td>
+                                <td>{{ $data->output_item }}</td>
                                 @if ($data->total_weight == 0 )
                                 <td><span class="badge badge-danger">cancelled</span></td>
                                 @elseif($data->received_by != null)
@@ -379,6 +390,22 @@
     const crates_fields = document.getElementById("crates_div")
     let selectedProduct;
     const products = @json($products);
+
+    const recipeOutputs = @json($recipe_outputs);
+
+    $('#product_code').on('change', function () {
+        const outputs = recipeOutputs[this.value] || [];
+        const $output = $('#output_item');
+
+        $output.empty().append(new Option('Select output', ''));
+
+        outputs.forEach(function (row) {
+            const label = [row.output_item, row.output_item_dec].filter(Boolean).join(' - ');
+            $output.append(new Option(label, row.output_item));
+        });
+
+        $output.val('').trigger('change.select2');
+    });
 
     function updateTare() {
         let tare

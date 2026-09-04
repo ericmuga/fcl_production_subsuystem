@@ -319,8 +319,10 @@ class IDTController extends Controller
                 ->where('section', $locations[$from_location])
                 ->get();
         }
-       
-        return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers'));
+
+        $recipe_outputs = app(SausageController::class)->packingRoutes();
+           
+        return view('idt.issue', compact('title', 'configs', 'products', 'chillers', 'transfer_lines', 'locations', 'helpers', 'recipe_outputs'));
     }
 
     public function saveIssueIdt(Request $request) {
@@ -346,6 +348,7 @@ class IDTController extends Controller
                 'transfer_type' => 0,
                 'transfer_from' => $request->transfer_from,
                 'description' => $request->description,
+                'output_item' => $request->output_item?? null,
                 'batch_no' => $request->batch_no,
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),

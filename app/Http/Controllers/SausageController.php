@@ -723,6 +723,11 @@ class SausageController extends Controller
         });
     }
 
+    public function packingRoutes()
+    {
+        return $this->cachedPackingRoutes();
+    }
+
     /**
      * The recipe table these routes and orders are built from - live RecipeData,
      * or the editable draft copy while the generation is being proved out. This
@@ -1273,7 +1278,7 @@ class SausageController extends Controller
                 'total_weight' => $request->net_weight,
                 'transfer_from' => '',
                 'batch_no' => $request->batch_no,
-                'description' => $request->output_item,
+                'output_item' => $request->output_item,
                 'manual_weight' => $manual_weight,
                 'user_id' => Auth::id(),
                 'receiver_total_weight' => $request->net_weight,
