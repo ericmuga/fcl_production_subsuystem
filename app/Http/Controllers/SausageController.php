@@ -635,16 +635,24 @@ class SausageController extends Controller
             ->whereDate('a.created_at', '>=', $from_date)
             ->whereDate('a.created_at', '<=', $to_date)
             ->select(
+                'a.id as Sno',
                 'a.product_code',
-                DB::raw('COUNT(*) as entries'),
-                DB::raw('SUM(a.total_weight) as total_weight')
+                'a.total_weight',
+                'a.batch_no',
+                'a.created_at'
             )
-            ->groupBy('a.product_code')
-            ->orderBy('a.product_code')
+            ->orderBy('a.created_at')
+            ->orderBy('a.id')
             ->get()
             ->map(function ($row) use ($items) {
-                $row->description = optional($items->firstWhere('item_code', $row->product_code))->description;
-                return $row;
+                return [
+                    $row->Sno,
+                    $row->product_code,
+                    optional($items->firstWhere('item_code', $row->product_code))->description,
+                    $row->total_weight,
+                    $row->batch_no,
+                    $row->created_at,
+                ];
             });
 
         Session::put('session_export_data', $lines);

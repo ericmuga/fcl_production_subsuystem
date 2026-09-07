@@ -16,7 +16,7 @@ class StuffingWeightsHistoryExport implements FromCollection, WithHeadings
     public function headings(): array
     {
         return [
-            'Product Code', 'Description', 'Entries', 'Total Weight'
+            'IDT No', 'Product Code', 'Description', 'Weight', 'Batch No', 'Created At'
         ];
     }
 }
