@@ -783,9 +783,7 @@ class ChoppingController extends Controller
             ->orderBy('a.chopping_id', 'asc')
             ->get();
 
-        $exports = Session::put('session_export_data', $lines);
-
-        return Excel::download(new ChoppingV2LinesExport, "Chopping Lines v2 from- {$request->from_date} to {$request->to_date} $ext");
+        return Excel::download(new ChoppingV2LinesExport($lines), "Chopping Lines v2 from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function getRecipeData(Request $request)
