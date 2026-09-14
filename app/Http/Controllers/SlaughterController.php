@@ -620,9 +620,7 @@ class SlaughterController extends Controller
             ->groupBy('slaughter_data.item_code', 'carcass_types.description')
             ->get();
 
-        $exports = Session::put('session_export_data', $slaughter_combined);
-
-        return Excel::download(new SlaughterCombinedExport, 'SlaughterSummaryReport-' . $request->date . '.xlsx');
+        return Excel::download(new SlaughterCombinedExport($slaughter_combined), 'SlaughterSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function exportSlaughterLinesReport(Request $request)
@@ -639,9 +637,7 @@ class SlaughterController extends Controller
             ->whereDate('slaughter_data.created_at', '<=', $to_date)
             ->get();
 
-        $exports = Session::put('session_export_data', $slaughter_lines);
-
-        return Excel::download(new SlaughterLinesExport, 'SlaughterLinesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new SlaughterLinesExport($slaughter_lines), 'SlaughterLinesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function exportSlaughterForNav(Request $request, Helpers $helpers)
@@ -659,9 +655,7 @@ class SlaughterController extends Controller
             $item['time'] = $helpers->formatToHoursMinsOnly($item['time']);
         }
 
-        $exports = Session::put('session_export_data', $slaughter_for_Nav);
-
-        return Excel::download(new SlaughterForNavExport, 'SlaughterForNavImport-' . $request->date . '.csv');
+        return Excel::download(new SlaughterForNavExport($slaughter_for_Nav), 'SlaughterForNavImport-' . $request->date . '.csv');
     }
 
     public function scaleSettings(Helpers $helpers, $section = null, $layout = null)
@@ -842,9 +836,7 @@ class SlaughterController extends Controller
         ->orderBy('transfer_date')
         ->get();
 
-        $exports = Session::put('session_export_data', $transferSummary);
-
-        return Excel::download(new LairageTransferSummaryExport, 'LairageTransferSummaryReport-' . $request->date . '.xlsx');
+        return Excel::download(new LairageTransferSummaryExport($transferSummary), 'LairageTransferSummaryReport-' . $request->date . '.xlsx');
     }
 
     public function saveLairageTransfer(Request $request, Helpers $helpers)

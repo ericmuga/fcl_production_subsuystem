@@ -480,9 +480,7 @@ class IDTController extends Controller
 
         $data = $q->get();
 
-        $exports = Session::put('session_export_data', $data);
-
-        return Excel::download(new IDTSummaryExport, $title . '.xlsx');
+        return Excel::download(new IDTSummaryExport($data), $title . '.xlsx');
     }
 
     public function idtHistory(Request $request, $filter  = null, $filter2 = null)
@@ -655,10 +653,8 @@ class IDTController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        Session::put('session_export_data', $entries);
-
         return Excel::download(
-            new DespatchIdtHistoryExport,
+            new DespatchIdtHistoryExport($entries),
             "IdtHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext"
         );
     }
@@ -686,10 +682,8 @@ class IDTController extends Controller
             ->groupBy('idt_transfers.product_code', 'items.description')
             ->get();
 
-        Session::put('session_export_data', $entries);
-
         return Excel::download(
-            new IDTSummaryExport,
+            new IDTSummaryExport($entries),
             "IdtSummaryHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext"
         );
     }

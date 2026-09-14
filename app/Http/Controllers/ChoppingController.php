@@ -191,9 +191,7 @@ class ChoppingController extends Controller
             ->orderBy('batches.batch_no', 'ASC')
             ->get();
 
-        $exports = Session::put('session_export_data', $lines);
-
-        return Excel::download(new PostedChoppingLinesExport, "Posted Chopping Lines from- {$request->from_date} to {$request->to_date} $ext");
+        return Excel::download(new PostedChoppingLinesExport($lines), "Posted Chopping Lines from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function postedLinesReportSumm(Helpers $helpers, $filter = null)

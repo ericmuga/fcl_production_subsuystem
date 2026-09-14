@@ -145,9 +145,7 @@ class SausageController extends Controller
             ->orderBy('total_count', 'DESC')
             ->get();
 
-        $exports = Session::put('session_export_data', $entries);
-
-        return Excel::download(new SausageEntriesExport, 'SausageScannersEntriesHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new SausageEntriesExport($entries), 'SausageScannersEntriesHistoryFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function itemsList()
@@ -655,9 +653,7 @@ class SausageController extends Controller
                 ];
             });
 
-        Session::put('session_export_data', $lines);
-
-        return Excel::download(new StuffingWeightsHistoryExport, "Stuffing Weights History from- {$request->from_date} to {$request->to_date}$ext");
+        return Excel::download(new StuffingWeightsHistoryExport($lines), "Stuffing Weights History from- {$request->from_date} to {$request->to_date}$ext");
     }
 
     public function exportGeneratedProductionOrders(Request $request)
@@ -694,9 +690,7 @@ class SausageController extends Controller
             ->orderBy('generated_production_orders.line_no', 'ASC')
             ->get();
 
-        $exports = Session::put('session_export_data', $entries);
-
-        return Excel::download(new GeneratedProductionOrdersExport, "GeneratedProductionOrders from- {$request->from_date} to {$request->to_date} $ext");
+        return Excel::download(new GeneratedProductionOrdersExport($entries), "GeneratedProductionOrders from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     private function stuffingItems()

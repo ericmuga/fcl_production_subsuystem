@@ -1104,9 +1104,7 @@ class ButcheryController extends Controller
             ->groupBy('beheading_data.item_code', 'products.description')
             ->get();
 
-        $exports = Session::put('session_export_data', $beheading_combined);
-
-        return Excel::download(new BeheadedCombinedExport, 'BeheadingPigSummaryReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new BeheadedCombinedExport($beheading_combined), 'BeheadingPigSummaryReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function getBrakingReport(Helpers $helpers)
@@ -1136,9 +1134,7 @@ class ButcheryController extends Controller
             ->groupBy('butchery_data.item_code', 'products.description')
             ->get();
 
-        $exports = Session::put('session_export_data', $butchery_combined);
-
-        return Excel::download(new BreakingCombinedExport, 'BreakingPigSummaryReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new BreakingCombinedExport($butchery_combined), 'BreakingPigSummaryReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function getDeboningReport(Helpers $helpers)
@@ -1172,9 +1168,7 @@ class ButcheryController extends Controller
             ->groupBy('deboned_data.item_code', 'products.description', 'product_types.description', 'processes.process')
             ->get();
 
-        $exports = Session::put('session_export_data', $deboned_combined);
-
-        return Excel::download(new DebonedCombinedExport, 'DebonedPigSummaryReport-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new DebonedCombinedExport($deboned_combined), 'DebonedPigSummaryReport-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function getSalesReport(Helpers $helpers)
@@ -1362,9 +1356,7 @@ class ButcheryController extends Controller
             ->orderBy('beheading_data.created_at', 'DESC')
             ->get();
 
-        $exports = Session::put('session_export_data', $beheading_data);
-
-        return Excel::download(new BeheadedLinesExport, 'BeheadingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new BeheadedLinesExport($beheading_data), 'BeheadingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function linesBreakingReport(Request $request)
@@ -1381,9 +1373,7 @@ class ButcheryController extends Controller
             ->orderBy('breaking_data.created_at', 'DESC')
             ->get();
 
-        $exports = Session::put('session_export_data', $breaking_data);
-
-        return Excel::download(new BreakingLinesExport, 'BreakingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new BreakingLinesExport($breaking_data), 'BreakingPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     public function linesDeboningReport(Request $request)
@@ -1400,9 +1390,7 @@ class ButcheryController extends Controller
             ->orderBy('deboned_data.created_at', 'DESC')
             ->get();
 
-        $exports = Session::put('session_export_data', $deboned_data);
-
-        return Excel::download(new DebonedLinesExport, 'DebonedPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
+        return Excel::download(new DebonedLinesExport($deboned_data), 'DebonedPigEntriesReportFor-' . $request->from_date . ' to ' . $request->to_date . '.xlsx');
     }
 
     private function getDeboningScaleConfigs()

@@ -277,9 +277,7 @@ class DespatchController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        $exports = Session::put('session_export_data', $entries);
-
-        return Excel::download(new DespatchIdtHistoryExport, "IdtHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
+        return Excel::download(new DespatchIdtHistoryExport($entries), "IdtHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function exportIdtSummary(Request $request)
@@ -314,9 +312,7 @@ class DespatchController extends Controller
 
         // dd($entries);
 
-        $exports = Session::put('session_export_data', $entries);
-
-        return Excel::download(new DespatchIDTSummaryReport, "IdtSummaryHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
+        return Excel::download(new DespatchIDTSummaryReport($entries), "IdtSummaryHistoryFor {$request->transfer_from} from- {$request->from_date} to {$request->to_date} $ext");
     }
 
     public function idtVarianceReport($filter = null)

@@ -384,8 +384,6 @@ class FreshcutsBulkController extends Controller
             ->orderBy('idt_transfers.created_at', 'DESC')
             ->get();
 
-        $exports = Session::put('session_export_data', $entries);
-
-        return Excel::download(new FreshIdtHistoryExport, "Fresh IdtHistory to {$request->transfer_to} from- {$request->from_date} to {$request->to_date} $ext");
+        return Excel::download(new FreshIdtHistoryExport($entries), "Fresh IdtHistory to {$request->transfer_to} from- {$request->from_date} to {$request->to_date} $ext");
     }
 }
