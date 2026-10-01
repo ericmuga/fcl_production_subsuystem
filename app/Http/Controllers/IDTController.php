@@ -514,7 +514,8 @@ class IDTController extends Controller
         // Base query
         // -------------------------
         $query = DB::table('idt_transfers')
-            ->join('items', 'idt_transfers.product_code', '=', 'items.code')
+            // leftJoin (not join) so rows with no matching item aren't silently dropped from the report
+            ->leftJoin('items', 'idt_transfers.product_code', '=', 'items.code')
             ->leftJoin('users', 'idt_transfers.received_by', '=', 'users.id')
             ->leftJoin('users as issuers', 'idt_transfers.user_id', '=', 'issuers.id')
             ->select(
