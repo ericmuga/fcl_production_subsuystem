@@ -45,4 +45,12 @@ return [
 
     'production_data_decimals' => 2,
 
+    /*
+    | Allowed difference in kgs when a sausage IDT is tied to a stuffing batch:
+    | the IDT weights for that batch may not exceed the stuffing net weight by
+    | more than this.
+    */
+
+    'stuffing_batch_tolerance_kgs' => (float) env('STUFFING_BATCH_TOLERANCE_KGS', 0.5),
+
 ];

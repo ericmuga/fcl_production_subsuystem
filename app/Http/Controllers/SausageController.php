@@ -212,7 +212,8 @@ class SausageController extends Controller
 
     public function getIdt(Helpers $helpers, $filter = null)
     {
-        // dd($filter);
+        // dd('dgfhg');
+
         if($filter == 'highcare') {
             return redirect()->route('list_issued_idt', ['from_location' => '2055', 'to_location' => '2500']);
         } 
@@ -323,9 +324,21 @@ class SausageController extends Controller
             return back();
         }
 
+        $stuffing_batch_no = trim((string) $request->stuffing_batch_no);
+
+        if ($stuffing_batch_no !== '') {
+            $error = $this->validateStuffingBatch($stuffing_batch_no, (float) $request->weight);
+
+            if ($error) {
+                Toastr::error($error, 'Error!');
+                return back()->withInput();
+            }
+        }
+
         try {
             // try save
             DB::table('idt_transfers')->insert([
+                'filter1' => $stuffing_batch_no !== '' ? $stuffing_batch_no : 0,
                 'product_code' => $request->product,
                 'location_code' => $this->getLocationCode($request->for_export, $request->location_code),
                 'chiller_code' => $request->chiller_code,
@@ -352,6 +365,58 @@ class SausageController extends Controller
         }
     }
 
+    /**
+     * Input = net stuffing weight recorded for the batch; output = sausage IDT
+     * weights already saved against it (held in idt_transfers.filter1).
+     */
+    private function stuffingBatchSummary(string $batchNo): array
+    {
+        $itemCodes = $this->stuffingItems()->pluck('item_code')->toArray();
+
+        $input = (float) DB::table('idt_transfers')
+            ->whereIn('product_code', $itemCodes)
+            ->where('batch_no', $batchNo)
+            ->sum('total_weight');
+
+        $output = (float) DB::table('idt_transfers')
+            ->where('filter1', $batchNo)
+            ->sum('total_weight');
+
+        return [
+            'input' => round($input, 2),
+            'output' => round($output, 2),
+            'tolerance' => (float) config('production_orders.stuffing_batch_tolerance_kgs', 0.5),
+        ];
+    }
+
+    public function stuffingBatchSummaryAxios(Request $request)
+    {
+        return response()->json($this->stuffingBatchSummary(trim((string) $request->batch_no)));
+    }
+
+    /**
+     * Returns an error message, or null when the saved outputs plus this weight
+     * stay within the stuffing input plus the configured tolerance.
+     */
+    private function validateStuffingBatch(string $batchNo, float $weight): ?string
+    {
+        $summary = $this->stuffingBatchSummary($batchNo);
+
+        if ($summary['input'] <= 0) {
+            return "No stuffing weights found for stuffing batch {$batchNo}.";
+        }
+
+        $output = $summary['output'] + $weight;
+
+        if ($output > $summary['input'] + $summary['tolerance']) {
+            return sprintf(
+                'Stuffing batch %s: output %.2f kgs exceeds input %.2f kgs by more than the allowed %.2f kgs.',
+                $batchNo, $output, $summary['input'], $summary['tolerance']
+            );
+        }
+
+        return null;
+    }
     public function editIdtIssue(Request $request, Helpers $helpers)
     {
         try {

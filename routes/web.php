@@ -182,6 +182,7 @@ Route::get('/sausage/idt-report/{filter?}', [SausageController::class, 'idtRepor
 Route::get('/items', [SausageController::class, 'itemsList'])->name('items_list');
 Route::get('/per-batch-report/{filter?}', [SausageController::class, 'perBatchReport'])->name('per_batch_sausage');
 Route::post('/sausage-get-batchno-axios', [SausageController::class, 'getBatchNoAxios']);
+Route::post('/sausage-stuffing-batch-summary-axios', [SausageController::class, 'stuffingBatchSummaryAxios']);
 Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
 Route::get('/sausage/stuffing-weights/history', [SausageController::class, 'stuffingWeightsHistory'])->name('export_stuffing_weights_history');
 Route::post('/sausage/stuffing-weights/history/export', [SausageController::class, 'exportStuffingWeightsHistory'])->name('stuffing_weights_history_export');

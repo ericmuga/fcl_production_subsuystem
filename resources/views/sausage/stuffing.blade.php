@@ -350,6 +350,7 @@
                         <th>#</th>
                         <th>Product Code</th>
                         <th>Product Description</th>
+                        <th>Batch No</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
                         <th>Output Item?</th>
@@ -362,6 +363,7 @@
                         <th>#</th>
                         <th>Product Code</th>
                         <th>Product Description</th>
+                        <th>Batch No</th>
                         <th>Net Weight (kgs)</th>
                         <th>Manual weights?</th>
                         <th>Output Item?</th>
@@ -381,6 +383,7 @@
                             @endphp
                             {{ $item->description ?? 'No description available' }}
                         </td>
+                        <td>{{ $data->batch_no }}</td>
                         <td>{{ number_format($data->total_weight, 2) }}</td>
                         @if($data->manual_weight == 0)
                             <td>

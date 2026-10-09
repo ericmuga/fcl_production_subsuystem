@@ -168,6 +168,27 @@
                             </div>
                         </div>
                     </div>
+                    <div class="mt-4 row">
+                        <label for="stuffing_batch_no" class="col-sm-4 col-form-label">Stuffing BatchNo </label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" value="{{ old('stuffing_batch_no') }}"
+                                id="stuffing_batch_no" name="stuffing_batch_no" placeholder="optional">
+                        </div>
+                    </div>
+                    <div id="stuffing_batch_panel" class="mt-3 p-2 border rounded text-center" style="display:none">
+                        <div id="stuffing_batch_spinner" style="display:none">
+                            <span class="spinner-border spinner-border-sm text-primary"></span>
+                            Validating stuffing batch...
+                        </div>
+                        <div id="stuffing_batch_figures" style="display:none">
+                            <div class="row">
+                                <div class="col-4"><small>Stuffing input (kgs)</small><br><strong id="sb_input" class="badge badge-info" style="font-size:1rem"></strong></div>
+                                <div class="col-4"><small>Saved + this IDT (kgs)</small><br><strong id="sb_output" class="badge badge-warning" style="font-size:1rem"></strong></div>
+                                <div class="col-4"><small>Remaining (kgs)</small><br><strong id="sb_remaining" class="badge" style="font-size:1rem"></strong></div>
+                            </div>
+                            <div id="sb_message" class="mt-2 font-weight-bold"></div>
+                        </div>
+                    </div>
                     <div class="div" style="padding-top: 5%">
                         <button type="submit" class="btn btn-primary btn-lg btn-prevent-multiple-submits"
                             onclick="return validateOnSubmit() && validateProductionDate()"><i
@@ -217,6 +238,7 @@
                                 <th>Total Weight</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
+                                <th>Stuffing Batch No</th>
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -235,6 +257,7 @@
                                 <th>Total Weight</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
+                                <th>Stuffing Batch No</th>
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -262,6 +285,7 @@
                                     <td>{{ $data->total_weight }}</td>
                                     <td>{{ $data->description }}</td>
                                     <td>{{ $data->batch_no }}</td>
+                                    <td>{{ $data->filter1 }}</td>
                                     <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 </tr>
                             @endforeach
@@ -517,6 +541,11 @@
 
         let batchField = document.getElementById('batch');
 
+        if (!stuffingBatchOk()) {
+            alert('Please wait for the stuffing batch validation to pass before saving.');
+            return false;
+        }
+
         if (crates_validity == 0) {
             status = false
             alert("please ensure you have valid crates before submitting")
@@ -744,6 +773,7 @@
             setCratesValidityMessage('succ1', 'err1', '', 'invalid incomplete crate pieces')
             $('#pieces').val(0)
             $('#weight').val(0)
+            refreshStuffingStatus()
 
         } else {
             if (diff < 0 || diff > 1) {
@@ -751,6 +781,7 @@
                 setCratesValidityMessage('succ1', 'err1', '', 'invalid crates')
                 $('#pieces').val(0)
                 $('#weight').val(0)
+                refreshStuffingStatus()
 
             } else {
                 setCratesValidity(1)
@@ -760,6 +791,111 @@
         }
 
     }
+
+    // ---- Stuffing batch live validation ----
+    let stuffingBatchData = null;
+    let stuffingBatchBusy = false;
+    let stuffingBatchTimer = null;
+    let stuffingBatchRequest = 0;
+
+    const stuffingBatchOk = () => {
+        if (stuffingBatchBusy) return false;
+        if ($('#stuffing_batch_no').val().trim() === '') return true;
+        return !!stuffingBatchData && stuffingBatchData.valid;
+    }
+
+    const renderStuffingStatus = () => {
+        const batch = $('#stuffing_batch_no').val().trim();
+        const $panel = $('#stuffing_batch_panel');
+        const $save = $('#form-save-batch button[type=submit]');
+
+        if (batch === '') {
+            $panel.hide();
+            stuffingBatchData = null;
+            $save.prop('disabled', false);
+            return;
+        }
+
+        $panel.show();
+
+        if (stuffingBatchBusy || !stuffingBatchData) {
+            $('#stuffing_batch_figures').hide();
+            $('#stuffing_batch_spinner').show();
+            $save.prop('disabled', true);
+            return;
+        }
+
+        const d = stuffingBatchData;
+        const incoming = parseFloat($('#weight').val()) || 0;
+        const output = d.output + incoming;
+        const remaining = d.input - output;
+
+        let valid = true, msg = '';
+        if (d.input <= 0) {
+            valid = false;
+            msg = 'No stuffing weights found for this batch.';
+        } else if (output > d.input + d.tolerance) {
+            valid = false;
+            msg = 'Output exceeds input by more than the allowed ' + d.tolerance.toFixed(2) + ' kgs.';
+        } else {
+            msg = 'Within allowed limit (' + d.tolerance.toFixed(2) + ' kgs).';
+        }
+        d.valid = valid;
+
+        $('#sb_input').text(d.input.toFixed(2));
+        $('#sb_output').text(output.toFixed(2));
+        $('#sb_remaining').text(remaining.toFixed(2)).removeClass('badge-success badge-danger').addClass(valid ? 'badge-success' : 'badge-danger');
+        $('#sb_message').text(msg).removeClass('text-success text-danger').addClass(valid ? 'text-success' : 'text-danger');
+        $panel.css('border-color', valid ? '#28a745' : '#dc3545');
+
+        $('#stuffing_batch_spinner').hide();
+        $('#stuffing_batch_figures').show();
+        $save.prop('disabled', !valid);
+    }
+
+    const fetchStuffingBatch = () => {
+        const batch = $('#stuffing_batch_no').val().trim();
+        stuffingBatchData = null;
+
+        if (batch === '') {
+            stuffingBatchBusy = false;
+            renderStuffingStatus();
+            return;
+        }
+
+        const requestId = ++stuffingBatchRequest;
+        stuffingBatchBusy = true;
+        renderStuffingStatus();
+
+        axios.post('/sausage-stuffing-batch-summary-axios', { batch_no: batch })
+            .then((res) => {
+                if (requestId !== stuffingBatchRequest) return;
+                stuffingBatchData = res.data;
+                stuffingBatchBusy = false;
+                renderStuffingStatus();
+            })
+            .catch((error) => {
+                if (requestId !== stuffingBatchRequest) return;
+                console.log(error);
+                stuffingBatchBusy = false;
+                stuffingBatchData = { input: 0, output: 0, tolerance: 0, valid: false };
+                renderStuffingStatus();
+                $('#sb_message').text('Could not validate stuffing batch, try again.');
+            });
+    }
+
+    const refreshStuffingStatus = () => {
+        if (!stuffingBatchBusy && stuffingBatchData) renderStuffingStatus();
+    }
+
+    $(document).on('input', '#stuffing_batch_no', function () {
+        // Lock saving straight away; the lookup runs once typing pauses.
+        stuffingBatchData = null;
+        stuffingBatchBusy = $(this).val().trim() !== '';
+        renderStuffingStatus();
+        clearTimeout(stuffingBatchTimer);
+        stuffingBatchTimer = setTimeout(fetchStuffingBatch, 500);
+    });
 
     const calculatePiecesAndWeight = () => {
         let full_crates = $('#full_crates').val()
@@ -772,6 +908,7 @@
 
         $('#pieces').val(pieces)
         $('#weight').val(weight.toFixed(2))
+        refreshStuffingStatus()
     }
 
     const calculateWeightEdit = () => {
