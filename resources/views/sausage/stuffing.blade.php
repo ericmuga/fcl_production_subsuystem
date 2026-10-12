@@ -39,7 +39,14 @@
 
                     <div class="form-group" >
                         <label for="batch_no">Batch No</label>
-                        <input type="text" class="form-control" id="batch_no" name="batch_no" value="" required>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="batch_prefix" name="batch_prefix" value="" required readonly>
+                            </div>
+                            <div class="col-sm-6">
+                                <input type="number" class="form-control" id="batch_no" name="batch_no" value="" required>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row">
@@ -463,6 +470,20 @@
         }
     });
 
+    const loadBatchPrefix = () => {
+        const day = String(new Date().getDate()).padStart(2, '0');
+
+        axios.post('/sausage-get-batchno-axios', { production_date: day })
+            .then((response) => {
+                $('#batch_prefix').val(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    };
+
+    loadBatchPrefix();
+
     const netWeightInput = document.getElementById('net_weight');
     const readingInput = document.getElementById('reading');
     const tareInput = document.getElementById('tare_weight');
@@ -631,7 +652,7 @@
                 body: JSON.stringify({
                     product_code: formData.get('product_code'),
                     output_item: formData.get('output_item'),
-                    batch_no: formData.get('batch_no'),
+                    batch_no: (formData.get('batch_prefix') || '') + (formData.get('batch_no') || ''),
                     net_weight: formData.get('net_weight'),
                     manual_weight: formData.get('manual_weight'),
                 })
