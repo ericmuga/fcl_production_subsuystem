@@ -168,10 +168,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="mt-4 row">
+                    {{-- Hidden for now, pending discussion --}}
+                    <div class="mt-4 row" style="display:none">
                         <label for="stuffing_batch_no" class="col-sm-4 col-form-label">Stuffing BatchNo </label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" value="{{ old('stuffing_batch_no') }}"
+                            <input type="text" class="form-control" value=""
                                 id="stuffing_batch_no" name="stuffing_batch_no" placeholder="optional">
                         </div>
                     </div>
@@ -238,7 +239,7 @@
                                 <th>Total Weight</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
-                                <th>Stuffing Batch No</th>
+                                {{-- <th>Stuffing Batch No</th> --}}
                                 <th>Date</th>
                             </tr>
                         </thead>
@@ -257,7 +258,7 @@
                                 <th>Total Weight</th>
                                 <th>Export No</th>
                                 <th>Batch No</th>
-                                <th>Stuffing Batch No</th>
+                                {{-- <th>Stuffing Batch No</th> --}}
                                 <th>Date</th>
                             </tr>
                         </tfoot>
@@ -285,7 +286,7 @@
                                     <td>{{ $data->total_weight }}</td>
                                     <td>{{ $data->description }}</td>
                                     <td>{{ $data->batch_no }}</td>
-                                    <td>{{ $data->filter1 }}</td>
+                                    {{-- <td>{{ $data->filter1 }}</td> --}}
                                     <td>{{ $helpers->amPmDate($data->created_at) }}</td>
                                 </tr>
                             @endforeach
@@ -888,14 +889,15 @@
         if (!stuffingBatchBusy && stuffingBatchData) renderStuffingStatus();
     }
 
-    $(document).on('input', '#stuffing_batch_no', function () {
-        // Lock saving straight away; the lookup runs once typing pauses.
-        stuffingBatchData = null;
-        stuffingBatchBusy = $(this).val().trim() !== '';
-        renderStuffingStatus();
-        clearTimeout(stuffingBatchTimer);
-        stuffingBatchTimer = setTimeout(fetchStuffingBatch, 500);
-    });
+    // Disabled for now, pending discussion.
+    // $(document).on('input', '#stuffing_batch_no', function () {
+    //     // Lock saving straight away; the lookup runs once typing pauses.
+    //     stuffingBatchData = null;
+    //     stuffingBatchBusy = $(this).val().trim() !== '';
+    //     renderStuffingStatus();
+    //     clearTimeout(stuffingBatchTimer);
+    //     stuffingBatchTimer = setTimeout(fetchStuffingBatch, 500);
+    // });
 
     const calculatePiecesAndWeight = () => {
         let full_crates = $('#full_crates').val()
