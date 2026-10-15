@@ -336,24 +336,65 @@ class SausageController extends Controller
         }
 
         try {
-            // try save
-            DB::table('idt_transfers')->insert([
-                'filter1' => $stuffing_batch_no !== '' ? $stuffing_batch_no : 0,
-                'product_code' => $request->product,
-                'location_code' => $this->getLocationCode($request->for_export, $request->location_code),
-                'chiller_code' => $request->chiller_code,
-                'total_crates' => $request->total_crates,
-                'full_crates' => $request->full_crates,
-                'incomplete_crate_pieces' => $request->incomplete_pieces,
-                'total_pieces' => $request->pieces,
-                'total_weight' => $request->weight,
-                'transfer_type' => $request->for_export,
-                'transfer_from' => '2055',
-                'description' => $request->desc,
-                'order_no' => $request->order_no,
-                'batch_no' => $request->batch . $request->batch_no,
-                'user_id' => Auth::id(),
-            ]);
+            DB::transaction(function () use ($request, $stuffing_batch_no) {
+                $batchNo = $request->batch . $request->batch_no;
+                $transferId = DB::table('idt_transfers')->insertGetId([
+                    'filter1' => $stuffing_batch_no !== '' ? $stuffing_batch_no : 0,
+                    'product_code' => $request->product,
+                    'location_code' => $this->getLocationCode($request->for_export, $request->location_code),
+                    'chiller_code' => $request->chiller_code,
+                    'total_crates' => $request->total_crates,
+                    'full_crates' => $request->full_crates,
+                    'incomplete_crate_pieces' => $request->incomplete_pieces,
+                    'total_pieces' => $request->pieces,
+                    'total_weight' => $request->weight,
+                    'transfer_type' => $request->for_export,
+                    'transfer_from' => '2055',
+                    'description' => $request->desc,
+                    'order_no' => $request->order_no,
+                    'batch_no' => $batchNo,
+                    'user_id' => Auth::id(),
+                ]);
+
+                $packingLine = DB::table('generated_production_orders')
+                    ->where('batch_no', $batchNo)
+                    ->where('line_no', 1000)
+                    ->where('line_type', 'output')
+                    ->where('process', 'Packing')
+                    ->where('published', 0)
+                    ->where('batch_linked', false)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->first(['id']);
+
+                if (!$packingLine) {
+                    Log::info('No eligible Packing output line found for IDT batch linking.', [
+                        'idt_transfer_id' => $transferId,
+                        'batch_no' => $batchNo,
+                    ]);
+
+                    return;
+                }
+
+                $updated = DB::table('generated_production_orders')
+                    ->where('id', $packingLine->id)
+                    ->where('published', 0)
+                    ->where('batch_linked', false)
+                    ->update([
+                        'quantity' => $request->weight,
+                        'batch_linked' => true,
+                        'updated_at' => now(),
+                    ]);
+
+                if ($updated === 1) {
+                    DB::table('idt_transfers')
+                        ->where('id', $transferId)
+                        ->update([
+                            'batch_linked' => true,
+                            'updated_at' => now(),
+                        ]);
+                }
+            });
 
             Toastr::success('IDT Transfer recorded successfully', 'Success');
             return redirect()
