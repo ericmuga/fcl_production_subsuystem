@@ -37,6 +37,18 @@
                         </select>
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label for="prod_date">Production Date</label>
+                        <div class="input-group date" id="reservationdate" data-target-input="nearest">
+                            <input type="text" class="form-control datetimepicker-input" id="prod_date"
+                                name="prod_date" required data-target="#reservationdate" />
+                            <div class="input-group-append" data-target="#reservationdate"
+                                data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="form-group" >
                         <label for="batch_no">Batch No</label>
                         <div class="row">
@@ -105,7 +117,8 @@
                         </div>
                     </div>
 
-                    <button type="submit" id="btn_save" class="btn btn-primary btn-lg btn-prevent-multiple-submits mt-3">
+                    <button type="submit" id="btn_save" class="btn btn-primary btn-lg btn-prevent-multiple-submits mt-3"
+                        onclick="return validateProductionDate()">
                         <i class="fa fa-paper-plane" aria-hidden="true"></i>
                         Save
                     </button>
@@ -470,9 +483,7 @@
         }
     });
 
-    const loadBatchPrefix = () => {
-        const day = String(new Date().getDate()).padStart(2, '0');
-
+    const loadBatchPrefix = (day) => {
         axios.post('/sausage-get-batchno-axios', { production_date: day })
             .then((response) => {
                 $('#batch_prefix').val(response.data);
@@ -482,7 +493,82 @@
             });
     };
 
-    loadBatchPrefix();
+    const padZero = (num) => {
+        return num < 10 ? `0${num}` : num;
+    }
+
+    const setProductionDate = () => {
+        const dateToday = new Date();
+
+        // Format the date as "DD/MM/YYYY"
+        $('#prod_date').val(
+            `${padZero(dateToday.getDate())}/${padZero(dateToday.getMonth() + 1)}/${dateToday.getFullYear()}`
+        );
+        loadBatchPrefix(padZero(dateToday.getDate()));
+    }
+
+    const validateProductionDate = () => {
+        let status = true;
+
+        let selected_date = $('#prod_date').val();
+        if (selected_date.trim() === '') {
+            alert("Production date is required.");
+            return false;
+        }
+
+        const selectedDateMoment = formatInputDate(selected_date);
+        const currentDateMoment = moment().startOf('day'); // Set current time to 00:00:00
+
+        if (isWithinFirst4Hours()) {
+            const selectedUnixTimestamp = selectedDateMoment.valueOf();
+            const currentUnixTimestamp = currentDateMoment.valueOf();
+
+            // Check if prod_date is the same as the current date.
+            if (selectedUnixTimestamp === currentUnixTimestamp) {
+                const confirmation = window.confirm(
+                    "It's within the first 5 hours of the day! Seems you have not changed production date. Do you want to proceed with the date?"
+                );
+                if (!confirmation) {
+                    status = false;
+                }
+            } else if (selectedUnixTimestamp > currentUnixTimestamp) {
+                status = false;
+                alert("Selected date is not within production date range!");
+            }
+        }
+
+        return status;
+    }
+
+    const formatInputDate = (dateString) => {
+        const parts = dateString.split("/");
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const year = parseInt(parts[2], 10);
+
+        return moment({ year, month: month - 1, day }).startOf('day'); // Set time to 00:00:00
+    }
+
+    const isWithinFirst4Hours = () => {
+        const now = new Date();
+        return now.getHours() < 5;
+    }
+
+    //Date picker
+    $('#reservationdate').datetimepicker({
+        format : "DD/MM/YYYY",
+        maxDate: new Date(),
+    });
+
+    // Batch prefix follows the chosen production day
+    $('#reservationdate').on('change.datetimepicker', function () {
+        const selected = $('#prod_date').val();
+        if (selected.trim() !== '') {
+            loadBatchPrefix(selected.split('/')[0]);
+        }
+    });
+
+    setProductionDate();
 
     const netWeightInput = document.getElementById('net_weight');
     const readingInput = document.getElementById('reading');
