@@ -7,10 +7,18 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class ApiController extends Controller
 {
+    // defaults for IDTs posted by the sales portal on QA of returns
+    private const RETURNS_IDT_LOCATIONS = ['1570', '2595', '2500', '2055', '3035', '4300', '4450', '3535', '3600', '4400'];
+    private const RETURNS_IDT_TRANSFER_FROM = '3535';
+    private const RETURNS_IDT_CHILLER_CODE = 'V';
+    private const RETURNS_IDT_USER_ID = 1;
+
     private function parseDates($from_date, $to_date)
     {
         return [
@@ -291,5 +299,163 @@ class ApiController extends Controller
         } catch (\Exception $e) {
             return response()->json(['error' => 'Failed to push slaughter lines', 'details' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Create an IDT from a returned product QA'd on the sales portal.
+     * PC items: quantity is pieces, weight is calculated. KG items: quantity is the net weight keyed in (no tare).
+     */
+    public function issueReturnIdt(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'external_ref' => 'required|string|max:64',
+            'product_code' => 'required|string|max:50',
+            'location_code' => ['required', 'string', Rule::in(self::RETURNS_IDT_LOCATIONS)],
+            'quantity' => 'required|numeric|gt:0',
+            'batch_no' => 'required|string|max:50',
+            'unit_of_measure' => 'nullable|string|max:10',
+            'description' => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $externalRef = trim($request->external_ref);
+
+        // already posted (e.g. a retry after a timeout) - return the existing transfer
+        $existing = DB::table('idt_transfers')->where('external_ref', $externalRef)->first();
+        if ($existing) {
+            return response()->json([
+                'success' => true,
+                'duplicate' => true,
+                'transfer_id' => $existing->id,
+                'total_pieces' => $existing->total_pieces,
+                'total_weight' => $existing->total_weight,
+            ]);
+        }
+
+        $productCode = trim($request->product_code);
+        $product = $this->findReturnIdtProduct($productCode);
+
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => "Product {$productCode} not found in Calibra"], 422);
+        }
+
+        $quantity = (float) $request->quantity;
+        $unitMeasure = strtoupper(trim((string) ($product->unit_of_measure ?: 'KG')));
+
+        // the sender decides whether quantity is pieces or kgs from its own unit of measure - they must agree
+        if ($request->filled('unit_of_measure')) {
+            $senderIsKg = strtoupper(trim($request->unit_of_measure)) === 'KG';
+            if ($senderIsKg !== ($unitMeasure === 'KG')) {
+                return response()->json(['success' => false, 'message' => "Unit of measure mismatch for {$productCode}: Calibra has {$unitMeasure}, sent {$request->unit_of_measure}"], 422);
+            }
+        }
+
+        if ($unitMeasure === 'KG') {
+            $pieces = 0;
+            $weight = round($quantity, 2);
+        } else {
+            $weightPerUnit = (float) $product->qty_per_unit_of_measure;
+            if ($weightPerUnit <= 0) {
+                return response()->json(['success' => false, 'message' => "Product {$productCode} has no weight per unit set in Calibra"], 422);
+            }
+            $pieces = (int) round($quantity);
+            $weight = round($quantity * $weightPerUnit, 2);
+        }
+
+        $locationCode = $request->location_code;
+
+        $data = [
+            'product_code' => $productCode,
+            'location_code' => $locationCode,
+            'chiller_code' => self::RETURNS_IDT_CHILLER_CODE,
+            'total_pieces' => $pieces,
+            'total_weight' => $weight,
+            'transfer_type' => 0,
+            'transfer_from' => self::RETURNS_IDT_TRANSFER_FROM,
+            'description' => $request->description,
+            'batch_no' => trim($request->batch_no),
+            'user_id' => self::RETURNS_IDT_USER_ID,
+            'requires_approval' => (substr($productCode, 0, 1) === 'J') && ($locationCode !== '4450'),
+            // QA already decided on the portal, no further approval on calibra
+            'approved' => 1,
+            'approved_by' => self::RETURNS_IDT_USER_ID,
+            'external_ref' => $externalRef,
+        ];
+
+        // kitchen and incinerator are received on issue, same as despatch issue
+        if ($locationCode == '4400' || $locationCode == '4300') {
+            $data['receiver_total_pieces'] = $pieces;
+            $data['receiver_total_weight'] = $weight;
+            $data['received_by'] = self::RETURNS_IDT_USER_ID;
+            $data['with_variance'] = 1;
+        }
+
+        try {
+            $id = DB::table('idt_transfers')->insertGetId($data);
+        } catch (\Exception $e) {
+            Log::error('Exception in ' . __METHOD__ . '(): ' . $e->getMessage(), ['external_ref' => $externalRef]);
+            return response()->json(['success' => false, 'message' => 'Failed to save transfer'], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'duplicate' => false,
+            'transfer_id' => $id,
+            'total_pieces' => $pieces,
+            'total_weight' => $weight,
+        ]);
+    }
+
+    /**
+     * Unit of measure for products the sales portal is about to transfer, so it knows whether to ask QA for pieces or kgs.
+     */
+    public function returnIdtProducts(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'codes' => 'required|array|max:500',
+            'codes.*' => 'required|string|max:50',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
+        }
+
+        $products = [];
+        foreach (array_unique(array_map('trim', $request->codes)) as $code) {
+            $product = $this->findReturnIdtProduct($code);
+            if ($product) {
+                $products[$code] = [
+                    'unit_of_measure' => strtoupper(trim((string) ($product->unit_of_measure ?: 'KG'))),
+                    'qty_per_unit_of_measure' => (float) $product->qty_per_unit_of_measure,
+                ];
+            }
+        }
+
+        return response()->json(['success' => true, 'products' => $products]);
+    }
+
+    private function findReturnIdtProduct(string $productCode)
+    {
+        $item = DB::table('items')
+            ->where(DB::raw('TRIM(code)'), $productCode)
+            ->select('unit_of_measure', 'qty_per_unit_of_measure')
+            ->first();
+
+        if ($item) {
+            return $item;
+        }
+
+        // imported products and beef/lamb items are weighed (KG)
+        return DB::table('products')
+            ->where(DB::raw('TRIM(code)'), $productCode)
+            ->select('unit_of_measure', DB::raw('0 as qty_per_unit_of_measure'))
+            ->first()
+            ?: DB::table('beef_lamb_items')
+                ->where('code', $productCode)
+                ->select('unit_of_measure', DB::raw('1 as qty_per_unit_of_measure'))
+                ->first();
     }
 }
