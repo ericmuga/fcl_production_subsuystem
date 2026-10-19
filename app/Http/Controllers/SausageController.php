@@ -360,6 +360,7 @@ class SausageController extends Controller
                     ->where('batch_no', $batchNo)
                     ->where('line_no', 1000)
                     ->where('line_type', 'output')
+                    ->where('item_no', $request->product)
                     ->where('process', 'Packing')
                     ->where('published', 0)
                     ->where('batch_linked', false)
@@ -371,6 +372,7 @@ class SausageController extends Controller
                     Log::info('No eligible Packing output line found for IDT batch linking.', [
                         'idt_transfer_id' => $transferId,
                         'batch_no' => $batchNo,
+                        'item_no' => $request->product,
                     ]);
 
                     return;
