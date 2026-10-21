@@ -26,6 +26,7 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Description </th>
+                                <th>Narration</th>
                                 <th>From Dept </th>
                                 <th>From Employee </th>
                                 <th>Assigned Employee</th>
@@ -40,6 +41,7 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Description </th>
+                                <th>Narration</th>
                                 <th>From Dept </th>
                                 <th>From Employee </th>
                                 <th>Assigned Employee</th>
@@ -54,6 +56,7 @@
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $e->fa }}</td>
                                     <td>{{ $e->description }}</td>
+                                    <td style="white-space: pre-wrap; min-width: 250px;">{{ $e->narration }}</td>
                                     <td>{{ $e->from_dept }}</td>
                                     <td>{{ $e->from_user }}</td>
                                     <td>{{ $e->to_user }}</td>

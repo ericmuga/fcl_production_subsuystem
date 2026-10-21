@@ -115,6 +115,7 @@ class AssetController extends Controller
                 'to_user' => $request->to_user,
                 'from_dept' => $request->from_dept,
                 'from_user' => $request->from_user,
+                'narration' => $request->input('narration'),
                 'authenticated_username' => $request->auth_username,
                 'user_id' => Auth::id(),
             ]);

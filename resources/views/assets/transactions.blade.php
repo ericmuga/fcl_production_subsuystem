@@ -70,6 +70,10 @@
                             </select>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="movement_narration">Narration (optional)</label>
+                        <textarea class="form-control" name="narration" id="movement_narration" rows="4"></textarea>
+                    </div>
                 </div>
             </div>
             <div class="card">
@@ -140,6 +144,7 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Description </th>
+                                <th>Narration</th>
                                 <th>To User</th>
                                 <th>To Dept </th>
                                 <th>From User</th>
@@ -155,6 +160,7 @@
                                 <th>#</th>
                                 <th>Fa </th>
                                 <th>Description </th>
+                                <th>Narration</th>
                                 <th>To User</th>
                                 <th>To Dept </th>
                                 <th>From User</th>
@@ -183,6 +189,7 @@
                                         <td>{{ $e->fa }}</td>
                                     @endif
                                     <td>{{ $e->description }}</td>
+                                    <td style="white-space: pre-wrap; min-width: 250px;">{{ $e->narration }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->department_name }}</td>
                                     <td>{{ $e->from_user }}</td>
