@@ -184,9 +184,9 @@
                                     @endif
                                     <td>{{ $e->description }}</td>
                                     <td>{{ $e->to_user }}</td>
-                                    <td>{{ $e->to_dept }}</td>
+                                    <td>{{ $e->department_name }}</td>
                                     <td>{{ $e->from_user }}</td>
-                                    <td>{{ $e->from_dept }}</td>
+                                    <td>{{ $e->from_department_name }}</td>
                                     <td>{{ $e->username }}</td>
                                     <td>{{ $e->authenticated_username }}</td>
                                     <td>

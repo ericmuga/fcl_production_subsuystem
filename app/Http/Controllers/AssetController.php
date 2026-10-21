@@ -57,8 +57,11 @@ class AssetController extends Controller
 
         $entries->transform(function ($entry) use ($departments) {
             $entry->department_name = $departments[$entry->to_dept]->Name ?? 'Unknown';
+            $entry->from_department_name = $departments[$entry->from_dept]->Name ?? 'Unknown';
             return $entry;
         });    
+
+        // dd($departments);
 
         return view('assets.transactions', compact('title', 'helpers', 'entries'));
     }
