@@ -309,7 +309,6 @@ class ApiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'external_ref' => 'required|string|max:64',
-            'source_ref' => 'nullable|string|max:64',
             'product_code' => 'required|string|max:50',
             'location_code' => ['required', 'string', Rule::in(self::RETURNS_IDT_LOCATIONS)],
             'quantity' => 'required|numeric|gt:0',
@@ -322,12 +321,10 @@ class ApiController extends Controller
             return response()->json(['success' => false, 'message' => $validator->errors()->first()], 422);
         }
 
-        // external_ref is the return reference no shared by all its lines; source_ref identifies this one transfer
         $externalRef = trim($request->external_ref);
-        $sourceRef = $request->filled('source_ref') ? trim($request->source_ref) : $externalRef;
 
         // already posted (e.g. a retry after a timeout) - return the existing transfer
-        $existing = DB::table('idt_transfers')->where('source_ref', $sourceRef)->first();
+        $existing = DB::table('idt_transfers')->where('external_ref', $externalRef)->first();
         if ($existing) {
             return response()->json([
                 'success' => true,
@@ -386,7 +383,6 @@ class ApiController extends Controller
             'approved' => 1,
             'approved_by' => self::RETURNS_IDT_USER_ID,
             'external_ref' => $externalRef,
-            'source_ref' => $sourceRef,
         ];
 
         // kitchen and incinerator are received on issue, same as despatch issue
@@ -400,7 +396,7 @@ class ApiController extends Controller
         try {
             $id = DB::table('idt_transfers')->insertGetId($data);
         } catch (\Exception $e) {
-            Log::error('Exception in ' . __METHOD__ . '(): ' . $e->getMessage(), ['source_ref' => $sourceRef]);
+            Log::error('Exception in ' . __METHOD__ . '(): ' . $e->getMessage(), ['external_ref' => $externalRef]);
             return response()->json(['success' => false, 'message' => 'Failed to save transfer'], 500);
         }
 
