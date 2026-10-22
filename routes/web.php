@@ -318,6 +318,7 @@ Route::prefix('asset')->group(function () {
     Route::get('/fetch-employees', [AssetController::class, 'getAssetEmployeeList'])->name('assets_fetch_employees');
     Route::post('/check-user', [AssetController::class, 'validateUserAssets'])->name('validateUserAsset');
     Route::get('/movement-history', [AssetController::class, 'movementHistory'])->name('movement_history');
+    Route::post('/movement-history/export', [AssetController::class, 'exportMovementHistory'])->name('movement_history_export');
     Route::get('/list', [AssetController::class, 'assetList'])->name('asset_list');
 });
 /*-------------End Assets------------------ */

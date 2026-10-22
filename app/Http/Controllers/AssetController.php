@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AssetMovementHistoryExport;
 use App\Models\Helpers;
 use Brian2694\Toastr\Facades\Toastr;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AssetController extends Controller
 {
@@ -133,15 +136,33 @@ class AssetController extends Controller
     public function movementHistory()
     {
         $title = 'Movement History';
+        $daysFilter = 30;
+        $dateFilter = today()->subDays($daysFilter);
 
         $data = DB::table('asset_movements as a')
             ->join('users', 'a.user_id', '=', 'users.id')
             ->where('a.status', 1)
+            ->whereDate('a.created_at', '>=', $dateFilter)
             ->select('a.*', 'users.username')
             ->orderByDesc('id')
             ->get();
 
-        return view('assets.history', compact('data', 'title'));
+        return view('assets.history', compact('data', 'title', 'dateFilter', 'daysFilter'));
+    }
+
+    public function exportMovementHistory(Request $request)
+    {
+        $validated = $request->validate([
+            'from_date' => ['required', 'date_format:Y-m-d'],
+            'to_date' => ['required', 'date_format:Y-m-d', 'after_or_equal:from_date'],
+        ]);
+
+        $toDateExclusive = Carbon::parse($validated['to_date'])->addDay()->format('Y-m-d');
+
+        return Excel::download(
+            new AssetMovementHistoryExport($validated['from_date'], $toDateExclusive),
+            "AssetMovementHistory-{$validated['from_date']}-to-{$validated['to_date']}.xlsx"
+        );
     }
 
     public function assetList()
