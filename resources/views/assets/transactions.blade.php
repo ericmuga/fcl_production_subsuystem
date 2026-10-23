@@ -34,6 +34,8 @@
                                 <label for="exampleInputPassword1"> FA List</label>
                                 <select class="form-control select2" name="fa" id="fa_select" required>
                                 </select>
+                                <input type="hidden" name="fa_description" id="fa_description">
+                                <input type="hidden" name="serial_no" id="fa_serial_no">
                             </div>
                         </div>
                     </div>
@@ -188,7 +190,7 @@
                                     @else
                                         <td>{{ $e->fa }}</td>
                                     @endif
-                                    <td>{{ $e->description }}</td>
+                                    <td>{{ $e->description }}@if($e->serial_no) <small>(Serial No: {{ $e->serial_no }})</small>@endif</td>
                                     <td style="white-space: pre-wrap; min-width: 250px;">{{ $e->narration }}</td>
                                     <td>{{ $e->to_user }}</td>
                                     <td>{{ $e->department_name }}</td>
@@ -349,10 +351,12 @@
         });
 
         $('#fa_select').change(function () {
-            let data = $(this).val();
+            const selectedOption = this.options[this.selectedIndex];
+            const location = selectedOption.dataset.location || '';
+            const emp = selectedOption.dataset.employee || '';
 
-            var location = data.split(':')[1];
-            var emp = data.split(':')[2];
+            $('#fa_description').val(selectedOption.dataset.description || '');
+            $('#fa_serial_no').val(selectedOption.dataset.serialNo || '');
 
             $('#from_dept_select').val(location);
             $('#from_user_select').val(emp);
@@ -498,7 +502,14 @@
                     //     .Responsible_employee + ':' + item.Description, item.No_ + ' ' + item
                     //     .Description);
 
-                    appendOption3(faSelect, item.No_, item.Description);
+                    appendOption3(
+                        faSelect,
+                        item.No_,
+                        item.Description,
+                        item['Serial No_'],
+                        item['Location Code'],
+                        item['Responsible Employee']
+                    );
 
                     // Check if the value is unique
                     if (!uniqueValues.hasOwnProperty(item.Location_code)) {
@@ -598,10 +609,14 @@
         option.text = text; // Append both value and text
         selectElement.appendChild(option);
     }
-    const appendOption3 = (selectElement, value, text) => {
+    const appendOption3 = (selectElement, value, text, serialNo, location, employee) => {
         var option = document.createElement('option');
-        option.value = value + ':' + text;
-        option.text = value + ' - ' + text; // Append both value and text
+        option.value = value;
+        option.text = value + ' - ' + text + (serialNo ? ' - ' + serialNo : '');
+        option.dataset.description = text || '';
+        option.dataset.serialNo = serialNo || '';
+        option.dataset.location = location || '';
+        option.dataset.employee = employee || '';
         selectElement.appendChild(option);
     }
 

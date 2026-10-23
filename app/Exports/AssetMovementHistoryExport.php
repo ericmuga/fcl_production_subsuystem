@@ -29,6 +29,7 @@ class AssetMovementHistoryExport implements FromQuery, WithHeadings, WithMapping
             ->select(
                 'a.fa',
                 'a.description',
+                'a.serial_no',
                 'a.narration',
                 'a.from_dept',
                 'a.from_user',
@@ -46,7 +47,7 @@ class AssetMovementHistoryExport implements FromQuery, WithHeadings, WithMapping
     {
         return [
             $movement->fa,
-            $movement->description,
+            $movement->description . ($movement->serial_no ? ' (Serial No: ' . $movement->serial_no . ')' : ''),
             $movement->narration,
             $movement->from_dept,
             $movement->from_user,

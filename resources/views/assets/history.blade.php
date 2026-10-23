@@ -101,7 +101,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $e->fa }}</td>
-                                    <td>{{ $e->description }}</td>
+                                    <td>{{ $e->description }}@if($e->serial_no) <small>(Serial No: {{ $e->serial_no }})</small>@endif</td>
                                     <td style="white-space: pre-wrap; min-width: 250px;">{{ $e->narration }}</td>
                                     <td>{{ $e->from_dept }}</td>
                                     <td>{{ $e->from_user }}</td>

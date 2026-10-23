@@ -73,7 +73,7 @@ class AssetController extends Controller
     {
         $data = DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
             ->where('a.FA Class Code', 'CE')
-            ->select('a.No_', 'a.Description', 'a.Location Code', 'a.Responsible Employee')
+            ->select('a.No_', 'a.Serial No_','a.Description', 'a.Location Code', 'a.Responsible Employee')
             ->get();
 
         return response()->json($data);
@@ -108,12 +108,18 @@ class AssetController extends Controller
     public function saveMovement(Request $request, Helpers $helpers)
     {
         // dd($request->all());
-        $parts = explode(':', $request->fa);
+        $validated = $request->validate([
+            'fa' => ['required', 'string'],
+            'fa_description' => ['required', 'string', 'max:255'],
+            'serial_no' => ['nullable', 'string', 'max:255'],
+        ]);
+
         try {
             //insert 
             DB::table('asset_movements')->insert([
-                'fa' => $parts[0],
-                'description' => $parts[1],
+                'fa' => $validated['fa'],
+                'description' => $validated['fa_description'],
+                'serial_no' => $validated['serial_no'] ?? null,
                 'to_dept' => $request->to_dept,
                 'to_user' => $request->to_user,
                 'from_dept' => $request->from_dept,
