@@ -366,7 +366,7 @@ class SausageController extends Controller
                     ->where('batch_linked', false)
                     ->orderBy('id')
                     ->lockForUpdate()
-                    ->first(['id']);
+                    ->first(['id', 'production_order_no', 'recipe']);
 
                 if (!$packingLine) {
                     Log::info('No eligible Packing output line found for IDT batch linking.', [
@@ -389,6 +389,16 @@ class SausageController extends Controller
                     ]);
 
                 if ($updated === 1) {
+                    $packingLine = DB::table('generated_production_orders')
+                        ->where('id', $packingLine->id)
+                        ->first(['id', 'production_order_no', 'recipe', 'quantity']);
+
+                    if (!$packingLine) {
+                        throw new \RuntimeException('The updated Packing output line could not be found.');
+                    }
+
+                    $this->updatePackingMaterials($packingLine, $batchNo, $request->product);
+
                     DB::table('idt_transfers')
                         ->where('id', $transferId)
                         ->update([
@@ -402,10 +412,91 @@ class SausageController extends Controller
             return redirect()
                 ->back();
         } catch (\Exception $e) {
+            Log::error('Failed to save sausage IDT transfer.', ['error' => $e->getMessage()]);
             Toastr::error($e->getMessage(), 'Error!');
             return back()
                 ->withInput();
         }
+    }
+
+    private function updatePackingMaterials($packingLine, string $batchNo, string $product): void
+    {
+        $materials = DB::table('generated_production_orders')
+            ->where('production_order_no', $packingLine->production_order_no)
+            ->where('batch_no', $batchNo)
+            ->where('process', 'Packing')
+            ->where('line_type', 'consumption')
+            ->where('item_no', 'like', 'H%')
+            ->lockForUpdate()
+            ->get(['id', 'item_no', 'published']);
+
+        if ($materials->isEmpty()) {
+            return;
+        }
+
+        if ($materials->contains(function ($line) { return (int) $line->published !== 0; })) {
+            throw new \RuntimeException('Cannot update packing materials because the production order contains published material lines.');
+        }
+
+        $outputQty = $packingLine->quantity;
+        if (!is_numeric($outputQty) || !is_finite((float) $outputQty) || (float) $outputQty < 0) {
+            throw new \RuntimeException('A valid non-negative output weight is required to update packing materials.');
+        }
+
+        $recipeLines = DB::table(config('recipes.draft_table', 'recipe_data_draft'))
+            ->where('process', 'Packing')
+            ->where('output_item', $product)
+            ->where('recipe', $packingLine->recipe)
+            ->get(['input_item', 'input_item_qt_per'])
+            ->groupBy('input_item');
+
+        $baseItems = $recipeLines->filter(function ($lines, $item) {
+            return strpos($item, 'G') === 0;
+        });
+
+        if ($baseItems->count() !== 1) {
+            throw new \RuntimeException("Packing recipe {$packingLine->recipe} must have exactly one G base item.");
+        }
+
+        $baseQty = $this->packingRecipeQuantity($baseItems->first(), $packingLine->recipe);
+        if ($baseQty <= 0) {
+            throw new \RuntimeException("Packing recipe {$packingLine->recipe} must have a positive G base quantity.");
+        }
+
+        $updates = [];
+        foreach ($materials as $material) {
+            $lines = $recipeLines->get($material->item_no);
+            if (!$lines) {
+                throw new \RuntimeException("Packing recipe {$packingLine->recipe} has no quantity for {$material->item_no}.");
+            }
+
+            $materialQty = $this->packingRecipeQuantity($lines, $packingLine->recipe);
+            $updates[$material->id] = round((float) $outputQty * $materialQty / $baseQty, 5);
+        }
+
+        foreach ($updates as $id => $quantity) {
+            DB::table('generated_production_orders')->where('id', $id)->update([
+                'quantity' => $quantity,
+                'updated_at' => now(),
+            ]);
+        }
+    }
+
+    private function packingRecipeQuantity($lines, $recipe): float
+    {
+        $quantities = $lines->pluck('input_item_qt_per');
+        foreach ($quantities as $quantity) {
+            if (!is_numeric($quantity) || !is_finite((float) $quantity) || (float) $quantity < 0) {
+                throw new \RuntimeException("Packing recipe {$recipe} has an invalid quantity for {$lines->first()->input_item}.");
+            }
+        }
+
+        $distinct = $quantities->map(function ($quantity) { return (float) $quantity; })->unique();
+        if ($distinct->count() !== 1) {
+            throw new \RuntimeException("Packing recipe {$recipe} has conflicting quantities for {$lines->first()->input_item}.");
+        }
+
+        return $distinct->first();
     }
 
     /**

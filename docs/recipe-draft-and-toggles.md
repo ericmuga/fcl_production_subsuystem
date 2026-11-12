@@ -56,6 +56,42 @@ Config: `config/production_orders.php`.
 to the weighing (`idt_transfer_id`, `weighed_item`, `packed_item`, `step`) that
 ProductionData has no columns for, and it is what the on-screen panel reads.
 
+### Packing material quantities on sausage IDT save
+
+When an IDT is saved from `/sausage/create-idt`, the first eligible unpublished,
+unlinked Packing output for the batch and selected product is updated to the
+form weight. Its H-prefixed consumption lines in the same production order are
+recalculated from `recipe_data_draft` (regardless of the generation source
+switch):
+
+`material quantity = updated output line quantity × material recipe quantity / G base recipe quantity`
+
+The output quantity is read from the updated order line after it is saved, not
+from its previous quantity or directly from the form. The full stored output
+and recipe quantities are used, with results rounded to five decimal places.
+The draft must have exactly one distinct G base item with a positive quantity and
+a matching, non-negative quantity for each H item. Conflicting duplicate recipe
+quantities or published H lines prevent the save; the transfer and order changes
+are rolled back and the operator sees an error. If there are no H lines, the
+existing output-linking behavior is unchanged. If no eligible output is found, the
+transfer is saved without linking as before.
+
+These updates affect the local `generated_production_orders` rows only; they do
+not modify rows already written to `ProductionData`.
+
+The packing save feature tests can also run against the configured SQL Server
+connection. They create connection-local temporary tables rather than modifying
+application tables:
+
+```powershell
+$env:PACKING_TEST_SQLSERVER = '1'
+php vendor\bin\phpunit tests\Feature\SausagePackingMaterialsTest.php
+Remove-Item Env:\PACKING_TEST_SQLSERVER
+```
+
+The temporary tables model the columns used by these tests; this is not a test of
+the deployed tables' indexes, constraints, or triggers.
+
 ---
 
 ## 2. Applying a change
