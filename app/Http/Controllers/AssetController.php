@@ -175,10 +175,17 @@ class AssetController extends Controller
     {
         $title = 'Asset List';
 
-        $data = Cache::remember('assets_list', now()->addMinutes(120), function () {
+        $data = Cache::remember('assets_list_with_employee_names', now()->addMinutes(120), function () {
             return DB::connection('bc240')->table('FCL1$Fixed Asset$437dbf0e-84ff-417a-965d-ed2bb9650972 as a')
+                ->leftJoin('FCL1$Employee$437dbf0e-84ff-417a-965d-ed2bb9650972 as e', 'a.Responsible Employee', '=', 'e.No_')
                 ->where('a.FA Class Code', 'CE')
-                ->select('a.No_', 'a.Description', 'a.Responsible Employee as Responsible_employee')
+                ->select(
+                    'a.No_',
+                    'a.Description',
+                    'a.Responsible Employee as Responsible_employee',
+                    'e.First Name as Responsible_employee_first_name',
+                    'e.Last Name as Responsible_employee_last_name'
+                )
                 ->orderBy('a.No_')
                 ->get();
         });

@@ -27,6 +27,7 @@
                                 <th>Fa </th>
                                 <th>Name </th>
                                 <th>Responsible Employee</th>
+                                <th>Responsible Employee Name</th>
                             </tr>
                         </thead>
                         <tfoot>
@@ -35,6 +36,7 @@
                                 <th>Fa </th>
                                 <th>Name </th>
                                 <th>Responsible Employee</th>
+                                <th>Responsible Employee Name</th>
                         </tfoot>
                         <tbody>
                             @foreach($data as $e)
@@ -43,6 +45,7 @@
                                     <td>{{ $e->No_ }}</td>
                                     <td>{{ $e->Description }}</td>
                                     <td>{{ $e->Responsible_employee }}</td>
+                                    <td>{{ trim(($e->Responsible_employee_first_name ?? '') . ' ' . ($e->Responsible_employee_last_name ?? '')) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
