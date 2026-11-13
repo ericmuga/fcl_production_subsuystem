@@ -102,12 +102,12 @@ class SqlPlanSource implements PlanSource
             return ['plans' => $this->load('h.[Due Date] >= ?', [$cutoff]), 'watermark' => $watermark];
         }
         $parts = [
-            "SELECT [No_] AS no FROM {$this->t('Production Order')} WHERE [Status] IN (2, 3, 4) AND [$systemModifiedAt] > ?",
-            "SELECT [Prod_ Order No_] FROM {$this->t('Prod_ Order Line')} WHERE [Status] IN (2, 3, 4) AND [$systemModifiedAt] > ?",
-            "SELECT [Prod_ Order No_] FROM {$this->t('Prod_ Order Component')} WHERE [Status] IN (2, 3, 4) AND [$systemModifiedAt] > ?",
+            "SELECT [No_] AS no FROM {$this->t('Production Order')} WHERE [Status] IN (2, 3, 4) AND [\$systemModifiedAt] > ?",
+            "SELECT [Prod_ Order No_] FROM {$this->t('Prod_ Order Line')} WHERE [Status] IN (2, 3, 4) AND [\$systemModifiedAt] > ?",
+            "SELECT [Prod_ Order No_] FROM {$this->t('Prod_ Order Component')} WHERE [Status] IN (2, 3, 4) AND [\$systemModifiedAt] > ?",
         ];
         if ($this->publishedMode()) {
-            $parts[] = "SELECT [No_] FROM {$this->t('Production Order', $this->extApp)} WHERE [Status] IN (2, 3, 4) AND [$systemModifiedAt] > ?";
+            $parts[] = "SELECT [No_] FROM {$this->t('Production Order', $this->extApp)} WHERE [Status] IN (2, 3, 4) AND [\$systemModifiedAt] > ?";
         }
         if ($this->supportsBatches()) {
             $parts[] = "SELECT [Prod_ Order No_] FROM {$this->t('WMS Plan Batch', $this->extApp)} WHERE [\$systemModifiedAt] > ?";
