@@ -112,7 +112,7 @@ class ApiPlanSource implements PlanSource
         ];
     }
 
-    public function close(string $planNo): void
+    public function close(string $planNo, ?string $user = null): void
     {
         $url = $this->url('wmsPlanOrders') . '?' . http_build_query(['$filter' => "planNo eq '{$planNo}'", '$select' => 'id'], '', '&', PHP_QUERY_RFC3986);
         $res = $this->client()->get($url);

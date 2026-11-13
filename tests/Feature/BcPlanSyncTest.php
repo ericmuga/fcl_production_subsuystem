@@ -47,7 +47,7 @@ class BcPlanSyncTest extends TestCase
                 return array_values(array_filter($this->plans, fn($p) => $p['plan_date'] >= $from && $p['plan_date'] <= $to));
             }
             public function name(): string { return 'test'; }
-            public function close(string $planNo): void { $this->closed[] = $planNo; }
+            public function close(string $planNo, ?string $user = null): void { $this->closed[] = $planNo; }
         };
     }
 

@@ -35,6 +35,12 @@ class Kernel extends ConsoleKernel
         // })->everyTenMinutes();
 
         // $schedule->command('queue:consume')->everyMinute();
+
+        // BC MRP plan integration over the SQL route (docs/bc-mrp-integration-plan.md); off unless BC_PLAN_SCHEDULE=true
+        if (config('bc_plan.schedule')) {
+            $schedule->command('bc:sync-plans')->everyFifteenMinutes()->withoutOverlapping();
+            $schedule->command('bc:push-executions')->everyFiveMinutes()->withoutOverlapping();
+        }
     }
 
     /**

@@ -25,5 +25,5 @@ interface PlanSource
     public function name(): string;
 
     /** Close the day for a plan in BC (integration map S12). */
-    public function close(string $planNo): void;
+    public function close(string $planNo, ?string $user = null): void;
 }

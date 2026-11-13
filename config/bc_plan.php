@@ -18,6 +18,15 @@
 return [
     'source' => env('BC_PLAN_SOURCE', 'sql'),
 
+    // BC stores DateTime in UTC; WMS timestamps are local (Nairobi, UTC+3).
+    'utc_offset_hours' => (int) env('BC_UTC_OFFSET_HOURS', 3),
+
+    // Push execution orders that found no open plan as well (they reach BC without a plan no., as today).
+    'push_unplanned' => (bool) env('BC_PUSH_UNPLANNED', false),
+
+    // Run bc:sync-plans (every 15 min) and bc:push-executions (every 5 min) from the Laravel scheduler.
+    'schedule' => (bool) env('BC_PLAN_SCHEDULE', false),
+
     // How many days around today a sync covers when no dates are given.
     'days_back' => (int) env('BC_PLAN_DAYS_BACK', 1),
     'days_ahead' => (int) env('BC_PLAN_DAYS_AHEAD', 7),

@@ -3,7 +3,6 @@
 namespace App\Services\BcPlans;
 
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 /**
  * Reads plans straight from the BC tables (the existing staging + SQL route, kept as fallback in CP17).
@@ -156,9 +155,9 @@ class SqlPlanSource implements PlanSource
         return $plans;
     }
 
-    public function close(string $planNo): void
+    public function close(string $planNo, ?string $user = null): void
     {
-        // Closing changes BC status (finishes the order), which only BC itself may do: never written over SQL.
-        throw new RuntimeException('Closing a plan needs the BC API (BC_PLAN_SOURCE=api); the SQL route is read-only.');
+        // Finishing the order is BC's job: WMS only writes a close request, the BC job queue ("WMS Plan Job") closes it.
+        (new BcStaging())->requestClose($planNo, $user);
     }
 }

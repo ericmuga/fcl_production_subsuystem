@@ -83,7 +83,7 @@ class ProductionPlanController extends Controller
             return back();
         }
         try {
-            PlanSync::make()->source()->close($planNo);
+            PlanSync::make()->source()->close($planNo, Auth::user()->username ?? null);
             DB::table('bc_plan_orders')->where('plan_no', $planNo)->update([
                 'status' => 'closed', 'closed_at' => now(), 'closed_by' => Auth::user()->username ?? null, 'payload_hash' => null, 'updated_at' => now(),
             ]);
