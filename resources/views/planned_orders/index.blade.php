@@ -35,6 +35,39 @@
         closed: 'Closed: later weighings for this order are rejected.'
     };
 
+    // Change / reset the order's location from the modal; the list reloads to show it.
+    var saveLocation = function (form, payload) {
+        var msg = form.querySelector('.js-plan-location-msg');
+        msg.className = 'w-100 small mt-1 js-plan-location-msg text-muted';
+        msg.textContent = 'Saving...';
+        fetch(form.dataset.url, {
+            method: 'POST',
+            headers: { 'Accept': 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify(payload)
+        })
+            .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+            .then(function (res) {
+                msg.className = 'w-100 small mt-1 js-plan-location-msg ' + (res.ok ? 'text-success' : 'text-danger');
+                msg.textContent = res.j.message || (res.j.errors ? Object.values(res.j.errors).join(' ') : 'Could not save.');
+                if (res.ok) {
+                    $('#planModal').one('hidden.bs.modal', function () { location.reload(); });
+                    setTimeout(function () { $('#planModal').modal('hide'); }, 900);
+                }
+            })
+            .catch(function () { msg.className = 'w-100 small mt-1 js-plan-location-msg text-danger'; msg.textContent = 'Could not save the location.'; });
+    };
+    document.addEventListener('submit', function (e) {
+        var form = e.target.closest('.js-plan-location');
+        if (!form) return;
+        e.preventDefault();
+        saveLocation(form, { location_code: form.querySelector('select').value });
+    });
+    document.addEventListener('click', function (e) {
+        var btn = e.target.closest('.js-plan-location-reset');
+        if (!btn) return;
+        saveLocation(btn.closest('form'), { reset: true });
+    });
+
     document.addEventListener('click', function (e) {
         var link = e.target.closest('.js-plan-modal');
         if (!link) return;
@@ -53,11 +86,31 @@
                     + '<div class="col-md-2 col-6"><span class="text-muted">Status</span><br>' + esc(label(p.status)) + '</div>'
                     + '<div class="col-md-2 col-6"><span class="text-muted">Date</span><br>' + esc(p.plan_date) + '</div>'
                     + '<div class="col-md-2 col-6"><span class="text-muted">Section</span><br>' + esc(p.section || '-') + '</div>'
-                    + '<div class="col-md-2 col-6"><span class="text-muted">Location</span><br>' + esc(p.location_code) + '</div>'
+                    + '<div class="col-md-2 col-6"><span class="text-muted">Location</span><br>' + esc(p.location_code)
+                    + (d.location.overridden ? ' <span class="badge badge-warning" title="BC location: ' + esc(d.location.bc) + '">moved</span>' : '') + '</div>'
                     + '<div class="col-md-2 col-6"><span class="text-muted">Planned</span><br>' + num(p.planned_qty) + ' ' + esc(p.uom) + '</div>'
                     + '<div class="col-md-2 col-6"><span class="text-muted">' + (p.status === 'firm_planned' ? 'Planned order' : 'Released from') + '</span><br>'
                     + esc(p.status === 'firm_planned' ? p.plan_no : (p.released_from || '-')) + '</div></div>'
                     + '<p class="text-muted small">' + esc(notes[p.status] || '') + '</p>';
+                if (d.location.editable) {
+                    var opts = Object.keys(d.location.options);
+                    if (opts.indexOf(p.location_code) < 0) opts.unshift(p.location_code);
+                    h += '<form class="form-inline border rounded p-2 mb-3 js-plan-location" data-url="' + esc(d.location.url) + '">'
+                        + '<label class="small mr-2 mb-0" for="planLocation">Location</label>'
+                        + '<select id="planLocation" name="location_code" class="form-control form-control-sm mr-2">'
+                        + opts.map(function (c) {
+                            var n = d.location.options[c] || '';
+                            return '<option value="' + esc(c) + '"' + (c === p.location_code ? ' selected' : '') + '>'
+                                + esc(c + (n ? ' - ' + n : '') + (c === d.location.bc ? ' (BC)' : '')) + '</option>';
+                        }).join('')
+                        + '</select>'
+                        + '<button type="submit" class="btn btn-sm btn-primary mr-2">Save location</button>'
+                        + (d.location.overridden ? '<button type="button" class="btn btn-sm btn-outline-secondary mr-2 js-plan-location-reset">Reset to BC (' + esc(d.location.bc) + ')</button>' : '')
+                        + '<small class="text-muted">'
+                        + (d.location.overridden ? 'Moved' + (d.location.changed_by ? ' by ' + esc(d.location.changed_by) : '') + (d.location.changed_at ? ' on ' + esc(String(d.location.changed_at).substring(0, 16)) : '') + '. ' : '')
+                        + 'Output, components at the BC location and batches not yet done follow; BC syncs keep it.</small>'
+                        + '<div class="w-100 small mt-1 js-plan-location-msg"></div></form>';
+                }
                 h += '<h6>Components</h6><table class="table table-sm table-striped"><thead><tr><th>Item</th><th>Description</th><th>Location</th>'
                     + '<th class="text-right">Qty per</th><th class="text-right">Expected</th><th>Unit</th><th></th></tr></thead><tbody>';
                 if (!d.components.length) h += '<tr><td colspan="7" class="text-muted">No components.</td></tr>';

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\BcPlans\PlanLocation;
 use App\Services\BcPlans\PlanResolver;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
@@ -130,7 +131,35 @@ class PlannedOrdersController extends Controller
             'components' => DB::table('bc_plan_order_components')->where('plan_no', $planNo)->orderBy('plan_line_no')->orderBy('line_no')->get(),
             'batches' => DB::table('bc_plan_batches')->where('plan_no', $planNo)->orderBy('plan_line_no')->orderBy('batch_no')->get(),
             'fulfil_url' => $plan->status === 'open' ? route('planned_orders_fulfil', $planNo) : null,
+            'location' => [
+                'editable' => in_array($plan->status, PlanLocation::EDITABLE, true),
+                'bc' => $plan->bc_location_code ?? $plan->location_code,
+                'overridden' => (bool) ($plan->location_overridden ?? false),
+                'changed_by' => $plan->location_changed_by ? DB::table('users')->where('id', $plan->location_changed_by)->value('username') : null,
+                'changed_at' => $plan->location_changed_at,
+                'options' => in_array($plan->status, PlanLocation::EDITABLE, true) ? PlanLocation::options() : [],
+                'url' => route('planned_orders_location', $planNo),
+            ],
         ]);
+    }
+
+    /** Move the order to another location in WMS (location = BC's location resets it). */
+    public function updateLocation(Request $request, string $planNo)
+    {
+        $data = $request->validate(['location_code' => 'nullable|string|max:10', 'reset' => 'nullable|boolean']);
+        $service = new PlanLocation();
+        if ($request->boolean('reset') || trim((string) ($data['location_code'] ?? '')) === '') {
+            abort_unless(DB::table('bc_plan_orders')->where('plan_no', $planNo)->exists(), 404);
+            $service->reset($planNo);
+            $error = null;
+        } else {
+            $error = $service->change($planNo, $data['location_code'], Auth::id());
+        }
+        if ($error) {
+            return response()->json(['ok' => false, 'message' => $error], 422);
+        }
+        $plan = DB::table('bc_plan_orders')->where('plan_no', $planNo)->first(['location_code', 'section', 'location_overridden']);
+        return response()->json(['ok' => true, 'message' => "Order {$planNo} is now at location {$plan->location_code}.", 'plan' => $plan]);
     }
 
     // ---------------- batch fulfilment ----------------
@@ -165,7 +194,7 @@ class PlannedOrdersController extends Controller
         $factor = $base > 0 ? (float) $batch->quantity_base / $base : 0;
         $lines = [[
             'type' => 'output', 'item_no' => $plan->item_no, 'description' => $plan->description,
-            'location_code' => $batch->location_code ?: $plan->location_code, 'uom' => $batch->base_uom ?: 'KG',
+            'location_code' => $plan->location_code, 'uom' => $batch->base_uom ?: 'KG',
             'target' => round((float) $batch->quantity_base, 3), 'quantity' => round((float) $batch->quantity_base, 3), 'by_product' => false,
         ]];
         foreach ($comps as $c) {

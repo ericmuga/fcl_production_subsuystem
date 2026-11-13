@@ -84,6 +84,17 @@ class SqlPlanSource implements PlanSource
         return (bool) $this->columns($this->raw('WMS Plan Batch', $this->extApp));
     }
 
+    /** BC locations (not in-transit), code => name, for moving a planned order in WMS. */
+    public function bcLocations(): array
+    {
+        $rows = $this->db()->select("SELECT [Code] AS code, [Name] AS name FROM {$this->t('Location')} WHERE [Use As In-Transit] = 0 ORDER BY [Code]");
+        $list = [];
+        foreach ($rows as $r) {
+            $list[$r->code] = (string) $r->name;
+        }
+        return $list;
+    }
+
     public function fetch(string $from, string $to): array
     {
         return $this->load('h.[Due Date] BETWEEN ? AND ?', [$from, $to]);

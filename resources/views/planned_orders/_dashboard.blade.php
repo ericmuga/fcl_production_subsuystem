@@ -95,7 +95,15 @@
                             @endif
                         </td>
                         <td title="{{ str_replace('|', ', ', (string) $p->sections) }}">{{ $p->section }}</td>
-                        <td>{{ $p->location_code }}</td>
+                        <td class="text-nowrap">
+                            {{ $p->location_code }}
+                            @if(!empty($p->location_overridden))
+                                <span class="badge badge-warning" title="Moved in WMS; BC location {{ $p->bc_location_code }}">moved</span>
+                            @endif
+                            @if(in_array($p->status, \App\Services\BcPlans\PlanLocation::EDITABLE, true))
+                                <a href="#" class="js-plan-modal text-muted ml-1" data-url="{{ route('planned_orders_details', $p->plan_no) }}" title="Change location"><i class="fa fa-pencil-alt"></i></a>
+                            @endif
+                        </td>
                         <td>{{ $p->item_no }}</td>
                         <td>{{ $p->description }}</td>
                         <td class="text-right text-nowrap">{{ number_format($p->planned_qty, 2) }} {{ $p->uom }}</td>

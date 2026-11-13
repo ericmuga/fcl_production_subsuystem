@@ -130,7 +130,11 @@ class PlanSync
         $existing = [];
         foreach (array_chunk(array_column($plans, 'plan_no'), 1000) as $chunk) {
             $existing += DB::table('bc_plan_orders')->whereIn('plan_no', $chunk)->pluck('payload_hash', 'plan_no')->all();
+            // Orders moved to another location in WMS keep that location (PlanLocation) until it is reset.
+            $moved = array_merge($moved ?? [], DB::table('bc_plan_orders')->whereIn('plan_no', $chunk)->where('location_overridden', 1)
+                ->pluck('plan_no')->all());
         }
+        $moved = array_flip($moved ?? []);
         foreach ($plans as $p) {
             $seen[] = $p['plan_no'];
             $hash = hash('sha256', json_encode($this->hashable($p)));
@@ -166,7 +170,13 @@ class PlanSync
                 'payload_hash' => $hash,
                 'synced_at' => $now,
                 'updated_at' => $now,
+                'bc_location_code' => $p['location_code'],
+                'bc_section' => $p['section'] ?? null,
             ];
+            $isMoved = isset($moved[$p['plan_no']]);
+            if ($isMoved) {
+                unset($row['location_code'], $row['section']);
+            }
             if ($known) {
                 DB::table('bc_plan_orders')->where('plan_no', $p['plan_no'])->update($row);
             } else {
@@ -180,10 +190,11 @@ class PlanSync
                 'item_no' => $c['item_no'],
                 'description' => mb_substr((string) $c['description'], 0, 100),
                 'uom' => $c['uom'],
-                'qty_per' => $c['qty_per'],
-                'expected_qty' => $c['expected_qty'],
-                'remaining_qty' => $c['remaining_qty'],
+                'qty_per' => (float) $c['qty_per'], // floats: a multi-row insert mixing ints and decimals fails on SQL Server
+                'expected_qty' => (float) $c['expected_qty'],
+                'remaining_qty' => (float) $c['remaining_qty'],
                 'location_code' => $c['location_code'],
+                'bc_location_code' => $c['location_code'],
                 'flushing_method' => $c['flushing_method'],
                 'is_by_product' => $c['is_by_product'] ? 1 : 0,
                 'created_at' => $now,
@@ -193,6 +204,9 @@ class PlanSync
                 DB::table('bc_plan_order_components')->insert($chunk);
             }
             $this->upsertBatches($p, $now);
+            if ($isMoved) {
+                PlanLocation::follow($p['plan_no']);
+            }
         }
         return $seen;
     }
