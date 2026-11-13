@@ -57,12 +57,12 @@ class BcPlanSyncTest extends TestCase
         $sync = new PlanSync($src);
 
         $first = $sync->sync('2026-11-16', '2026-11-16');
-        $this->assertSame(['fetched' => 2, 'created' => 2, 'updated' => 0, 'unchanged' => 0, 'withdrawn' => 0], $first);
+        $this->assertSame(['fetched' => 2, 'created' => 2, 'updated' => 0, 'unchanged' => 0, 'withdrawn' => 0, 'batches' => 0], $first);
         $this->assertSame(2, DB::table('bc_plan_order_components')->where('plan_no', 'TPLAN-0001')->count());
         $this->assertEquals(1, DB::table('bc_plan_order_components')->where('plan_no', 'TPLAN-0001')->where('item_no', 'G9999')->value('is_by_product'));
 
         // Re-running with the same BC data changes nothing
-        $this->assertSame(['fetched' => 2, 'created' => 0, 'updated' => 0, 'unchanged' => 2, 'withdrawn' => 0], $sync->sync('2026-11-16', '2026-11-16'));
+        $this->assertSame(['fetched' => 2, 'created' => 0, 'updated' => 0, 'unchanged' => 2, 'withdrawn' => 0, 'batches' => 0], $sync->sync('2026-11-16', '2026-11-16'));
 
         // BC nets an execution order and drops the second plan
         $src->plans = [$this->plan(['executed_qty' => 1200.0, 'remaining_qty' => 8000.0])];

@@ -44,6 +44,10 @@ class ExecutionPublisher
                 'production_order_no' => $orderNo,
                 'transaction_id' => $out->transaction_id,
                 'plan_order_no' => $out->plan_order_no,
+                'plan_line_no' => $out->plan_line_no ?? null,
+                'plan_batch_no' => $out->plan_batch_no ?? null,
+                'batch_code' => $out->batch_code ?? null,
+                'batch_completed' => isset($out->batch_completed) ? (bool) $out->batch_completed : true,
                 'item_no' => $out->item_no,
                 'quantity' => (float) $out->quantity,
                 'uom' => $out->uom,
@@ -74,6 +78,9 @@ class ExecutionPublisher
             try {
                 $res = $this->staging->stageExecutionOrder($header, $lines);
                 $stats[$res['result']]++;
+                if ($res['result'] !== 'rejected' && $header['batch_completed']) {
+                    PlanResolver::completeBatch($header['batch_code']);
+                }
                 // staged, duplicate (already in BC) and rejected are all settled: none is sent again
                 $this->mark($orderNo, $res['result'] === 'rejected' ? 'rejected' : 'pending', $res['message'], false, true);
             } catch (\Throwable $e) {

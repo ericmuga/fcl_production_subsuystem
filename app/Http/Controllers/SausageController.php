@@ -1339,10 +1339,18 @@ class SausageController extends Controller
 
             $orderNo = $this->productionOrderNo($routing, $finalRecipe, $transferId);
 
+            // BC plan (released order) this execution order fulfils (integration map S8), the batch of it this WMS order
+            // is, and its idempotency key (CP23).
+            $planNo = $planResolver->openPlanFor($edge->output_item, $anchor->output_item_location, $now->toDateString());
+            $batch = $planResolver->batchFor($planNo, $orderNo);
+
             $common = [
                 'production_order_no' => $orderNo,
-                // BC MRP plan this execution order fulfils (integration map S8) and its idempotency key (CP23)
-                'plan_order_no' => $planResolver->openPlanFor($edge->output_item, $anchor->output_item_location, $now->toDateString()),
+                'plan_order_no' => $planNo,
+                'plan_line_no' => $batch->plan_line_no ?? null,
+                'plan_batch_no' => $batch->batch_no ?? null,
+                'batch_code' => $batch->batch_code ?? null,
+                'batch_completed' => 1,
                 'transaction_id' => PlanResolver::transactionId('GPO', $orderNo),
                 'routing' => $routing,
                 'process' => $edge->process,

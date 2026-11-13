@@ -132,7 +132,18 @@
                         <i class="fas fa-exchange-alt fa-4x"></i>
                     </div>
                 </div>
-                
+                <div class="col-md-3 card p-2 bg-success" style="height: 200px">
+                    <a class="card-body text-center card-block stretched-link text-decoration-none card-link"
+                        href="{{ route('planned_orders') }}">
+                        <h4 class="card-title">Planned Orders</h4>
+                        <p class="card-text">BC planned production orders from last Monday to today{{ isset($ppCount) ? ': ' . $ppCount . ' active' : '' }}.
+                        </p>
+                    </a>
+                    <div class="icon text-center">
+                        <i class="fas fa-industry fa-4x"></i>
+                    </div>
+                </div>
+
                 @if(Session()->get('session_userRole') == 'QA')
                 <div class="col-md-3 card p-2 bg-warning" style="height: 200px">
                     <a class="card-body text-center card-block stretched-link text-decoration-none card-link"

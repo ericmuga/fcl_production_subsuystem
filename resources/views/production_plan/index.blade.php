@@ -25,7 +25,7 @@
             </select>
             <label class="mr-2">Status</label>
             <select name="status" class="form-control mr-3">
-                @foreach(['all' => 'All', 'open' => 'Open', 'closed' => 'Closed', 'withdrawn' => 'Withdrawn'] as $value => $label)
+                @foreach(['all' => 'All', 'released' => 'Released (not pushed)', 'open' => 'Open', 'closed' => 'Closed', 'withdrawn' => 'Withdrawn'] as $value => $label)
                     <option value="{{ $value }}" @if($status === $value) selected @endif>{{ $label }}</option>
                 @endforeach
             </select>
@@ -52,6 +52,7 @@
                         <th class="text-right">Remaining</th>
                         <th>Progress</th>
                         <th>UoM</th>
+                        <th title="WMS orders done / posted in BC / total batches">Batches</th>
                         <th>Orders</th>
                         <th>Status</th>
                         <th></th>
@@ -78,9 +79,17 @@
                             </div>
                         </td>
                         <td>{{ $p->uom }}</td>
+                        <td class="text-nowrap">
+                            @if($p->batches > 0)
+                                <a href="#" class="js-batches" data-url="{{ route('production_plan_batches', $p->plan_no) }}" data-target="batches-{{ $loop->index }}"
+                                   title="{{ $p->batches_running }} running">{{ $p->batches_done_wms }} / {{ $p->batches_posted }} / {{ $p->batches }} {{ $p->batch_uom }}</a>
+                            @else
+                                <span class="text-muted">{{ $p->status === 'released' ? 'not pushed' : '-' }}</span>
+                            @endif
+                        </td>
                         <td>{{ $p->orders }}</td>
                         <td>
-                            <span class="badge @if($p->status === 'open') badge-success @elseif($p->status === 'closed') badge-secondary @else badge-warning @endif">{{ ucfirst($p->status) }}</span>
+                            <span class="badge @if($p->status === 'open') badge-success @elseif($p->status === 'closed') badge-secondary @elseif($p->status === 'released') badge-info @else badge-warning @endif">{{ ucfirst($p->status) }}</span>
                         </td>
                         <td>
                             @if($p->status === 'open')
@@ -92,8 +101,9 @@
                             @endif
                         </td>
                     </tr>
+                    <tr id="batches-{{ $loop->index }}" class="d-none"><td colspan="14" class="bg-light p-2"></td></tr>
                 @empty
-                    <tr><td colspan="13" class="text-center text-muted">No BC plans for {{ $date }}. Plans appear once the planner releases and publishes them in BC.</td></tr>
+                    <tr><td colspan="14" class="text-center text-muted">No BC plans for {{ $date }}. Plans appear once the planner releases them in BC; batches appear once they are pushed to WMS.</td></tr>
                 @endforelse
                 </tbody>
             </table>
@@ -101,7 +111,35 @@
         <p class="text-muted small mb-0">
             Target = quantity BC published for the day. Produced = output of WMS execution orders carrying the plan no.
             Posted in BC = output BC has netted against the plan. Output above the target is allowed while the plan is open.
+            Batches = WMS orders done / posted in BC / total: every WMS production order is one batch of the BC released order.
         </p>
     </div>
 </div>
+<script>
+document.addEventListener('click', function (e) {
+    var link = e.target.closest('.js-batches');
+    if (!link) return;
+    e.preventDefault();
+    var row = document.getElementById(link.dataset.target);
+    if (!row.classList.contains('d-none')) { row.classList.add('d-none'); return; }
+    var cell = row.firstElementChild;
+    cell.textContent = 'Loading...';
+    row.classList.remove('d-none');
+    fetch(link.dataset.url, { headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+            var esc = function (v) { var d = document.createElement('div'); d.textContent = v == null ? '' : v; return d.innerHTML; };
+            var num = function (v) { return Number(v || 0).toLocaleString(undefined, { maximumFractionDigits: 2 }); };
+            var html = '<table class="table table-sm mb-0"><thead><tr><th>Batch</th><th class="text-right">Size</th><th class="text-right">Produced (WMS)</th>'
+                + '<th class="text-right">Posted in BC</th><th>WMS order</th><th>WMS</th><th>BC</th></tr></thead><tbody>';
+            data.batches.forEach(function (b) {
+                html += '<tr><td>' + esc(b.batch_code) + '</td><td class="text-right">' + num(b.quantity_base) + ' ' + esc(b.base_uom) + '</td>'
+                    + '<td class="text-right">' + num(b.wms_produced) + '</td><td class="text-right">' + num(b.bc_executed_qty_base) + '</td>'
+                    + '<td>' + esc(b.wms_order_no) + '</td><td>' + esc(b.wms_status) + '</td><td>' + esc(b.bc_status) + '</td></tr>';
+            });
+            cell.innerHTML = html + '</tbody></table>';
+        })
+        .catch(function () { cell.textContent = 'Could not load the batches.'; });
+});
+</script>
 @endsection

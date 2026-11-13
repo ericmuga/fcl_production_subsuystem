@@ -31,6 +31,21 @@ return [
     'days_back' => (int) env('BC_PLAN_DAYS_BACK', 1),
     'days_ahead' => (int) env('BC_PLAN_DAYS_AHEAD', 7),
 
+    // Incremental sync ignores plans due more than this many days ago.
+    'history_days' => (int) env('BC_PLAN_HISTORY_DAYS', 30),
+
+    // WMS section by BC location code prefix (longest prefix wins). A plan's sections come from the locations of the
+    // work centres on its routing; the section of the last operation is its main section.
+    'sections' => [
+        '10' => 'Slaughter',
+        '15' => 'Butchery',
+        '20' => 'Sausage',
+        '25' => 'High Care',
+        '30' => 'Despatch',
+        '35' => 'Despatch',
+        '36' => 'Despatch',
+    ],
+
     'sql' => [
         'connection' => env('BC_PLAN_SQL_CONNECTION', 'bc240'),
         'company' => env('BC_COMPANY', 'FCL1'),

@@ -36,6 +36,50 @@ class PlanResolver
         return $this->cache[$key];
     }
 
+    /**
+     * The BC batch a WMS production order fulfils: every WMS order is one batch of the released order. The same WMS
+     * order always gets the same batch (safe on retries); otherwise the next pushed batch no WMS order has taken yet.
+     * Returns null when the plan has no free batch (output above plan, or batches not pushed): the order still carries
+     * the plan no. and BC nets it against the plan.
+     */
+    public function batchFor(?string $planNo, string $wmsOrderNo): ?object
+    {
+        if (!$planNo) {
+            return null;
+        }
+        try {
+            return DB::transaction(function () use ($planNo, $wmsOrderNo) {
+                $mine = DB::table('bc_plan_batches')->where('plan_no', $planNo)->where('wms_order_no', $wmsOrderNo)->first();
+                if ($mine) {
+                    return $mine;
+                }
+                $next = DB::table('bc_plan_batches')->lock('WITH (UPDLOCK, READPAST)')
+                    ->where('plan_no', $planNo)->whereNull('wms_order_no')
+                    ->whereIn('bc_status', ['sent', 'in_progress'])->where('wms_status', 'pending')
+                    ->orderBy('plan_line_no')->orderBy('batch_no')->first();
+                if (!$next) {
+                    return null;
+                }
+                DB::table('bc_plan_batches')->where('id', $next->id)->update([
+                    'wms_order_no' => $wmsOrderNo, 'wms_status' => 'in_progress', 'updated_at' => now(),
+                ]);
+                return DB::table('bc_plan_batches')->where('id', $next->id)->first();
+            });
+        } catch (QueryException $e) {
+            Log::warning('BC batch lookup unavailable: ' . $e->getMessage());
+            return null;
+        }
+    }
+
+    /** The WMS order for a batch is done: the batch shows completed in WMS until BC confirms the posting. */
+    public static function completeBatch(?string $batchCode): void
+    {
+        if ($batchCode) {
+            DB::table('bc_plan_batches')->where('batch_code', $batchCode)->where('wms_status', '<>', 'completed')
+                ->update(['wms_status' => 'completed', 'updated_at' => now()]);
+        }
+    }
+
     /** Item allowed on the plan: its output or one of its components / by-products (S7, CP6). Warn only (CP24). */
     public function isItemOnPlan(string $planNo, string $itemNo): bool
     {

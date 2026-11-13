@@ -121,6 +121,9 @@ class BcStaging
                         : "Plan {$header['plan_order_no']} is not a published BC plan."];
                 }
             }
+            if (!empty($header['plan_batch_no']) && ($msg = $this->batchProblem($header))) {
+                return ['result' => 'rejected', 'message' => $msg];
+            }
             if ($this->db()->selectOne('SELECT 1 AS x FROM ' . $this->q($l) . ' WHERE [Production Order No_] = ?', [$header['production_order_no']])) {
                 return ['result' => 'rejected', 'message' => "Execution order {$header['production_order_no']} already has lines in BC staging under another transaction."];
             }
@@ -140,6 +143,10 @@ class BcStaging
                 'Status' => 0,
                 'Plan Order No_' => $header['plan_order_no'] ?? '',
                 'WMS Transaction ID' => $header['transaction_id'],
+                'Plan Line No_' => (int) ($header['plan_line_no'] ?? 0),
+                'Plan Batch No_' => (int) ($header['plan_batch_no'] ?? 0),
+                // Written explicitly: the SQL default is 0 whatever the AL InitValue says.
+                'Batch Completed' => ($header['batch_completed'] ?? true) ? 1 : 0,
             ]);
             foreach ($lines as $line) {
                 $this->insert($l, [
@@ -161,6 +168,26 @@ class BcStaging
             }
             return ['result' => 'staged', 'message' => ''];
         });
+    }
+
+    /** Same rule as the BC API page: the batch must exist on the plan and not be cancelled. */
+    private function batchProblem(array $header): ?string
+    {
+        $t = $this->table('WMS Plan Batch');
+        if (!$this->columns($t)) {
+            return null; // batches not deployed yet: BC nets against the plan only
+        }
+        $sql = 'SELECT TOP 1 [Status] AS s, [Batch Code] AS code FROM ' . $this->q($t) . ' WHERE [Prod_ Order No_] = ? AND [Batch No_] = ?';
+        $params = [$header['plan_order_no'], (int) $header['plan_batch_no']];
+        if (!empty($header['plan_line_no'])) {
+            $sql .= ' AND [Prod_ Order Line No_] = ?';
+            $params[] = (int) $header['plan_line_no'];
+        }
+        $row = $this->db()->selectOne($sql, $params);
+        if (!$row) {
+            return "Batch {$header['plan_batch_no']} of plan {$header['plan_order_no']} does not exist in BC.";
+        }
+        return (int) $row->s === 4 ? "Batch {$row->code} was cancelled in BC." : null;
     }
 
     // Only columns that exist are written; every BC column has a SQL default for the rest.

@@ -32,19 +32,29 @@ class ProductionPlanController extends Controller
             ->groupBy('plan_order_no')
             ->select('plan_order_no', DB::raw('SUM(quantity) AS produced'), DB::raw('COUNT(DISTINCT production_order_no) AS orders'));
 
+        // Batch progress per plan (one WMS order per batch); cancelled batches are not counted.
+        $batches = DB::table('bc_plan_batches')->where('wms_status', '<>', 'cancelled')->groupBy('plan_no')
+            ->select('plan_no', DB::raw('COUNT(*) AS batches'),
+                DB::raw("SUM(CASE WHEN wms_status = 'completed' THEN 1 ELSE 0 END) AS batches_done_wms"),
+                DB::raw("SUM(CASE WHEN bc_status = 'completed' THEN 1 ELSE 0 END) AS batches_posted"),
+                DB::raw("SUM(CASE WHEN wms_status = 'in_progress' THEN 1 ELSE 0 END) AS batches_running"));
+
         $plans = DB::table('bc_plan_orders AS p')
             ->leftJoinSub($produced, 'x', 'x.plan_order_no', '=', 'p.plan_no')
+            ->leftJoinSub($batches, 'b', 'b.plan_no', '=', 'p.plan_no')
             ->leftJoin('items AS i', 'i.code', '=', 'p.item_no')
             ->where('p.plan_date', $date)
             ->when($location !== 'all', fn($q) => $q->where('p.location_code', $location))
             ->when($status !== 'all', fn($q) => $q->where('p.status', $status))
             ->orderBy('p.location_code')->orderBy('p.item_no')
             ->select('p.*', DB::raw('COALESCE(i.description, p.description) AS item_description'),
-                DB::raw('COALESCE(x.produced, 0) AS produced'), DB::raw('COALESCE(x.orders, 0) AS orders'))
+                DB::raw('COALESCE(x.produced, 0) AS produced'), DB::raw('COALESCE(x.orders, 0) AS orders'),
+                DB::raw('COALESCE(b.batches, 0) AS batches'), DB::raw('COALESCE(b.batches_done_wms, 0) AS batches_done_wms'),
+                DB::raw('COALESCE(b.batches_posted, 0) AS batches_posted'), DB::raw('COALESCE(b.batches_running, 0) AS batches_running'))
             ->get();
 
         $locations = DB::table('bc_plan_orders')->where('plan_date', $date)->distinct()->orderBy('location_code')->pluck('location_code');
-        $lastSync = DB::table('bc_plan_orders')->max('synced_at');
+        $lastSync = DB::table('bc_sync_state')->where('key', 'plans')->value('last_run_at') ?? DB::table('bc_plan_orders')->max('synced_at');
 
         return view('production_plan.index', compact('title', 'plans', 'date', 'location', 'status', 'locations', 'lastSync'));
     }
@@ -57,15 +67,32 @@ class ProductionPlanController extends Controller
         return response()->json(['plan' => $plan, 'components' => $components]);
     }
 
+    // Batch orders of a plan: one WMS production order per batch, with WMS and BC progress.
+    public function batches(string $planNo)
+    {
+        $plan = DB::table('bc_plan_orders')->where('plan_no', $planNo)->first();
+        abort_unless($plan, 404);
+        $batches = DB::table('bc_plan_batches')->where('plan_no', $planNo)->orderBy('plan_line_no')->orderBy('batch_no')->get();
+        $weighed = DB::table('generated_production_orders')->where('line_type', 'output')->where('plan_order_no', $planNo)
+            ->whereNotNull('batch_code')->groupBy('batch_code')->select('batch_code', DB::raw('SUM(quantity) AS qty'))->pluck('qty', 'batch_code');
+        foreach ($batches as $b) {
+            $b->wms_produced = (float) ($weighed[$b->batch_code] ?? 0);
+        }
+        return response()->json(['plan' => $plan, 'batches' => $batches]);
+    }
+
     public function sync(Request $request)
     {
         $date = $request->input('date', today()->toDateString());
         try {
-            $stats = PlanSync::make()->sync(
-                now()->parse($date)->subDays(config('bc_plan.days_back'))->toDateString(),
-                now()->parse($date)->addDays(config('bc_plan.days_ahead'))->toDateString()
-            );
-            Toastr::success("Plans synced from BC: {$stats['created']} new, {$stats['updated']} updated, {$stats['withdrawn']} withdrawn.", 'Production Plan');
+            $sync = PlanSync::make();
+            $stats = method_exists($sync->source(), 'fetchChanged')
+                ? $sync->syncChanged()
+                : $sync->sync(
+                    now()->parse($date)->subDays(config('bc_plan.days_back'))->toDateString(),
+                    now()->parse($date)->addDays(config('bc_plan.days_ahead'))->toDateString()
+                );
+            Toastr::success("Plans synced from BC: {$stats['created']} new, {$stats['updated']} updated, {$stats['withdrawn']} withdrawn, {$stats['batches']} batch(es) refreshed.", 'Production Plan');
         } catch (\Throwable $e) {
             Log::error('BC plan sync failed: ' . $e->getMessage());
             Toastr::error('Plan sync from BC failed: ' . $e->getMessage(), 'Production Plan');

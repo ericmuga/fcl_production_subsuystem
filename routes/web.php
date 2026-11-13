@@ -17,6 +17,7 @@ use App\Http\Controllers\IDTController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PetfoodController;
+use App\Http\Controllers\PlannedOrdersController;
 use App\Http\Controllers\RecipeDraftController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\QAController;
@@ -189,9 +190,14 @@ Route::get('/sausage/stuffing-weights/history', [SausageController::class, 'stuf
 Route::post('/sausage/stuffing-weights/history/export', [SausageController::class, 'exportStuffingWeightsHistory'])->name('stuffing_weights_history_export');
 
 /*-------------BC MRP daily plan (integration map S5, S12)------------------ */
+Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');
+Route::get('/planned-orders/{planNo}/details', [PlannedOrdersController::class, 'details'])->name('planned_orders_details');
+Route::get('/planned-orders/{planNo}/fulfil', [PlannedOrdersController::class, 'fulfil'])->name('planned_orders_fulfil');
+Route::post('/planned-orders/{planNo}/fulfil', [PlannedOrdersController::class, 'storeFulfilment'])->name('planned_orders_fulfil_store');
 Route::get('/production-plan', [ProductionPlanController::class, 'index'])->name('production_plan');
 Route::post('/production-plan/sync', [ProductionPlanController::class, 'sync'])->name('production_plan_sync');
 Route::get('/production-plan/{planNo}/components', [ProductionPlanController::class, 'components'])->name('production_plan_components');
+Route::get('/production-plan/{planNo}/batches', [ProductionPlanController::class, 'batches'])->name('production_plan_batches');
 Route::post('/production-plan/{planNo}/close', [ProductionPlanController::class, 'close'])->name('production_plan_close');
 Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveStuffingWeights'])->name('save_stuffing_weights');
 Route::post('/sausage/generated-production-orders/export', [SausageController::class, 'exportGeneratedProductionOrders'])->name('export_generated_production_orders');

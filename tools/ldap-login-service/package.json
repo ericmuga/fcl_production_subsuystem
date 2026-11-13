@@ -1,0 +1,13 @@
+{
+  "name": "wms-ldap-login-service",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local login API for WMS: validates domain credentials against Active Directory (LOGIN_URL).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "ldapjs": "^3.0.7"
+  }
+}
