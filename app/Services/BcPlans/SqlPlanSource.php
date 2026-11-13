@@ -223,6 +223,17 @@ class SqlPlanSource implements PlanSource
             }
         }
 
+        // Batch size per item: its BATCH unit in base units (kg), used when WMS cuts the batches itself.
+        $batchSize = [];
+        $items = array_values(array_unique(array_map(fn($h) => $h->item_no, $headers)));
+        foreach (array_chunk($items, 500) as $chunk) {
+            $in = implode(',', array_fill(0, count($chunk), '?'));
+            foreach ($db->select("SELECT [Item No_] AS item_no, [Qty_ per Unit of Measure] AS qty FROM {$this->t('Item Unit of Measure')}
+                WHERE [Code] = 'BATCH' AND [Item No_] IN ({$in})", $chunk) as $u) {
+                $batchSize[$u->item_no] = (float) $u->qty;
+            }
+        }
+
         $flushing = ['Manual', 'Forward', 'Backward', 'Pick + Forward', 'Pick + Backward', 'Pick + Manual'];
         $bcDate = fn($v) => $v && substr((string) $v, 0, 4) !== '1753' ? (string) $v : null;
         $plans = [];
@@ -269,7 +280,8 @@ class SqlPlanSource implements PlanSource
                 'location_code' => $h->location_code,
                 'plan_date' => $h->plan_date,
                 'uom' => $lines[$key]->base_uom ?? ($lines[$key]->line_uom ?? null),
-                'batch_uom' => $planBatches[0]['batch_uom'] ?? null,
+                'batch_uom' => $planBatches[0]['batch_uom'] ?? (isset($batchSize[$h->item_no]) ? 'BATCH' : null),
+                'batch_size_base' => $batchSize[$h->item_no] ?? null,
                 'released_from' => $h->released_from ?: null,
                 'planned_qty' => round($planned, 5),
                 'executed_qty' => round($executed, 5),

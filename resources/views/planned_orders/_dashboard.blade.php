@@ -3,7 +3,16 @@
 <div class="card mb-3" id="planned-orders">
     <div class="card-header d-flex align-items-center">
         <h3 class="card-title mb-0"><i class="fa fa-industry mr-2"></i>Planned production orders <small class="text-muted">from BC</small></h3>
-        <small class="text-muted ml-auto">Last sync: {{ $pp['lastSync'] ?? 'never' }}</small>
+        <small class="text-muted ml-auto mr-2">Last sync: {{ $pp['lastSync'] ?? 'never' }}</small>
+        <form method="POST" action="{{ route('planned_orders_refresh') }}" class="mb-0">
+            @csrf
+            @foreach(['item', 'order', 'planned', 'section', 'status', 'from', 'to'] as $k)
+                <input type="hidden" name="pp_{{ $k }}" value="{{ $f[$k] }}">
+            @endforeach
+            <button type="submit" class="btn btn-sm btn-primary" title="Pull the current firm planned and released orders from BC and cut their batches">
+                <i class="fa fa-sync-alt mr-1"></i>Refresh from BC
+            </button>
+        </form>
     </div>
     <div class="card-body">
         @if($pp['error'])

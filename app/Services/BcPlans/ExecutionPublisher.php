@@ -40,12 +40,15 @@ class ExecutionPublisher
                 continue;
             }
             $utc = fn($t) => now()->parse($t)->subHours($offset)->format('Y-m-d H:i:s');
+            $bcBatch = !empty($out->batch_code)
+                && DB::table('bc_plan_batches')->where('batch_code', $out->batch_code)->value('source') === 'bc';
             $header = [
                 'production_order_no' => $orderNo,
                 'transaction_id' => $out->transaction_id,
                 'plan_order_no' => $out->plan_order_no,
-                'plan_line_no' => $out->plan_line_no ?? null,
-                'plan_batch_no' => $out->plan_batch_no ?? null,
+                // Batches WMS cut itself are not in BC: BC nets those against the plan only.
+                'plan_line_no' => $bcBatch ? ($out->plan_line_no ?? null) : null,
+                'plan_batch_no' => $bcBatch ? ($out->plan_batch_no ?? null) : null,
                 'batch_code' => $out->batch_code ?? null,
                 'batch_completed' => isset($out->batch_completed) ? (bool) $out->batch_completed : true,
                 'item_no' => $out->item_no,

@@ -101,6 +101,25 @@ class PlannedOrdersController extends Controller
         return view('planned_orders.index', compact('title', 'pp'));
     }
 
+    /**
+     * Refresh from BC: pull the firm planned / released orders changed since the last sync, then cut WMS batch orders
+     * for the ones BC has not batched (BATCH = 80 kg). BC's own batches ("Push to WMS") win once they exist.
+     */
+    public function refresh(Request $request)
+    {
+        try {
+            $sync = \App\Services\BcPlans\PlanSync::make();
+            $s = method_exists($sync->source(), 'fetchChanged') ? $sync->syncChanged() : $sync->sync(...self::defaultWindow());
+            $b = (new \App\Services\BcPlans\LocalBatcher())->run();
+            Toastr::success("From BC: {$s['created']} new, {$s['updated']} changed, " . (($s['converted'] ?? 0) + ($s['closed'] ?? 0) + $s['withdrawn'])
+                . " no longer active. Batches: {$b['created']} new, {$b['resized']} resized, {$b['cancelled']} cancelled.", 'Planned Orders');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('Planned orders refresh failed: ' . $e->getMessage());
+            Toastr::error('Refresh from BC failed: ' . $e->getMessage(), 'Planned Orders');
+        }
+        return redirect()->route('planned_orders', $request->only(['pp_item', 'pp_order', 'pp_planned', 'pp_section', 'pp_status', 'pp_from', 'pp_to']));
+    }
+
     /** Order details for the modal: header, components and batches. */
     public function details(string $planNo)
     {

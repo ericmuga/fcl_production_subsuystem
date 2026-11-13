@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Services\BcPlans\LocalBatcher;
 use App\Services\BcPlans\PlanSync;
 use Illuminate\Console\Command;
 
@@ -12,6 +13,7 @@ class SyncBcPlans extends Command
         {--to= : last plan date (Y-m-d), with --from}
         {--full : incremental mode, but read every current plan (first run or repair)}
         {--source= : sql | api (default BC_PLAN_SOURCE)}
+        {--no-batches : do not cut WMS batches for orders BC has not batched}
         {--dry-run : show what would change without writing}';
 
     protected $description = 'Pull BC released production orders (plans) and their WMS batches into WMS: inserts and updates since the last run';
@@ -38,6 +40,12 @@ class SyncBcPlans extends Command
             unset($stats['since'], $stats['watermark']);
         }
         $this->table(array_keys($stats), [array_values($stats)]);
+
+        if (!$dry && !$this->option('no-batches')) {
+            $b = (new LocalBatcher())->run();
+            $this->info('WMS batches for orders BC has not batched:');
+            $this->table(array_keys($b), [array_values($b)]);
+        }
         return 0;
     }
 }

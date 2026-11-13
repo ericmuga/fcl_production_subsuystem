@@ -191,6 +191,7 @@ Route::post('/sausage/stuffing-weights/history/export', [SausageController::clas
 
 /*-------------BC MRP daily plan (integration map S5, S12)------------------ */
 Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');
+Route::post('/planned-orders/refresh', [PlannedOrdersController::class, 'refresh'])->name('planned_orders_refresh');
 Route::get('/planned-orders/{planNo}/details', [PlannedOrdersController::class, 'details'])->name('planned_orders_details');
 Route::get('/planned-orders/{planNo}/fulfil', [PlannedOrdersController::class, 'fulfil'])->name('planned_orders_fulfil');
 Route::post('/planned-orders/{planNo}/fulfil', [PlannedOrdersController::class, 'storeFulfilment'])->name('planned_orders_fulfil_store');

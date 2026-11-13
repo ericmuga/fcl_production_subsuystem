@@ -151,6 +151,7 @@ class PlanSync
                 'plan_date' => $p['plan_date'],
                 'uom' => $p['uom'],
                 'batch_uom' => $p['batch_uom'] ?? null,
+                'batch_size_base' => $p['batch_size_base'] ?? null,
                 'section' => $p['section'] ?? null,
                 'sections' => isset($p['sections']) ? mb_substr((string) $p['sections'], 0, 150) : null,
                 'released_from' => $p['released_from'] ?? null,
@@ -198,6 +199,12 @@ class PlanSync
 
     private function upsertBatches(array $p, $now): void
     {
+        if (!empty($p['batches'])) {
+            // BC has batched this order: WMS-cut batches nobody started give way to BC's.
+            DB::table('bc_plan_batches')->where('plan_no', $p['plan_no'])->where('source', 'wms')
+                ->where('wms_status', 'pending')->whereNull('wms_order_no')
+                ->update(['wms_status' => 'cancelled', 'updated_at' => $now]);
+        }
         foreach ($p['batches'] ?? [] as $b) {
             $bc = [
                 'plan_no' => $p['plan_no'],
