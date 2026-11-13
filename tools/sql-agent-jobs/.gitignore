@@ -1,0 +1,2 @@
+# Exports of SQL Agent jobs may hold connection strings or passwords: never commit them
+agent-jobs-export*/

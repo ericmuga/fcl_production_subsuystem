@@ -48,6 +48,7 @@ The design keeps that route (CP17 fallback) and adds the plan around it.
   - fix the step chaining (§8 items 1–2);
   - add the Marination order + line duplicate guard (item 3);
   - move the job owner to a service account (item 12).
+- [x] Tooling to move SQL Agent jobs to another server, with a new owner, name replacements and linked servers: `tools/sql-agent-jobs/` (README has the cutover steps).
 - [ ] Agree the contract above with Queue (next step 3 of the map).
 - **Exit:** contract signed off; job fixes deployed.
 
@@ -132,7 +133,8 @@ The design keeps that route (CP17 fallback) and adds the plan around it.
 |---|---|---|---|
 | 1 Plan out | Plan fields on Production Order (`Production Ext`, fields 51519100–107); enum 51519013 `WMS Plan Status`; codeunit 51519105 `WMS Plan Management`; API pages 51519378 `wmsPlanOrders` (with bound action `closePlan`) and 51519379 `wmsPlanComponents`; **Publish to WMS** / **Close WMS Plan** on Released Production Order(s) (page ext 51519118/119) | `bc_plan_orders`, `bc_plan_order_components`; `php artisan bc:sync-plans` (idempotent, `--dry-run`); `SqlPlanSource` (bc240, published or pilot mode) and `ApiPlanSource` (OAuth client credentials); **Production Plan** screen `/production-plan` with target, produced, posted, remaining and **Close day** | Built; BC compiles with no new warnings; WMS tests pass (17/17) |
 | 2 Execution orders | Staging header: `Plan Order No.`, `WMS Transaction ID` (keyed), `Status Message`, `Plan Netted`; lines: `Batch No.`, `Plan Component Line No.`; status `Held`; API pages 51519380 `wmsExecutionOrders` + 51519381 `wmsExecutionLines` (deep insert; rejects duplicates with `WMS_DUPLICATE_TRANSACTION` and closed plans with `WMS_PLAN_CLOSED`) | `plan_order_no` + `transaction_id` on `generated_production_orders`, `idt_transfers`, `beheading_data`, `butchery_data`, `deboned_data`, `beef_slicing`; stuffing orders are stamped with the open plan and `GPO:<order no.>` | Data model and stuffing stamping built; push client and other sections still to do |
-| 3 Netting | `NetExecutionOrder` called after an execution order is posted and finished (`postWMSProdutionOrder`); runs once per order | — | Built; stock gate (Held) still to do |
+| 2–4 over SQL (no Azure AD app yet) | Table 51519225 `WMS Plan Close Request` and page 51519382; job queue codeunit 51519106 `WMS Plan Job` (with 51519107) closes requested plans; **stock gate**: *Process Production Orders* holds plan-linked orders when consumption stock is short (`Held` + reason) and retries them each run | `BcStaging`: writes execution orders into the BC staging tables (a transaction id is accepted once; closed plans are rejected), reads status back, writes close requests; `php artisan bc:push-executions`; **Close day** writes a close request on the SQL route; opt-in scheduler `BC_PLAN_SCHEDULE=true` | Built; WMS tests pass (20/20); BC compiles; the SQL route refuses to write until the BC build is deployed |
+| 3 Netting | `NetExecutionOrder` called after an execution order is posted and finished (`postWMSProdutionOrder`); runs once per order | — | Built |
 
 ### Running it locally
 - **WMS:**
