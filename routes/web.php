@@ -4,6 +4,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BeefLambController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
+use App\Http\Controllers\ProductionPlanController;
 use App\Http\Controllers\ChoppingController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\Despatch;
@@ -186,6 +187,12 @@ Route::post('/sausage-stuffing-batch-summary-axios', [SausageController::class, 
 Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
 Route::get('/sausage/stuffing-weights/history', [SausageController::class, 'stuffingWeightsHistory'])->name('export_stuffing_weights_history');
 Route::post('/sausage/stuffing-weights/history/export', [SausageController::class, 'exportStuffingWeightsHistory'])->name('stuffing_weights_history_export');
+
+/*-------------BC MRP daily plan (integration map S5, S12)------------------ */
+Route::get('/production-plan', [ProductionPlanController::class, 'index'])->name('production_plan');
+Route::post('/production-plan/sync', [ProductionPlanController::class, 'sync'])->name('production_plan_sync');
+Route::get('/production-plan/{planNo}/components', [ProductionPlanController::class, 'components'])->name('production_plan_components');
+Route::post('/production-plan/{planNo}/close', [ProductionPlanController::class, 'close'])->name('production_plan_close');
 Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveStuffingWeights'])->name('save_stuffing_weights');
 Route::post('/sausage/generated-production-orders/export', [SausageController::class, 'exportGeneratedProductionOrders'])->name('export_generated_production_orders');
 /*-------------End Admin------------------ */

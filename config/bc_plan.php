@@ -1,0 +1,47 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| BC MRP daily plan (BC -> WMS), integration map steps S3-S5
+|--------------------------------------------------------------------------
+|
+| A plan order is a BC Released production order for one item + location + day. WMS shows it as the
+| day's target and every execution order carries its number (plan_order_no), so BC can net the plan.
+|
+| source 'sql' - read the BC tables through the 'bc240' connection (local mirror / fallback route, CP17).
+|                While the FARMERSCHOICE extension with the plan fields is not deployed, every Released order
+|                that BC planning created (not a WMS execution order) is treated as an open plan ("pilot mode").
+| source 'api' - read the BC API pages /api/farmerschoice/mrp/v1.0 (target route, CP17).
+|
+*/
+
+return [
+    'source' => env('BC_PLAN_SOURCE', 'sql'),
+
+    // How many days around today a sync covers when no dates are given.
+    'days_back' => (int) env('BC_PLAN_DAYS_BACK', 1),
+    'days_ahead' => (int) env('BC_PLAN_DAYS_AHEAD', 7),
+
+    'sql' => [
+        'connection' => env('BC_PLAN_SQL_CONNECTION', 'bc240'),
+        'company' => env('BC_COMPANY', 'FCL1'),
+        // Base application tables
+        'base_app_id' => env('BC_BASE_APP_ID', '437dbf0e-84ff-417a-965d-ed2bb9650972'),
+        // FARMERSCHOICE extension (holds the WMS plan fields once deployed)
+        'ext_app_id' => env('BC_EXT_APP_ID', '23dc970e-11e8-4d9b-8613-b7582aec86ba'),
+        // Locations whose plans WMS shows; empty = all
+        'locations' => array_filter(explode(',', (string) env('BC_PLAN_LOCATIONS', ''))),
+    ],
+
+    'api' => [
+        'tenant' => env('BC_API_TENANT'),
+        'environment' => env('BC_API_ENVIRONMENT', 'Production'),
+        'company_id' => env('BC_API_COMPANY_ID'),
+        'client_id' => env('BC_API_CLIENT_ID'),
+        'client_secret' => env('BC_API_CLIENT_SECRET'),
+        'base_url' => env('BC_API_BASE_URL', 'https://api.businesscentral.dynamics.com/v2.0'),
+        'token_url' => env('BC_API_TOKEN_URL', 'https://login.microsoftonline.com/%s/oauth2/v2.0/token'),
+        'scope' => env('BC_API_SCOPE', 'https://api.businesscentral.dynamics.com/.default'),
+        'timeout' => (int) env('BC_API_TIMEOUT', 30),
+    ],
+];

@@ -7,6 +7,7 @@ use App\Exports\SausageEntriesExport;
 use App\Exports\StuffingWeightsHistoryExport;
 use App\Models\Helpers;
 use App\Models\SausageEntry;
+use App\Services\BcPlans\PlanResolver;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -1287,6 +1288,7 @@ class SausageController extends Controller
 
         $route = $option->route;
         $finalRecipe = end($route)->recipe;
+        $planResolver = new PlanResolver();
 
         $recipeLines = DB::table($this->recipeTable())
             ->whereIn('recipe', collect($route)->pluck('recipe')->unique()->toArray())
@@ -1335,8 +1337,13 @@ class SausageController extends Controller
 
             $routing = $this->routingFor($edge->process, $anchor->input_item_location);
 
+            $orderNo = $this->productionOrderNo($routing, $finalRecipe, $transferId);
+
             $common = [
-                'production_order_no' => $this->productionOrderNo($routing, $finalRecipe, $transferId),
+                'production_order_no' => $orderNo,
+                // BC MRP plan this execution order fulfils (integration map S8) and its idempotency key (CP23)
+                'plan_order_no' => $planResolver->openPlanFor($edge->output_item, $anchor->output_item_location, $now->toDateString()),
+                'transaction_id' => PlanResolver::transactionId('GPO', $orderNo),
                 'routing' => $routing,
                 'process' => $edge->process,
                 'recipe' => $edge->recipe,
