@@ -41,6 +41,8 @@ class Kernel extends ConsoleKernel
             // Incremental: only what BC inserted or updated since the last run, so it can run every minute.
             $schedule->command('bc:sync-plans')->everyMinute()->withoutOverlapping();
             $schedule->command('bc:push-executions')->everyFiveMinutes()->withoutOverlapping();
+            // Orders closed at end of day: closed in WMS once BC has finished them.
+            $schedule->command('bc:end-of-day --refresh')->everyFiveMinutes()->withoutOverlapping();
         }
     }
 

@@ -46,6 +46,20 @@ return [
         '36' => 'Despatch',
     ],
 
+    // Weighing station (/planned-orders/weigh): which scale_configs section each WMS section reads its scales from
+    // (scale_configs.section; the scale settings pages of each section maintain them).
+    'section_scales' => [
+        'Slaughter' => 'slaughter',
+        'Butchery' => 'butchery',
+        'Sausage' => 'sausage',
+        'High Care' => 'highcare1',
+        'Despatch' => 'despatch',
+    ],
+    // Allow typing the gross weight when no scale answers (testing, scale down). Turn off on the shop floor.
+    'weigh_manual' => (bool) env('BC_PLAN_WEIGH_MANUAL', true),
+    // Who may change the vessel tares (users.role).
+    'vessel_admin_roles' => array_values(array_filter(explode(',', (string) env('BC_PLAN_VESSEL_ADMIN_ROLES', 'admin')))),
+
     'sql' => [
         'connection' => env('BC_PLAN_SQL_CONNECTION', 'bc240'),
         'company' => env('BC_COMPANY', 'FCL1'),

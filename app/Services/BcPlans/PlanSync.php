@@ -77,13 +77,17 @@ class PlanSync
             $seen = $this->upsertPlans($res['plans'], $dryRun, $stats);
 
             // Orders that left the plan set without a change we can see (finished without a push, or deleted).
-            $active = DB::table('bc_plan_orders')->whereIn('status', ['open', 'released', 'firm_planned'])
+            // 'closing': WMS asked BC to close it (end of day); it becomes closed once BC has finished the order.
+            $active = DB::table('bc_plan_orders')->whereIn('status', ['open', 'released', 'firm_planned', 'closing'])
                 ->when($seen, fn($q) => $q->whereNotIn('plan_no', $seen))->pluck('status', 'plan_no')->all();
             if ($active && method_exists($this->source, 'bcStates')) {
                 $states = $this->source->bcStates(array_keys($active));
                 foreach ($active as $no => $wmsStatus) {
                     $s = $states[$no] ?? null;
                     if ($s === 'released' || $s === 'firm_planned') {
+                        continue;
+                    }
+                    if ($wmsStatus === 'closing' && $s !== 'finished') {
                         continue;
                     }
                     // A firm planned order that disappears was released under a new no. (released_from links it).
@@ -117,6 +121,20 @@ class PlanSync
         return $stats;
     }
 
+    /**
+     * Orders BC posted to WMS (POST /api/v1/bc/released-orders): same upsert as the sync, without the reconciliation
+     * (BC sends one order at a time). @return array{fetched:int,created:int,updated:int,unchanged:int,withdrawn:int,batches:int}
+     */
+    public function ingest(array $plans): array
+    {
+        $stats = $this->newStats(count($plans));
+        DB::transaction(function () use ($plans, &$stats) {
+            $this->upsertPlans($plans, false, $stats);
+            DB::table('bc_plan_orders')->whereIn('plan_no', array_column($plans, 'plan_no'))->update(['received_at' => now()]);
+        });
+        return $stats;
+    }
+
     private function newStats(int $fetched): array
     {
         return ['fetched' => $fetched, 'created' => 0, 'updated' => 0, 'unchanged' => 0, 'withdrawn' => 0, 'batches' => 0];
@@ -135,6 +153,11 @@ class PlanSync
                 ->pluck('plan_no')->all());
         }
         $moved = array_flip($moved ?? []);
+        // End of day asked BC to close these: a sync or a re-send must not reopen them before BC has finished them.
+        $closing = [];
+        foreach (array_chunk(array_column($plans, 'plan_no'), 1000) as $chunk) {
+            $closing += array_flip(DB::table('bc_plan_orders')->whereIn('plan_no', $chunk)->where('status', 'closing')->pluck('plan_no')->all());
+        }
         foreach ($plans as $p) {
             $seen[] = $p['plan_no'];
             $hash = hash('sha256', json_encode($this->hashable($p)));
@@ -173,6 +196,9 @@ class PlanSync
                 'bc_location_code' => $p['location_code'],
                 'bc_section' => $p['section'] ?? null,
             ];
+            if (isset($closing[$p['plan_no']]) && in_array($row['status'], ['open', 'released'], true)) {
+                unset($row['status']);
+            }
             $isMoved = isset($moved[$p['plan_no']]);
             if ($isMoved) {
                 unset($row['location_code'], $row['section']);
@@ -223,6 +249,7 @@ class PlanSync
             $bc = [
                 'plan_no' => $p['plan_no'],
                 'plan_line_no' => $b['plan_line_no'],
+                'firm_planned_no' => $p['released_from'] ?? null,
                 'batch_no' => $b['batch_no'],
                 'item_no' => $b['item_no'],
                 'variant_code' => $b['variant_code'],

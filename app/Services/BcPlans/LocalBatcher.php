@@ -76,6 +76,7 @@ class LocalBatcher
                 'batch_code' => mb_substr($plan->plan_no . '-W' . str_pad((string) $next, 3, '0', STR_PAD_LEFT), 0, 30),
                 'plan_no' => $plan->plan_no,
                 'plan_line_no' => 10000,
+                'firm_planned_no' => $plan->released_from ?? null,
                 'batch_no' => $next,
                 'item_no' => $plan->item_no,
                 'location_code' => $plan->location_code,

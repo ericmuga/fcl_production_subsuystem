@@ -21,6 +21,7 @@ class PlannedOrdersController extends Controller
         'firm_planned' => 'Firm planned',
         'released' => 'Released, not pushed',
         'open' => 'Open in WMS',
+        'closing' => 'Closing (end of day sent to BC)',
         'closed' => 'Closed',
         'all' => 'All',
     ];
@@ -130,7 +131,7 @@ class PlannedOrdersController extends Controller
             'plan' => $plan,
             'components' => DB::table('bc_plan_order_components')->where('plan_no', $planNo)->orderBy('plan_line_no')->orderBy('line_no')->get(),
             'batches' => DB::table('bc_plan_batches')->where('plan_no', $planNo)->orderBy('plan_line_no')->orderBy('batch_no')->get(),
-            'fulfil_url' => $plan->status === 'open' ? route('planned_orders_fulfil', $planNo) : null,
+            'fulfil_url' => $plan->status === 'open' ? route('planned_orders_weigh', ['plan' => $planNo]) : null,
             'location' => [
                 'editable' => in_array($plan->status, PlanLocation::EDITABLE, true),
                 'bc' => $plan->bc_location_code ?? $plan->location_code,
@@ -176,7 +177,7 @@ class PlannedOrdersController extends Controller
         $openBatches = (clone $batchQuery)->whereIn('wms_status', ['pending', 'in_progress'])->orderBy('batch_no')->get();
 
         $title = 'Fulfil ' . ($batch->batch_code ?? $planNo);
-        $lines = $batch ? $this->defaultLines($plan, $batch) : [];
+        $lines = $batch ? self::batchLines($plan, $batch) : [];
         $done = (clone $batchQuery)->where('wms_status', 'completed')->count();
         $total = (clone $batchQuery)->where('wms_status', '<>', 'cancelled')->count();
         return view('planned_orders.fulfil', compact('title', 'plan', 'batch', 'lines', 'openBatches', 'done', 'total'));
@@ -186,7 +187,7 @@ class PlannedOrdersController extends Controller
      * Autopopulated lines for one batch, in kg: the output at the batch target, each component at its share of the
      * plan for this batch (expected qty x batch / plan remaining), by-products as negative consumption.
      */
-    private function defaultLines(object $plan, object $batch): array
+    public static function batchLines(object $plan, object $batch): array
     {
         $comps = DB::table('bc_plan_order_components')->where('plan_no', $plan->plan_no)
             ->where('plan_line_no', $batch->plan_line_no)->orderBy('line_no')->get();
@@ -239,58 +240,9 @@ class PlannedOrdersController extends Controller
         }
 
         $completed = $request->boolean('batch_completed', true);
-        $orderNo = DB::transaction(function () use ($plan, $batch, $data, $completed) {
-            // One WMS order per run of the batch: WB<batch id>, with -2, -3 ... for further partial runs.
-            $runs = DB::table('generated_production_orders')->where('batch_code', $batch->batch_code)->distinct()->count('production_order_no');
-            $orderNo = 'WB' . $batch->id . ($runs ? '-' . ($runs + 1) : '');
-            $now = now();
-            $common = [
-                'production_order_no' => $orderNo,
-                'plan_order_no' => $plan->plan_no,
-                'plan_line_no' => $batch->plan_line_no,
-                'plan_batch_no' => $batch->batch_no,
-                'batch_code' => $batch->batch_code,
-                'batch_completed' => $completed ? 1 : 0,
-                'transaction_id' => PlanResolver::transactionId('PLB', $orderNo),
-                'external_document_no' => $batch->batch_code,
-                'process' => 'Plan batch',
-                'recipe' => $plan->item_no,
-                'step' => 1,
-                'batch_no' => $batch->batch_code,
-                'user_id' => Auth::id(),
-                'transaction_date' => $now->toDateString(),
-                // Sent to BC by bc:push-executions (SQL route), never by the legacy ProductionData export.
-                'published' => 1,
-                'created_at' => $now,
-                'updated_at' => $now,
-            ];
-            $lineNo = 1000;
-            $rows = [];
-            foreach ($data['lines'] as $l) {
-                $qty = (float) $l['quantity'];
-                if ($qty <= 0) {
-                    continue;
-                }
-                $isOutput = $l['type'] === 'output';
-                $rows[] = $common + [
-                    'line_no' => $isOutput ? 1000 : ($lineNo += 1000),
-                    'line_type' => $isOutput ? 'output' : 'consumption',
-                    'item_no' => $l['item_no'],
-                    // by-products are posted as negative consumption (integration map CP7)
-                    'quantity' => round(!$isOutput && !empty($l['by_product']) ? -$qty : $qty, 5),
-                    'uom' => $l['uom'] ?: 'KG',
-                    'location_code' => $l['location_code'] ?? null,
-                    'net_weight' => $isOutput ? round($qty, 5) : null,
-                ];
-            }
-            DB::table('generated_production_orders')->insert($rows);
-            DB::table('bc_plan_batches')->where('id', $batch->id)->update([
-                'wms_order_no' => $orderNo, 'wms_status' => $completed ? 'completed' : 'in_progress', 'updated_at' => $now,
-            ]);
-            return $orderNo;
-        });
-
-        Toastr::success("Batch {$batch->batch_code} recorded as WMS order {$orderNo}. It reaches BC on the next bc:push-executions run.", 'Planned Orders');
+        $res = (new \App\Services\BcPlans\BatchPoster())->post($plan, $batch, $data['lines'], $completed, Auth::id());
+        $msg = "Batch {$batch->batch_code} posted as WMS order {$res['order_no']}. {$res['message']}";
+        $res['bc'] === 'rejected' ? Toastr::warning($msg, 'Planned Orders') : Toastr::success($msg, 'Planned Orders');
         return redirect()->route('planned_orders_fulfil', $planNo);
     }
 }

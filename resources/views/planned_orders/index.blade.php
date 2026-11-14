@@ -16,7 +16,7 @@
             </div>
             <div class="modal-body" id="planModalBody">Loading...</div>
             <div class="modal-footer">
-                <a href="#" class="btn btn-success d-none" id="planModalFulfil">Fulfil next batch</a>
+                <a href="#" class="btn btn-success d-none" id="planModalFulfil">Weigh next batch</a>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
@@ -32,6 +32,7 @@
         firm_planned: 'Firm planned in BC. It becomes a WMS order once the planner releases it and pushes it to WMS in batches.',
         released: 'Released in BC, not pushed to WMS yet: no batches to fulfil.',
         open: 'Open in WMS: fulfil it batch by batch.',
+        closing: 'End of day sent to BC: no more weighings; it shows closed once BC has finished the order.',
         closed: 'Closed: later weighings for this order are rejected.'
     };
 

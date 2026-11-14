@@ -4,6 +4,8 @@
     <div class="card-header d-flex align-items-center">
         <h3 class="card-title mb-0"><i class="fa fa-industry mr-2"></i>Planned production orders <small class="text-muted">from BC</small></h3>
         <small class="text-muted ml-auto mr-2">Last sync: {{ $pp['lastSync'] ?? 'never' }}</small>
+        <a href="{{ route('planned_orders_weigh') }}" class="btn btn-sm btn-success mr-2"><i class="fa fa-balance-scale mr-1"></i>Weigh</a>
+        <a href="{{ route('planned_orders_end_of_day') }}" class="btn btn-sm btn-outline-danger mr-2"><i class="fa fa-moon mr-1"></i>End of day</a>
         <form method="POST" action="{{ route('planned_orders_refresh') }}" class="mb-0">
             @csrf
             @foreach(['item', 'order', 'planned', 'section', 'status', 'from', 'to'] as $k)
@@ -111,13 +113,13 @@
                         <td class="text-right">{{ number_format($remaining, 2) }}</td>
                         <td class="text-nowrap">{{ $p->batches ? $p->batches_done . ' / ' . $p->batches . ' ' . $p->batch_uom : '-' }}</td>
                         <td>
-                            <span class="badge @switch($p->status) @case('open') badge-success @break @case('released') badge-info @break @case('firm_planned') badge-light @break @case('closed') badge-secondary @break @default badge-warning @endswitch">
+                            <span class="badge @switch($p->status) @case('open') badge-success @break @case('released') badge-info @break @case('firm_planned') badge-light @break @case('closing') badge-dark @break @case('closed') badge-secondary @break @default badge-warning @endswitch">
                                 {{ ucfirst(str_replace('_', ' ', $p->status)) }}
                             </span>
                         </td>
                         <td class="text-nowrap">
                             @if($p->status === 'open' && $p->batches > $p->batches_done)
-                                <a href="{{ route('planned_orders_fulfil', $p->plan_no) }}" class="btn btn-sm btn-success py-0">Fulfil</a>
+                                <a href="{{ route('planned_orders_weigh', ['plan' => $p->plan_no]) }}" class="btn btn-sm btn-success py-0">Weigh</a>
                             @else
                                 <button type="button" class="btn btn-sm btn-outline-secondary py-0 js-plan-modal" data-url="{{ route('planned_orders_details', $p->plan_no) }}">View</button>
                             @endif

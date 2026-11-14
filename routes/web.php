@@ -191,6 +191,16 @@ Route::post('/sausage/stuffing-weights/history/export', [SausageController::clas
 
 /*-------------BC MRP daily plan (integration map S5, S12)------------------ */
 Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');
+// Weighing station, vessels (tare per section) and end of day for BC planned orders
+Route::get('/planned-orders/weigh', [\App\Http\Controllers\PlanWeighingController::class, 'station'])->name('planned_orders_weigh');
+Route::get('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'vessels'])->name('planned_orders_vessels');
+Route::post('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'saveVessel'])->name('planned_orders_vessels_save');
+Route::get('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'endOfDay'])->name('planned_orders_end_of_day');
+Route::post('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'closeDay'])->name('planned_orders_close_day');
+Route::delete('/planned-orders/weighings/{id}', [\App\Http\Controllers\PlanWeighingController::class, 'deleteWeighing'])->whereNumber('id')->name('planned_orders_weighing_delete');
+Route::get('/planned-orders/{planNo}/items', [\App\Http\Controllers\PlanWeighingController::class, 'items'])->name('planned_orders_items');
+Route::post('/planned-orders/{planNo}/batches/{batchCode}/weighings', [\App\Http\Controllers\PlanWeighingController::class, 'storeWeighing'])->name('planned_orders_weighing_store');
+Route::post('/planned-orders/{planNo}/batches/{batchCode}/post', [\App\Http\Controllers\PlanWeighingController::class, 'postBatch'])->name('planned_orders_batch_post');
 Route::post('/planned-orders/refresh', [PlannedOrdersController::class, 'refresh'])->name('planned_orders_refresh');
 Route::get('/planned-orders/{planNo}/details', [PlannedOrdersController::class, 'details'])->name('planned_orders_details');
 Route::post('/planned-orders/{planNo}/location', [PlannedOrdersController::class, 'updateLocation'])->name('planned_orders_location');

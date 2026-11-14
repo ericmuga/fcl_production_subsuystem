@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class ExecutionPublisher
 {
     private $staging;
+    private $skipStatusRefresh = false;
 
     public function __construct(?BcStaging $staging = null)
     {
@@ -19,12 +20,13 @@ class ExecutionPublisher
     }
 
     /** @return array{candidates:int,staged:int,duplicate:int,rejected:int,errors:int,statuses:int} */
-    public function run(int $limit = 500, bool $dryRun = false): array
+    public function run(int $limit = 500, bool $dryRun = false, ?array $only = null): array
     {
         $stats = ['candidates' => 0, 'staged' => 0, 'duplicate' => 0, 'rejected' => 0, 'errors' => 0, 'statuses' => 0];
         $orders = DB::table('generated_production_orders')
             ->whereNull('bc_staged_at')->whereNotNull('transaction_id')
             ->when(!config('bc_plan.push_unplanned'), fn($q) => $q->whereNotNull('plan_order_no'))
+            ->when($only !== null, fn($q) => $q->whereIn('production_order_no', $only ?: ['']))
             ->select('production_order_no')->distinct()->orderBy('production_order_no')->limit($limit)
             ->pluck('production_order_no');
         $stats['candidates'] = $orders->count();
@@ -92,10 +94,29 @@ class ExecutionPublisher
             }
         }
 
-        if (!$dryRun) {
+        if (!$dryRun && !$this->skipStatusRefresh) {
             $stats['statuses'] = $this->refreshStatuses();
         }
         return $stats;
+    }
+
+    /**
+     * Send these WMS orders to BC now (a batch just posted at the weighing station) instead of waiting for
+     * bc:push-executions; BC's job "WMS Post Plan Executions" then creates and posts the production order.
+     * Statuses of other orders are not refreshed here.
+     */
+    public function publishNow(array $orderNos): array
+    {
+        $stats = ['candidates' => 0, 'staged' => 0, 'duplicate' => 0, 'rejected' => 0, 'errors' => 0, 'statuses' => 0];
+        if (!$orderNos) {
+            return $stats;
+        }
+        $this->skipStatusRefresh = true;
+        try {
+            return $this->run(count($orderNos), false, $orderNos);
+        } finally {
+            $this->skipStatusRefresh = false;
+        }
     }
 
     private function mark(string $orderNo, string $status, string $message, bool $dryRun, bool $staged = false): void
