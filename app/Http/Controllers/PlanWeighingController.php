@@ -242,17 +242,60 @@ class PlanWeighingController extends Controller
             ->orderByDesc('is_default')->orderBy('name')->get();
     }
 
-    /** Scales of the section (scale_configs), with the URL the browser reads the weight from. */
+    /**
+     * Scales of the section (scale_configs); read through readScale(). An order with no section, or a section with no
+     * scale set up, offers every scale (labelled with its section) rather than none.
+     */
     public static function scalesFor(?string $section): array
     {
         $map = config('bc_plan.section_scales', []);
         $key = $map[$section] ?? ($section ? mb_strtolower($section) : null);
-        if (!$key) {
-            return [];
+        $rows = $key ? DB::table('scale_configs')->where('section', $key)->orderBy('scale')->get(['scale', 'comport', 'ip_address', 'section']) : collect();
+        $all = $rows->isEmpty();
+        if ($all) {
+            $rows = DB::table('scale_configs')->orderBy('section')->orderBy('scale')->get(['scale', 'comport', 'ip_address', 'section']);
         }
-        return DB::table('scale_configs')->where('section', $key)->orderBy('scale')->get(['scale', 'comport', 'ip_address', 'tareweight'])
-            ->map(fn($s) => ['scale' => $s->scale, 'url' => $s->ip_address ? 'http://' . $s->ip_address . config('app.get_weight_endpoint') . '/' . $s->comport : null])
-            ->all();
+        return $rows->map(fn($s) => [
+            'scale' => $s->scale, 'comport' => $s->comport, 'ip_address' => $s->ip_address,
+            'label' => $all ? $s->scale . ' (' . $s->section . ')' : $s->scale,
+        ])->all();
+    }
+
+    /**
+     * GET /planned-orders/scale-reading?plan=..&scale=..: reads the scale through the WMS server, like the other weighing
+     * screens (Helpers::get_scale_read): the scale service on the weighing PC answers at
+     * http://<scale IP, else the PC's IP><GET_WEIGHT_ENDPOINT>/<comport>. The browser never calls the scale itself.
+     */
+    public function readScale(Request $request)
+    {
+        $data = $request->validate(['plan' => 'required|string|max:20', 'scale' => 'required|string|max:50']);
+        $section = DB::table('bc_plan_orders')->where('plan_no', $data['plan'])->value('section');
+        $scale = collect(self::scalesFor($section))->firstWhere('scale', $data['scale']);
+        if (!$scale) {
+            return response()->json(['success' => false, 'message' => 'Scale ' . $data['scale'] . ' is not set up for ' . ($section ?: 'this section') . '.'], 422);
+        }
+        $ip = trim((string) $scale['ip_address']);
+        if ($ip === '' || strtolower($ip) === 'null') {
+            $ip = $request->getClientIp();
+            $ip = $ip === '::1' ? '127.0.0.1' : $ip;
+        }
+        $endpoint = config('app.get_weight_endpoint') ?: ':3000/api/get-scale-reading';
+        $url = 'http://' . $ip . $endpoint . '/' . $scale['comport'];
+        try {
+            $body = \Illuminate\Support\Facades\Http::timeout(5)->get($url)->body();
+        } catch (\Throwable $e) {
+            return response()->json(['success' => false, 'message' => 'No response from the scale service at ' . $ip . '.'], 502);
+        }
+        // The scale service answers {"success":..,"response":<weight>}, sometimes JSON-encoded twice.
+        $json = json_decode($body, true);
+        if (is_string($json)) {
+            $json = json_decode($json, true);
+        }
+        if (!is_array($json) || empty($json['success']) || !is_numeric($json['response'] ?? null)) {
+            $msg = is_array($json) && isset($json['response']) ? (string) $json['response'] : 'unexpected answer';
+            return response()->json(['success' => false, 'message' => 'The scale did not return a weight: ' . mb_substr($msg, 0, 120)], 502);
+        }
+        return response()->json(['success' => true, 'weight' => round((float) $json['response'], 3)]);
     }
 
     public static function canEditVessels(): bool

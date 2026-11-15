@@ -205,7 +205,7 @@
                             <div class="input-group">
                                 <select id="wgScale" class="form-control">
                                     @forelse($scales as $s)
-                                        <option value="{{ $s['url'] }}" data-name="{{ $s['scale'] }}">{{ $s['scale'] }}</option>
+                                        <option value="{{ $s['scale'] }}" data-name="{{ $s['scale'] }}">{{ $s['label'] }}</option>
                                     @empty
                                         <option value="">No scale set up for {{ $plan->section ?? 'this section' }}</option>
                                     @endforelse
@@ -288,9 +288,12 @@
     var itemsUrl = @json(route('planned_orders_items', $plan->plan_no));
     var storeUrl = @json(route('planned_orders_weighing_store', [$plan->plan_no, $batch->batch_code]));
     var csrf = @json(csrf_token());
+    var scaleUrl = @json(route('planned_orders_scale_read'));
+    var planNo = @json($plan->plan_no);
     var manualAllowed = @json($manual);
     var current = null, readFromScale = false, searchTimer = null;
-    var $ = window.jQuery, el = function (id) { return document.getElementById(id); };
+    // jQuery and Bootstrap load at the end of the layout, after this script: look jQuery up when it is used, not now.
+    var $ = function (sel) { return window.jQuery(sel); }, el = function (id) { return document.getElementById(id); };
     var esc = function (v) { var d = document.createElement('div'); d.textContent = v == null ? '' : v; return d.innerHTML; };
     var num = function (v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; };
 
@@ -341,14 +344,16 @@
             });
     }
     function readScale() {
-        var url = el('wgScale').value;
-        if (!url) { el('wgScaleErr').textContent = 'No scale set up for this section.'; return; }
+        var scale = el('wgScale').value;
+        if (!scale) { el('wgScaleErr').textContent = 'No scale set up for this section.'; return; }
         var btn = el('wgRead'); btn.disabled = true; el('wgScaleErr').textContent = '';
-        var ctrl = new AbortController(); var t = setTimeout(function () { ctrl.abort(); }, 5000);
-        fetch(url, { signal: ctrl.signal }).then(function (r) { return r.json(); })
+        var ctrl = new AbortController(); var t = setTimeout(function () { ctrl.abort(); }, 8000);
+        // Through the WMS server (like the other weighing screens): the browser does not call the scale service itself.
+        fetch(scaleUrl + '?plan=' + encodeURIComponent(planNo) + '&scale=' + encodeURIComponent(scale), { signal: ctrl.signal, headers: { 'Accept': 'application/json' } })
+            .then(function (r) { return r.json(); })
             .then(function (d) {
-                if (!d.success) throw new Error('Scale did not return a weight');
-                el('wgGross').value = num(d.response).toFixed(2); readFromScale = true; recalc();
+                if (!d.success) throw new Error(d.message || 'The scale did not return a weight.');
+                el('wgGross').value = num(d.weight).toFixed(2); readFromScale = true; recalc();
             })
             .catch(function (e) { el('wgScaleErr').textContent = (e.name === 'AbortError' ? 'No response from the scale.' : e.message) + (manualAllowed ? ' Type the weight instead.' : ''); })
             .finally(function () { clearTimeout(t); btn.disabled = false; });
@@ -401,7 +406,9 @@
     el('wgVessel').addEventListener('change', recalc);
     el('wgSave').addEventListener('click', function () { save(false); });
     el('wgSaveNext').addEventListener('click', function () { save(true); });
-    try { if (sessionStorage.getItem('wgReopen')) { sessionStorage.removeItem('wgReopen'); $(function () { $('#weighModal').modal('show'); showStep('item'); search(); }); } } catch (e) {}
+    window.addEventListener('load', function () {
+        try { if (sessionStorage.getItem('wgReopen')) { sessionStorage.removeItem('wgReopen'); $('#weighModal').modal('show'); showStep('item'); search(); } } catch (e) {}
+    });
 })();
 </script>
 @endif

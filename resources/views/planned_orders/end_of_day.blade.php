@@ -111,10 +111,13 @@
     var all = document.getElementById('checkAll');
     var boxes = function () { return Array.prototype.slice.call(document.querySelectorAll('.js-plan:not(:disabled)')); };
     if (all) all.addEventListener('change', function () { boxes().forEach(function (b) { b.checked = all.checked; }); });
-    window.jQuery('#closeModal').on('show.bs.modal', function (e) {
-        var n = boxes().filter(function (b) { return b.checked; }).length;
-        document.getElementById('closeCount').textContent = n;
-        if (!n) { e.preventDefault(); alert('Select at least one order.'); }
+    // jQuery and Bootstrap load at the end of the layout, after this script: attach once the page has loaded.
+    window.addEventListener('load', function () {
+        window.jQuery('#closeModal').on('show.bs.modal', function (e) {
+            var n = boxes().filter(function (b) { return b.checked; }).length;
+            document.getElementById('closeCount').textContent = n;
+            if (!n) { e.preventDefault(); alert('Select at least one order.'); }
+        });
     });
 })();
 </script>

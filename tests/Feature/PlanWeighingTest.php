@@ -77,6 +77,27 @@ class PlanWeighingTest extends TestCase
             ->assertSee('TWP-1-001')->assertSee('TFP-1')->assertSee('Weigh item')->assertSee('Test crate');
     }
 
+    public function test_station_script_does_not_use_jquery_before_the_layout_loads_it()
+    {
+        // jQuery/Bootstrap load at the end of the layout: the page script must look jQuery up when used, not on load.
+        $html = $this->actingAs($this->user)->get('/planned-orders/weigh?plan=TWP-1')->assertOk()->getContent();
+        $this->assertStringNotContainsString('var $ = window.jQuery,', $html);
+        $this->assertStringContainsString('planned-orders\/scale-reading', $html);
+    }
+
+    public function test_scale_is_read_through_the_server()
+    {
+        DB::table('scale_configs')->insert(['scale' => 'ZZ Scale 1', 'comport' => 'COM9', 'section' => 'sausage', 'ip_address' => '10.9.9.9', 'tareweight' => 0, 'user_id' => $this->user->id]);
+        \Illuminate\Support\Facades\Http::fake([
+            'http://10.9.9.9*' => \Illuminate\Support\Facades\Http::response(json_encode(json_encode(['success' => true, 'response' => '45.62'])), 200),
+        ]);
+        $this->actingAs($this->user)->getJson('/planned-orders/scale-reading?plan=TWP-1&scale=ZZ%20Scale%201')
+            ->assertOk()->assertJsonPath('success', true)->assertJsonPath('weight', 45.62);
+        \Illuminate\Support\Facades\Http::assertSent(fn($r) => str_ends_with($r->url(), '/COM9') && str_starts_with($r->url(), 'http://10.9.9.9'));
+
+        $this->actingAs($this->user)->getJson('/planned-orders/scale-reading?plan=TWP-1&scale=Nope')->assertStatus(422);
+    }
+
     public function test_item_search_lists_the_order_items_first()
     {
         $r = $this->actingAs($this->user)->getJson('/planned-orders/TWP-1/items?q=')->assertOk();
