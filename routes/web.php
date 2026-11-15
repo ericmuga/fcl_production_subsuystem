@@ -192,7 +192,8 @@ Route::post('/sausage/stuffing-weights/history/export', [SausageController::clas
 /*-------------BC MRP daily plan (integration map S5, S12)------------------ */
 Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');
 // Weighing station, vessels (tare per section) and end of day for BC planned orders
-Route::get('/planned-orders/weigh', [\App\Http\Controllers\PlanWeighingController::class, 'station'])->name('planned_orders_weigh');
+Route::get('/planned-orders/reports', [\App\Http\Controllers\PlanReportsController::class, 'index'])->name('planned_orders_reports');
+    Route::get('/planned-orders/weigh', [\App\Http\Controllers\PlanWeighingController::class, 'station'])->name('planned_orders_weigh');
 Route::get('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'vessels'])->name('planned_orders_vessels');
 Route::post('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'saveVessel'])->name('planned_orders_vessels_save');
 Route::get('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'endOfDay'])->name('planned_orders_end_of_day');

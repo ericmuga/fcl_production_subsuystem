@@ -6,6 +6,7 @@
         <small class="text-muted ml-auto mr-2">Last sync: {{ $pp['lastSync'] ?? 'never' }}</small>
         <a href="{{ route('planned_orders_weigh') }}" class="btn btn-sm btn-success mr-2"><i class="fa fa-balance-scale mr-1"></i>Weigh</a>
         <a href="{{ route('planned_orders_end_of_day') }}" class="btn btn-sm btn-outline-danger mr-2"><i class="fa fa-moon mr-1"></i>End of day</a>
+        <a href="{{ route('planned_orders_reports') }}" class="btn btn-sm btn-outline-primary mr-2"><i class="fa fa-chart-bar mr-1"></i>Reports</a>
         <form method="POST" action="{{ route('planned_orders_refresh') }}" class="mb-0">
             @csrf
             @foreach(['item', 'order', 'planned', 'section', 'status', 'from', 'to'] as $k)
