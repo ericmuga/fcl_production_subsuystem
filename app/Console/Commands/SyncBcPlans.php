@@ -39,6 +39,7 @@ class SyncBcPlans extends Command
             $this->line('Changes since ' . ($stats['since'] ?? 'the beginning') . ' (UTC); next run reads from ' . $stats['watermark']);
             unset($stats['since'], $stats['watermark']);
         }
+        unset($stats['results']);
         $this->table(array_keys($stats), [array_values($stats)]);
 
         if (!$dry && !$this->option('no-batches')) {

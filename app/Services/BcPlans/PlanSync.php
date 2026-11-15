@@ -137,7 +137,7 @@ class PlanSync
 
     private function newStats(int $fetched): array
     {
-        return ['fetched' => $fetched, 'created' => 0, 'updated' => 0, 'unchanged' => 0, 'withdrawn' => 0, 'batches' => 0];
+        return ['fetched' => $fetched, 'created' => 0, 'updated' => 0, 'unchanged' => 0, 'withdrawn' => 0, 'batches' => 0, 'results' => []];
     }
 
     /** @return string[] plan nos seen */
@@ -164,9 +164,11 @@ class PlanSync
             $known = array_key_exists($p['plan_no'], $existing);
             if ($known && $existing[$p['plan_no']] === $hash) {
                 $stats['unchanged']++;
+                $stats['results'][$p['plan_no']] = 'unchanged';
                 continue;
             }
             $stats[$known ? 'updated' : 'created']++;
+            $stats['results'][$p['plan_no']] = $known ? 'updated' : 'created';
             $stats['batches'] += count($p['batches'] ?? []);
             if ($dryRun) {
                 continue;
@@ -272,16 +274,35 @@ class PlanSync
                 DB::table('bc_plan_batches')->insert($bc + ['batch_code' => $b['batch_code'], 'wms_status' => $wms, 'created_at' => $now]);
                 continue;
             }
+            // A batch WMS has started (weighed, posted or done) keeps its size and location: BC only learns that a batch
+            // started when its output posts, so a re-cut or re-send from BC must not resize it under the weigher.
+            if ($this->started($current)) {
+                unset($bc['quantity'], $bc['quantity_base'], $bc['batch_uom'], $bc['location_code']);
+            }
             // BC is the authority on cancellation and on posted completion; otherwise WMS keeps its own progress.
-            if ($b['bc_status'] === 'cancelled' && $current->wms_status === 'pending') {
+            if ($b['bc_status'] === 'cancelled' && $current->wms_status === 'pending' && !$this->started($current)) {
                 $bc['wms_status'] = 'cancelled';
             } elseif ($b['bc_status'] === 'completed') {
                 $bc['wms_status'] = 'completed';
-            } elseif ($b['bc_status'] === 'sent' && $current->wms_status === 'cancelled') {
+            } elseif ($b['bc_status'] === 'sent' && $current->wms_status === 'cancelled' && $this->reopenable($p['plan_no'])) {
                 $bc['wms_status'] = 'pending'; // re-cut after a plan increase brought the batch back
             }
             DB::table('bc_plan_batches')->where('id', $current->id)->update($bc);
         }
+    }
+
+    /** Started in WMS: in progress or completed, posted as a WMS order, or with weighings captured. */
+    private function started(object $batch): bool
+    {
+        return in_array($batch->wms_status, ['in_progress', 'completed'], true)
+            || !empty($batch->wms_order_no)
+            || DB::table('plan_batch_weighings')->where('batch_code', $batch->batch_code)->exists();
+    }
+
+    /** A cancelled batch may come back only while its order is still open for work (not closing or closed at end of day). */
+    private function reopenable(string $planNo): bool
+    {
+        return in_array(DB::table('bc_plan_orders')->where('plan_no', $planNo)->value('status'), ['released', 'open'], true);
     }
 
     private function hashable(array $p): array

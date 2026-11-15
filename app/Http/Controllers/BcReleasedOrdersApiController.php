@@ -47,6 +47,7 @@ class BcReleasedOrdersApiController extends Controller
             $plan = DB::table('bc_plan_orders')->where('plan_no', $no)->first(['plan_no', 'status', 'plan_date', 'released_from', 'section']);
             $orders[] = [
                 'order_no' => $no,
+                'result' => $stats['results'][$no] ?? 'updated',
                 'firm_planned_no' => $plan->released_from,
                 'date' => $plan->plan_date,
                 'wms_status' => $plan->status,
@@ -58,8 +59,11 @@ class BcReleasedOrdersApiController extends Controller
                         'cut_by' => $b->source === 'bc' ? 'BC' : 'WMS', 'wms_status' => $b->wms_status])->all(),
             ];
         }
+        // Idempotent by content: the same order again is "unchanged" and changes nothing. BC sends order no + content hash
+        // as Idempotency-Key; it is echoed back for tracing.
         return response()->json([
             'success' => true,
+            'idempotency_key' => $request->header('Idempotency-Key'),
             'received' => count($plans),
             'created' => $stats['created'],
             'updated' => $stats['updated'],

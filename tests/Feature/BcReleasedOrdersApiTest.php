@@ -90,6 +90,45 @@ class BcReleasedOrdersApiTest extends TestCase
         $this->assertSame('TFPO-9', DB::table('bc_plan_batches')->where('batch_code', 'TRPO-2-W001')->value('firm_planned_no'));
     }
 
+    public function test_resending_reports_the_result_per_order_and_echoes_the_idempotency_key()
+    {
+        $this->withHeaders(['Idempotency-Key' => 'TRPO-1:abc'])->send([$this->order()])->assertOk()
+            ->assertJsonPath('orders.0.result', 'created')->assertJsonPath('idempotency_key', 'TRPO-1:abc');
+        $this->send([$this->order()])->assertOk()->assertJsonPath('orders.0.result', 'unchanged');
+        $this->send([$this->order(['executed_qty_base' => 10])])->assertOk()->assertJsonPath('orders.0.result', 'updated');
+    }
+
+    public function test_a_resend_never_resizes_or_cancels_a_batch_wms_has_started()
+    {
+        $this->send([$this->order()])->assertOk();
+        DB::table('bc_plan_batches')->where('batch_code', 'TRPO-1-001')->update(['wms_status' => 'in_progress']);
+
+        // BC re-cut: batch 001 resized and cancelled, as if BC did not know it had started
+        $order = $this->order();
+        $order['batches'][0]['quantity_base'] = 60;
+        $order['batches'][0]['quantity'] = 0.75;
+        $order['batches'][0]['status'] = 'cancelled';
+        $order['batches'][1]['quantity_base'] = 70;
+        $this->send([$order])->assertOk()->assertJsonPath('orders.0.result', 'updated');
+
+        $b1 = DB::table('bc_plan_batches')->where('batch_code', 'TRPO-1-001')->first();
+        $this->assertEquals(80.0, (float) $b1->quantity_base);          // kept its size
+        $this->assertSame('in_progress', $b1->wms_status);              // not cancelled
+        $this->assertSame('cancelled', $b1->bc_status);                 // BC's view is still recorded
+        $this->assertEquals(70.0, (float) DB::table('bc_plan_batches')->where('batch_code', 'TRPO-1-002')->value('quantity_base')); // not started: follows BC
+    }
+
+    public function test_a_resend_does_not_bring_back_batches_cancelled_at_end_of_day()
+    {
+        $this->send([$this->order()])->assertOk();
+        DB::table('bc_plan_orders')->where('plan_no', 'TRPO-1')->update(['status' => 'closing']);
+        DB::table('bc_plan_batches')->where('plan_no', 'TRPO-1')->update(['wms_status' => 'cancelled']);
+
+        $this->send([$this->order(['executed_qty_base' => 5])])->assertOk();
+        $this->assertSame('closing', DB::table('bc_plan_orders')->where('plan_no', 'TRPO-1')->value('status'));
+        $this->assertSame(0, DB::table('bc_plan_batches')->where('plan_no', 'TRPO-1')->where('wms_status', '<>', 'cancelled')->count());
+    }
+
     public function test_invalid_payload_is_rejected()
     {
         $this->send([['order_no' => 'X']])->assertStatus(422)->assertJsonPath('success', false);
