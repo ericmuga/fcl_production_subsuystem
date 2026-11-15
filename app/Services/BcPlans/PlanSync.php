@@ -54,6 +54,7 @@ class PlanSync
                 $gone->update(['status' => 'withdrawn', 'payload_hash' => null, 'synced_at' => now(), 'updated_at' => now()]);
             }
         });
+        unset($stats['results']); // per-order results are for the HTTP receiver (ingest)
         return $stats;
     }
 
@@ -114,10 +115,11 @@ class PlanSync
             if (!$dryRun) {
                 DB::table('bc_sync_state')->updateOrInsert(['key' => self::STATE_KEY], [
                     'watermark' => $res['watermark'], 'last_run_at' => now(),
-                    'last_stats' => json_encode(array_diff_key($stats, ['since' => 1, 'watermark' => 1])), 'updated_at' => now(),
+                    'last_stats' => json_encode(array_diff_key($stats, ['since' => 1, 'watermark' => 1, 'results' => 1])), 'updated_at' => now(),
                 ]);
             }
         });
+        unset($stats['results']);
         return $stats;
     }
 
