@@ -225,6 +225,8 @@
     <button class="btn btn-primary " data-toggle="collapse" data-target="#generated_production_orders"><i class="fa fa-plus"></i>
         Generated Production Orders
     </button>
+    <a href="{{ route('stuffing_harmonize') }}" class="btn btn-outline-primary ml-2"><i class="fa fa-balance-scale"></i>
+        Harmonize batches with dispatch</a>
 </div>
 
 <hr />

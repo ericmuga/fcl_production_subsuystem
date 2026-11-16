@@ -53,4 +53,31 @@ return [
 
     'stuffing_batch_tolerance_kgs' => (float) env('STUFFING_BATCH_TOLERANCE_KGS', 0.5),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Harmonizing stuffing orders with the dispatch weight (optional)
+    |--------------------------------------------------------------------------
+    |
+    | Stuffing weighs the input; the IDT transfer to dispatch weighs the packed
+    | output; the lines in between come from recipe yields. Harmonizing rebuilds
+    | a batch (batch no + packed item) from both measured ends.
+    |
+    | 'off'    - as before: orders go to ProductionData as soon as they are generated
+    |            (when target is production_data). The Harmonize screen still works
+    |            on lines that have not reached ProductionData.
+    | 'review' - orders are held locally until the batch is harmonized and released
+    |            on Harmonize stuffing batches, or by `php artisan stuffing:harmonize`.
+    |
+    | harmonize_mode is the mode the screen and the command start with:
+    | recipe | output_at_last (variance on Packing) | output_at_first (variance on Stuffing)
+    |
+    | harmonize_output_from is the location the dispatch transfers are made from.
+    */
+
+    'harmonize' => env('PRODUCTION_ORDERS_HARMONIZE', 'off'),
+
+    'harmonize_mode' => env('PRODUCTION_ORDERS_HARMONIZE_MODE', 'output_at_last'),
+
+    'harmonize_output_from' => env('PRODUCTION_ORDERS_HARMONIZE_OUTPUT_FROM', '2055'),
+
 ];

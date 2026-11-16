@@ -188,6 +188,9 @@ Route::post('/sausage-stuffing-batch-summary-axios', [SausageController::class, 
 Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
 Route::get('/sausage/stuffing-weights/history', [SausageController::class, 'stuffingWeightsHistory'])->name('export_stuffing_weights_history');
 Route::post('/sausage/stuffing-weights/history/export', [SausageController::class, 'exportStuffingWeightsHistory'])->name('stuffing_weights_history_export');
+// Harmonize stuffing orders with the dispatch weight (config production_orders.harmonize)
+Route::get('/sausage/harmonize', [\App\Http\Controllers\StuffingHarmonizeController::class, 'index'])->name('stuffing_harmonize');
+Route::post('/sausage/harmonize', [\App\Http\Controllers\StuffingHarmonizeController::class, 'apply'])->name('stuffing_harmonize_apply');
 
 /*-------------BC MRP daily plan (integration map S5, S12)------------------ */
 Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');

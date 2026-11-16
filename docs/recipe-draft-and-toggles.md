@@ -92,6 +92,53 @@ Remove-Item Env:\PACKING_TEST_SQLSERVER
 The temporary tables model the columns used by these tests; this is not a test of
 the deployed tables' indexes, constraints, or triggers.
 
+### Harmonizing a batch with the dispatch weight (optional)
+
+Not every line is measured. Stuffing weighs the **input** (the stuffing mass); the
+IDT transfer to dispatch weighs the **output** (the packed weight). Everything in
+between is filled from recipe yields, so a batch put in at 162 kg and dispatched at
+159 kg still shows recipe quantities on its orders. Harmonizing rebuilds the batch
+(batch no + packed item) from both measured weights:
+
+| Mode | Output line of the last step | In between | Packaging (H) |
+|---|---|---|---|
+| `recipe` | recipe yield | recipe yield | recipe |
+| `output_at_last` (default) | dispatched kg | recipe yield from the stuffing mass; the difference shows as loss on Packing | proportional to the dispatched output |
+| `output_at_first` | dispatched kg | worked back from the dispatched kg; the difference shows as loss on Stuffing | proportional to the dispatched output |
+
+The stuffing mass is always kept as the input. When a batch has several weighings,
+its dispatched weight is shared out in proportion to the output each was expected
+to give. Line locations are refreshed from the recipe table at the same time.
+Packaging is scaled against the recipe's output batch size, not the G base quantity
+the IDT save uses, so a recipe with a packing yield gets packaging per kg packed.
+
+```dotenv
+PRODUCTION_ORDERS_HARMONIZE=review          # off (default) | review
+PRODUCTION_ORDERS_HARMONIZE_MODE=output_at_last
+PRODUCTION_ORDERS_HARMONIZE_OUTPUT_FROM=2055 # location the dispatch transfers leave from
+```
+
+- **`off`**: orders are written to ProductionData when generated, as before. The
+  screen still works on lines that have not reached ProductionData.
+- **`review`**: new orders stay in `generated_production_orders` until the batch is
+  released. **Stuffing → Harmonize batches with dispatch** (`/sausage/harmonize`)
+  lists each batch with stuffed kg, dispatched kg and yield; *Review* previews every
+  line (now, new, change, location) for the chosen mode; *Save* stores it; *Save and
+  release to BC* also writes it to ProductionData.
+- Lines already in ProductionData, or posted on the plan route, are never changed.
+
+Unattended catch-up, so nothing waits for someone to open the screen:
+
+```bash
+php artisan stuffing:harmonize --dry-run                 # yesterday and today, what each batch would do
+php artisan stuffing:harmonize --release --force         # harmonize and release every open batch with a dispatch weight
+php artisan stuffing:harmonize --from=2026-11-14 --mode=recipe --release --force   # release as generated
+```
+
+Requires migration `2026_11_16_090000_add_harmonization_to_generated_production_orders`
+(`harmonize_mode`, `harmonized_at`, `recipe_quantity` - the generated quantity, kept
+for comparison - and `production_data_at`).
+
 ---
 
 ## 2. Applying a change
