@@ -135,6 +135,27 @@ php artisan stuffing:harmonize --release --force         # harmonize and release
 php artisan stuffing:harmonize --from=2026-11-14 --mode=recipe --release --force   # release as generated
 ```
 
+#### Making the draft orders the live flow
+
+Today BC gets sausage orders from the SQL Agent job `ProcessProduction` on FCL-WMS10,
+which works **backwards** from the dispatch transfer: step 7 *Packing* makes the P20
+order from the IDT, step 9 *Stuffing-2055* derives the P19 order from it, so the
+measured stuffing mass is never used (batch 14L9 / J31015601: 162.50 kg stuffed, P19
+consumes 160.61 kg). The draft orders here work **forward** from the stuffing weighing
+and are the flow to keep. With both writing to ProductionData every batch would reach
+BC twice, so the job gets a switch:
+
+`tools/sql-agent-jobs/changes/2026-11-16-processproduction-draft-orders-own-stuffing.sql`
+adds `wms_sync_config.draft_orders_own_stuffing` (created `0`) and changes step 7 to
+skip a 2055 dispatch when WMS has draft orders for the same batch no + packed item.
+Stuffing-2055 follows on its own. Everything else the job does is unchanged,
+including the items on the exclusion list (G2206, G2210, ...) and products that are not
+weighed on the stuffing screen: the job keeps making their orders.
+
+Go-live order: migrate WMS; run the job script; set `PRODUCTION_ORDERS_TARGET=production_data`,
+`PRODUCTION_ORDERS_HARMONIZE=review` and the recipe table, clear caches; then set
+`draft_orders_own_stuffing = 1`. Roll back by setting it to `0` and the target to `local`.
+
 Requires migration `2026_11_16_090000_add_harmonization_to_generated_production_orders`
 (`harmonize_mode`, `harmonized_at`, `recipe_quantity` - the generated quantity, kept
 for comparison - and `production_data_at`).
