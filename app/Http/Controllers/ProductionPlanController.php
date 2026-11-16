@@ -27,31 +27,41 @@ class ProductionPlanController extends Controller
         $location = $request->input('location', 'all');
         $status = $request->input('status', 'all');
 
-        $produced = DB::table('generated_production_orders')
-            ->where('line_type', 'output')->whereNotNull('plan_order_no')
-            ->groupBy('plan_order_no')
-            ->select('plan_order_no', DB::raw('SUM(quantity) AS produced'), DB::raw('COUNT(DISTINCT production_order_no) AS orders'));
-
-        // Batch progress per plan (one WMS order per batch); cancelled batches are not counted.
-        $batches = DB::table('bc_plan_batches')->where('wms_status', '<>', 'cancelled')->groupBy('plan_no')
-            ->select('plan_no', DB::raw('COUNT(*) AS batches'),
-                DB::raw("SUM(CASE WHEN wms_status = 'completed' THEN 1 ELSE 0 END) AS batches_done_wms"),
-                DB::raw("SUM(CASE WHEN bc_status = 'completed' THEN 1 ELSE 0 END) AS batches_posted"),
-                DB::raw("SUM(CASE WHEN wms_status = 'in_progress' THEN 1 ELSE 0 END) AS batches_running"));
-
+        // One page of plans first, then the totals for just those plans.
+        $perPage = min(max((int) $request->input('per_page', 25), 10), 200);
         $plans = DB::table('bc_plan_orders AS p')
-            ->leftJoinSub($produced, 'x', 'x.plan_order_no', '=', 'p.plan_no')
-            ->leftJoinSub($batches, 'b', 'b.plan_no', '=', 'p.plan_no')
             ->leftJoin('items AS i', 'i.code', '=', 'p.item_no')
             ->where('p.plan_date', $date)
             ->when($location !== 'all', fn($q) => $q->where('p.location_code', $location))
             ->when($status !== 'all', fn($q) => $q->where('p.status', $status))
-            ->orderBy('p.location_code')->orderBy('p.item_no')
-            ->select('p.*', DB::raw('COALESCE(i.description, p.description) AS item_description'),
-                DB::raw('COALESCE(x.produced, 0) AS produced'), DB::raw('COALESCE(x.orders, 0) AS orders'),
-                DB::raw('COALESCE(b.batches, 0) AS batches'), DB::raw('COALESCE(b.batches_done_wms, 0) AS batches_done_wms'),
-                DB::raw('COALESCE(b.batches_posted, 0) AS batches_posted'), DB::raw('COALESCE(b.batches_running, 0) AS batches_running'))
-            ->get();
+            ->orderBy('p.location_code')->orderBy('p.item_no')->orderBy('p.plan_no')
+            ->select('p.*', DB::raw('COALESCE(i.description, p.description) AS item_description'))
+            ->paginate($perPage)->appends($request->except('page'));
+
+        $planNos = $plans->pluck('plan_no')->all();
+        $produced = $planNos ? DB::table('generated_production_orders')
+            ->where('line_type', 'output')->whereIn('plan_order_no', $planNos)
+            ->groupBy('plan_order_no')
+            ->select('plan_order_no', DB::raw('SUM(quantity) AS produced'), DB::raw('COUNT(DISTINCT production_order_no) AS orders'))
+            ->get()->keyBy('plan_order_no') : collect();
+        // Batch progress per plan (one WMS order per batch); cancelled batches are not counted.
+        $batches = $planNos ? DB::table('bc_plan_batches')->where('wms_status', '<>', 'cancelled')->whereIn('plan_no', $planNos)->groupBy('plan_no')
+            ->select('plan_no', DB::raw('COUNT(*) AS batches'),
+                DB::raw("SUM(CASE WHEN wms_status = 'completed' THEN 1 ELSE 0 END) AS batches_done_wms"),
+                DB::raw("SUM(CASE WHEN bc_status = 'completed' THEN 1 ELSE 0 END) AS batches_posted"),
+                DB::raw("SUM(CASE WHEN wms_status = 'in_progress' THEN 1 ELSE 0 END) AS batches_running"))
+            ->get()->keyBy('plan_no') : collect();
+
+        foreach ($plans as $p) {
+            $x = $produced[$p->plan_no] ?? null;
+            $b = $batches[$p->plan_no] ?? null;
+            $p->produced = (float) ($x->produced ?? 0);
+            $p->orders = (int) ($x->orders ?? 0);
+            $p->batches = (int) ($b->batches ?? 0);
+            $p->batches_done_wms = (int) ($b->batches_done_wms ?? 0);
+            $p->batches_posted = (int) ($b->batches_posted ?? 0);
+            $p->batches_running = (int) ($b->batches_running ?? 0);
+        }
 
         $locations = DB::table('bc_plan_orders')->where('plan_date', $date)->distinct()->orderBy('location_code')->pluck('location_code');
         $lastSync = DB::table('bc_sync_state')->where('key', 'plans')->value('last_run_at') ?? DB::table('bc_plan_orders')->max('synced_at');

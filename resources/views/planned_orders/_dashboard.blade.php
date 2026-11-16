@@ -132,7 +132,7 @@
                 </tbody>
             </table>
         </div>
-        {{ $pp['plans']->fragment('planned-orders')->links() }}
+        {{ $pp['plans']->fragment('planned-orders')->links('pagination::bootstrap-4') }}
         <p class="text-muted small mb-0">
             Planned and produced are in kg. Firm planned orders become released when the planner releases them in BC; a released order
             is cut into batches when it is pushed to WMS (open), and every WMS order fulfils one batch.

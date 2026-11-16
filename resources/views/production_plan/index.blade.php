@@ -108,6 +108,12 @@
                 </tbody>
             </table>
         </div>
+        @if($plans->total() > 0)
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="text-muted small">Showing {{ $plans->firstItem() }}–{{ $plans->lastItem() }} of {{ $plans->total() }} plans</span>
+                {{ $plans->links('pagination::bootstrap-4') }}
+            </div>
+        @endif
         <p class="text-muted small mb-0">
             Target = quantity BC published for the day. Produced = output of WMS execution orders carrying the plan no.
             Posted in BC = output BC has netted against the plan. Output above the target is allowed while the plan is open.
