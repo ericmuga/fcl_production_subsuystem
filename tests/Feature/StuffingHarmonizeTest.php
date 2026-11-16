@@ -3,6 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\BcPlans\BcStaging;
+use App\Services\BcPlans\ExecutionPublisher;
+use App\Services\Stuffing\PlanMatcher;
 use App\Services\Stuffing\ProductionDataWriter;
 use App\Services\Stuffing\StuffingHarmonizer;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -23,6 +26,7 @@ class StuffingHarmonizeTest extends TestCase
     private $user;
     private int $nextId = 1;
     public array $written = [];
+    public array $staged = [];
 
     protected function setUp(): void
     {
@@ -57,6 +61,35 @@ class StuffingHarmonizeTest extends TestCase
         });
     }
 
+    private function fakePlanRoute(): void
+    {
+        $test = $this;
+        $this->app->instance(ExecutionPublisher::class, new class($test) extends ExecutionPublisher {
+            private $t;
+            public function __construct($t) { $this->t = $t; }
+            public function publishNow(array $orderNos): array
+            {
+                $this->t->staged = array_merge($this->t->staged, $orderNos);
+                DB::table('generated_production_orders')->whereIn('production_order_no', $orderNos)->update(['bc_staged_at' => now(), 'bc_status' => 'pending']);
+                return ['candidates' => count($orderNos), 'staged' => count($orderNos), 'duplicate' => 0, 'rejected' => 0, 'errors' => 0, 'statuses' => 0];
+            }
+        });
+    }
+
+    private function plan(string $no, string $item, string $loc, int $dayOffset, float $qty, string $status = 'released'): void
+    {
+        DB::table('bc_plan_orders')->insert([
+            'plan_no' => $no, 'item_no' => $item, 'description' => 'Test', 'location_code' => $loc, 'plan_date' => today()->addDays($dayOffset)->toDateString(),
+            'uom' => 'KG', 'batch_uom' => 'KG', 'batch_size_base' => 100, 'planned_qty' => $qty, 'executed_qty' => 0, 'remaining_qty' => $qty,
+            'status' => $status, 'section' => 'Sausage', 'sections' => 'Sausage', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+    }
+
+    private function planOf(string $order): ?string
+    {
+        return DB::table('generated_production_orders')->where('production_order_no', $order)->where('line_type', 'output')->value('plan_order_no');
+    }
+
     /** One weighing as the generator writes it, on recipe yields from the stuffing weight. */
     private function weighing(int $transferId, float $net, string $batch = 'ZZB1'): void
     {
@@ -66,6 +99,7 @@ class StuffingHarmonizeTest extends TestCase
         $line = fn($order, $step, $process, $recipe, $no, $type, $item, $qty, $loc) => $common + [
             'production_order_no' => $order, 'step' => $step, 'process' => $process, 'recipe' => $recipe, 'routing' => $process,
             'line_no' => $no, 'line_type' => $type, 'item_no' => $item, 'quantity' => round($qty, 5), 'location_code' => $loc, 'external_document_no' => 'ZZR2',
+            'transaction_id' => 'GPO:' . $order,
         ];
         DB::table('generated_production_orders')->insert([
             $line("ZZP19_{$transferId}", 1, 'Stuffing', 'ZZR1', 1000, 'output', 'ZZS', 100 * $k, '2055'),
@@ -191,5 +225,88 @@ class StuffingHarmonizeTest extends TestCase
         $this->assertTrue($writer->holdsForHarmonization());
         config(['production_orders.harmonize' => 'off']);
         $this->assertFalse($writer->holdsForHarmonization());
+    }
+
+    public function test_orders_match_plans_on_their_own_output_location_and_date()
+    {
+        $this->weighing(900001, 90);
+        $this->plan('ZZPL-J', 'ZZJ', '3535', 0, 500);              // packed item, same day
+        $this->plan('ZZPL-J6', 'ZZJ', '3600', 0, 500);             // other location: manual only
+        $this->plan('ZZPL-S', 'ZZS', '2055', -1, 300, 'open');     // stuffed item, the day before
+        $this->plan('ZZPL-SX', 'ZZS', '2055', 0, 300, 'closed');   // closed: never
+
+        $r = app(PlanMatcher::class)->autoMatch(['ZZP19_900001', 'ZZP20_900001']);
+
+        $this->assertSame(2, $r['matched']);
+        $this->assertSame('ZZPL-J', $this->planOf('ZZP20_900001'));
+        $this->assertSame('ZZPL-S', $this->planOf('ZZP19_900001'));
+        $this->assertSame(3, DB::table('generated_production_orders')->where('production_order_no', 'ZZP20_900001')
+            ->where('plan_order_no', 'ZZPL-J')->where('plan_matched_by', 'auto')->count(), 'every line of the order carries the plan');
+    }
+
+    public function test_a_plan_picked_by_hand_is_kept_and_sent_orders_cannot_change()
+    {
+        $this->weighing(900001, 90);
+        $this->dispatch(95);
+        $this->plan('ZZPL-J', 'ZZJ', '3535', 0, 500);
+        $this->plan('ZZPL-J6', 'ZZJ', '3600', 0, 500);
+
+        $this->actingAs($this->user)->post(route('stuffing_harmonize_plan'), ['batch' => 'ZZB1', 'item' => 'ZZJ', 'order' => 'ZZP20_900001', 'plan' => 'ZZPL-J6'])
+            ->assertRedirect();
+        $this->assertSame('ZZPL-J6', $this->planOf('ZZP20_900001'));
+
+        $this->harmonizer()->apply('ZZB1', 'ZZJ', 'output_at_last', false, 'tester');   // matching runs again
+        $this->assertSame('ZZPL-J6', $this->planOf('ZZP20_900001'), 'manual choice kept');
+
+        $this->actingAs($this->user)->post(route('stuffing_harmonize_plan'), ['batch' => 'ZZB1', 'item' => 'ZZJ', 'order' => 'ZZP20_900001', 'plan' => 'auto']);
+        $this->assertSame('ZZPL-J', $this->planOf('ZZP20_900001'), 'back to automatic');
+
+        $this->harmonizer()->apply('ZZB1', 'ZZJ', 'output_at_last', true, 'tester');
+        $this->expectException(\RuntimeException::class);
+        app(PlanMatcher::class)->setManual('ZZP20_900001', 'ZZPL-J6');
+    }
+
+    public function test_release_sends_each_order_by_one_route()
+    {
+        config(['production_orders.planned_route' => 'plan']);
+        $this->fakePlanRoute();
+        $this->weighing(900001, 90);
+        $this->dispatch(95);
+        $this->plan('ZZPL-J', 'ZZJ', '3535', 0, 500);              // only the packing order has a plan
+
+        $r = $this->harmonizer()->apply('ZZB1', 'ZZJ', 'output_at_last', true, 'tester');
+
+        $this->assertSame(['ZZP20_900001'], $this->staged, 'planned order over the plan route');
+        $this->assertSame(['ZZP19_900001'], collect($this->written)->pluck('production_order_no')->unique()->values()->all(), 'unplanned to ProductionData');
+        $this->assertSame('plan', DB::table('generated_production_orders')->where('production_order_no', 'ZZP20_900001')->value('released_to'));
+        $this->assertSame('production_data', DB::table('generated_production_orders')->where('production_order_no', 'ZZP19_900001')->value('released_to'));
+        $this->assertStringContainsString('1 of 1 order(s) staged', $r['written']);
+    }
+
+    public function test_scheduled_plan_route_waits_for_release_in_review_mode()
+    {
+        $this->weighing(900001, 90);
+        $this->plan('ZZPL-J', 'ZZJ', '3535', 0, 500);
+        app(PlanMatcher::class)->autoMatch(['ZZP20_900001']);
+        config(['bc_plan.push_unplanned' => false]);
+        $publisher = new ExecutionPublisher($this->createMock(BcStaging::class));
+
+        $this->assertSame(0, $publisher->run(500, true, ['ZZP20_900001'])['candidates'], 'held until released');
+
+        DB::table('generated_production_orders')->where('production_order_no', 'ZZP20_900001')->update(['released_to' => 'plan', 'released_at' => now()]);
+        $this->assertSame(1, $publisher->run(500, true, ['ZZP20_900001'])['candidates']);
+
+        DB::table('generated_production_orders')->where('production_order_no', 'ZZP20_900001')->update(['production_data_at' => now()]);
+        $this->assertSame(0, $publisher->run(500, true, ['ZZP20_900001'])['candidates'], 'never both routes');
+    }
+
+    public function test_screen_shows_the_plan_panel()
+    {
+        $this->weighing(900001, 90);
+        $this->plan('ZZPL-J', 'ZZJ', '3535', 0, 500);
+        app(PlanMatcher::class)->autoMatch(['ZZP20_900001']);
+
+        $this->actingAs($this->user)->get(route('stuffing_harmonize', ['q' => 'ZZB1', 'batch' => 'ZZB1', 'item' => 'ZZJ']))
+            ->assertOk()->assertSee('Planned orders')->assertSee('ZZPL-J')->assertSee('Match automatically')->assertSee('1 / 2');
     }
 }

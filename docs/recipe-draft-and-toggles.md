@@ -135,6 +135,31 @@ php artisan stuffing:harmonize --release --force         # harmonize and release
 php artisan stuffing:harmonize --from=2026-11-14 --mode=recipe --release --force   # release as generated
 ```
 
+#### Matching draft orders to the BC plans
+
+Each draft order is matched to a BC plan (`bc_plan_orders`) on its **own output**: the
+stuffing order to the plan for the stuffed item, the packing order to the plan for the
+packed item. A candidate is open or released, at the order's location (WMS or BC
+location), and dated within `PRODUCTION_ORDERS_PLAN_DAYS_BEFORE` / `_AFTER` days (1 / 1)
+of the production date; same day wins, then the nearest earlier day, then later, and a
+plan with quantity still open before a full one.
+
+- Generation still links an exact same-day match (`plan_matched_by = generation`).
+- Saving or releasing a batch on the harmonize screen matches its orders again
+  (`auto`). The **Planned orders** panel shows each order's plan and lets you pick
+  another (other locations and +/-3 days are offered), choose *No plan*, or go back to
+  *Automatic*. A hand-picked plan is never overwritten.
+- Orders already sent to BC keep their plan.
+
+**One route per order.** `PRODUCTION_ORDERS_PLANNED_ROUTE=plan` sends plan-matched
+orders over the plan route (BC staging, with the plan no., so BC nets the plan) and the
+rest to ProductionData; `production_data` (default) sends everything to ProductionData
+and the plan link is used by the WMS plan screens and reports. An order written to
+ProductionData is never staged, and the reverse. In review mode `bc:push-executions`
+leaves stuffing orders alone until their batch is released.
+
+Requires migration `2026_11_16_100000_add_plan_matching_to_generated_production_orders`.
+
 #### Making the draft orders the live flow
 
 Today BC gets sausage orders from the SQL Agent job `ProcessProduction` on FCL-WMS10,

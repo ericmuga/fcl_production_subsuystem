@@ -44,7 +44,7 @@
                 <thead><tr>
                     <th>Batch</th><th>Packed item</th><th>Date</th><th class="text-right">Weighings</th>
                     <th class="text-right">Stuffed kg (in)</th><th class="text-right">Packed kg on orders</th>
-                    <th class="text-right">Dispatched kg (out)</th><th class="text-right">Yield</th><th>State</th><th></th>
+                    <th class="text-right">Dispatched kg (out)</th><th class="text-right">Yield</th><th>Plans</th><th>State</th><th></th>
                 </tr></thead>
                 <tbody>
                 @forelse($batches as $b)
@@ -58,6 +58,7 @@
                         <td class="text-right">{{ $fmt($b->packed_out_kg) }}</td>
                         <td class="text-right">{{ $b->transfers ? $fmt($b->dispatched_kg) : '-' }} @if($b->transfers)<small class="text-muted">({{ $b->transfers }})</small>@endif</td>
                         <td class="text-right">{{ $b->stuffed_kg > 0 && $b->transfers ? number_format(100 * $b->dispatched_kg / $b->stuffed_kg, 1) . '%' : '' }}</td>
+                        <td><span class="{{ $b->planned_orders < $b->orders ? 'text-warning' : 'text-success' }}">{{ $b->planned_orders }} / {{ $b->orders }}</span></td>
                         <td>
                             @if($b->state === 'released')<span class="badge badge-success">Released</span>
                             @elseif($b->state === 'harmonized')<span class="badge badge-info">Harmonized</span> <small class="text-muted">{{ $b->harmonize_mode }}</small>
@@ -66,7 +67,7 @@
                         <td><a href="{{ route('stuffing_harmonize', request()->except('batch', 'item') + ['batch' => $b->batch_no, 'item' => $b->packed_item, 'mode' => $mode]) }}">Review</a></td>
                     </tr>
                 @empty
-                    <tr><td colspan="10" class="text-muted">No stuffing batches in this range.</td></tr>
+                    <tr><td colspan="11" class="text-muted">No stuffing batches in this range.</td></tr>
                 @endforelse
                 </tbody>
             </table>
@@ -74,6 +75,67 @@
     </div>
 
     @if($preview)
+    <div class="card mb-3" id="plans">
+        <div class="card-header d-flex flex-wrap align-items-center">
+            <strong class="mr-auto">Planned orders <small class="text-muted">each order is matched on its own output item, location and date</small></strong>
+            <form method="POST" action="{{ route('stuffing_harmonize_plan') }}">
+                @csrf
+                @foreach(request()->only('from', 'to', 'state', 'q', 'mode') as $k => $v)<input type="hidden" name="{{ $k }}" value="{{ $v }}">@endforeach
+                <input type="hidden" name="batch" value="{{ $selBatch }}"><input type="hidden" name="item" value="{{ $selItem }}">
+                <button class="btn btn-sm btn-outline-primary">Match automatically</button>
+            </form>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-sm mb-0">
+                <thead><tr><th>Order</th><th>Process</th><th>Output</th><th>Location</th><th>Date</th><th class="text-right">kg</th><th>Plan</th><th>Change</th></tr></thead>
+                <tbody>
+                @foreach($orders as $o)
+                    <tr>
+                        <td>{{ $o->production_order_no }}</td>
+                        <td>{{ $o->process }}</td>
+                        <td>{{ $o->item_no }}</td>
+                        <td>{{ $o->location_code }}</td>
+                        <td>{{ \Illuminate\Support\Carbon::parse($o->transaction_date)->format('d M') }}</td>
+                        <td class="text-right">{{ number_format((float) $o->quantity, 2) }}</td>
+                        <td>
+                            @if($o->plan_order_no)<a href="{{ route('production_plan_batches', $o->plan_order_no) }}">{{ $o->plan_order_no }}</a>
+                            @else<span class="text-muted">none</span>@endif
+                            @if($o->plan_matched_by)<small class="text-muted">({{ $o->plan_matched_by }})</small>@endif
+                        </td>
+                        <td>
+                            @if($o->sent)
+                                <span class="badge badge-secondary">Sent to BC</span>
+                            @else
+                            <form method="POST" action="{{ route('stuffing_harmonize_plan') }}" class="form-inline">
+                                @csrf
+                                @foreach(request()->only('from', 'to', 'state', 'q', 'mode') as $k => $v)<input type="hidden" name="{{ $k }}" value="{{ $v }}">@endforeach
+                                <input type="hidden" name="batch" value="{{ $selBatch }}"><input type="hidden" name="item" value="{{ $selItem }}">
+                                <input type="hidden" name="order" value="{{ $o->production_order_no }}">
+                                <select name="plan" class="form-control form-control-sm mr-1" aria-label="Plan for {{ $o->production_order_no }}">
+                                    <option value="auto">Automatic</option>
+                                    <option value="" @if(!$o->plan_order_no && $o->plan_matched_by === 'none') selected @endif>No plan</option>
+                                    @foreach($o->candidates as $c)
+                                        <option value="{{ $c->plan_no }}" @if($c->plan_no === $o->plan_order_no) selected @endif>
+                                            {{ $c->plan_no }} &middot; {{ \Illuminate\Support\Carbon::parse($c->plan_date)->format('d M') }} &middot; {{ $c->location_code }}{{ $c->same_location ? '' : ' (other location)' }} &middot; open {{ number_format($c->open_qty, 0) }} of {{ number_format((float) $c->planned_qty, 0) }} &middot; {{ $c->status }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <button class="btn btn-sm btn-outline-secondary">Set</button>
+                            </form>
+                            @if($o->candidates->isEmpty())<small class="text-muted">no open or released plan for this item within 3 days</small>@endif
+                            @endif
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer small text-muted">
+            On release, {{ $plannedRoute === 'plan' ? 'orders with a plan go to BC over the plan route (BC nets the plan); orders without one go to ProductionData.' : 'every order goes to ProductionData; the plan link counts towards the plan screens and reports in WMS.' }}
+            Orders are matched again whenever the batch is saved; a plan picked here (or "No plan") is kept.
+        </div>
+    </div>
+
     <div class="card" id="preview">
         <div class="card-header">
             <form method="GET" action="{{ route('stuffing_harmonize') }}#preview" class="form-inline">

@@ -1348,6 +1348,8 @@ class SausageController extends Controller
             $common = [
                 'production_order_no' => $orderNo,
                 'plan_order_no' => $planNo,
+                'plan_matched_by' => $planNo ? 'generation' : null,
+                'plan_matched_at' => $planNo ? $now : null,
                 'plan_line_no' => $batch->plan_line_no ?? null,
                 'plan_batch_no' => $batch->batch_no ?? null,
                 'batch_code' => $batch->batch_code ?? null,

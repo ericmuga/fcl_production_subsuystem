@@ -65,7 +65,9 @@ class StuffingHarmonizer
                 DB::raw('MIN(transaction_date) as first_date'),
                 DB::raw('MAX(harmonized_at) as harmonized_at'),
                 DB::raw('MAX(harmonize_mode) as harmonize_mode'),
-                DB::raw('SUM(CASE WHEN production_data_at IS NOT NULL OR published = 1 THEN 1 ELSE 0 END) as locked_lines'),
+                DB::raw('SUM(CASE WHEN production_data_at IS NOT NULL OR bc_staged_at IS NOT NULL OR released_at IS NOT NULL OR published = 1 THEN 1 ELSE 0 END) as locked_lines'),
+                DB::raw("COUNT(DISTINCT production_order_no) as orders"),
+                DB::raw("COUNT(DISTINCT CASE WHEN line_type = 'output' AND plan_order_no IS NOT NULL THEN production_order_no END) as planned_orders"),
                 DB::raw('COUNT(*) as lines')
             )
             ->orderByDesc(DB::raw('MIN(transaction_date)'))
@@ -193,6 +195,11 @@ class StuffingHarmonizer
      */
     public function apply(string $batchNo, string $packedItem, string $mode, bool $release, string $username): array
     {
+        // Match the batch's orders to BC plans first (manual choices are kept).
+        $orderNos = DB::table('generated_production_orders')->where('batch_no', $batchNo)->where('packed_item', $packedItem)
+            ->distinct()->pluck('production_order_no')->all();
+        $matched = app(PlanMatcher::class)->autoMatch($orderNos);
+
         $plan = $this->plan($batchNo, $packedItem, $mode);
         $now = now();
         $changed = 0;
@@ -213,21 +220,60 @@ class StuffingHarmonizer
                 $update['quantity'] = round($line->new_quantity, 5);
                 $update['location_code'] = $line->new_location;
                 DB::table('generated_production_orders')->where('id', $line->id)
-                    ->where(fn($q) => $q->whereNull('production_data_at'))->where('published', 0)
+                    ->whereNull('production_data_at')->whereNull('bc_staged_at')->whereNull('released_at')->where('published', 0)
                     ->update($update + (is_null($line->recipe_quantity) ? ['recipe_quantity' => $line->quantity] : []));
             }
         });
 
-        $written = '';
-        if ($release) {
-            $rows = DB::table('generated_production_orders')
-                ->where('batch_no', $batchNo)->where('packed_item', $packedItem)
-                ->whereNull('production_data_at')->where('published', 0)
-                ->get()->all();
-            $written = $this->writer->write($rows, $username);
+        $written = $release ? $this->release($batchNo, $packedItem, $username) : '';
+
+        return ['changed' => $changed, 'errors' => $plan['errors'], 'written' => $written, 'plan' => $plan, 'matched' => $matched];
+    }
+
+    /**
+     * Send the batch's open orders to BC, each by one route: plan-matched orders over the plan route when
+     * production_orders.planned_route is 'plan' (BC nets the plan), everything else to ProductionData.
+     */
+    public function release(string $batchNo, string $packedItem, string $username): string
+    {
+        $open = DB::table('generated_production_orders')
+            ->where('batch_no', $batchNo)->where('packed_item', $packedItem)
+            ->whereNull('production_data_at')->whereNull('bc_staged_at')->whereNull('released_at')->where('published', 0)
+            ->get();
+        if ($open->isEmpty()) {
+            return ', nothing left to release';
         }
 
-        return ['changed' => $changed, 'errors' => $plan['errors'], 'written' => $written, 'plan' => $plan];
+        $viaPlan = config('production_orders.planned_route') === 'plan';
+        $byOrder = $open->groupBy('production_order_no');
+        $planOrders = $viaPlan
+            ? $byOrder->filter(fn($lines) => $lines->first()->plan_order_no && $lines->first()->transaction_id)->keys()->all()
+            : [];
+        $pdRows = $byOrder->except($planOrders)->flatten(1)->all();
+        $msg = '';
+
+        if ($planOrders) {
+            DB::table('generated_production_orders')->whereIn('production_order_no', $planOrders)
+                ->update(['released_at' => now(), 'released_to' => 'plan', 'updated_at' => now()]);
+            $r = app(\App\Services\BcPlans\ExecutionPublisher::class)->publishNow($planOrders);
+            $msg .= ', ' . $r['staged'] . ' of ' . count($planOrders) . ' order(s) staged to BC with their plan'
+                . ($r['rejected'] + $r['errors'] ? ' (' . ($r['rejected'] + $r['errors']) . ' refused, see the order status)' : '');
+        }
+
+        if ($pdRows) {
+            $msg .= $this->writer->write($pdRows, $username);
+            $orderNos = collect($pdRows)->pluck('production_order_no')->unique()->all();
+            if ($this->writer->enabled()) {
+                DB::table('generated_production_orders')->whereIn('production_order_no', $orderNos)->whereNotNull('production_data_at')
+                    ->whereNull('released_at')->update(['released_at' => now(), 'released_to' => 'production_data', 'updated_at' => now()]);
+            } else {
+                DB::table('generated_production_orders')->whereIn('production_order_no', $orderNos)
+                    ->update(['released_at' => now(), 'released_to' => 'local', 'updated_at' => now()]);
+                $msg .= ', released locally (write target is local)';
+            }
+        }
+
+        return $msg;
     }
 
     /**
@@ -373,7 +419,8 @@ class StuffingHarmonizer
     private function planned($line, float $quantity, ?string $location): object
     {
         $p = clone $line;
-        $p->locked = !is_null($line->production_data_at ?? null) || (int) $line->published === 1;
+        $p->locked = !is_null($line->production_data_at ?? null) || !is_null($line->bc_staged_at ?? null)
+            || !is_null($line->released_at ?? null) || (int) $line->published === 1;
         $p->new_quantity = $p->locked ? (float) $line->quantity : round($quantity, 5);
         $p->new_location = $p->locked ? $line->location_code : ($location ?: $line->location_code);
 

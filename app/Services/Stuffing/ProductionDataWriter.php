@@ -38,7 +38,11 @@ class ProductionDataWriter
         }
 
         $table = config('production_orders.production_data_table', 'ProductionData');
-        $rows = array_map(fn($r) => (array) $r, $rows);
+        // One route per order: an order already staged to BC with its plan never goes to ProductionData too.
+        $rows = array_values(array_filter(array_map(fn($r) => (array) $r, $rows), fn($r) => empty($r['bc_staged_at'])));
+        if (!$rows) {
+            return ', already staged to BC';
+        }
 
         try {
             $orderNos = collect($rows)->pluck('production_order_no')->unique()->values()->toArray();

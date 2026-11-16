@@ -80,4 +80,29 @@ return [
 
     'harmonize_output_from' => env('PRODUCTION_ORDERS_HARMONIZE_OUTPUT_FROM', '2055'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Matching draft orders to BC plans
+    |--------------------------------------------------------------------------
+    |
+    | Each draft order is matched on its output item and location to an open or
+    | released plan dated from plan_match_days_before to plan_match_days_after
+    | around its production date (same day first, then earlier, then later).
+    | Matching runs when a batch is harmonized and from the harmonize screen,
+    | where a plan can also be picked by hand.
+    |
+    | planned_route: where a plan-matched order goes when it is released.
+    | 'plan'            - the BC staging route (bc:push-executions) carrying the plan
+    |                     no., so BC nets the plan. Orders without a plan still go
+    |                     to ProductionData.
+    | 'production_data' - every order goes to ProductionData (the plan link stays in
+    |                     WMS for the plan screens and reports only).
+    */
+
+    'plan_match_days_before' => (int) env('PRODUCTION_ORDERS_PLAN_DAYS_BEFORE', 1),
+
+    'plan_match_days_after' => (int) env('PRODUCTION_ORDERS_PLAN_DAYS_AFTER', 1),
+
+    'planned_route' => env('PRODUCTION_ORDERS_PLANNED_ROUTE', 'production_data'),
+
 ];

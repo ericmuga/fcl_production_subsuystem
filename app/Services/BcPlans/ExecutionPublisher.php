@@ -25,6 +25,11 @@ class ExecutionPublisher
         $stats = ['candidates' => 0, 'staged' => 0, 'duplicate' => 0, 'rejected' => 0, 'errors' => 0, 'statuses' => 0];
         $orders = DB::table('generated_production_orders')
             ->whereNull('bc_staged_at')->whereNotNull('transaction_id')
+            // One route per order: never one already written to ProductionData.
+            ->whereNull('production_data_at')
+            // Review mode: stuffing orders (from a weighing) wait until their batch is harmonized and released.
+            ->when(config('production_orders.harmonize') === 'review',
+                fn($q) => $q->where(fn($w) => $w->whereNull('idt_transfer_id')->orWhere('released_to', 'plan')))
             ->when(!config('bc_plan.push_unplanned'), fn($q) => $q->whereNotNull('plan_order_no'))
             ->when($only !== null, fn($q) => $q->whereIn('production_order_no', $only ?: ['']))
             ->select('production_order_no')->distinct()->orderBy('production_order_no')->limit($limit)
