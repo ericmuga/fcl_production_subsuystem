@@ -46,6 +46,24 @@ return [
         '36' => 'Despatch',
     ],
 
+    // Process steps offered under a section for order selection, in this order (PlanProcess). A plan's step is its
+    // output item's process in the recipe table; steps plans carry that are not listed here follow alphabetically.
+    'process_order' => [
+        'Sausage' => ['Packing', 'Stuffing', 'Chopping', 'Smoking', 'Cooking', 'Mincing', 'Spice premixing'],
+        'High Care' => ['Packing', 'Slicing', 'Smoking', 'Cooking', 'Forming', 'Curing'],
+    ],
+
+    // Step by plan location, for items with no recipe (exact location codes).
+    'process_by_location' => [
+        '2010' => 'Mincing',
+        '2015' => 'Spice premixing',
+        '2025' => 'Chopping',
+        '2040' => 'Stuffing',
+        '2050' => 'Packing',
+        '2580' => 'Slicing',
+        '2590' => 'Packing',
+    ],
+
     // Weighing station (/planned-orders/weigh): which scale_configs section each WMS section reads its scales from
     // (scale_configs.section; the scale settings pages of each section maintain them).
     'section_scales' => [

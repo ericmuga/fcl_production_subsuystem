@@ -185,6 +185,7 @@ class PlanSync
                 'batch_size_base' => $p['batch_size_base'] ?? null,
                 'section' => $p['section'] ?? null,
                 'sections' => isset($p['sections']) ? mb_substr((string) $p['sections'], 0, 150) : null,
+                'process' => PlanProcess::for((string) $p['item_no'], $p['location_code'] ?? null),
                 'released_from' => $p['released_from'] ?? null,
                 'planned_qty' => $p['planned_qty'],
                 'executed_qty' => $p['executed_qty'],

@@ -31,7 +31,7 @@ class EndOfDay
             ->leftJoinSub($unposted, 'w', 'w.plan_no', '=', 'p.plan_no')
             ->whereIn('p.status', array_merge(self::CLOSABLE, ['closing']))
             ->where('p.plan_date', '<=', $date)
-            ->when($section, fn($q) => $q->where('p.sections', 'like', '%' . $section . '%'))
+            ->tap(fn($q) => PlanProcess::filter($q, $section))
             ->orderBy('p.status')->orderBy('p.plan_date')->orderBy('p.section')->orderBy('p.item_no')
             ->select('p.*', DB::raw('COALESCE(x.produced, 0) AS produced'), DB::raw('COALESCE(b.batches, 0) AS batches'),
                 DB::raw('COALESCE(b.batches_done, 0) AS batches_done'), DB::raw('COALESCE(w.unposted, 0) AS unposted'))

@@ -78,7 +78,7 @@ class PlannedOrdersController extends Controller
                 ->when($f['order'] !== '', fn($q) => $q->where('p.plan_no', 'like', '%' . $f['order'] . '%'))
                 ->when($f['planned'] !== '', fn($q) => $q->where(fn($w) => $w->where('p.released_from', 'like', '%' . $f['planned'] . '%')
                     ->orWhere(fn($v) => $v->where('p.status', 'firm_planned')->where('p.plan_no', 'like', '%' . $f['planned'] . '%'))))
-                ->when($f['section'] !== 'all', fn($q) => $q->where('p.sections', 'like', '%' . $f['section'] . '%'))
+                ->tap(fn($q) => \App\Services\BcPlans\PlanProcess::filter($q, $f['section']))
                 ->when($f['status'] === 'active', fn($q) => $q->whereIn('p.status', ['firm_planned', 'released', 'open']))
                 ->when(!in_array($f['status'], ['active', 'all'], true), fn($q) => $q->where('p.status', $f['status']))
                 ->when($f['from'] !== '', fn($q) => $q->where('p.plan_date', '>=', $f['from']))
@@ -87,7 +87,7 @@ class PlannedOrdersController extends Controller
                 ->select('p.*', DB::raw('COALESCE(b.batches, 0) AS batches'), DB::raw('COALESCE(b.batches_done, 0) AS batches_done'),
                     DB::raw('COALESCE(b.batches_pending, 0) AS batches_pending'), DB::raw('COALESCE(x.produced, 0) AS produced'))
                 ->paginate(25, ['*'], 'pp_page')->appends($request->except('pp_page'));
-            $sections = array_values(array_unique(array_values(config('bc_plan.sections', []))));
+            $sections = \App\Services\BcPlans\PlanProcess::options();
             $lastSync = DB::table('bc_sync_state')->where('key', 'plans')->value('last_run_at');
             return ['plans' => $plans, 'filters' => $f, 'sections' => $sections, 'statuses' => self::STATUSES, 'lastSync' => $lastSync, 'error' => null];
         } catch (\Illuminate\Database\QueryException $e) {

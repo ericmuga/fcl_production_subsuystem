@@ -12,7 +12,7 @@
         <form method="GET" action="{{ route('planned_orders_end_of_day') }}" class="form-inline">
             <select name="section" class="form-control form-control-sm mr-2" onchange="this.form.submit()" aria-label="Section">
                 <option value="all">All sections</option>
-                @foreach($sections as $s)<option value="{{ $s }}" @if($section === $s) selected @endif>{{ $s }}</option>@endforeach
+                @foreach($sections as $s)<option value="{{ $s['value'] }}" @if($section === $s['value']) selected @endif>{!! $s['step'] ? '&nbsp;&nbsp;&nbsp;' : '' !!}{{ $s['label'] }}</option>@endforeach
             </select>
             <input type="date" name="date" value="{{ $date }}" class="form-control form-control-sm" onchange="this.form.submit()" aria-label="Date">
         </form>

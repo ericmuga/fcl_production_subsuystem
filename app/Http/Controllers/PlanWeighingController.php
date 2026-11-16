@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Services\BcPlans\BatchPoster;
 use App\Services\BcPlans\EndOfDay;
+use App\Services\BcPlans\PlanProcess;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -31,9 +32,9 @@ class PlanWeighingController extends Controller
         $section = $request->input('section', session('weigh_section', 'all'));
         session(['weigh_section' => $section]);
         $search = trim((string) $request->input('q', ''));
-        $sections = array_values(array_unique(array_values(config('bc_plan.sections', []))));
+        $sections = PlanProcess::options();
 
-        $done = DB::table('bc_plan_batches')->where('wms_status', '<>', 'cancelled')->groupBy('plan_no')
+        $done =DB::table('bc_plan_batches')->where('wms_status', '<>', 'cancelled')->groupBy('plan_no')
             ->select('plan_no', DB::raw('COUNT(*) AS batches'), DB::raw("SUM(CASE WHEN wms_status = 'completed' THEN 1 ELSE 0 END) AS batches_done"));
         $produced = DB::table('generated_production_orders')->where('line_type', 'output')->whereNotNull('plan_order_no')
             ->groupBy('plan_order_no')->select('plan_order_no', DB::raw('SUM(quantity) AS produced'));
@@ -42,7 +43,7 @@ class PlanWeighingController extends Controller
             ->leftJoinSub($done, 'b', 'b.plan_no', '=', 'p.plan_no')
             ->leftJoinSub($produced, 'x', 'x.plan_order_no', '=', 'p.plan_no')
             ->where('p.status', 'open')->where('p.plan_date', '<=', $date)
-            ->when($section !== 'all', fn($q) => $q->where('p.sections', 'like', '%' . $section . '%'))
+            ->tap(fn($q) => PlanProcess::filter($q, $section))
             ->when($search !== '', fn($q) => $q->where(fn($w) => $w->where('p.plan_no', 'like', '%' . $search . '%')
                 ->orWhere('p.item_no', 'like', $search . '%')->orWhere('p.description', 'like', '%' . $search . '%')
                 ->orWhere('p.released_from', 'like', '%' . $search . '%')))
@@ -348,7 +349,7 @@ class PlanWeighingController extends Controller
         $title = 'End of Day';
         $date = $request->input('date', today()->toDateString());
         $section = $request->input('section', 'all');
-        $sections = array_values(array_unique(array_values(config('bc_plan.sections', []))));
+        $sections = PlanProcess::options();
         $error = null;
         try {
             if ((new EndOfDay())->refresh()) {

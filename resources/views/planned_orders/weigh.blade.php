@@ -30,7 +30,7 @@
                             <select name="section" class="form-control form-control-sm" onchange="this.form.submit()" aria-label="Section">
                                 <option value="all">All sections</option>
                                 @foreach($sections as $s)
-                                    <option value="{{ $s }}" @if($section === $s) selected @endif>{{ $s }}</option>
+                                    <option value="{{ $s['value'] }}" @if($section === $s['value']) selected @endif>{!! $s['step'] ? '&nbsp;&nbsp;&nbsp;' : '' !!}{{ $s['label'] }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -54,7 +54,7 @@
                             <div class="small">{{ $o->description }}</div>
                             <div class="small text-muted">
                                 {{ $o->plan_no }} @if($o->released_from) &middot; plan {{ $o->released_from }} @endif
-                                &middot; {{ \Illuminate\Support\Carbon::parse($o->plan_date)->format('d M') }} &middot; {{ $o->section }}
+                                &middot; {{ \Illuminate\Support\Carbon::parse($o->plan_date)->format('d M') }} &middot; {{ $o->section }}@if($o->process ?? null) / {{ $o->process }}@endif
                             </div>
                             <div class="progress wg-progress mt-1"><div class="progress-bar bg-success" style="width: {{ $pct }}%"></div></div>
                         </a>

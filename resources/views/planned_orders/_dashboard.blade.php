@@ -39,7 +39,7 @@
                 <select name="pp_section" class="form-control form-control-sm">
                     <option value="all">All</option>
                     @foreach($pp['sections'] as $s)
-                        <option value="{{ $s }}" @if($f['section'] === $s) selected @endif>{{ $s }}</option>
+                        <option value="{{ $s['value'] }}" @if($f['section'] === $s['value']) selected @endif>{!! $s['step'] ? '&nbsp;&nbsp;&nbsp;' : '' !!}{{ $s['label'] }}</option>
                     @endforeach
                 </select>
             </div>
@@ -97,7 +97,7 @@
                                 {{ $p->released_from ?? '' }}
                             @endif
                         </td>
-                        <td title="{{ str_replace('|', ', ', (string) $p->sections) }}">{{ $p->section }}</td>
+                        <td title="{{ str_replace('|', ', ', (string) $p->sections) }}">{{ $p->section }}@if($p->process ?? null)<div class="small text-muted">{{ $p->process }}</div>@endif</td>
                         <td class="text-nowrap">
                             {{ $p->location_code }}
                             @if(!empty($p->location_overridden))
