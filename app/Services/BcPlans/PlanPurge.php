@@ -94,6 +94,8 @@ class PlanPurge
     {
         $results = [];
         $activity = $this->activity($planNos);
+        // Orders already deleted in BC (e.g. by BC's "Delete Unactioned Production Orders") need no request.
+        $inBc = array_flip($this->staging()->existingOrders($planNos));
         foreach (array_unique($planNos) as $no) {
             $plan = DB::table('bc_plan_orders')->where('plan_no', $no)->first();
             if (!$plan || !in_array($plan->status, self::PURGEABLE, true)) {
@@ -102,6 +104,11 @@ class PlanPurge
             }
             if (!empty($activity[$no]) || (float) $plan->executed_qty != 0) {
                 $results[$no] = ['ok' => false, 'message' => 'Acted on: ' . implode(', ', $activity[$no] ?? ['BC executed quantity']) . '.'];
+                continue;
+            }
+            if (!isset($inBc[$no])) {
+                $this->markWithdrawn($no, 'Already deleted in BC.');
+                $results[$no] = ['ok' => true, 'message' => 'Already deleted in BC; withdrawn in WMS.', 'withdrawn' => true];
                 continue;
             }
             // Stop weighing first, so nothing can start between the check and BC's delete.

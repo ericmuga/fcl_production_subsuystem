@@ -38,7 +38,11 @@ class PlanPurgeController extends Controller
     {
         $data = $request->validate(['plans' => 'required|array|min:1', 'plans.*' => 'string|max:20']);
         $results = app(PlanPurge::class)->request($data['plans'], Auth::id(), optional(Auth::user())->username);
-        $ok = collect($results)->where('ok', true)->count();
+        $gone = collect($results)->where('withdrawn', true)->count();
+        $ok = collect($results)->where('ok', true)->count() - $gone;
+        if ($gone) {
+            Toastr::success("{$gone} order(s) were already deleted in BC and are now withdrawn; remove them from WMS below.", 'Purge');
+        }
         if ($ok) {
             Toastr::success("{$ok} order(s) sent to BC to delete.", 'Purge');
         }

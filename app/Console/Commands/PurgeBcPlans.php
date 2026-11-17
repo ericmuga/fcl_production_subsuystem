@@ -67,9 +67,13 @@ class PurgeBcPlans extends Command
             return 0;
         }
         $results = $purge->request($free->pluck('plan_no')->all(), null, 'wms-cli');
-        $ok = collect($results)->where('ok', true)->count();
+        $gone = collect($results)->where('withdrawn', true)->count();
+        $ok = collect($results)->where('ok', true)->count() - $gone;
         foreach (collect($results)->where('ok', false) as $no => $r) {
             $this->warn("{$no}: {$r['message']}");
+        }
+        if ($gone) {
+            $this->info("{$gone} order(s) already deleted in BC: withdrawn. Run with --forget to remove them from WMS.");
         }
         $this->info("{$ok} delete request(s) sent to BC; BC's job deletes them. Run with --refresh to read the answers.");
         return 0;

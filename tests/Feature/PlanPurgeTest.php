@@ -20,6 +20,7 @@ class PlanPurgeTest extends TestCase
     private $staging;
     public $requested = [];
     public $answers = [];
+    public $goneFromBc = [];
 
     protected function setUp(): void
     {
@@ -31,6 +32,7 @@ class PlanPurgeTest extends TestCase
             $test->requested[] = $no;
             return 'requested';
         });
+        $this->staging->method('existingOrders')->willReturnCallback(fn($nos) => array_values(array_diff($nos, $test->goneFromBc)));
         $this->staging->method('closeRequestStatuses')->willReturnCallback(fn($nos, $type = null) => array_intersect_key($test->answers, array_flip($nos)));
         $this->app->instance(PlanPurge::class, new PlanPurge($this->staging));
 
@@ -102,6 +104,19 @@ class PlanPurgeTest extends TestCase
         // no more weighing on an order being purged
         $this->actingAs($this->user)->postJson('/planned-orders/ZZPG-OPEN/batches/ZZPG-OPEN-1/weighings', ['item_no' => 'ZJ1', 'gross_kg' => 5])
             ->assertStatus(422);
+    }
+
+    public function test_orders_already_deleted_in_bc_are_withdrawn_without_a_request()
+    {
+        $this->goneFromBc = ['ZZPG-OPEN', 'ZZPG-WEIGHED'];
+        $r = app(PlanPurge::class)->request(['ZZPG-FREE', 'ZZPG-OPEN', 'ZZPG-WEIGHED'], $this->user->id, 'zz');
+
+        $this->assertSame(['ZZPG-FREE'], $this->requested);
+        $this->assertTrue($r['ZZPG-OPEN']['withdrawn']);
+        $this->assertSame('withdrawn', $this->status('ZZPG-OPEN'));
+        $this->assertSame('cancelled', DB::table('bc_plan_batches')->where('plan_no', 'ZZPG-OPEN')->value('wms_status'));
+        $this->assertSame('open', $this->status('ZZPG-WEIGHED'), 'acted on in WMS: left alone');
+        $this->assertSame(1, app(PlanPurge::class)->forget(['ZZPG-OPEN']));
     }
 
     public function test_bc_answer_deletes_or_restores()

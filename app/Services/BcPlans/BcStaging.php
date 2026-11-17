@@ -22,6 +22,7 @@ class BcStaging
     private $baseApp;
     private $extApp;
     private $columns = [];
+    private $blanks = [];
 
     public function __construct(?array $config = null)
     {
@@ -196,11 +197,39 @@ class BcStaging
         return (int) $row->s === 4 ? "Batch {$row->code} was cancelled in BC." : null;
     }
 
-    // Only columns that exist are written; every BC column has a SQL default for the rest.
+    /**
+     * BC's blank value for each NOT NULL column without a SQL default. BC only gives defaults to columns added by a
+     * later schema sync; the columns a table was created with have none, so an insert must write every one of them.
+     */
+    private function blanks(string $table): array
+    {
+        if (!isset($this->blanks[$table])) {
+            $rows = $this->db()->select(
+                "SELECT c.name, t.name AS type FROM sys.columns c JOIN sys.types t ON t.user_type_id = c.user_type_id
+                 WHERE c.object_id = OBJECT_ID(?) AND c.is_nullable = 0 AND c.is_identity = 0 AND c.is_computed = 0
+                   AND c.default_object_id = 0 AND t.name <> 'timestamp'",
+                ['dbo.' . $this->q($table)]
+            );
+            $this->blanks[$table] = [];
+            foreach ($rows as $r) {
+                $this->blanks[$table][$r->name] = match ($r->type) {
+                    'nvarchar', 'varchar', 'nchar', 'char', 'ntext', 'text' => '',
+                    'datetime', 'datetime2', 'date' => '1753-01-01 00:00:00',
+                    'uniqueidentifier' => '00000000-0000-0000-0000-000000000000',
+                    'varbinary', 'image' => null,
+                    default => 0,
+                };
+            }
+        }
+        return $this->blanks[$table];
+    }
+
+    // Only columns that exist are written; NOT NULL columns without a SQL default get BC's blank value.
     private function insert(string $table, array $values): void
     {
         $cols = array_flip($this->columns($table));
         $values = array_filter($values, fn($v, $k) => isset($cols[$k]), ARRAY_FILTER_USE_BOTH);
+        $values += array_filter($this->blanks($table), fn($v) => $v !== null);
         $names = implode(', ', array_map(fn($c) => $this->q($c), array_keys($values)));
         $marks = implode(', ', array_fill(0, count($values), '?'));
         $this->db()->insert('INSERT INTO ' . $this->q($table) . " ({$names}) VALUES ({$marks})", array_values($values));
@@ -243,6 +272,20 @@ class BcStaging
                 WHERE r.[Plan Order No_] IN ({$in}) AND r.[Entry No_] = (SELECT MAX(x.[Entry No_]) FROM {$t} x WHERE x.[Plan Order No_] = r.[Plan Order No_]{$type})", $chunk);
             foreach ($rows as $r) {
                 $out[$r->plan_no] = ['status' => $names[(int) $r->s] ?? (string) $r->s, 'message' => (string) $r->msg];
+            }
+        }
+        return $out;
+    }
+
+    /** Of these order numbers, those BC still has as production orders (any status). */
+    public function existingOrders(array $planNos): array
+    {
+        $t = $this->q($this->table('Production Order', false));
+        $out = [];
+        foreach (array_chunk(array_values(array_unique($planNos)), 500) as $chunk) {
+            $in = implode(',', array_fill(0, count($chunk), '?'));
+            foreach ($this->db()->select("SELECT DISTINCT [No_] AS no FROM {$t} WHERE [No_] IN ({$in})", $chunk) as $r) {
+                $out[] = $r->no;
             }
         }
         return $out;
