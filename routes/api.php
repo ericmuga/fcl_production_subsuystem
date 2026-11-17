@@ -36,6 +36,10 @@ Route::middleware(['token_check', 'throttle:60,1'])->group(function () {
     Route::post('/v1/returns/issue-idt', [ApiController::class, 'issueReturnIdt']);
 });
 
+// BC -> WMS: released production orders, posted by BC after release / push (Integration Setup WMS-RELEASED-ORDERS)
+Route::middleware(['token_check', 'throttle:120,1'])->post('/v1/bc/released-orders', [\App\Http\Controllers\BcReleasedOrdersApiController::class, 'store'])
+    ->name('api.bc.released_orders');
+
 //without token APIS
 Route::post('/v1/save/slaughter-receipts', [ApiController::class, 'saveSlaughterReceipts']);
 Route::post('/v1/push/slaughter-lines', [ApiController::class, 'pushSlaughterLines']);

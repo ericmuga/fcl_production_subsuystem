@@ -53,4 +53,56 @@ return [
 
     'stuffing_batch_tolerance_kgs' => (float) env('STUFFING_BATCH_TOLERANCE_KGS', 0.5),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Harmonizing stuffing orders with the dispatch weight (optional)
+    |--------------------------------------------------------------------------
+    |
+    | Stuffing weighs the input; the IDT transfer to dispatch weighs the packed
+    | output; the lines in between come from recipe yields. Harmonizing rebuilds
+    | a batch (batch no + packed item) from both measured ends.
+    |
+    | 'off'    - as before: orders go to ProductionData as soon as they are generated
+    |            (when target is production_data). The Harmonize screen still works
+    |            on lines that have not reached ProductionData.
+    | 'review' - orders are held locally until the batch is harmonized and released
+    |            on Harmonize stuffing batches, or by `php artisan stuffing:harmonize`.
+    |
+    | harmonize_mode is the mode the screen and the command start with:
+    | recipe | output_at_last (variance on Packing) | output_at_first (variance on Stuffing)
+    |
+    | harmonize_output_from is the location the dispatch transfers are made from.
+    */
+
+    'harmonize' => env('PRODUCTION_ORDERS_HARMONIZE', 'off'),
+
+    'harmonize_mode' => env('PRODUCTION_ORDERS_HARMONIZE_MODE', 'output_at_last'),
+
+    'harmonize_output_from' => env('PRODUCTION_ORDERS_HARMONIZE_OUTPUT_FROM', '2055'),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Matching draft orders to BC plans
+    |--------------------------------------------------------------------------
+    |
+    | Each draft order is matched on its output item and location to an open or
+    | released plan dated from plan_match_days_before to plan_match_days_after
+    | around its production date (same day first, then earlier, then later).
+    | Matching runs when a batch is harmonized and from the harmonize screen,
+    | where a plan can also be picked by hand.
+    |
+    | planned_route: where a plan-matched order goes when it is released.
+    | 'plan'            - the BC staging route (bc:push-executions) carrying the plan
+    |                     no., so BC nets the plan. Orders without a plan still go
+    |                     to ProductionData.
+    | 'production_data' - every order goes to ProductionData (the plan link stays in
+    |                     WMS for the plan screens and reports only).
+    */
+
+    'plan_match_days_before' => (int) env('PRODUCTION_ORDERS_PLAN_DAYS_BEFORE', 1),
+
+    'plan_match_days_after' => (int) env('PRODUCTION_ORDERS_PLAN_DAYS_AFTER', 1),
+
+    'planned_route' => env('PRODUCTION_ORDERS_PLANNED_ROUTE', 'production_data'),
+
 ];

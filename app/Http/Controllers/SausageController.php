@@ -7,6 +7,8 @@ use App\Exports\SausageEntriesExport;
 use App\Exports\StuffingWeightsHistoryExport;
 use App\Models\Helpers;
 use App\Models\SausageEntry;
+use App\Services\BcPlans\PlanResolver;
+use App\Services\Stuffing\ProductionDataWriter;
 use Brian2694\Toastr\Facades\Toastr;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -1287,6 +1289,7 @@ class SausageController extends Controller
 
         $route = $option->route;
         $finalRecipe = end($route)->recipe;
+        $planResolver = new PlanResolver();
 
         $recipeLines = DB::table($this->recipeTable())
             ->whereIn('recipe', collect($route)->pluck('recipe')->unique()->toArray())
@@ -1335,8 +1338,23 @@ class SausageController extends Controller
 
             $routing = $this->routingFor($edge->process, $anchor->input_item_location);
 
+            $orderNo = $this->productionOrderNo($routing, $finalRecipe, $transferId);
+
+            // BC plan (released order) this execution order fulfils (integration map S8), the batch of it this WMS order
+            // is, and its idempotency key (CP23).
+            $planNo = $planResolver->openPlanFor($edge->output_item, $anchor->output_item_location, $now->toDateString());
+            $batch = $planResolver->batchFor($planNo, $orderNo);
+
             $common = [
-                'production_order_no' => $this->productionOrderNo($routing, $finalRecipe, $transferId),
+                'production_order_no' => $orderNo,
+                'plan_order_no' => $planNo,
+                'plan_matched_by' => $planNo ? 'generation' : null,
+                'plan_matched_at' => $planNo ? $now : null,
+                'plan_line_no' => $batch->plan_line_no ?? null,
+                'plan_batch_no' => $batch->batch_no ?? null,
+                'batch_code' => $batch->batch_code ?? null,
+                'batch_completed' => 1,
+                'transaction_id' => PlanResolver::transactionId('GPO', $orderNo),
                 'routing' => $routing,
                 'process' => $edge->process,
                 'recipe' => $edge->recipe,
@@ -1387,7 +1405,12 @@ class SausageController extends Controller
 
         DB::table('generated_production_orders')->insert($rows);
 
-        $pushed = $this->pushToProductionData($rows, $username);
+        // In review mode the orders wait for the batch's dispatch weight: they are written to
+        // ProductionData when the batch is harmonized (Harmonize stuffing batches, or stuffing:harmonize).
+        $writer = app(ProductionDataWriter::class);
+        $pushed = $writer->holdsForHarmonization()
+            ? ($writer->enabled() ? ', held for harmonization' : '')
+            : $writer->write($rows, $username);
 
         $orders = count($route);
 
@@ -1395,75 +1418,6 @@ class SausageController extends Controller
             'orders' => $orders,
             'message' => $orders . ' production order(s) generated, ' . count($rows) . ' lines' . $pushed . '.',
         ];
-    }
-
-    /**
-     * Copy generated lines into the BC ProductionData table when the app is
-     * configured to write there. Lines already present for the same order and
-     * line number are skipped, mirroring the NOT EXISTS guard in the SQL script
-     * this replaces.
-     */
-    private function pushToProductionData(array $rows, string $username): string
-    {
-        if (config('production_orders.target') !== 'production_data') {
-            return '';
-        }
-
-        $table = config('production_orders.production_data_table', 'ProductionData');
-
-        try {
-            $orderNos = collect($rows)->pluck('production_order_no')->unique()->values()->toArray();
-
-            $existing = DB::table($table)
-                ->whereIn('ProductionOrderNo', $orderNos)
-                ->select('ProductionOrderNo', 'LineNo')
-                ->get()
-                ->mapWithKeys(fn($r) => [$r->ProductionOrderNo . '|' . $r->LineNo => true]);
-
-            $decimals = (int) config('production_orders.production_data_decimals', 2);
-
-            $pending = [];
-
-            foreach ($rows as $row) {
-                if (isset($existing[$row['production_order_no'] . '|' . $row['line_no']])) {
-                    continue;
-                }
-
-                // ID is an identity column and every remaining column is NOT NULL
-                $pending[] = [
-                    'ProductionOrderNo' => $row['production_order_no'],
-                    'LineNo' => $row['line_no'],
-                    'ItemNo' => $row['item_no'],
-                    'Quantity' => round($row['quantity'], $decimals),
-                    'UOM' => $row['uom'] ?: 'KG',
-                    'LocationCode' => $row['location_code'] ?: '',
-                    'BinCode' => '',
-                    'UserName' => $username,
-                    'Routing' => $row['routing'],
-                    'DateTime' => $row['created_at'],
-                    'Status' => 0,
-                    'FinishedProductionOrderNo' => '',
-                    'ExternalDocumentNo' => $row['external_document_no'],
-                    'TransactionDate' => $row['transaction_date'],
-                    'Published' => 0,
-                ];
-            }
-
-            if (!$pending) {
-                return ', already present in ' . $table;
-            }
-
-            DB::table($table)->insert($pending);
-
-            return ', ' . count($pending) . ' written to ' . $table;
-
-        } catch (\Exception $e) {
-            // The weight and the local copy are already saved; surface the failure
-            // rather than losing them.
-            Log::error('Failed writing generated orders to ProductionData: ' . $e->getMessage());
-
-            return ', but writing to ProductionData failed (' . $e->getMessage() . ')';
-        }
     }
 
     public function saveStuffingWeights(Request $request, Helpers $helpers) {

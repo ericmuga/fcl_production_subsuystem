@@ -20,18 +20,21 @@ class LoginController extends Controller
         $this->middleware('auth', ['only' => ['getSectionRedirect', 'getLogout', 'users', 'updateUser', 'getUserPermissionsAxios']]);
     }
 
-    public function home()
+    public function home(Request $request)
     {
         if (Auth::check()) {
             $title = "Navigation";
 
             $user_permissions = DB::table('user_permissions')
                 ->join('permissions', 'user_permissions.permission_code', '=', 'permissions.code')
-                ->where('user_permissions.user_id', Session::get('session_userId'))
+                ->where('user_permissions.user_id', Session::get('session_userId', Auth::id()))
                 ->select('permissions.*')
                 ->get();
 
-            return view('layouts.router', compact('title', 'user_permissions'));
+            // Planned production orders card: active BC plans from last Monday to today
+            $ppCount = PlannedOrdersController::activeCount();
+
+            return view('layouts.router', compact('title', 'user_permissions', 'ppCount'));
            
         } else {
             // If user is not logged in render the login page
@@ -97,6 +100,8 @@ class LoginController extends Controller
         //Log username into session
         Session::put('session_username', $request->username);
         Session::put('session_userRole', $user->role);
+        // home() loads the user's sections with this id; the 2024 auth refactor stopped setting it.
+        Session::put('session_userId', $user->id);
 
         # Redirecting
         Toastr::success('Successful login', 'Success');

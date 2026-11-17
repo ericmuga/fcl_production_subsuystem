@@ -4,6 +4,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\BeefLambController;
 use App\Http\Controllers\ButcheryController;
 use App\Http\Controllers\ButcheryStockController;
+use App\Http\Controllers\ProductionPlanController;
 use App\Http\Controllers\ChoppingController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\Despatch;
@@ -16,6 +17,7 @@ use App\Http\Controllers\IDTController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PetfoodController;
+use App\Http\Controllers\PlannedOrdersController;
 use App\Http\Controllers\RecipeDraftController;
 use App\Http\Controllers\SausageController;
 use App\Http\Controllers\QAController;
@@ -186,6 +188,39 @@ Route::post('/sausage-stuffing-batch-summary-axios', [SausageController::class, 
 Route::get('/sausage/stuffing-weights', [SausageController::class, 'stuffingWeights'])->name('stuffing_weights');
 Route::get('/sausage/stuffing-weights/history', [SausageController::class, 'stuffingWeightsHistory'])->name('export_stuffing_weights_history');
 Route::post('/sausage/stuffing-weights/history/export', [SausageController::class, 'exportStuffingWeightsHistory'])->name('stuffing_weights_history_export');
+// Harmonize stuffing orders with the dispatch weight (config production_orders.harmonize)
+Route::get('/sausage/harmonize', [\App\Http\Controllers\StuffingHarmonizeController::class, 'index'])->name('stuffing_harmonize');
+Route::post('/sausage/harmonize', [\App\Http\Controllers\StuffingHarmonizeController::class, 'apply'])->name('stuffing_harmonize_apply');
+Route::post('/sausage/harmonize/plan', [\App\Http\Controllers\StuffingHarmonizeController::class, 'matchPlan'])->name('stuffing_harmonize_plan');
+
+/*-------------BC MRP daily plan (integration map S5, S12)------------------ */
+Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');
+// Weighing station, vessels (tare per section) and end of day for BC planned orders
+Route::get('/planned-orders/reports', [\App\Http\Controllers\PlanReportsController::class, 'index'])->name('planned_orders_reports');
+    Route::get('/planned-orders/scale-reading', [\App\Http\Controllers\PlanWeighingController::class, 'readScale'])->name('planned_orders_scale_read');
+    Route::get('/planned-orders/weigh', [\App\Http\Controllers\PlanWeighingController::class, 'station'])->name('planned_orders_weigh');
+Route::get('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'vessels'])->name('planned_orders_vessels');
+Route::post('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'saveVessel'])->name('planned_orders_vessels_save');
+Route::get('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'endOfDay'])->name('planned_orders_end_of_day');
+Route::post('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'closeDay'])->name('planned_orders_close_day');
+// Purge: delete BC orders nobody has acted on (BC deletes them; WMS follows)
+Route::get('/planned-orders/purge', [\App\Http\Controllers\PlanPurgeController::class, 'index'])->name('planned_orders_purge');
+Route::post('/planned-orders/purge', [\App\Http\Controllers\PlanPurgeController::class, 'request'])->name('planned_orders_purge_request');
+Route::post('/planned-orders/purge/forget', [\App\Http\Controllers\PlanPurgeController::class, 'forget'])->name('planned_orders_purge_forget');
+Route::delete('/planned-orders/weighings/{id}', [\App\Http\Controllers\PlanWeighingController::class, 'deleteWeighing'])->whereNumber('id')->name('planned_orders_weighing_delete');
+Route::get('/planned-orders/{planNo}/items', [\App\Http\Controllers\PlanWeighingController::class, 'items'])->name('planned_orders_items');
+Route::post('/planned-orders/{planNo}/batches/{batchCode}/weighings', [\App\Http\Controllers\PlanWeighingController::class, 'storeWeighing'])->name('planned_orders_weighing_store');
+Route::post('/planned-orders/{planNo}/batches/{batchCode}/post', [\App\Http\Controllers\PlanWeighingController::class, 'postBatch'])->name('planned_orders_batch_post');
+Route::post('/planned-orders/refresh', [PlannedOrdersController::class, 'refresh'])->name('planned_orders_refresh');
+Route::get('/planned-orders/{planNo}/details', [PlannedOrdersController::class, 'details'])->name('planned_orders_details');
+Route::post('/planned-orders/{planNo}/location', [PlannedOrdersController::class, 'updateLocation'])->name('planned_orders_location');
+Route::get('/planned-orders/{planNo}/fulfil', [PlannedOrdersController::class, 'fulfil'])->name('planned_orders_fulfil');
+Route::post('/planned-orders/{planNo}/fulfil', [PlannedOrdersController::class, 'storeFulfilment'])->name('planned_orders_fulfil_store');
+Route::get('/production-plan', [ProductionPlanController::class, 'index'])->name('production_plan');
+Route::post('/production-plan/sync', [ProductionPlanController::class, 'sync'])->name('production_plan_sync');
+Route::get('/production-plan/{planNo}/components', [ProductionPlanController::class, 'components'])->name('production_plan_components');
+Route::get('/production-plan/{planNo}/batches', [ProductionPlanController::class, 'batches'])->name('production_plan_batches');
+Route::post('/production-plan/{planNo}/close', [ProductionPlanController::class, 'close'])->name('production_plan_close');
 Route::post('/sausage/chopping-receipts/save', [SausageController::class, 'saveStuffingWeights'])->name('save_stuffing_weights');
 Route::post('/sausage/generated-production-orders/export', [SausageController::class, 'exportGeneratedProductionOrders'])->name('export_generated_production_orders');
 /*-------------End Admin------------------ */

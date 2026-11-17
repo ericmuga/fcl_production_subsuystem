@@ -42,14 +42,21 @@ class Handler extends ExceptionHandler
 
     public function report(Throwable $e)
     {
+        // An expired page is not an error worth logging; everything else is.
         if ($e instanceof \Illuminate\Session\TokenMismatchException) {
-            Toastr::warning('Sorry, Seems the page has expired. Please login again', 'Warning');
-            return redirect()->route('login');
+            return;
         }
+
+        parent::report($e);
     }
 
     public function render($request, Throwable $exception)
     {
+        if ($exception instanceof \Illuminate\Session\TokenMismatchException && !$request->expectsJson()) {
+            Toastr::warning('Sorry, Seems the page has expired. Please login again', 'Warning');
+            return redirect()->route('home');
+        }
+
         if ($exception instanceof ThrottleRequestsException) {
             return response()->json([
                 'success' => false,
