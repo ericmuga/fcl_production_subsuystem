@@ -69,6 +69,12 @@ class BcStaging
         return (bool) $this->columns($this->table('WMS Plan Close Request'));
     }
 
+    /** True once BC's close requests carry a Request Type (Close / Delete): BC can delete unactioned orders for WMS. */
+    public function supportsDeleteRequests(): bool
+    {
+        return in_array('Request Type', $this->columns($this->table('WMS Plan Close Request')), true);
+    }
+
     private function requirePlans(): void
     {
         if (!$this->supportsPlans()) {
@@ -222,18 +228,19 @@ class BcStaging
      * Latest close request per plan: plan no => [status, message]. Status: pending, processing, completed, error
      * (BC's job retries errors), held.
      */
-    public function closeRequestStatuses(array $planNos): array
+    public function closeRequestStatuses(array $planNos, ?int $requestType = null): array
     {
         if (!$planNos || !$this->supportsCloseRequests()) {
             return [];
         }
         $names = [0 => 'pending', 1 => 'processing', 2 => 'completed', 3 => 'error', 4 => 'completed', 5 => 'held'];
         $t = $this->q($this->table('WMS Plan Close Request'));
+        $type = ($requestType !== null && $this->supportsDeleteRequests()) ? ' AND x.[Request Type] = ' . (int) $requestType : '';
         $out = [];
         foreach (array_chunk(array_values(array_unique($planNos)), 500) as $chunk) {
             $in = implode(',', array_fill(0, count($chunk), '?'));
             $rows = $this->db()->select("SELECT r.[Plan Order No_] AS plan_no, r.[Status] AS s, r.[Status Message] AS msg FROM {$t} r
-                WHERE r.[Plan Order No_] IN ({$in}) AND r.[Entry No_] = (SELECT MAX(x.[Entry No_]) FROM {$t} x WHERE x.[Plan Order No_] = r.[Plan Order No_])", $chunk);
+                WHERE r.[Plan Order No_] IN ({$in}) AND r.[Entry No_] = (SELECT MAX(x.[Entry No_]) FROM {$t} x WHERE x.[Plan Order No_] = r.[Plan Order No_]{$type})", $chunk);
             foreach ($rows as $r) {
                 $out[$r->plan_no] = ['status' => $names[(int) $r->s] ?? (string) $r->s, 'message' => (string) $r->msg];
             }
@@ -257,6 +264,30 @@ class BcStaging
             'Requested By' => mb_substr((string) $user, 0, 50),
             'Status' => 0,
             'Source' => 'WMS',
+        ]);
+        return 'requested';
+    }
+
+    /**
+     * Ask BC to delete an order nobody has acted on (request type Delete). BC's job deletes it, or holds the request
+     * with the reason when the order was acted on after all. Idempotent while a delete request is pending.
+     */
+    public function requestDelete(string $planNo, ?string $user): string
+    {
+        if (!$this->supportsDeleteRequests()) {
+            throw new RuntimeException('BC cannot delete orders for WMS yet: deploy the FARMERSCHOICE build with "Delete Unactioned Production Orders" first.');
+        }
+        $t = $this->table('WMS Plan Close Request');
+        if ($this->db()->selectOne('SELECT 1 AS x FROM ' . $this->q($t) . ' WHERE [Plan Order No_] = ? AND [Request Type] = 1 AND [Status] IN (0, 1)', [$planNo])) {
+            return 'already requested';
+        }
+        $this->insert($t, [
+            'Plan Order No_' => $planNo,
+            'Requested At' => now()->utc()->format('Y-m-d H:i:s'),
+            'Requested By' => mb_substr((string) $user, 0, 50),
+            'Status' => 0,
+            'Source' => 'WMS purge',
+            'Request Type' => 1,
         ]);
         return 'requested';
     }

@@ -7,6 +7,7 @@
         <a href="{{ route('planned_orders_weigh') }}" class="btn btn-sm btn-success mr-2"><i class="fa fa-balance-scale mr-1"></i>Weigh</a>
         <a href="{{ route('planned_orders_end_of_day') }}" class="btn btn-sm btn-outline-danger mr-2"><i class="fa fa-moon mr-1"></i>End of day</a>
         <a href="{{ route('planned_orders_reports') }}" class="btn btn-sm btn-outline-primary mr-2"><i class="fa fa-chart-bar mr-1"></i>Reports</a>
+        <a href="{{ route('planned_orders_purge') }}" class="btn btn-sm btn-outline-secondary mr-2" title="Delete orders nobody has acted on, in BC and WMS"><i class="fa fa-trash-alt mr-1"></i>Purge</a>
         <form method="POST" action="{{ route('planned_orders_refresh') }}" class="mb-0">
             @csrf
             @foreach(['item', 'order', 'planned', 'section', 'status', 'from', 'to'] as $k)

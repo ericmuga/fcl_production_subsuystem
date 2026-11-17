@@ -43,7 +43,7 @@ class PlanSync
         $stats = $this->newStats(count($plans));
         DB::transaction(function () use ($plans, $from, $to, $dryRun, &$stats) {
             $seen = $this->upsertPlans($plans, $dryRun, $stats);
-            $gone = DB::table('bc_plan_orders')->whereBetween('plan_date', [$from, $to])->whereIn('status', ['open', 'released', 'firm_planned'])
+            $gone = DB::table('bc_plan_orders')->whereBetween('plan_date', [$from, $to])->whereIn('status', ['open', 'released', 'firm_planned', 'purging'])
                 ->when($seen, function ($q) use ($seen) {
                     foreach (array_chunk($seen, 1000) as $chunk) {
                         $q->whereNotIn('plan_no', $chunk);
@@ -79,7 +79,8 @@ class PlanSync
 
             // Orders that left the plan set without a change we can see (finished without a push, or deleted).
             // 'closing': WMS asked BC to close it (end of day); it becomes closed once BC has finished the order.
-            $active = DB::table('bc_plan_orders')->whereIn('status', ['open', 'released', 'firm_planned', 'closing'])
+            // 'purging': WMS asked BC to delete it (PlanPurge); it becomes withdrawn once BC has deleted it.
+            $active = DB::table('bc_plan_orders')->whereIn('status', ['open', 'released', 'firm_planned', 'closing', 'purging'])
                 ->when($seen, fn($q) => $q->whereNotIn('plan_no', $seen))->pluck('status', 'plan_no')->all();
             if ($active && method_exists($this->source, 'bcStates')) {
                 $states = $this->source->bcStates(array_keys($active));
@@ -155,10 +156,11 @@ class PlanSync
                 ->pluck('plan_no')->all());
         }
         $moved = array_flip($moved ?? []);
-        // End of day asked BC to close these: a sync or a re-send must not reopen them before BC has finished them.
+        // End of day asked BC to close these, or the purge asked BC to delete them: a sync or a re-send must not reopen
+        // them before BC has answered.
         $closing = [];
         foreach (array_chunk(array_column($plans, 'plan_no'), 1000) as $chunk) {
-            $closing += array_flip(DB::table('bc_plan_orders')->whereIn('plan_no', $chunk)->where('status', 'closing')->pluck('plan_no')->all());
+            $closing += array_flip(DB::table('bc_plan_orders')->whereIn('plan_no', $chunk)->whereIn('status', ['closing', 'purging'])->pluck('plan_no')->all());
         }
         foreach ($plans as $p) {
             $seen[] = $p['plan_no'];
@@ -201,7 +203,7 @@ class PlanSync
                 'bc_location_code' => $p['location_code'],
                 'bc_section' => $p['section'] ?? null,
             ];
-            if (isset($closing[$p['plan_no']]) && in_array($row['status'], ['open', 'released'], true)) {
+            if (isset($closing[$p['plan_no']]) && in_array($row['status'], ['open', 'released', 'firm_planned'], true)) {
                 unset($row['status']);
             }
             $isMoved = isset($moved[$p['plan_no']]);

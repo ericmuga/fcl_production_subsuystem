@@ -203,6 +203,10 @@ Route::get('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingControl
 Route::post('/planned-orders/vessels', [\App\Http\Controllers\PlanWeighingController::class, 'saveVessel'])->name('planned_orders_vessels_save');
 Route::get('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'endOfDay'])->name('planned_orders_end_of_day');
 Route::post('/planned-orders/end-of-day', [\App\Http\Controllers\PlanWeighingController::class, 'closeDay'])->name('planned_orders_close_day');
+// Purge: delete BC orders nobody has acted on (BC deletes them; WMS follows)
+Route::get('/planned-orders/purge', [\App\Http\Controllers\PlanPurgeController::class, 'index'])->name('planned_orders_purge');
+Route::post('/planned-orders/purge', [\App\Http\Controllers\PlanPurgeController::class, 'request'])->name('planned_orders_purge_request');
+Route::post('/planned-orders/purge/forget', [\App\Http\Controllers\PlanPurgeController::class, 'forget'])->name('planned_orders_purge_forget');
 Route::delete('/planned-orders/weighings/{id}', [\App\Http\Controllers\PlanWeighingController::class, 'deleteWeighing'])->whereNumber('id')->name('planned_orders_weighing_delete');
 Route::get('/planned-orders/{planNo}/items', [\App\Http\Controllers\PlanWeighingController::class, 'items'])->name('planned_orders_items');
 Route::post('/planned-orders/{planNo}/batches/{batchCode}/weighings', [\App\Http\Controllers\PlanWeighingController::class, 'storeWeighing'])->name('planned_orders_weighing_store');

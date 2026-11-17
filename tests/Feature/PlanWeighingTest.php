@@ -188,7 +188,7 @@ class PlanWeighingTest extends TestCase
         // BC's job has run
         $staging = new class extends BcStaging {
             public function __construct() {}
-            public function closeRequestStatuses(array $planNos): array { return ['TWP-1' => ['status' => 'completed', 'message' => '']]; }
+            public function closeRequestStatuses(array $planNos, ?int $requestType = null): array { return ['TWP-1' => ['status' => 'completed', 'message' => '']]; }
         };
         $this->assertSame(1, $eod->refresh($staging));
         $this->assertSame('closed', DB::table('bc_plan_orders')->where('plan_no', 'TWP-1')->value('status'));
