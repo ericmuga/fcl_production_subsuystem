@@ -3,6 +3,44 @@
 @section('content')
 <div class="container-fluid pt-3">
     <p class="mb-2"><a href="{{ route('home') }}">&larr; Dashboard</a></p>
+    <div class="card mb-3">
+        <div class="card-header"><h3 class="card-title mb-0">Convert demand forecast for BC</h3></div>
+        <div class="card-body">
+            <p class="small text-muted">Upload the manual forecast workbook. Your browser sends only the Forecast By SKU sheet, which is exported for Monday through Sunday using Vol Pcs and PC; blank and zero quantities are omitted. Recalculate and save formulas in Excel before uploading. The download does not upload data to BC.</p>
+            @if($errors->any())
+                <div class="alert alert-danger"><ul class="mb-0">@foreach($errors->all() as $error)<li>{{ $error }}</li>@endforeach</ul></div>
+            @endif
+            <form id="demand-forecast-form" method="POST" action="{{ route('planned_orders_demand_forecast') }}" enctype="multipart/form-data" class="form-row align-items-end">
+                @csrf
+                <div class="col-md-3 mb-2">
+                    <label for="forecast_file">Forecast workbook (.xlsx)</label>
+                    <input id="forecast_file" name="forecast_file" type="file" accept=".xlsx" class="form-control-file" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="forecast_monday">Forecast week Monday</label>
+                    <input id="forecast_monday" name="forecast_monday" type="date" value="{{ old('forecast_monday') }}" class="form-control" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="forecast_name">Forecast name</label>
+                    <input id="forecast_name" name="forecast_name" value="{{ old('forecast_name', 'FCL-FC2026') }}" maxlength="100" class="form-control" required>
+                </div>
+                <div class="col-md-1 mb-2">
+                    <label for="location_code">Location</label>
+                    <input id="location_code" name="location_code" value="{{ old('location_code', '3535') }}" maxlength="20" class="form-control" required>
+                </div>
+                <div class="col-md-2 mb-2">
+                    <label for="component_forecast">Component forecast</label>
+                    <select id="component_forecast" name="component_forecast" class="form-control">
+                        <option value="Yes" @if(old('component_forecast', 'Yes') === 'Yes') selected @endif>Yes</option>
+                        <option value="No" @if(old('component_forecast') === 'No') selected @endif>No</option>
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2"><button id="forecast-upload-button" type="submit" class="btn btn-primary">Convert and download</button></div>
+                <div id="forecast-upload-message" class="col-12 text-danger" role="alert"></div>
+            </form>
+            <script defer src="{{ asset('js/forecast-upload.js') }}"></script>
+        </div>
+    </div>
     @include('planned_orders._dashboard', ['pp' => $pp, 'ppAction' => route('planned_orders')])
 </div>
 

@@ -7,6 +7,12 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Demand forecast conversion
+
+On Planned Orders, upload an `.xlsx` workbook containing the `Forecast By SKU` sheet and select the forecast week's Monday. The download has the ERP demand forecast headers and one row per listed SKU and day with a positive `Vol Pcs` value (Monday–Sunday). Quantities use `PC`; variant and base quantity are blank. Set the forecast name, location and component flag before downloading; no data is sent to BC. Recalculate and save formulas in Excel before uploading.
+
+Before submission, the browser extracts the forecast sheet and its supporting Excel data into a smaller workbook; other sheets are not uploaded. The prepared workbook is limited to 1.5 MB to fit common PHP upload limits. The application also requires JavaScript and a browser that supports file uploads via `DataTransfer`. Rebuild the forecast script after changes with `npm run build-forecast-upload`.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

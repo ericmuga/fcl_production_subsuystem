@@ -195,6 +195,7 @@ Route::post('/sausage/harmonize/plan', [\App\Http\Controllers\StuffingHarmonizeC
 
 /*-------------BC MRP daily plan (integration map S5, S12)------------------ */
 Route::get('/planned-orders', [PlannedOrdersController::class, 'index'])->name('planned_orders');
+Route::post('/planned-orders/demand-forecast', [\App\Http\Controllers\DemandForecastController::class, 'convert'])->name('planned_orders_demand_forecast');
 // Weighing station, vessels (tare per section) and end of day for BC planned orders
 Route::get('/planned-orders/reports', [\App\Http\Controllers\PlanReportsController::class, 'index'])->name('planned_orders_reports');
     Route::get('/planned-orders/scale-reading', [\App\Http\Controllers\PlanWeighingController::class, 'readScale'])->name('planned_orders_scale_read');
